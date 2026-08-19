@@ -1,0 +1,124 @@
+using Format;
+
+include "User Interface";
+
+readonly InstallNytrilDocument Main.Documents.InstallNytril = new;
+
+//======================================================================
+
+class NytrilInstallDialog: DialogView {
+  const BorderPad  = 5pt;
+  const BottomPad  = 5pt;
+  const MidPad     = BottomPad * 0.6;
+
+  Constructor {
+    super.Constructor(5", "Nytril Development Environment");
+    Buttons = ["Next", "Cancel"];
+  }
+
+  override Body = HBox {
+    VAlign: Top;
+
+    Size IFrame = new(164, 210);
+    Size screen = new(IFrame.Width - 32, IFrame.Width*0.5);
+
+    Canvas(IFrame.Width, IFrame.Height, PadLR(4pt)) {
+      Background: Colors.White;
+      VBox(IFrame.Width) {
+        HAlign: HAligns.Center;
+
+        Canvas(null, 5);
+
+        NytrilStyle.StandardLogo {
+          TextHeight: 70;
+        };
+
+        Canvas(null, 8);
+
+        Shape(80%, 0.25) {
+          RectanglePath(new(new(0), screen), new(4pt));
+          RectanglePath(new(new(BorderPad), screen - new Size(BorderPad*2)), new(3pt));
+        };
+        Canvas(null, BorderPad * 0.4);
+        Shape(80%, 0.25) {
+          ClosedPath(0) {
+            LineTo(0, MidPad);
+            ArcTo(new(BorderPad, BottomPad), new(BorderPad, MidPad));
+            LineTo(screen.Width - BorderPad, BottomPad);
+            ArcTo(new(screen.Width, MidPad), new(BorderPad, MidPad));
+            LineTo(screen.Width, 0);
+          };
+          RectanglePath(new(new(screen.Width*0.45, BottomPad * 0.4), new(screen.Width*0.1, BottomPad * 0.2)), new(BottomPad * 0.1));
+        };
+      };
+
+      Shape(80%) {
+        HAlignment: HAligns.Center;
+        X: 3;
+        Y: 105;
+        TextHeight: 50;
+        Icons.refresh;
+      };
+    };
+
+    VBox(3", null, PadLT(15)) {
+      Bold "Welcome to Nytril Setup";
+      Separation: 20pt;
+      "Setup will guide you through the installation of Nytril.";
+      "Click Next to continue.";
+    }
+  };
+}
+
+//======================================================================
+
+class InstallNytrilDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#5051ebdb-575b-4f02-8dbb-ecdd8e2a9765#, "Install Nytril Desktop");
+    Description = Name;
+  }
+
+  Hyperlink(text, url) = Span {
+    TextColor: NytrilPalette.Hyperlink;
+    text;
+    TipAction: new URL(url);
+  };
+
+  override GetDocument = Document(0.75") {
+    TextHeight: 12pt;
+    SpaceAfter: 10pt;
+    ParAlignment: Justify;
+
+    NytrilStyle.Heading1 {
+      Name;
+    };
+
+    NytrilStyle.Heading2 {
+      "Download and install Nytril";
+    };
+    ListBlock {
+      Span {
+        "Click here to go to ";
+        Hyperlink("Nytril.com", "https://www.nytril.com/"); DotSpace;
+      };
+      "Click \"Download\" at the top of the page.";
+      "Choose your platform and download the installer. ";
+      "Run and Complete the installation";
+    };
+    (new NytrilInstallDialog).Show;
+
+    NytrilStyle.Heading2 {
+      "Run Nytril Desktop";
+    };
+    ListBlock {
+      "On a Mac, the Nytril icon will be in your Applications folder";
+      "On Windows, the icon will be on the desktop. ";
+    };
+    (new NytrilDesktop).Show;
+
+    AnyQuestions;
+  };
+}
+
+//======================================================================
+

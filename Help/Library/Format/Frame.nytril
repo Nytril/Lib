@@ -1,0 +1,17 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  Paragraph {
+    "Here is some text, and here "; Tex.rightarrow;
+    Frame(3", 0.25", new Edge(1, 5)) {
+      Margin: PadLR(10);
+      TextHeight: 8pt;
+      "A Frame that wraps text inside a box, but it lies inside a span and moves with the text just like a large character. ";
+    };
+    Tex.leftarrow; " is a frame. ";
+  };
+};
+
+Main.Help = new HelpExample(attribute(Frame));

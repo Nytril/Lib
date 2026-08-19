@@ -1,0 +1,19 @@
+include "Help";
+
+using Format;
+
+Text = LoremIpsum(45);
+
+Example = Block {
+  Text;
+  Paragraph {
+    LeftIndent: 16pt;
+    Text;
+  };
+  Paragraph {
+    LeftIndent: -16pt;
+    Text;
+  };
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.LeftIndent));

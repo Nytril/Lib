@@ -1,0 +1,28 @@
+include "Help";
+
+using Format;
+
+
+Example = Block {
+  TextHeight: 20pt;
+
+  Paragraph {
+    "Normal: ";
+    Tab;
+    Math.PI;
+  };
+
+  Span {
+    "2 digits";
+    Tab;
+    TextDigits: 2;
+    Math.PI;
+  };
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextDigits));
+
+//============================================================
+

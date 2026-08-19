@@ -1,0 +1,29 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  "The border of a formatter can be specified in the following ways:";
+};
+
+SetBorder(Border border) = Canvas(1.5", 0.6", border) {
+  "Content";
+};
+
+readonly namespace Example {
+  Header = "A number creates a black border of x pixels";
+  Body   = SetBorder(5);
+}
+
+readonly namespace Example2 {
+  Header = "Use a single Edge to make a border all around the box";
+  Body   = SetBorder(new Edge(1, 5, Colors.Red));
+}
+
+readonly namespace Example3 {
+  Header = "Use a Border to make a border with different sides";
+  Body   = SetBorder(new Border(new(3, 5, Colors.Blue), new(2), new(3, 5, Colors.Red), new(4)));
+}
+
+Main.Help = new HelpExample(null, 3, "border");
+

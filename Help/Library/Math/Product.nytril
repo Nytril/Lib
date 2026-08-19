@@ -1,0 +1,31 @@
+include "Help";
+
+using Format;
+
+Description = EquationPar {
+  var x = Symbol("x");
+  var i = Symbol("i");
+  var N = Symbol("n");
+
+  "P";
+  Tex.Equals;
+  Nary {
+    Upper: N;
+    Lower: i;
+    Operator: Tex.prod;
+    x sub i;
+  }
+};
+
+ShowProduct(values) = ShowValues("product", values) {
+  Math.Product(values);
+};
+
+Example = Block {
+  ShowProduct([1, 2, 4, 8, 16]);
+  ShowProduct([2, 5, 6, 12, 18]);
+};
+
+Main.Help = new HelpExample(attribute(Math.Product));
+
+

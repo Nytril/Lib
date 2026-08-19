@@ -1,0 +1,308 @@
+include "Tutorial/rainfall";
+
+using Format;
+//======================================================================
+
+namespace Chapters.Formatting.Sections.Charts;
+
+readonly TutorialLesson Lesson = new(#2d3d1963-3b2b-4bba-8e28-cc6faab3fb00#, "Charts");
+
+//======================================================================
+
+CloudColor = new RadialGradient(0%, 40%, 50%, 20%, 50%, 80%, [
+  new(0, 95%),
+  new(0.6, 90%),
+  new(0.9, 80%)]
+);
+
+CloudFigure = Shape(CloudColor) {
+  OpenPath(0, 20) {
+    CurveTo(new(0), new(45, 0), new(60, 10));
+    CurveTo(new(90, 0), new(95, 0), new(100, 10));
+    CurveTo(new(110, 0), new(140, 0), new(150, 30));
+    CurveTo(new(150, 50), new(130, 55), new(120, 40));
+    CurveTo(new(120, 50), new(50, 60), new(20, 40));
+    CurveTo(new(5, 40), new(0, 30), new(0, 20));
+  }
+};
+
+Drop = Shape(Colors.LightBlue, new(0.5, Colors.DarkBlue, LineStyles.Solid, LineCaps.Round, LineJoins.Round)) {
+  Transform: Transform.Rotate(Math.Random(-10..10) degrees);
+  var size = Math.Random(3..5);
+  ClosedPath(size, 0) {
+    LineTo(size*2, size*2);
+    ArcTo(new(0, size*2), new(size), 0, false, true);
+  }
+};
+
+CloudTitle = Canvas {
+  HAlign: Center;
+  VBox {
+    HAlign: Center;
+    CloudFigure;
+    HBox(null, 20) {
+      VAlign: Top;
+      for (int i = 0; i < 16; ++i)
+        Drop;
+    };
+  };
+  HBox(null, null, PadT(7pt)) {
+    TextHeight: 14pt;
+    TextColor: Colors.DarkBlue;
+    "Yearly Rainfall";
+  };
+};
+
+class RainPointClass: DataPoint {
+  var RainClass Rain;
+
+  Constructor(index, RainClass rain) {
+    super.Constructor(index, rain.Value);
+    Rain      = rain;
+    Reference = rain.Original;
+    ErrorLo   = rain.Lo;
+    ErrorHi   = rain.Hi;
+  }
+
+  override GetLayoutTip = Span {
+    TextDigits: 1;
+    "{0}: {1}"(CalendarMonth.MonthsOfTheYear[X].LongName, Value);
+    Space;
+    Rain.ShowError;
+  };
+}
+
+DataPoint RainPoint(RainClass rain) = new RainPointClass(each0, rain) {
+  Marker: Markers.Circle(Colors.Blue);
+};
+
+RainPoints = RainPoint(each Rainfall);
+RainAxis   = ChartAxis {(each CalendarMonth.MonthsOfTheYear).ShortName};
+FillColor  = new LinearGradient(0, 0, 0, 1, [new(0.0, Colors.LightGray), new(0.9, Colors.SkyBlue), new(1, Colors.DarkGreen)]);
+
+RainChart = VBox {
+  HAlign: Center;
+  CloudTitle;
+  Chart(89%, 30%) {
+    Smoothing: 0.75;
+    ChartType: ChartTypes.Area;
+    XLabel: "Month" {TextHeight: 14pt};
+    XAxis: RainAxis;
+    ValueLabel: HBox {
+      attribute(RainUnit).UnitPlural;
+      TextHeight: 14pt;
+      Transform: Transform.Rotate(90 degrees);
+      TransformFit: true;
+    };
+    ValueAxis: ChartAxis {MinorTics: true};
+    ChartSeries(FillColor, new(1, Colors.DarkGreen)) {
+      RainPoints;
+    };
+  };
+};
+
+readonly LessonExample Content.RainfallChartEx = new(#578d4d87-162a-4712-a824-bb418dd63203#) {
+  Form: NytrilStyle.ObjectType(attribute Chart, "A chart can be created from a series of data points");
+  Code: [attribute RainPoint, attribute RainChart];
+};
+
+//======================================================================
+
+PieChart = Chart(5", 2.5") {
+  TextDigits: 2;
+  ChartType: ChartTypes.Pie;
+  XAxis: RainAxis;
+  Legend: ChartLegend {
+    Direction: Directions.Vertical;
+    Placement: Placements.Right
+  };
+  ChartSeries {
+    WedgeGap: 2;
+    RainPoints;
+  };
+};
+
+readonly LessonExample Content.RainfallPieChartEx = new(#b5124031-0d62-4bba-a324-af3b94bdd8f1#) {
+  Text: "A pie chart can be created by changing the chart type";
+  Code: [attribute PieChart];
+};
+
+//======================================================================
+
+Quadratic(x) = x^2 - 50;
+ParabolaChart = VBox {
+  Paragraph {
+    TextEquation: true;
+    Symbol("y") Tex.Equals Quadratic(Symbol("x"));
+  };
+
+  HAlign: Center;
+  Chart(90%, 2") {
+    ChartType: ChartTypes.Line;
+    Marker: Markers.Square;
+    XAxis: ChartAxis {
+      Start: -15;
+      Stop: 15;
+    };
+    ChartSeries {
+      foreach (var x in -10..10)
+        new DataPoint(x, Quadratic(x)) {Reference: x};
+    };
+  };
+};
+
+readonly LessonExample Content.ParabolaEx = new(#93126a78-25b5-43e6-a6fb-d557e0de67ad#, "Charts") {
+  Text: "The data used for a chart can come from an equation represented by a function";
+  Code: [attribute Quadratic, attribute ParabolaChart];
+};
+
+//======================================================================
+
+RandomNumber = Math.Random(0.0..10.0);
+
+RandomSeries(name) = ChartSeries {
+  Label: name;
+  foreach (var r in 0..50)
+    new DataPoint(RandomNumber, RandomNumber);
+};
+
+ScatterChart = VBox {
+  Paragraph {
+    "Random Points";
+  };
+  HAlign: Center;
+  Chart(89%, 30%, new Edge(0, 5)) {
+    ChartType: ChartTypes.Scatter;
+    Legend: ChartLegend(0.5pt) {
+      Direction: Directions.Vertical;
+      Placement: Placements.Right;
+    };
+    RandomSeries("One");
+    RandomSeries("Two");
+  };
+};
+
+readonly LessonExample Content.ScatterEx = new(#59951694-a575-4e08-818b-d0e341f4a852#) {
+  Text: "Use the X field of the datapoint to set a specific x coordinate for a scatter plot";
+  Code: [attribute RandomNumber, attribute ScatterChart];
+};
+
+//======================================================================
+
+AngleRange = 0..Symbolic.PI2;
+AllAngles  = AngleRange step Symbolic.PI/12;
+
+FuncSeries(Attribute func, marker) = ChartSeries {
+  Label: func.Prototype;
+  Marker: marker;
+
+  foreach (var a in AllAngles)
+    new DataPoint(a, func.Value(a));
+};
+
+TrigChart = VBox {
+  HAlign: Center;
+  "Trig Functions";
+  Chart(89%, 30%) {
+    ChartType: ChartTypes.Line;
+    Legend: ChartLegend {
+      Placement: Placements.Right;
+      Direction: Directions.Vertical;
+    };
+    XAxis: ChartAxis {
+      VAlign: Center;
+      LabelEach: 2;
+      AllAngles;
+    };
+    FuncSeries(attribute Symbolic.Sin, Markers.Circle);
+    FuncSeries(attribute Symbolic.Cos, Markers.Square);
+  }
+};
+
+readonly LessonExample Content.TrigEx = new(#c64ec751-6e26-43fc-b9f0-aa33b0058a4b#) {
+  Text: "More than one series can be specified in the same chart";
+  Code: [attribute AngleRange, attribute TrigChart];
+};
+
+//======================================================================
+
+BaseChart(type, rotation, legend) = Chart(45%, 2.8") {
+  WedgeGap: 2pt;
+  RingGap: 2pt;
+  ChartType: type;
+
+  if (legend) {
+    Legend: ChartLegend {
+      Direction: Directions.Vertical;
+      Placement: Placements.Left
+    }
+  }
+
+  XAxis: ChartAxis {
+    if (rotation == 0)
+      Margin: PadR(2pt);
+    else
+      Margin: PadT(2pt);
+
+    Rotation: rotation;
+    "pcDNA4";
+    "TW";
+    "p65";
+    "Both";
+    "dWR";
+    "d194";
+  };
+  ChartSeries {
+    Marker: Markers.Circle(Colors.White, 1);
+    Label: "% IL8";
+
+    new DataPoint(0, 15.69)  {ErrorHiLo: 4};
+    new DataPoint(1, 19.04)  {ErrorHiLo: 4};
+    new DataPoint(2, 99.99)  {ErrorHiLo: 25};
+    new DataPoint(3, 247.56) {ErrorHiLo: 10};
+    new DataPoint(4, 129.53) {ErrorHiLo: 20};
+    new DataPoint(5, 185.34) {ErrorHiLo: 35};
+  };
+  ChartSeries {
+    Marker: Markers.Circle(Colors.White, 1);
+    Label: "% IL7";
+    new DataPoint(0, 40.69)  {ErrorHiLo: 3};
+    new DataPoint(1, 140.04) {ErrorHiLo: 8};
+    new DataPoint(2, 50.99)  {ErrorHiLo: 30};
+    new DataPoint(3, 347.56) {ErrorHiLo: 30};
+    new DataPoint(4, 229.53) {ErrorHiLo: 40};
+    new DataPoint(5, 197.34) {ErrorHiLo: 20};
+  };
+};
+
+ActivationChart(type, rotation, legend=false) = VBox {
+  HAlign: Center;
+  Paragraph {
+    SpaceAfter: 8pt;
+    type;
+  };
+  BaseChart(type, rotation, legend);
+};
+
+ActivationCharts(left, right) = Paragraph {
+  SpaceAfter: 8pt;
+  ActivationChart(left, 45 degrees);
+  Space*5;
+  ActivationChart(right, null)
+};
+
+ActivationGallery = Block {
+  ActivationCharts(ChartTypes.Line, ChartTypes.Area);
+  ActivationCharts(ChartTypes.Column, ChartTypes.Bar);
+  ActivationCharts(ChartTypes.StackedColumn, ChartTypes.StackedBar);
+  ActivationCharts(ChartTypes.StackedColumn100, ChartTypes.StackedBar100);
+  ActivationChart(ChartTypes.Doughnut, null, true)
+};
+
+readonly LessonExample Content.GalleryDisplayEx = new(#f3e64cc2-0323-40bb-b8ab-8c07bd3ebdb2#) {
+  Text: "Use a stacked chart to compare data from different series";
+  Code: [attribute ActivationChart, attribute ActivationGallery];
+};
+
+//======================================================================
+

@@ -1,0 +1,49 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "Causes text in the span to underline when the mouse cursor hovers over it. ";
+    "After a delay, the tip is displayed until the mouse moves. ";
+  };
+};
+
+Example = Paragraph {
+  "The rain in ";
+  Span {
+    TextColor: Colors.Blue;
+    "Spain";
+    Tip: "A country in Europe";
+  };
+  " lies mainly on the plane";
+};
+
+Example2 = Paragraph {
+  "Tips can contain any type of ";
+  Span {
+    TextColor: Colors.Blue;
+    "content";
+    Tip: Frame(3", 2") {
+      Paragraph {
+        ParAlignment: Center;
+        "Survey Results";
+      };
+      Chart(100%, 100%) {
+        Legend: ChartLegend {
+          Direction: Directions.Vertical;
+          Placement: Placements.Right;
+        };
+        ChartType: ChartTypes.Pie;
+        XAxis: ChartAxis {"Yes"; "No"};
+        ChartSeries {40; 60}
+      }
+    };
+  };
+  ".";
+};
+
+
+Main.Help = new HelpExample(attribute(FormatProperties.Tip), 2);
+
+

@@ -1,0 +1,32 @@
+using Format, IO;
+
+Main.Documents.MyDocument = new MyDocument;
+
+class MyDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#ad080fa6-1765-48f7-862e-dc043ac95a16#, "JSON File");
+  }
+
+  override GetDocument = Document {
+    TextHeight: 9pt;
+    TextFace: Mono;
+    var files = [
+      res "simple.json",
+      res "../tests/json/finnhub.json",
+      res "../../../../Linguistomics/Experiments/Europe3/Tree1/Custom/Run1/config.json"
+    ];
+
+    foreach (var f in files) {
+      Paragraph {
+        TextHeight: 10pt;
+        Bold;
+        Underline;
+        f;
+        SpaceAfter: 10pt;
+      };
+      ReadJSON(f);
+      PageBreak;
+    }
+  };
+}
+

@@ -1,0 +1,239 @@
+using Format;
+//======================================================================
+
+namespace Chapters.Language.Sections.Arrays;
+
+readonly TutorialLesson Lesson = new(#c73af4bc-ccd1-4174-9fd5-0ca495350da1#, "Arrays");
+
+//======================================================================
+
+Numbers = [0, 1, 2, 3, x, y, "A", "B", "C", Symbolic.PI^2, Symbolic.Sqrt(-1)];
+
+readonly LessonExample Content.ArrayContainer = new(#411861f2-8e46-456e-9879-9a59433c5ef2#, "Array") {
+  Text:      "An array is an ordered container of objects";
+  CodeArray: [attribute Numbers];
+};
+
+//======================================================================
+
+ArraySub = Numbers[1];
+
+readonly LessonExample Content.ArrayIndex = new(#22b035c5-73d4-4817-81f8-3e99ab7fb8d5#) {
+  Text: "Get the value of a child in the array using a zero-based index inside {0}"(NytrilStyle.ArrayIndex);
+  Code: [attribute ArraySub];
+};
+
+//======================================================================
+
+ArrayStart = Numbers[..3];
+
+readonly LessonExample Content.ShowArrayStart = new(#cc20d9c7-2599-47ea-8b26-4b45795c7150#) {
+  Text      : "A slice of the start of the array is obtained by putting a right range inside {0}"(NytrilStyle.ArrayIndex);
+  CodeArray : [attribute ArrayStart];
+};
+
+//======================================================================
+
+ArrayStartEnd = Numbers[..-3];
+
+readonly LessonExample Content.ShowArrayStartend = new(#79a4a719-5d2d-4e8d-9d86-b22dd3f48b21#) {
+  Text      : "A negative subscript represents the index obtained by subtracting the subscript from the length of the array";
+  CodeArray : [attribute ArrayStartEnd];
+};
+
+//======================================================================
+
+ArrayMiddle = Numbers[2..5];
+
+readonly LessonExample Content.ShowArrayMiddle = new(#c8420bb7-e421-4fc6-b127-1b64cbbd8681#) {
+  Text      : "A slice of the middle of the array is obtained by putting a full range inside {0}"(NytrilStyle.ArrayIndex);
+  CodeArray : [attribute ArrayMiddle];
+};
+
+//======================================================================
+
+ArrayEnd = Numbers[3..];
+
+readonly LessonExample Content.ShowArrayEnd = new(#d9b49652-161a-44e7-8c8c-477baa18b751#) {
+  Text       : "A slice of the end of the array is obtained by putting a left range inside {0}"(NytrilStyle.ArrayIndex);
+  CodeArray  : [attribute ArrayEnd];
+};
+
+//======================================================================
+
+ArraySome = Numbers.Slice([..1, 3, 5..6, -1..]);
+
+readonly LessonExample Content.ArraySubset = new(#d1e6f106-d57e-4034-9498-94825d50ce76#, "Slices") {
+  Text      : "An arbirtary slice of a array can be obtained by putting an array of ranges inside {0}"(NytrilStyle.ArrayIndex);
+  CodeArray : [attribute ArraySome];
+};
+
+//======================================================================
+
+PrunedArray = Numbers.Remove(1..3);
+
+readonly LessonExample Content.DeleteElemtns = new(#026e33f8-b2b6-44a0-b0a7-2f84ad7d0752#) {
+  Form      : NytrilStyle.Function(attribute Array.Remove, "Return a new array missing elements from the target array");
+  CodeArray : [attribute PrunedArray];
+};
+
+//======================================================================
+
+TruncatedArray1 = Numbers.Remove(2);
+
+readonly LessonExample Content.DeleteElements1 = new(#b9314d82-1eef-4902-a3c1-6cc63a359729#) {
+  Text      : "Delete elements from an index to the end of the array by omitting the second argument";
+  CodeArray : [attribute TruncatedArray1];
+};
+
+//======================================================================
+
+TruncatedArray2 = Numbers.Remove(-3..-1);
+
+readonly LessonExample Content.DeleteElements2 = new(#4a422a6a-3b03-4a22-abf9-4f796c474cf1#) {
+  Text      : "Negative numbers in the range represent the number of items from the end of the array";
+  CodeArray : [attribute TruncatedArray2];
+};
+
+//======================================================================
+
+Letters = ["A", "B", "C"];
+Find5   = Letters.FindIndex(c => c == "A");
+
+readonly LessonExample Content.FindValue = new(#ca1cc726-0b5d-4282-92fa-954abf6a3a32#) {
+  Form      : NytrilStyle.Function(attribute Array.FindIndex, "Find items in a array that match a value");
+  CodeArray : [attribute Find5];
+};
+
+//======================================================================
+
+ValueArray = [10, 4, 2, 7, 8, 5];
+ArrayFound = ValueArray.FindIndex(x => x <= 5);
+
+readonly LessonExample Content.FindIndexCriteria = new(#50edc17c-06a1-42c9-8393-78649e8be978#) {
+  Text      : "Find the indexes of items in an array that match criteria by specifying a boolean function that takes 1 argument";
+  CodeArray : [attribute ValueArray, attribute ArrayFound];
+};
+
+//======================================================================
+
+ObjectsFound = ValueArray.FindSlice(x => x > 5);
+
+readonly LessonExample Content.FindSliceCriteria = new(#3699a71d-a6ad-4837-b55c-9eba03db7392#) {
+  Form      : NytrilStyle.Function(attribute Array.FindSlice, "Create an array of items that match a predicate");
+  CodeArray : [attribute ObjectsFound];
+};
+
+//======================================================================
+
+Ascending = ValueArray.ToSortedArray;
+
+readonly LessonExample Content.SortAscending = new(#1d9a8b89-abef-4466-bf78-41adcbaaf134#) {
+  Form      : NytrilStyle.Function(attribute Array.ToSortedArray, "Arrays can be sorted in ascending or descending order");
+  CodeArray : [attribute Ascending];
+};
+
+//======================================================================
+
+Descending = ValueArray.ToSortedArray(true);
+
+readonly LessonExample Content.SortDescending = new(#22d76860-fd2e-4a2c-a40e-0bf1993a388e#) {
+  Text      : "Change the sort direction by setting the descending parameter to true";
+  CodeArray : [attribute Descending];
+};
+
+//======================================================================
+
+class ValueClass {
+  var int Value;
+
+  Constructor(int value) {
+    Value = value;
+  }
+
+  override GetLayoutSpan = Value;
+}
+
+readonly ValueClass[] Structures = [
+  new(3),
+  new(5),
+  new(2),
+  new(0),
+  new(1),
+];
+
+int CompareStructure(ValueClass a, ValueClass b) = a.Value.Compare(b.Value);
+
+readonly SortedStructures = Structures.ToSortedArray(false, @CompareStructure);
+
+ShowStructureArray = Paragraph {
+  Separator: ", ";
+  SortedStructures;
+};
+
+readonly LessonExample Content.SortWithFunctionEx = new(#e1560903-8ed2-44e0-af24-bba29b0a87fd#) {
+  Text : "Use a comparison function to sort complex structures";
+  Code : [attribute Structures, attribute ShowStructureArray];
+};
+
+//======================================================================
+
+x           = Symbol("x");
+y           = Symbol("y");
+a           = Symbol("a");
+MathObjects = [2, 1 over 3, Symbolic.PI, Symbolic.Sqrt(x^2 + y^2) / a];
+
+readonly LessonExample Content.ArrayContainsAllEx = new(#58b6dc6a-7279-472c-9582-8a021b8db22d#) {
+  Text      : "An array can contain data of all types, including variables and formulas";
+  CodeArray : [attribute MathObjects];
+};
+
+//======================================================================
+
+GrabBag = ["A simple sentence", Numbers, MathObjects];
+
+readonly LessonExample Content.ArrayOfArraysEx = new(#89094aec-1765-4b6c-a3f4-93fbe3352b4b#) {
+  Text      : "An array can include other arrays";
+  CodeArray : [attribute GrabBag];
+};
+
+//======================================================================
+
+LargeArray = Numbers + MathObjects;
+
+readonly LessonExample Content.ArrayBigEx = new(#d4a6f41f-4c72-4fc6-baec-780006c8fdae#) {
+  Text      : "The contents of two arrays can be joined together to make a larger array {0}"(NytrilStyle.OpAttribute(attribute +));
+  CodeArray : [attribute LargeArray];
+};
+
+//======================================================================
+
+PlusOne = each MathObjects + 1;
+
+readonly LessonExample Content.EachPlus1Ex = new(#6c44bdd6-23bd-4fee-8abe-61db699eca8b#) {
+  Text      : "You can create another array which contains the result of the operation performed on each item in the array {0}"(NytrilStyle.OpAttribute(attribute each));
+  CodeArray : [attribute PlusOne];
+};
+
+//======================================================================
+
+EachCompound = (each ((each MathObjects) * a)) ^2;
+
+readonly LessonExample Content.EachSquareEx = new(#c709cfe3-85ea-4d82-b504-2718e7b637ed#) {
+  Text      : "This works for all operators and can be daisy-chained to apply to more than one operation";
+  CodeArray : [attribute EachCompound];
+};
+
+//======================================================================
+
+CubeFunction(value) = value^3;
+EachCubed           = HBox {TextEquation: true; Separator: CommaSpace; CubeFunction(each MathObjects);};
+
+readonly LessonExample Content.EachCubeEx = new(#39c01f98-90da-4b66-aba4-10be83b8f089#) {
+  Text      : "Function arguments can also be expanded {0}"(NytrilStyle.OpAttribute(attribute each));
+  CodeArray : [attribute CubeFunction, attribute EachCubed];
+};
+
+//======================================================================
+
+

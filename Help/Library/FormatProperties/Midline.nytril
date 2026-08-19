@@ -1,0 +1,28 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "Use Midline to override the default (50%) for a graphical object if there is a more natural center point. ";
+  };
+};
+
+Example = HBox {
+  VAlign: Center;
+
+  Span {
+    TextHeight: 50pt;
+    "+";
+  };
+
+  Shape(null, 10) {
+//    Midline: 70%;  // Set midline to 70% of the height of the object
+
+    OpenPath(0, 10) {
+      LineTo(20, 10);
+    }
+  };
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.Midline));

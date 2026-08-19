@@ -1,0 +1,248 @@
+using Format;
+
+readonly MyDocument Main.Documents.MainDocument = new;
+
+class MyDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#94bf3fac-64bd-4e04-a8d9-e7c8937b37fb#, "Equations");
+  }
+
+  override GetDocument = Document {
+    TextHeight: 20pt;
+
+    foreach (var e in attribute(Examples).Children) {
+      Paragraph {
+        ParAlignment:Center;
+        SpaceBefore: 20pt;
+        KeepWithNext: true;
+        Bold;
+        e.FindChild("Title").Value;
+      };
+      e.FindChild("Value").Value;
+    }
+  };
+}
+
+//================================================================================
+
+readonly namespace Examples {
+  namespace FormatValue {
+    Title = "Equality";
+    Value = Span {
+      TextEquation: true;
+      var value = 1 over 2;
+      Radical {value};
+      Tex.approxeq;
+      Span {TextDigits: 4; Math.Sqrt(value)};
+    };
+  }
+
+  namespace FormatFraction {
+    Title = "Fraction";
+    Value = Fraction {
+      Symbol("x");
+      Symbol("y");
+    };
+  }
+
+  namespace SkewedFraction {
+    Title = "Skewed Fraction";
+    Value = Fraction(true) {
+      Symbol("x");
+      Symbol("y");
+    };
+  }
+
+  namespace FormatRoot {
+    Title = "Square Root";
+    Value = Radical {
+      Symbol("x");
+    };
+  }
+
+  namespace FormatRadical {
+    Title = "Radical";
+    Value = Radical {
+      Degree: Symbol("n");
+      Symbol("x");
+    };
+  }
+
+  namespace FormatIntegral {
+    Title = "Integral";
+    Value = Nary {
+      Operator: Tex.Integral1;
+      Upper: Tex.infty;
+      Lower: 0;
+      Symbol("x"); Space; Symbol("dx");
+    };
+  }
+
+  namespace PathIntegral {
+    Title = "Double Path Integral";
+    Value = Nary {
+      var s = Symbol("s");
+      TextEquation: true;
+      Operator: Tex.PathIntegral2;
+      Lower: Symbol("V");
+      Symbol("f"); "("; s; ")"; Symbol("d"); s;
+    };
+  }
+
+  namespace FormatSummation {
+    Title = "Summation";
+    Value = Nary {
+      var x = Symbol("x");
+      Operator: Tex.sum;
+      Upper: Symbol("n");
+      Lower: Span {x; Tex.Equals; 1};
+      x;
+    };
+  }
+
+  namespace FormatProduct {
+    Title = "Product";
+    Value =  Nary {
+      TextEquation: true;
+      Operator: Tex.prod;
+      Upper: Symbol("n");
+      Lower: Span {Symbol("x"); Tex.Equals; 1};
+      Symbol("f"); "("; Symbol("x"); ")"
+    };
+  }
+
+  namespace FormatCoProduct {
+    Title = "Coproduct ";
+    Value =  Nary {
+      var j = Symbol("j");
+      Operator: Tex.coprod;
+      Lower: Span {j; Tex.In; Symbol("J")};
+      Symbol(Tex.Chi) sub j;
+    };
+  }
+
+  namespace FormatMatrix {
+    Title = "Matrix";
+    Value = MatrixBox {
+      TextEquation: true;
+      Bracket: Brackets.Square;
+      Row {1; 2; 3};
+      Row {4; 5; 6};
+      Row {7; 8; 9};
+    };
+  }
+
+  namespace FormatSparseMatrix {
+    Title = "Sparse Matrix ";
+    Value = MatrixBox {
+      TextEquation: true;
+      var x = Symbol("x");
+      Bracket: Brackets.Round;
+      Row {x sub "0,0"; Tex.cdots; x sub "0,n"};
+      Row {Tex.vdots; Tex.ddots; Tex.vdots};
+      Row {x sub "n,0"; Tex.cdots; x sub "n,n"};
+    };
+  }
+
+  namespace FormatLimit {
+    Title = "Limit";
+    Value = Span {
+      TextEquation: true;
+      var x = Symbol("x");
+      Nary {
+        Operator: Tex.lim;
+        Lower: Span {x; Tex.rightarrow; Tex.infty};
+        Fraction{1; x};
+      };
+      Tex.Equals;
+      0;
+    };
+  }
+
+  namespace FormatQuadratic {
+    Title = "Quadratic";
+    Value = Fraction {
+      var a = Symbol("a");
+      var b = Symbol("b");
+      var c = Symbol("c");
+      Span {-b; Tex.pm; Radical {b^2 - 4 a c}};
+      2 a;
+    };
+  }
+
+  namespace FormatBinomial {
+    Title = "Binomial Theorem";
+    Value = Span {
+      var x = Symbol("x", "The independant variable");
+      var a = Symbol("a", "Constant term");
+      var n = Symbol("n", Span {"An "; "n"^"th"; " degree polynomial"});
+      var k = Symbol("k", "n choose k");
+      (x + a)^n;
+      Tex.Equals;
+      Nary {
+        Operator: Tex.sum;
+        Upper: n;
+        Lower: Span {k; Tex.Equals; 1};
+        MatrixBox {
+          Bracket: Brackets.Round;
+          n; k
+        };
+        x^k; a^(n-k);
+      }
+    };
+  }
+
+  namespace FormatTrig {
+    Title = "Trig Relation";
+    Value = Span {
+      TextEquation: true;
+      var a = Symbol(Tex.alpha, "First angle");
+      var b = Symbol(Italic Tex.beta, "Second angle");
+      Tex.sin; a; Tex.pm; Tex.sin; b; Tex.Equals;
+      2; Space; Tex.sin; (1 over 2) "("; a; Tex.pm; b; ")"; Space; Tex.cos; (1 over 2) "("; a; Tex.mp; b; ")";
+    };
+  }
+
+  namespace FormatFourier {
+    Title = "Fourier Series";
+    Value = Span {
+      TextEquation: true;
+      var c = Symbol("c", "Fourier coefficient");
+      var P = Symbol("P", "Periodic function");
+      var x = Symbol("x");
+      var n = Symbol("n");
+      Nary {
+        Operator: Tex.sum;
+        Upper: Tex.infty;
+        Lower: Span {n; Tex.Equals; Tex.neginfty};
+        Span {c sub n; Tex.e sup (Span {Math.I; 2; Tex.pi; Fraction {n; P}; x})};
+      };
+    };
+  }
+
+  namespace FormatPreNary {
+    Title = "Atomic notation";
+    Value = Nary {
+      TextEquation: true;
+      Operator: "C";
+      PreUpper: 14;
+      PreLower: 2;
+    };
+  }
+
+  namespace Stoichiometry {
+    Title = "Stoichiometry";
+    Value = Paragraph {
+      var K  = Symbol("K", "Potasium");
+      var Cl = Symbol("Cl", "Clorine");
+      var O  = Symbol("O", "Oxygen");
+
+      TextEquation: true;
+      2 K Cl O sub 3; Tex.rightarrow; 3 K Cl + 2 O sub 2;
+    };
+  }
+
+
+}
+
+//================================================================================

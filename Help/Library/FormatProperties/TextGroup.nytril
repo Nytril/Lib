@@ -1,0 +1,17 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  TextHeight: 20pt;
+  Paragraph {TextGroup: false; 1_000_000};
+  Paragraph {TextGroup: true; 1_000_000};
+
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextGroup));
+
+//============================================================
+

@@ -1,0 +1,34 @@
+include "Help";
+
+using Format;
+
+Range = 0..Math.PI2;
+
+Description = DescriptionBlock {
+  Chart(100%, 2") {
+    ChartType: ChartTypes.Line;
+    XAxis: ChartAxis {
+      TextDigits: 2;
+      Range step Math.PI/3;
+    };
+    ChartSeries {
+      foreach (var x in Range step Math.PI/24)
+        new DataPoint(x, Math.Cos(x));
+    };
+  };
+};
+
+ShowCos(x) = Span {
+  TextDigits: 8;
+  "The cosine of {0} is {1}."(x, Math.Cos(x));
+};
+
+Example = Block {
+  ShowCos(0);
+  ShowCos(Math.PI / 3);
+  ShowCos(Math.PI / 2);
+};
+
+Main.Help = new HelpExample(attribute(Math.Cos));
+
+

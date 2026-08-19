@@ -1,0 +1,82 @@
+//======================================================================
+
+namespace Chapters.Genetics.Sections.Proteins;
+
+readonly TutorialLesson Lesson = new(#bfe35545-a54c-45cf-8dda-8d7c47903aec#, "Proteins");
+
+//======================================================================
+
+Protein1 = protein"AVG";
+
+readonly LessonExample Content.ManualProteinEx = new(#fd1283f2-64e0-4f1b-8333-242f87beb4b7#) {
+  Text: "Proteins can be input directly using {0}"(NytrilStyle.OpText("protein"));
+  Code: [attribute Protein1];
+};
+
+//======================================================================
+
+Protein2 = Protein1 Amino.Phenylalanine Amino.Aspartate;
+
+readonly LessonExample Content.BuildProteinEx = new(#f8e5eabb-757d-4a57-8616-3cdfd0b23251#) {
+  Text: "Proteins can also be built up from smaller segments using the same rules as for dna and rna";
+  Code: [attribute Protein2];
+};
+
+//======================================================================
+
+AllRNATriplets = rna"UUUUUCUUAUUGUCUUCCUCAUCGUAUUACUAAUAGUGUUGCUGAUGGCUUCUCCUACUGCCUCCCCCACCGCAUCACCAACAGCGUCGCCGACGGAUUAUCAUAAUGACUACCACAACGAAUAACAAAAAGAGUAGCAGAAGGGUUGUCGUAGUGGCUGCCGCAGCGGAUGACGAAGAGGGUGGCGGAGGG";
+RNACodons      = codon AllRNATriplets;
+
+readonly LessonExample Content.FromRNAEx = new(#6210a783-e598-4ed8-a8ea-03d2abe50b86#) {
+  Text: "Codons can be computed from RNA sequences";
+  Code: [attribute AllRNATriplets, attribute RNACodons];
+};
+
+//======================================================================
+
+AllCodons = codon rna"NNN";
+
+readonly LessonExample Content.FromAnyRNAEx = new(#4b1c5236-fa34-4849-b56b-f47e20af3c8d#) {
+  Text: "If the RNA sequence contains OR'd elements, the result will be an array of all possible codons";
+  CodeArray: [attribute AllCodons];
+};
+
+//======================================================================
+
+Codons   = codon"<FTGN>";
+Protein3 = protein Codons;
+
+readonly LessonExample Content.FromCodonsEx = new(#b05edf5c-6270-4dc6-8035-b788a219bd04#) {
+  Text: "Proteins can also be created from a sequence of codons {0}"(NytrilStyle.OpText("codon"));
+  Code: [attribute Codons, attribute Protein3];
+};
+
+//======================================================================
+
+ProteinArray= protein codon"--<FTGN>----<MQS>--";
+
+readonly LessonExample Content.FromCodonSequenceEx = new(#dde5153a-fcb6-4f93-a0e6-47aa46dcffe0#) {
+  Text: "Arrays of proteins can also be created from back-to-back sequences of codons";
+  Code: [attribute ProteinArray];
+};
+
+//======================================================================
+
+ProteinRNA = rna Protein2;
+
+readonly LessonExample Content.DecompositionEx = new(#2cfb15a6-4939-4e7c-8fd6-4d5239e3cda7#) {
+  Text: "A protein can be decomposed into its corresponding RNA sequence using {0}"(NytrilStyle.OpText("rna"));
+  CodeArray: [attribute ProteinRNA];
+};
+
+//======================================================================
+
+ProteinDNA = dna ProteinRNA;
+
+readonly LessonExample Content.ProteinToDNAEx = new(#c11a10e7-b2d1-4422-8436-9f8218f4e6c2#) {
+  Text: "This array can, in turn, be converted to DNA {0}"(NytrilStyle.OpText("dna"));
+  CodeArray: [attribute ProteinDNA];
+};
+
+//======================================================================
+

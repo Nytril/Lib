@@ -1,0 +1,20 @@
+include "Help";
+
+using Format;
+
+ShowScalingMode(ScalingModes  mode) = VBox {
+  HAlign: Center;
+  mode;
+  FitBox (Image.GetQRImage("a", 0), 1") {
+    ScalingMode: mode;
+  };
+};
+
+Example = HBox(null, null) {
+  Separation: 10;
+  ShowScalingMode(each ScalingModes);
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.ScalingMode));
+
+

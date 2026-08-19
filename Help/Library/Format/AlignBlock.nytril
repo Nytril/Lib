@@ -1,0 +1,29 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "Alignments are collections of rows that line up vertically using alignment markers. ";
+    "If present the labeler argument specifies a function taking an index as a parameter. ";
+  };
+};
+
+Example = AlignBlock(i => "({0})"(i), 1, "=", 1.5") {
+  Row {
+    "Left = Right";
+    "A = B";
+  };
+
+  Row {
+    "Y = Z";
+    "E = mc" ^ 2;
+  };
+
+  Row {
+    Empty;
+    Span {"Align     "; Align; "here"};
+  };
+};
+
+Main.Help = new HelpExample(attribute(AlignBlock));

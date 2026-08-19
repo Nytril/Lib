@@ -1,0 +1,32 @@
+using Format;
+//======================================================================
+
+namespace Chapters.Formatting.Sections.Documents;
+
+readonly TutorialLesson Lesson = new(#003e1793-2c4a-4251-b6c9-327f336b90f8#, "Creating a Document");
+
+//======================================================================
+
+class HelloDocClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#ab6ec337-2885-4777-b223-855509822fa5#, "Hello");
+  }
+
+  override GetDocument = Document {
+    "Hello World";
+  };
+}
+
+MyDocument = new HelloDocClass().GetDocument;
+
+readonly LessonExample Content.ShowSimpleDocument = new(#be153198-ccbe-4c22-9c0a-a5f686710a77#, "Documents") {
+  Form: Paragraph {
+    "A document is made by creating a new class that inherits {0}. "(NytrilStyle.Class(attribute DocumentEntry));
+    "Overload the function {0} and add new content. "(NytrilStyle.PropName(attribute DocumentEntry.GetDocument));
+  };
+  CodeSource: [attribute HelloDocClass];
+//  Sel: new(0, 22, 13);
+};
+
+//======================================================================
+

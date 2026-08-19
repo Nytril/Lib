@@ -1,0 +1,25 @@
+include "Help";
+
+using Format;
+
+
+Example = Block {
+  TextHeight: 20pt;
+
+  Span {
+    TextNumPadding: 6;
+    12;
+  };
+  Span {
+    TextRadix: 16;
+    TextNumPadding: 8;
+    255;
+  };
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextNumPadding));
+
+//============================================================
+

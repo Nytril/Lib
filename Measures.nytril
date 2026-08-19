@@ -1,0 +1,64 @@
+using Format, Units;
+
+include "Basic Facts";
+include "Lesson";
+
+//======================================================================
+
+namespace Main.Configurations {
+  Configuration Imperial = new(#0874a408-fa74-426c-b5d4-5b33a824b5a0#, "Imperial Units",
+    Languages.Neutral,
+    PaperSystems.US,
+    UnitSystems.Imperial
+  );
+
+  Configuration Metric = new(#f34fe92d-4d30-48e5-9a12-879f4f4afe6d#, "Metric Units",
+    Languages.Neutral,
+    PaperSystems.A,
+    UnitSystems.Metric
+  );
+}
+
+//======================================================================
+
+namespace Measures if (UnitSystem == UnitSystems.Metric or UnitSystem == UnitSystems.None) {
+  LargeLength   = kilometers;
+  MediumLength  = meters;
+  SmallLength   = centimeters;
+  TinyLength    = millimeters;
+  MediumVolume  = liters;
+  LargeWeight   = MetricTons;
+}
+
+namespace Measures if (UnitSystem == UnitSystems.Imperial) {
+  LargeLength  = miles;
+  MediumLength = feet;
+  SmallLength  = inches;
+  TinyLength   = millimeters;
+  MediumVolume = gallons;
+  LargeWeight  = tons;
+}
+
+//======================================================================
+
+class EssayDocumentClass: DocumentEntry {
+  var Attribute NameSpace;
+
+  Constructor(id, name, Attribute space) {
+    super.Constructor(id, name);
+    NameSpace      = space;
+    ReferenceStyle = new PNASStyle(Organizations.OxfordPress);
+  }
+
+  override GetDocument = Document {
+    NytrilStyle.Heading2 {
+      Name;
+    };
+    foreach (var c in  NameSpace.Value.Content)
+      (c as LessonExample).FormatSection(12pt, 9pt, 10pt, 8pt);
+
+    DocumentEndnotes(Bold DocLang.References, EndnoteOptions.References);
+  };
+}
+
+//======================================================================

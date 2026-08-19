@@ -1,0 +1,127 @@
+using Format;
+
+include "Lang";
+include "Basic Facts";
+
+//=====================================================================
+
+Main.Documents.International = new InternationalDocument;
+
+readonly MainSiteClass InternationalSite = new;
+
+Main.Site.International = InternationalSite;
+
+class MainSiteClass: RealmSite {
+  Constructor {
+    super.Constructor("International");
+    ToolbarBackground             = new Color(185, 183, 189);
+    ToolbarColor                  = Colors.White;
+    ButtonActive                  = new Color(239, 51, 83);
+    ButtonInactive                = Colors.DarkRed;
+    SlideHeaderBackgroundActive   = Colors.DarkBlue;
+    SlideHeaderBackgroundInactive = Colors.LightGray;
+    SlideHeaderColorActive        = Colors.DeepSkyBlue;
+    SlideHeaderColorInactive      = Colors.DarkKhaki;
+    SlideBackground               = Colors.Black;
+  }
+
+  override GetLayoutIcon = Shape(Colors.Coral, new(0.25, ToolbarBackground)) {
+    TextFamily: TextFamilies.TimesNewRoman;
+    Bold;
+    "I";
+  };
+
+  override GetLayoutBug = GetLayoutIcon;
+
+  override GetLayoutLogo = Span {
+    TextFamily: TextFamilies.TimesNewRoman;
+    TextColor: Colors.Coral;
+    Shape(Colors.Coral) {
+      Bold;
+      "I";
+    };
+
+    "nternational";
+  };
+
+  override GetLayoutSiteLogo = GetLayoutLogo;
+}
+
+class InternationalDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#edcbea52-ddd2-4f00-be7a-96b9386d37f7#, "International Document");
+    Title       = Lang.RealmTitle;
+    Description = Lang.RealmDescription;
+  }
+
+  override GetDocument = Document {
+    Paragraph {
+      ParAlignment: Center;
+      SpaceBefore: 2";
+      TextHeight: 20pt;
+      TextColor: Colors.DarkBlue;
+      Lang.ProgrammingLang("Nytril");
+    };
+    Paragraph {
+      SpaceAfter: 1";
+      ParAlignment: Center;
+      TextHeight: 14pt;
+      TextColor: Colors.Orange;
+      Lang.TagLine;
+    };
+
+    Paragraph {
+      CultureInfo.ConfigurationCulture.NativeName;
+    };
+
+    Paragraph {
+      TextHeight: 14pt;
+      TextFormat: "dddd, MMMM dd yyyy";
+      DateTime.Now;
+    };
+
+    Paragraph {
+      TextHeight: 14pt;
+      TextFormat: "d";
+      #2025-6-7#;
+    };
+
+    Paragraph {
+      TextDigits: 2;
+      TextGroup: true;
+      12345.01;
+    };
+
+    var config = System.Configuration;
+
+    AddConfig(Lang.Language, config.Language);
+    AddConfig(Lang.Units, config.UnitSystem);
+    AddConfig(Lang.Paper, config.PaperSystem);
+  };
+}
+
+//=====================================================================
+
+class DataClass {
+  var Description,
+      Tag;
+
+  Constructor(d, t) {
+    Description = d;
+    Tag         = t;
+  }
+}
+
+//=====================================================================
+
+AddConfig(name, value) = Paragraph(null, [1"]) {
+  TextHeight: 12pt;
+  Span {
+    TextColor: Colors.LightGray;
+    name;
+  };
+  Tab;
+  value;
+};
+
+//=====================================================================

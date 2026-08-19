@@ -1,0 +1,18 @@
+#NEXUS
+BEGIN TAXA;
+  Dimensions ntax=5;
+  TAXLABELS A B C D E;
+END;
+
+BEGIN trees;
+  tree "tree name" = (,,(,));                         # no nodes are named
+  TREE tree0 = (A,B);
+  TREE tree1 = ((A,B),C);
+  tree tree3 = (A,B,(C,D));                           # leaf nodes are named
+  tree tree4 = (A,B,(C,D)E)F;                         # all nodes are named
+  tree tree5 = (:0.1,:0.2,(:0.3,:0.4):0.5);           # all but root node have a distance to parent
+  tree tree6 = (:0.1,:0.2,(:0.3,:0.4):0.5):0.0;       # all have a distance to parent
+  tree tree7 = (A:0.1,B:0.2,(C:0.3,D:0.4):0.5);       # distances and leaf names (popular)
+  tree tree8 = (A:0.1,B:0.2,(C:0.3,D:0.4)E:0.5)F;     # distances and all names
+  tree tree9 = ((B:0.2,(C:0.3,D:0.4)E:0.5)A:0.1)F;    # a tree rooted on a leaf node (rare)
+END;

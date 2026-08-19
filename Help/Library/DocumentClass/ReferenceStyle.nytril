@@ -1,0 +1,35 @@
+include "Help";
+include "Citations";
+include "DocumentStyles";
+
+using Format, LinkTypes;
+
+readonly namespace References {
+  DocReference Book1 = new(#e1f2e0b6-e328-4e11-8df5-905978d72bb8#, ReferenceTypes.Book) {
+    Title: "Plane Symmetry";
+    Date: #2004#;
+    AuthorLink to new Person(#4628b5b5-1daf-42b8-9235-e00257b076a5#, "Sam", null, "Sneed");
+  };
+}
+
+
+class MyDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#08d0bd85-2342-4df4-bdb6-db5213af7705#, "My Document");
+    ReferenceStyle = new APAStyle;
+  }
+
+  override GetDocument = Document {
+    Paragraph {
+      SpaceAfter: 20pt;
+      "Quotable";
+      Cite {References.Book1};
+      " passage";
+    };
+    DocumentEndnotes(Bold "References");
+  };
+}
+
+Example = (new MyDocument).GetDocument;
+
+Main.Help = new HelpExample(attribute(DocumentEntry.ReferenceStyle));

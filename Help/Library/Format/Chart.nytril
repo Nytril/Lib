@@ -1,0 +1,33 @@
+include "Help";
+
+using Format;
+
+DataPoints = [[1, 2, 3], [4, 6, 5]];
+DataLabels = ["A", "B", "C"];
+
+Example = Block {
+  Chart(250, 100) {
+    ChartType: ChartTypes.Column;
+    XAxis: ChartAxis {DataLabels};
+    ValueLabel: HBox {
+      "Numbers";
+      Transform: Transform.Rotate(90 degrees);
+      TransformFit: true;
+    };
+    XLabel: "Letters";
+    Legend: ChartLegend {
+      Placement: Right;
+      Direction: Directions.Vertical;
+    };
+    ChartSeries {
+      Label: "One";
+      DataPoints[0];
+    };
+    ChartSeries {
+      Label: "Two";
+      DataPoints[1];
+    };
+  }
+};
+
+Main.Help = new HelpExample(attribute Format.Chart);

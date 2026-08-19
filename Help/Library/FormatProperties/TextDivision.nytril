@@ -1,0 +1,16 @@
+include "Help";
+
+using Format;
+
+
+Example = Paragraph {
+  TextDivision: 3;
+  "Automatically insert a space after each 3 characters";
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextDivision));
+
+//============================================================
+

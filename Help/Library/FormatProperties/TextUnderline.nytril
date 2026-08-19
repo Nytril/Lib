@@ -1,0 +1,20 @@
+include "Help";
+
+using Format;
+
+ShowUnderline(TextUnderlines type) = Paragraph {
+  TextUnderline: type;
+  type.Name;
+};
+
+Example = Block {
+  TextHeight: 20pt;
+  ShowUnderline(each TextUnderlines);
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextUnderline));
+
+//============================================================
+

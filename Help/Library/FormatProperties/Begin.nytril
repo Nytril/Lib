@@ -1,0 +1,27 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "The begin item will show up as the first item regardless of the numbr of items.";
+  };
+};
+
+Example = Block {
+  var bullet = Paragraph {
+    LeftIndent: 16pt;
+    FirstIndent: -16pt;
+    Begin: Span {Markers.Dot; Tab};
+  };
+
+  bullet {
+    "My first point";
+  };
+
+  bullet {
+    "Another point";
+  };
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.Begin));

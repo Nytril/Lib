@@ -1,0 +1,23 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "Use ListItem when a single list item contains multiple paragraphs. ";
+  };
+};
+
+Example = ListBlock {
+  "One";
+  ListItem(Tex.blacktriangleright) {
+    "Sub-list";
+    ListBlock(@Enumerators.NumberDot) {
+      "Uno";
+      "Dos";
+    }
+  };
+  "Three";
+};
+
+Main.Help = new HelpExample(attribute(Format.ListItem), 1);

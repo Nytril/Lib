@@ -1,0 +1,25 @@
+﻿/*
+using Math, Units, Format;
+//======================================================================
+
+namespace Chapters.Frames.Sections.Canvas {
+Heading = "Canvas"
+//======================================================================
+
+ShapeCanvas = Canvas {
+  Sizes.Chart;
+  Section {
+    HAlignment: HAlignments.Center;
+    "Centered";
+  };
+  PI/4
+}
+
+namespace Content.Intro {
+  Text = "A canvas represents a rectangular area that can contain shapes"
+  Code = [ShapeCanvas]
+}
+//======================================================================
+}
+
+*/

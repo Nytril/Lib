@@ -1,0 +1,59 @@
+using Format;
+
+readonly MyDocument Main.Documents.MainDocument = new;
+
+class MyDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#af5e7206-a6bf-4e12-ab11-6e1279fb884b#, "Sieve of Eratosthenes");
+    Description = "The first prime number generating algorithm";
+  }
+
+  override GetDocument = Document {
+    Paragraph {
+      ParAlignment: Center;
+      TextHeight: 150%;
+      Bold Name;
+      LineBreak;
+      Italic Description;
+      SpaceAfter: 10pt;
+    };
+
+    GetNumbers(2000);
+  };
+
+  Sieve(max) = TextBlock {
+    ParAlignment: Justify;
+    var numbers = new Vector(max, 0);
+
+    // Init the array
+    for (int i = 0; i < max; ++i)
+      numbers.SetValue(i, i+2);
+
+    for (int i = 0; i < max; ++i) {
+      var divisor = numbers[i];
+      if (divisor is not null) {
+        for (int j = i+1; j < max; j++) {
+          var n = numbers[j];
+          if ((n is not null) and (n mod divisor == 0))
+            numbers.SetValue(j, null);
+        }
+      }
+    }
+
+    Span {
+      Separator: CommaSpace;
+      LastSeparator: " and ";
+      each numbers;
+    };
+  };
+
+  GetNumbers(max) = Block {
+    Paragraph {
+      Bold;
+      "The prime numbers below {0}. "(max);
+    };
+
+    Sieve(max);
+  };
+}
+

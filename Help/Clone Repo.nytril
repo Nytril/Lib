@@ -1,0 +1,162 @@
+using Format;
+
+include "User Interface";
+
+readonly CloneRepoDocument Main.Documents = new;
+
+//======================================================================
+
+class CloneDialog: DialogView {
+  Constructor {
+    super.Constructor(5", "Clone a repository");
+    Buttons = ["Clone", "Cancel"];
+  }
+
+  override Body = VBox(100%) {
+    TabBar(2, ["GitHub.com", "GitHub Enterprise", "URL"]);
+
+    VBox(100%, null, new Thickness(BodyPad.Left, BodyPad.Top, BodyPad.Right, 0)) {
+      EditBox("Repository URL or GitHub username and repository", 92%, "https://github.com/My Repository");
+
+      HBox {
+        EditBox("Local Path", 70%, "Documents/My Repository");
+        Separation: 3pt;
+        Button(1", "Choose...");
+      };
+    };
+  };
+}
+
+//======================================================================
+
+class OpenRepoDialog: DialogView {
+  Constructor {
+    super.Constructor(5", "Open Repo");
+    Buttons = ["OK", "Cancel"];
+  }
+
+  override Body = VBox(100%) {
+    VBox(100%, null, new Thickness(BodyPad.Left, BodyPad.Top, BodyPad.Right, 0)) {
+      EditBox("Local Folder", 100%, Span {"Documents/My Repository"; Italic "       (from step 2)"});
+
+      EditBox("Repository Name", 50%, "My Repository");
+    };
+  };
+}
+
+//======================================================================
+
+class OpenProjectDialog: DialogView {
+  var Path,
+      Name;
+
+  Constructor(path, name) {
+    super.Constructor(5", "Open Project");
+    Path    = path;
+    Name    = name;
+    Buttons = ["OK", "Cancel"];
+  }
+
+  override Body = VBox(100%) {
+    VBox(100%, null, new Thickness(BodyPad.Left, BodyPad.Top, BodyPad.Right, 0)) {
+      EditBox("Existing Main File", 100%, Path);
+      EditBox("Name", 50%, Name);
+    };
+  };
+}
+
+//======================================================================
+
+class CloneRepoDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#f0491383-a8eb-4696-b4ce-6e5f3ff26819#, "Clone a Repository");
+    Description = Name;
+  }
+
+  Hyperlink(text, url) = Span {
+    TextColor: NytrilPalette.Hyperlink;
+    text;
+    TipAction: new URL(url);
+  };
+
+  override GetDocument = Document(0.75") {
+    TextHeight: 12pt;
+    SpaceAfter: 10pt;
+    ParAlignment: Justify;
+
+    NytrilStyle.Heading1 {
+      Name;
+    };
+
+    Paragraph {
+      "Follow the steps below to clone a Git repository and use it in Nytril Desktop. ";
+    };
+
+    NytrilStyle.Heading2 {
+      "Download and install GitHub Desktop";
+    };
+    ListBlock {
+      "Skip this section if you already have Git Desktop installed.";
+      Span {
+        "Click here to go to the GitHub ";
+        Hyperlink("Download Page", "https://desktop.github.com/download/"); DotSpace;
+      };
+      "Follow the instructions for installing GitHub Desktop on your computer.";
+    };
+    Empty;
+
+    NytrilStyle.Heading2 {
+      "Clone the repository";
+    };
+    Paragraph {
+      SpaceAfter: 10pt;
+      "Open GitHub Desktop and choose \"File..Clone Repository...\" from the menu bar.";
+    };
+
+    NytrilStyle.Heading3 {
+      "Input names";
+    };
+    ListBlock {
+      "Type the url of the repository on GitHub. ";
+      Span {
+        "Type the name of the folder on your computer where you want the repository to be stored. ";
+        "If you change this folder, remember it, because you will need it in a later step. ";
+      };
+
+      "Click \"Clone\" and wait for the repo to download. ";
+    };
+    (new CloneDialog).Show;
+
+    NytrilStyle.Heading2 {
+      "Open the Repository in Nytril";
+    };
+    ListBlock {
+      "Choose File..Open..Repository...";
+      "The Local Folder should be set to the repo download folder from step 2. ";
+      "Cllck OK.";
+    };
+    (new OpenRepoDialog).Show;
+
+    NytrilStyle.Heading2 {
+      "Open the \"Main\" Project";
+    };
+    ListBlock {
+      "The following dialog box will appear. ";
+      "Input the text as shown and cllck OK.";
+    };
+    new OpenProjectDialog(Span {"Main"; Italic "       (i.e. the project's main file name)"}, "Any Name").Show;
+
+    NytrilStyle.Heading2 {
+      "Using the project";
+    };
+    Paragraph {
+      "Now that the clone and installation is complete, you can review the documents inside each project by clicking on the \"Documents\" menu. ";
+      "Nytril will remember your new configuration when you exit. ";
+    };
+
+    AnyQuestions;
+  };
+}
+
+//======================================================================
+

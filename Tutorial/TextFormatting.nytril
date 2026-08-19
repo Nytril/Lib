@@ -1,0 +1,311 @@
+using Format;
+
+namespace Chapters.Formatting.Sections.TextFormatting;
+
+readonly TutorialLesson Lesson = new(#a16f0e0f-c474-4bf7-871d-ec7c0cd914b6#, "Formatting Properties", "TextFormatting", "text", "youtu.be/VTASPrEVau4") {
+  Description: Span {
+    "Use a wide variety of formatting properties to program the look of the content in your document. ";
+    "Together with the revision mechanism, you can create named styles and combine them with your data to create beautiful, accurate documents. ";
+  };
+};
+
+//======================================================================
+
+FormatPar = Span {
+  TextFamily: TextFamilies.TimesNewRoman;
+  "The following text is: ";
+};
+
+ShowRevision = Block {
+  FormatPar {Span {TextHeight: 120%; "Large"}};
+  FormatPar {Span {Bold; "Bold"}};
+  FormatPar {Span {Italic; "Italic"}};
+  FormatPar {Span {TextHeight: 120%; Bold; Italic; "Large, Bold, Italic"}};
+};
+
+readonly LessonExample Content.RevisionsEx = new(#3c10a8de-929d-445b-9b0b-8b3951f66561#, "Revisions") {
+  Text: "Revisions are used to alter the typesetting of any Span or Paragraph. ";
+  Code: [attribute FormatPar, attribute ShowRevision];
+  Sel: new(0, 17, 74);
+  Options: NoShort;
+};
+
+//======================================================================
+
+ShowTextColor = Paragraph {
+  "The following item is ";
+  Span {
+    TextColor: Colors.Red;
+    "important";
+  };
+  " to note. ";
+};
+
+readonly LessonExample Content.TextColorEx = new(#27c43b2f-d5cc-42fb-8433-ea1b5c93c4ee#, "Text Color") {
+  Text: "If you want to change color of the text in a Span, use the {0} property."(NytrilStyle.PropName(attribute FormatProperties.TextColor));
+  Code: [attribute ShowTextColor];
+  Sel: new(3, 4, 21);
+};
+
+//======================================================================
+
+ShowTextBackground = Paragraph {
+  "The following item is ";
+  Span {
+    TextBackground: Colors.Yellow;
+    "marked";
+  };
+  " with a highlighter. ";
+};
+
+readonly LessonExample Content.TextBackgroundEx = new(#243a733b-0b0a-4ebb-b923-20bd2f6f42c7#, "Text Background") {
+  Text: "The background color of text can be set with the {0} property."(NytrilStyle.PropName(attribute FormatProperties.TextBackground));
+  Code: [attribute ShowTextBackground];
+  Sel: new(3, 4, 29);
+};
+
+//======================================================================
+
+ShowItalic = Paragraph {
+  "Make ";
+  Span {
+    TextItalic: true;
+    "sure";
+  };
+  " to read the instructions. ";
+};
+
+readonly LessonExample Content.TextItalicEx = new(#bf310b0a-a050-49bf-9418-ca91cb6e62a2#, "Italic Text") {
+  Text: "Make the font italic by setting the {0} property to true."(NytrilStyle.PropName(attribute FormatProperties.TextItalic));
+  Code: [attribute ShowItalic];
+  Sel: new(3, 4, 16);
+};
+
+//======================================================================
+
+ShowItalic2 = Paragraph {
+  "Make "; Italic "sure"; " to read the instructions. ";
+};
+
+readonly LessonExample Content.TextItalic2Ex = new(#ba1f5625-03d1-4baa-973e-d6db574450f2#, "Italic shortcut") {
+  Text: "Apply the special Italic revision directly to a string for a more concise expression.";
+  Code: [attribute ShowItalic2];
+  Sel: new(1, 11, 6);
+  Options: NoShort;
+};
+
+//======================================================================
+
+ShowBold = Paragraph {
+  "Use ";
+  Span {
+    TextWeight: Bold;
+    "extreme";
+  };
+  " caution. ";
+};
+
+readonly LessonExample Content.TextBoldEx = new(#aa92cc24-bbbf-4ccc-9a62-2c24e11ccdbb#, "Bold Text") {
+  Text: "Make the font bold by setting the {0} property to Bold."(NytrilStyle.PropName(attribute FormatProperties.TextWeight));
+  Code: [attribute ShowBold];
+  Sel: new(3, 4, 16);
+};
+
+//======================================================================
+
+ShowBold2 = Paragraph {
+  "Use "; Bold "extreme"; " caution. ";
+};
+
+readonly LessonExample Content.TextBold2Ex = new(#40bd9e86-1013-473d-8a14-06eea351ac20#, "Bold shortcut") {
+  Text: "Apply the special Bold revision directly to a string for a more concise expression.";
+  Code: [attribute ShowBold2];
+  Sel: new(1, 10, 4);
+  Options: NoShort;
+};
+
+//======================================================================
+
+ShowFace = Block {
+  "Normal Text";
+  Span {
+    TextFace: TextFaces.Mono;
+    "Monospaced Text";
+  };
+};
+
+readonly LessonExample Content.TextFaceEx = new(#82be7503-8e14-4803-ac81-6448ad5db8b9#, "Font Face") {
+  Text: "Use the {0} property to change the font face to one of the built-in styles. "(NytrilStyle.PropName(attribute FormatProperties.TextFace));
+  Code: [attribute ShowFace];
+  Sel: new(3, 4, 24);
+};
+
+//======================================================================
+
+ShowFamily = Paragraph {
+  TextFamily: TextFamilies.LibertinusSerif;
+  "Classic font for journal articles";
+};
+
+readonly LessonExample Content.TextFamilyEx = new(#aa854b8f-2cdf-48a2-92b1-0a9359500c47#, "Font Family") {
+  Text: "Use the {0} property to change the font family to a specific installed family. "(NytrilStyle.PropName(attribute FormatProperties.TextFamily));
+  Code: [attribute ShowFamily];
+  Sel: new(1, 2, 40);
+};
+
+//======================================================================
+
+ShowUnderline = Paragraph {
+  Separator: Space*3;
+  foreach (var u in TextUnderlines) {
+    Span {
+      TextUnderline: u;
+      u.Name;
+    };
+  }
+};
+
+readonly LessonExample Content.TextUnderlineEx = new(#78503761-1bc4-4b3f-83b8-28961a3642c1#, "Underlining Text") {
+  Text: "Use the {0} property to underline text in a variety of styles. "(NytrilStyle.PropName(attribute FormatProperties.TextUnderline));
+  Code: [attribute ShowUnderline];
+  Sel: new(4, 6, 16);
+};
+
+//======================================================================
+
+StrikeText = Paragraph {
+  Separator: Space*3;
+  foreach (var s in TextStrikes) {
+    Span {
+      TextStrike: s;
+      s.Name;
+    };
+  }
+};
+
+readonly LessonExample Content.TextStrikeEx = new(#206ce073-2d1a-413d-b6fc-916627bee571#, "Striking-out Text") {
+  Text: "Use the {0} property to strike-out sections of text. "(NytrilStyle.PropName(attribute FormatProperties.TextStrike));
+  Code: [attribute StrikeText];
+  Sel: new(4, 6, 13);
+  Options: NoShort;
+};
+
+//======================================================================
+
+ShowTextCase = Table(null, PadLR(3), [Column.Fit(50%)]) {
+  foreach (var tc in TextCases) {
+    Row {
+      tc.Name;
+      Span {
+        TextCase: tc;
+        "hello Hello HELLO!";
+      };
+    };
+  }
+};
+
+readonly LessonExample Content.TextCaseEx = new(#cd886e7f-2c41-429b-8143-84aea53f0846#, "Text Casing") {
+  Text: "You can control the mixture of uppercase and lowercase letters with the {0} property."(NytrilStyle.PropName(attribute FormatProperties.TextCase));
+  Code: [attribute ShowTextCase];
+  Sel: new(5, 8, 12);
+  Options: NoShort;
+};
+
+//======================================================================
+
+ShowTextLetterSpace = Block {
+  foreach (var space in 1..5) {
+    Paragraph(null, [5%]) {
+      space; Tab;
+      Span {
+        TextLetterSpace: space; "The quick brown fox";
+      };
+      Span {
+        TextColor: Colors.Green; " jumped over the lazy dog."
+      };
+    };
+  }
+};
+
+readonly LessonExample Content.TextLetterSpaceEx = new(#b21f3af3-8cec-4f1b-8cd3-a043de7d3e01#, "Letter Spacing") {
+  Text: "Change how much space is allocated between letters with the {0} property."(NytrilStyle.PropName(attribute FormatProperties.TextLetterSpace));
+  Code: [attribute ShowTextLetterSpace];
+  Sel: new(5, 8, 22);
+  Options: NoShort;
+};
+
+//======================================================================
+
+ShowLetterScale = Block {
+  foreach (var stretch in [50%, 75%, 100%, 150%, 200%]) {
+    Paragraph(null, [8%]) {
+      stretch; Tab;
+      Span {
+        TextStretch: stretch; "Stretch";
+      };
+      Span {
+        TextColor: Colors.Green; " -> goal."
+      };
+    }
+  }
+};
+
+readonly LessonExample Content.TextStretchEx = new(#eaf6bf31-ccd4-42b7-838c-b96c525474d7#, "Letter Stretching") {
+  Text: "Text can be compressed or stretched with the {0} property."(NytrilStyle.PropName(attribute FormatProperties.TextStretch));
+  Code: [attribute ShowLetterScale];
+  Sel: new(5, 8, 19);
+  Options: NoShort;
+};
+
+//======================================================================
+
+ShowSeparator = Paragraph {
+  Separator: ", ";
+  1..5 step 1;
+};
+
+readonly LessonExample Content.SeparatorEx = new(#cd94b98f-2d9e-4f8c-b73b-dab8e311065d#, "Separators") {
+  Text: "Insert content between elements with the {0} property."(NytrilStyle.PropName(attribute FormatProperties.Separator));
+  Code: [attribute ShowSeparator];
+  Sel: new(1, 2, 14);
+};
+
+//======================================================================
+
+ShowLastSeparator = Paragraph {
+  Separator: ", ";
+  LastSeparator: " and ";
+  1..5 step 1;
+};
+
+readonly LessonExample Content.LastSeparatorEx = new(#aee7371c-c1ba-4b09-88b4-291b4a946c74#, "Last Separator") {
+  Text: "Change the final separator in the revision with the {0} property."(NytrilStyle.PropName(attribute FormatProperties.LastSeparator));
+  Code: [attribute ShowLastSeparator];
+  Sel: new(2, 2, 22);
+  Options: NoShort;
+};
+
+//======================================================================
+
+OxfordList = Span {
+  Separator: ", ";
+  LastSeparator: ", and ";   // Oxford comma
+  PairSeparator: " and ";
+};
+
+ShowLists = Block {
+  OxfordList {1};
+  OxfordList {1; 2};
+  OxfordList {1; 2; 3};
+};
+
+readonly LessonExample Content.PairSeparatorEx = new(#aee7371c-c1ba-4b09-88b4-291b4a946c74#, "Pair Separator") {
+  Text: "To handle lists that have exactly two items, use the {0} property."(NytrilStyle.PropName(attribute FormatProperties.PairSeparator));
+  Code: [attribute OxfordList, attribute ShowLists];
+  Sel: new(3, 2, 22);
+  Options: NoShort;
+};
+
+//======================================================================
+
+

@@ -1,0 +1,330 @@
+include "Site";
+
+using Format, Units;
+
+readonly namespace Main.Documents {
+  HomePageClass        HomePage = new;
+  AngleDocumentClass   Angle    = new;
+  RiseDocumentClass    Rise     = new;
+  RunDocumentClass     Run      = new;
+  ConvertDocumentClass Convert  = new;
+}
+
+CalcSiteClass Main.Site = new;
+
+//=====================================================================
+
+class CalcSiteClass: RealmSite {
+  Constructor {
+    super.Constructor("Angle Calculator");
+  }
+
+  override GetLayoutIcon = Icons.square_foot;
+
+  override GetLayoutBug = GetLayoutIcon;
+
+  override GetLayoutSiteLogo = GetLayoutLogo;
+}
+
+//===============================================================
+
+class HomePageClass: SitePage {
+  Constructor {
+    super.Constructor(Main.Site, #e8ad9916-dd23-49dd-9d98-c7d2cb941202#, "Construction Calculator", "Right-Triangle Dimensions");
+    Icon = Icons.square_foot;
+
+    Tiles = [
+      new DocTile(Main.Documents.Angle, Icons.text_rotation_angleup),
+      new DocTile(Main.Documents.Rise, Icons.text_rotate_up),
+      new DocTile(Main.Documents.Run, Icons.text_rotation_none),
+      new DocTile(Main.Documents.Convert, Icons.speed),
+    ];
+  }
+}
+
+//================================================================================
+
+class DataClass: Fact {
+  field Measure Rise,
+                Run;
+  field double  Angle;
+
+  Constructor {
+    super.Constructor(#f7b1df98-ccb1-4c12-b5dc-314368f8d392#);
+    Rise  = 3m;
+    Run   = 12m;
+    Angle = 45;
+    ReadFromStorage;
+  }
+
+  Radians = Math.ToRadians(Angle);
+}
+
+//================================================================================
+
+abstract class CalcDocumentClass: DocumentEntry {
+  static readonly Edge      Edge   = new(1, 3);
+  static readonly           Corner = {BorderRadius: 3; Action: Actions.Refresh};
+  static readonly DataClass Data   = new;
+
+  Constructor(Guid id, name) {
+    super.Constructor(id, name);
+  }
+
+  Edit(name) = VBox {
+    Margin: PadB(10);
+    Bold name;
+  };
+
+  EditAngle = Edit("Angle") {
+    DoubleControl(new(ref Data.Angle), 1", null, Edge, 1, 80.0, 1) {
+      TextDigits: 2;
+      Corner;
+    };
+  };
+
+  EditRise = Edit("Rise") {
+    MeasureControl(new(ref Data.Rise), 1.5", null, Edge, 1mm, 10000km, meter) {
+      Corner;
+    };
+  };
+
+  EditRun = Edit("Run") {
+    MeasureControl(new(ref Data.Run), 1.5", null, Edge, 1mm, 10000km, meter) {
+      Corner;
+    };
+  };
+
+
+  abstract GetContent;
+
+  MainBox = HBox(100%, 50%) {
+    Separation: 20pt;
+    VAlign: Top;
+  };
+
+  InputBox = VBox {
+    TextHeight: 16pt;
+  };
+
+  override GetDocument = Document {
+    Paragraph {
+      TextHeight: 24pt;
+      SpaceAfter: 20pt;
+      ParAlignment: Center;
+      Bold;
+      "Calculate ";
+      Name;
+    };
+    GetContent;
+  };
+
+  static Draw(rise, crise, run, crun, angle, cangle) = Paragraph {
+    ParAlignment: Center;
+
+    var width  = Math.Min(300, Math.Min(ExtentWidth, ExtentHeight));
+    var slope  = Math.Tan(angle);
+    var height = width * slope;
+
+    if (height > width) {
+      height = width;
+      width  = height / slope;
+    }
+
+    var ax = width * 0.1;
+
+    VBox {
+      HAlign: Center;
+      HBox {
+        VAlign: Center;
+
+        Canvas(width, height) {
+          // Triangle
+            Shape(95%, Colors.Gray) {
+            ClosedPath(0, height) {
+              LineTo(width, height);
+              LineTo(width, 0);
+            };
+          };
+
+          // Angle arc
+          var cy = ax * slope;
+          Shape(null, new(1, Colors.Blue, null, LineCaps.Round)) {
+            var f = Math.Cos(angle);
+            OpenPath(ax * f, height - cy*f) {
+              QuadTo(new(ax, height - cy * 0.5), new(ax, height));
+            };
+          };
+
+          HBox {
+            var tx = Math.Min(ax + cy * 0.5 + 10 / slope, width + 15);
+            X: tx;
+            Y: height - Math.Max((slope * tx + 17) * 0.5, 17);
+            Span {
+              TextColor: cangle;
+              TextDigits: 1;
+              Math.ToDegrees(angle);
+              Tex.degree;
+              Span {
+                TextDigits: 2;
+                " slope={0}"(slope);
+              }
+            };
+
+          };
+        };
+        HBox {
+          Transform: Transform.Rotate(90 degrees);
+          TransformFit: true;
+          TextAbbreviate: true;
+          TextColor: crise;
+          TextDigits: 2;
+          rise;
+        };
+      };
+
+      Span {
+        TextAbbreviate: true;
+        TextColor: crun;
+        TextDigits: 2;
+        run;
+      };
+    }
+  };
+}
+
+//================================================================================
+
+class AngleDocumentClass: CalcDocumentClass {
+  Constructor {
+    super.Constructor(#3cb324dd-ff7b-48c8-b214-6e68b2864736#, "Angle");
+  }
+
+  override GetContent = MainBox {
+    InputBox {
+      EditRise;
+      EditRun;
+    };
+
+    var slope = (Data.Rise toscale meters) / (Data.Run toscale meters);
+    Draw(Data.Rise, Colors.Black, Data.Run, Colors.Black, Math.Atan(slope), Colors.Blue);
+  };
+}
+
+//================================================================================
+
+class RiseDocumentClass: CalcDocumentClass {
+  Constructor {
+    super.Constructor(#3cc94fc9-1ab5-48ac-a28f-d1ce97b9fc51#, "Rise");
+  }
+
+  override GetContent = MainBox {
+    InputBox {
+      EditAngle;
+      EditRun;
+    };
+
+    var a = Data.Radians;
+    Draw(Data.Run  * Math.Tan(a), Colors.Blue, Data.Run, Colors.Black, a, Colors.Black);
+  };
+}
+
+//================================================================================
+
+class RunDocumentClass: CalcDocumentClass {
+  Constructor {
+    super.Constructor(#46e1489d-55c5-4d06-a32d-5dfe81e9b6f9#, "Run");
+  }
+
+  override GetContent = MainBox {
+    InputBox {
+      EditAngle;
+      EditRise;
+    };
+
+    var a = Data.Radians;
+    Draw(Data.Rise, Colors.Black, Data.Rise / Math.Tan(a), Colors.Blue, a, Colors.Black);
+  };
+}
+
+//================================================================================
+
+class ConvertDataClass: Fact {
+  field Measure From,
+                ToUnit;
+
+  Constructor {
+    super.Constructor(#c03ba12a-8cc5-4963-b764-6f8f2fe1aea9#);
+    From   = 1 meter;
+    ToUnit = inches;
+    ReadFromStorage;
+  }
+}
+
+//================================================================================
+
+class ConvertDocumentClass: DocumentEntry {
+  static readonly ConvertDataClass Data = new;
+  var Message;
+
+  Constructor {
+    super.Constructor(#8aa1f74f-03e0-4504-aae9-aaa5da5eb937#, "Convert Units");
+  }
+
+  Header = Span {
+    TextColor: Colors.DarkGray;
+  };
+
+  bool GetMessage(string m) {
+    Message = m;
+    return true;
+  }
+
+  override GetDocument = Document {
+    TextHeight: 14pt;
+
+    Paragraph {
+      TextHeight: 18pt;
+      ParAlignment: Center;
+      Bold;
+      Name;
+    };
+
+    HBox {
+      VBox {
+        Header {"From"};
+        MeasureControl(new(ref Data.From), 3 inch, null, CalcDocumentClass.Edge, null, null, null) {
+          CalcDocumentClass.Corner;
+        };
+      };
+      Tex.Rightarrow;
+      VBox {
+        Header {"To"};
+        MeasureControl(new(ref Data.ToUnit), 3 inch, null, CalcDocumentClass.Edge, null, null, null, NoScalar) {
+          CalcDocumentClass.Corner;
+        };
+      }
+    };
+
+    Message = null;
+    System.PushErrorHandler(@GetMessage);
+    var conversion = Data.From tounit Data.ToUnit;
+    System.PopErrorHandler;
+    Paragraph {
+      TextHeight: 20pt;
+      SpaceBefore: 30pt;
+      if (Message is null) {
+        Data.From;
+        " = ";
+        conversion;
+      }
+      else {
+        TextColor: Colors.Red;
+        Message;
+      }
+    };
+  };
+}
+
+//================================================================================
+

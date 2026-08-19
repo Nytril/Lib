@@ -1,0 +1,22 @@
+using Format;
+
+class DesignPaletteSamples: DocumentEntry {
+  Constructor {
+    super.Constructor(#a2797726-21b9-46e5-a2c6-6e96707b61ee#, "Design Palette Samples");
+    NoCrawl;
+    NoPublish;
+  }
+
+  override GetDocument = Document(1") {
+    foreach (DesignPalette palette in DesignPalettes) {
+      Paragraph {
+        Bold;
+        TextHeight: 18px;
+        palette.Name;
+      };
+      palette.SamplesHBox;
+      Paragraph;
+    }
+  };
+
+}

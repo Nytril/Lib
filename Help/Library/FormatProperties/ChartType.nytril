@@ -1,0 +1,26 @@
+include "Help";
+
+using Format;
+
+DataPoints = [[1, 2, 3], [4, 6, 5]];
+DataLabels = ["A", "B", "C"];
+
+ShowChart(ChartTypes type) = VBox(null, null, BorderTR(new (0, 5))) {
+  HAlign: Center;
+  Span {Space; type;Space;  Bold; TextBackground: Colors.Gray; TextColor: Colors.White};
+  Chart(150, 60) {
+    ChartType: type;
+    XAxis: ChartAxis {DataLabels};
+    foreach (var dp in DataPoints)
+      ChartSeries {dp};
+  }
+};
+
+
+Example = Block {
+  Paragraph {
+    ShowChart(each ChartTypes.ValueArray[1..]);
+  }
+};
+
+Main.Help = new HelpExample(attribute FormatProperties.ChartType);

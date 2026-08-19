@@ -1,0 +1,73 @@
+using Format, LinkTypes;
+//=================================================================
+
+include "Basic Facts";
+
+Main.Documents = new MainDocumentClass;
+Main.Facts     = References;
+
+
+class MainDocumentClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#68843347-ea8c-4b0d-8bf2-adb2f3b47791#, "Embedded Data")
+  }
+
+  override GetDocument = Document {
+    Paragraph {
+      Span {
+        "Location 1";
+        Link.Add(References.Book1);
+      }
+    };
+
+    Paragraph {
+      Span {
+        "Location 2";
+        Link.Add(References.Book2);
+      }
+    };
+
+    Paragraph {
+      Span {
+        "Location 3";
+        Link.Add(References.Book3);
+      }
+    };
+
+    ShowReference(each References);
+  };
+}
+
+//=================================================================
+
+namespace<DocReference> References {
+  Book1 = new(#5003adf8-c848-4d7c-822e-c2dff9ef8ff5#, Article) {
+   Title: "Infinite Dimensional Analysis";
+   Date : #1994#;
+  };
+
+  Book2 = new(#3539d544-515a-4ac8-a64d-7bbf292de8f3#, Article) {
+   Title: "A theory of learning, experimentation, and equilibrium in games";
+   Date : #1988#;
+  };
+
+  Book3 = new(#4ab616a0-37ca-4b32-828d-f0121f09131b#, Article) {
+   Title: "Social Goals and Social Organization";
+   Date : #1985#;
+  };
+}
+//=================================================================
+
+ShowField(f, value) = Paragraph(null, [1"]) {
+  Span {f; ": "; TextColor: 70%};
+  Tab;
+  value;
+};
+
+ShowReference(r) = Block {
+  ShowField("Title", r.Title);
+  ShowField("Date", r.Date);
+  Paragraph;
+};
+//=================================================================
+

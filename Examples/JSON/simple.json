@@ -1,0 +1,46 @@
+{
+  "Tree": "(Latin,(Romanian,(Italian,(Friulian,((Spanish,Portuguese),(Catalan,(French,Walloon)))))));",
+  "NumberOfStates": 79,
+  "McmcSettings": {
+    "Model": "custom",
+    "OnlyCompleteWords": "No",
+    "Seed": 1555369295,
+    "CalcMarginal": "No",
+    "PrintFreq": 1000,
+    "NumCycles": 5000000,
+    "SampleFreq": 100,
+    "TreeLengthPriorVal": 0.15
+  },
+  "Taxa": ["Latin", "Romanian", "Portuguese", "Spanish", "Catalan", "French", "Walloon", "Friulian", "Italian"],
+  "PriorFrequencies": [0.026702, 0.046597, 0.029319, 0.045812, 0.066230, 0.068325, 0.002094, 0.019634, 0.007330, 0.004974, 0.012304, 0.085602, 0.045550, 0.000262, 0.000785, 0.007592, 0.015707, 0.004188, 0.007592, 0.002094, 0.022513, 0.003141, 0.047644, 0.037696, 0.006806, 0.002356, 0.003141, 0.053403, 0.020157, 0.031414, 0.016754, 0.008377, 0.013874, 0.015183, 0.002356, 0.057068, 0.000785, 0.001571, 0.038220, 0.001309, 0.001832, 0.004188, 0.020681, 0.016492, 0.006283, 0.000262, 0.002618, 0.000524, 0.020681, 0.001309, 0.002094, 0.001571, 0.000524, 0.004712, 0.001047, 0.003665, 0.001309, 0.002094, 0.005759, 0.000524, 0.000262, 0.000524, 0.000785, 0.003403, 0.003927, 0.002094, 0.001309, 0.001571, 0.000524, 0.001047, 0.000524, 0.001309, 0.000524, 0.000262, 0.000262, 0.000262, 0.000262, 0.000262, 0.000262],
+
+  "glossary": {
+    "title": "example glossary",
+    "GlossDiv": {
+      "title": "S",
+      "GlossList": {
+        "GlossEntry": {
+          "Date": "2019-07-04T13:33:03.969Z",
+          "Pointer": null,
+          "Bool1": true,
+          "Bool2": false,
+          "ID": "SGML",
+          "SortAs": "SGML",
+          "GlossTerm": "Standard Generalized Markup Language",
+          "Acronym": "SGML",
+          "Abbrev": "ISO 8879:1986",
+          "GlossDef": {
+            "para": "A tab \t stop",
+            "GlossSeeAlso": [
+              "GML",
+              { "name": "XML" },
+              42,
+              3.14
+            ]
+          },
+          "GlossSee": "markup"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  var id1 = #e22705b4-8e06-416b-9653-aaa9fabcd33c#;
+  "Id1 = {0}"(id1);
+
+  var id2 = "e22705b4-8e06-416b-9653-aaa9fabcd33c" as Guid;
+  "Id2 = {0}"(id2);
+
+  var id3 = Guid.Convert("e22705b4-8e06-416b-9653-aaa9fabcd33c");
+  "Id3 = {0}"(id3);
+
+  var id4 = Guid.NewGuid;
+  "Id4 = {0}"(id4);
+};
+
+Main.Help = new HelpExample(attribute Guid, 1);
+
+
+

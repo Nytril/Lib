@@ -1,0 +1,27 @@
+include "Help";
+
+using Format;
+
+Example = Paragraph {
+  var odds = Math.Random(1..20);
+  "The odds of success are {0} out of 20"(odds);
+};
+
+Example2 = Block {
+  Paragraph {
+    Bold;
+    "Ten random numbers between 0 and 1";
+  };
+
+  Paragraph {
+    TextDigits: 5;
+    Separator: CommaSpace;
+
+    foreach (var i in 1..10)
+      Math.Random(0.0 .. 1.0);
+  };
+};
+
+Main.Help = new HelpExample(attribute(Math.Random), 2);
+
+

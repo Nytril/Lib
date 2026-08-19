@@ -1,0 +1,122 @@
+using Format, Units;
+
+namespace Chapters.Language.Sections.Units;
+
+readonly TutorialLesson Lesson = new(#2b60a121-7097-4812-890b-ed9bd4bd7ae6#, "Units");
+
+//======================================================================
+
+Distance = 16";
+
+readonly LessonExample Content.CommonUnits = new(#d45ecfb5-630f-466a-be7d-3921c78a94ab#) {
+  Text: "Measurment units are handled natively";
+  Code: [attribute Distance];
+};
+
+//======================================================================
+
+MetricDistance = Distance tounit centimeters;
+
+readonly LessonExample Content.UnitConversion = new(#4f43d06f-1a57-4582-8cd0-84130c1c045e#, "Unit Conversions") {
+  Text:  "You can convert between compatible units {0}"(NytrilStyle.OpAttribute(attribute tounit));
+  Code:  [attribute MetricDistance];
+};
+
+//======================================================================
+
+readonly CommonUnits = [
+  4",
+  4.25",
+  6',
+  6'2,
+  6'3",
+  6'3.5,
+  6'3.25",
+  5g,
+  5kg,
+  5cg,
+  5mg,
+  5l,
+  5ml,
+  6.25m,
+  5km,
+  5mm,
+  5cm,
+  5ft,
+  5in,
+  5mi,
+  5pt,
+  5px,
+];
+
+ViewCommonUnits = Block {
+  foreach (var u in CommonUnits) {
+    Paragraph(null, [0.9"]) {
+      SourceSelection(u);
+      "\t = ";
+      u;
+    }
+  }
+};
+
+readonly LessonExample Content.ShowCommonUnits = new(#5e808946-e9e4-4881-bac9-d489c666f885#) {
+  Text: "Common units can be combined with a literal number using a special suffix.";
+  Code: [attribute ViewCommonUnits];
+};
+
+//======================================================================
+
+LongerDistance = 3" + 25.4cm + 1';
+
+readonly LessonExample Content.Adding = new(#17d0c8f6-671f-40a1-8c00-ee35a7ae4615#) {
+  Text: "Values with different, but compatible, units can be added together";
+  Code: [attribute LongerDistance];
+};
+
+//======================================================================
+
+Area   = Distance * 2 yards;
+Volume = Area * 14.0" tounit centimeters^3;
+
+readonly LessonExample Content.ComplexUnits = new(#94aba5b9-ff1b-415b-bebc-5e597aea5c47#) {
+  Text: "Units can be multiplied together to form units of higher dimension";
+  Code : [attribute Area, attribute Volume];
+  Output: {TextDigits:0; TextGroup:true};
+};
+
+//======================================================================
+
+LiquidMeasure = Volume tounit gallons;
+
+readonly LessonExample Content.Liquid = new(#d9d07dbd-8347-48d8-8155-c80039997130#) {
+  Text: "Common conversions of higher dimension units are handled in the same way";
+  Code: [attribute LiquidMeasure];
+};
+
+//======================================================================
+
+WaterDensity = 1 kilogram per liter;
+LiquidWeight = WaterDensity * Volume tounit pounds;
+
+readonly LessonExample Content.Density = new(#ad1d5aa6-f013-487b-871e-04627e5ae801#) {
+  Text: "Multiplications factor out the correct units";
+  Code: [attribute WaterDensity, attribute LiquidWeight];
+  Output: {TextDigits: 0};
+};
+
+//======================================================================
+
+// Power of Niagra falls
+WaterFlow   = 1 mile^3 per year; // from the book "Energy" by Richard Rhodes
+FallsHeight = 170 feet;
+g           = 9.8 meters per second^2;
+Power       = (WaterFlow * WaterDensity * FallsHeight * g) tounit megawatts;
+
+readonly LessonExample Content.Niagra = new(#a8bc74bd-98f1-4b96-90c0-516548da547a#, "Compound unit conversions") {
+  Text: "The power of water flowing over Niagra falls";
+  Code: [attribute WaterFlow, attribute Power];
+  Output: {TextDigits:0; TextGroup:true};
+};
+
+//======================================================================
+

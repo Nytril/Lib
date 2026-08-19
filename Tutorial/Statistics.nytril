@@ -1,0 +1,332 @@
+using Format;
+
+readonly namespace Chapters.Mathematics.Sections.Statistics;
+
+readonly TutorialLesson Lesson = new(#651d7f87-2d99-4ec9-a9ef-24e5568f98e9#, "Statistics");
+
+//======================================================================
+
+x         = Symbol("x");
+y         = Symbol("y");
+NumberSet = [3.6, 4.0, 4.5, 5.5, 6.4, 8.5];
+
+ShowDataSets = Block {
+  NytrilStyle.ShowArray(NumberSet);
+};
+
+readonly LessonExample Content.ExampleArrayEx = new(#dfb18a18-496f-40a7-a646-cd2146bbc93d#) {
+  Text: "Statistics functions operate on arrays of double values. For example suppose we define the following arrays:";
+  Code: [attribute NumberSet];
+  Show: ShowDataSets;
+};
+
+//======================================================================
+
+i    = Symbol("i");
+N    = Symbol("n");
+xi   = x sub i;
+xave = Span {TextOverline: true; x};
+ybar = Span {TextOverline: true; y};
+yi   = y sub i;
+Oi   = "O" sub i;
+Ei   = "E" sub i;
+H    = Symbol("H");
+G    = Symbol("G");
+Z    = Symbol("Z");
+r    = Symbol("r");
+C2   = Tex.chi^2;
+ArrayText(op) = "The {0} of an array is defined as:"(Bold op);
+ArrayOp(Attribute prop, name) = NytrilStyle.Function(prop, "The {0} of an array can be computed"(Bold name));
+Computed(Attribute prop) = NytrilStyle.Function(prop, "It can be computed");
+BinaryText(op) = "The {0} of two datasets is defined as:"(Bold op);
+NaryComp(Attribute prop) = Block {
+  Paragraph {
+    "where ";
+    N;
+    " is the length of the array and ";
+    xi;
+    " is the ";
+    i sup "th";
+    " element. ";
+  };
+  NytrilStyle.Function(prop, "It can be computed");
+};
+
+//======================================================================
+
+SumData = Math.Sum(NumberSet);
+
+Summation = Nary {
+  Operator: Tex.sum;
+};
+
+SumN = Nary {
+  Operator: Tex.sum;
+  Lower: i Tex.Equals 1;
+  Upper: N;
+};
+
+readonly LessonExample Content.SumDefinedEx = new(#e13ea1b1-f10b-4d23-aa13-0bac62b2e2e8#) {
+  Text: ArrayText("sum");
+  Formula: NytrilStyle.EquationPar {"S"; Tex.Equals; SumN {xi}};
+  Text2: NaryComp(attribute Math.Sum);
+  Code: [attribute SumData];
+  Show: SumData;
+};
+
+//======================================================================
+
+ProductData = Math.Product(NumberSet);
+
+readonly LessonExample Content.ProductDefinedEx = new(#f24a140a-87d3-4d14-b6a6-1471df2ca811#) {
+  Text: ArrayText("product");
+  Formula: NytrilStyle.EquationPar {"P"; Tex.Equals; SumN {Operator: Tex.prod; xi}};
+  Text2: NaryComp(attribute Math.Product);
+  Code: [attribute ProductData];
+  Show: ProductData;
+};
+
+//======================================================================
+
+MeanData = Math.Mean(NumberSet);
+
+readonly LessonExample Content.MeanDefinedEx = new(#b12e3640-ce02-48e3-8747-1a95d856ad5b#) {
+  Text: ArrayText("arithmetic mean");
+  Formula: NytrilStyle.EquationPar {
+    xave; Tex.Equals;
+    Fraction {
+      SumN {xi};
+      N;
+    }
+  };
+  Text2: NaryComp(attribute Math.Mean);
+  Code: [attribute MeanData];
+  Show: MeanData;
+};
+
+//======================================================================
+
+HarmonicMeanData = Math.HarmonicMean(NumberSet);
+
+readonly LessonExample Content.HarmonicMeanDefinedEx = new(#3ec026f1-cd5b-4cd7-8012-3b10358ab99a#) {
+  Text: ArrayText("harmonic mean");
+  Formula: NytrilStyle.EquationPar {
+    H; Tex.Equals;
+    Fraction {
+      N;
+      SumN {
+        HBox {
+          Bracket: Brackets.Round;
+          Fraction {
+            1;
+            xi;
+          };
+        }
+      }
+    };
+  };
+  Text2: NaryComp(attribute Math.HarmonicMean);
+  Code: [attribute HarmonicMeanData];
+  Show: HarmonicMeanData;
+};
+
+//======================================================================
+
+GeometricMeanData = Math.GeometricMean(NumberSet);
+
+readonly LessonExample Content.GeometricMeanDefinedEx = new(#12a1547c-d995-42e4-9e23-13ff31158c19#) {
+  Text: ArrayText("geometric mean");
+  Formula: NytrilStyle.EquationPar {H; Tex.Equals; Radical {Degree: N; SumN {Operator: Tex.prod; xi}}};
+  Text2: NaryComp(attribute Math.GeometricMean);
+  Code: [attribute GeometricMeanData];
+  Show: GeometricMeanData;
+};
+
+//======================================================================
+
+MedianData = Math.Median(NumberSet);
+
+readonly LessonExample Content.MedianDefinedEx = new(#4ff0ec36-9094-438d-986a-cbc6f4d21f98#) {
+  Form: ArrayOp(attribute Math.Median, "median");
+  CodeArray: [attribute MedianData];
+};
+
+//======================================================================
+
+DoubleData = Math.Mode([1.0, 2.0, 3.0, 2.0, 4.0]);
+
+readonly LessonExample Content.ModeDefinedEx = new(#51f63189-ecc2-4ac8-8c2a-e95264c1108e#) {
+  Form: ArrayOp(attribute Math.Mode, "mode");
+  Code: [attribute DoubleData];
+  Show: [DoubleData];
+};
+
+//======================================================================
+
+VarianceFormula = Fraction {
+  SumN {(xi - xave)^2};
+  N;
+};
+
+VarianceData = Math.Variance(NumberSet);
+
+readonly LessonExample Content.VarianceDefinedEx = new(#7bc166de-fc44-4839-944b-c87e1c06a4b3#) {
+  Text: ArrayText("variance");
+  Formula: NytrilStyle.EquationPar {Tex.sigma^2; Tex.Equals; VarianceFormula};
+  Text2: Block {
+    Paragraph {
+      "where "; xave; " is the mean.";
+    };
+    NytrilStyle.Function(attribute Math.Variance, "It can be computed");
+  };
+
+  Code: [attribute VarianceData];
+  Show: VarianceData;
+};
+
+//======================================================================
+
+StdDevData = Math.StandardDeviation(NumberSet);
+
+readonly LessonExample Content.StdDevDefinedEx = new(#aa886ada-ecc2-4155-960a-d2a693692b56#, "Statistics") {
+  Text: ArrayText("standard deviation");
+  Formula: NytrilStyle.EquationPar {Tex.sigma; Tex.Equals; Radical {VarianceFormula}};
+  Text2: Computed(attribute Math.StandardDeviation);
+  Code: [attribute StdDevData];
+  Show: StdDevData;
+};
+
+//======================================================================
+
+StandardScoreFormula = Fraction {
+  x Tex.Minus xave;
+  Tex.sigma;
+};
+StandardScoresData = Math.StandardScores(NumberSet);
+
+readonly LessonExample Content.StandardScoresDefined = new(#10f53c8c-1f42-465a-9264-89eab3b98179#) {
+  Text: Span {"The "; Bold "standard scores"; " (Z-scores) for every element in an array can be calculated"};
+  Formula: NytrilStyle.EquationPar {Z; Tex.Equals; StandardScoreFormula};
+  Text2: Computed(attribute Math.StandardScores);
+  CodeArray: [attribute StandardScoresData];
+};
+
+//======================================================================
+
+QuantilesData = Math.Quantiles(NumberSet, 50%);
+
+readonly LessonExample Content.QuantilesDefinedEx = new(#5fc89a36-fd79-46c1-b323-7a8d93a73517#) {
+  Form: ArrayOp(attribute Math.Quantiles, "Quantiles");
+  CodeArray: [attribute QuantilesData, attribute QuantilesData];
+};
+
+//======================================================================
+
+ChiSquaredFormula = SumN {(Oi - Ei)^2 / Ei};
+
+ObservedValues = [1.0, 3.0, 5.0, 4.0, 7.0];
+ExpectedValues = [1.0, 4.0, 3.0, 4.0, 8.0];
+ChiSquaredData = Math.ChiSquare(ObservedValues, ExpectedValues);
+
+readonly LessonExample Content.ChiSquaredDefinedEx = new(#7393355c-66c6-4d71-bbd4-f0a1bb2b64b6#) {
+  Text: BinaryText("Chi Squared Statistic");
+  Formula: NytrilStyle.EquationPar {C2; Tex.Equals; ChiSquaredFormula};
+  Text2: Block {
+    Paragraph {
+      "Where "; Oi; " is the "; i sup "th"; " observed value and "; Ei; " is the "; i sup "th"; " expected value. ";
+    };
+    Computed(attribute Math.ChiSquare);
+  };
+
+  Code: [attribute ObservedValues, attribute ExpectedValues, attribute ChiSquaredData];
+  Show: ChiSquaredData;
+};
+
+//======================================================================
+
+Temperature  = [88.6, 71.6, 93.3, 84.3, 80.6, 75.2, 69.7, 82, 69.4, 83.3,79.6,82.6,80.6];
+ChirpsPerSec = [20, 16, 19.8, 18.4, 17.1, 15.5, 14.7, 17.1, 15.4, 16.2, 15, 17.2, 16];
+//Data from "The Song of Insects" by Dr. G.W. Pierce, Harvard College Pre
+
+Math.LinearRegression Regression = new Math.LinearRegression(Temperature, ChirpsPerSec);
+
+readonly LessonExample Content.RegressionDefinedEx = new(#8fb499ef-f3cb-463d-bb47-c40b332e0f37#) {
+  Form: NytrilStyle.ObjectType(attribute Math.LinearRegression, "You can perform a simple regression analysis on two datasets");
+  Code: [attribute Temperature, attribute ChirpsPerSec, attribute Regression];
+  Show: Regression;
+};
+
+//======================================================================
+
+ValueAt95 = Regression.GetYValue(95.0);
+
+readonly LessonExample Content.RegressionMethodsDefinedEx = new(#977ec872-fa02-42b9-ab92-165cececa0d3#) {
+  Text: "The " attribute (Math.LinearRegression).Name " also has a method to predict the value at different points:";
+  Code: [attribute ValueAt95];
+  Show: [ValueAt95];
+};
+
+//======================================================================
+
+CorrelationFormula = Fraction {
+  SumN {
+    (xi - xave) * (yi - ybar);
+  };
+
+  Radical {
+    HBox {
+      Bracket: Brackets.Round;
+      SumN {
+        (xi - xave)^2;
+      }
+    };
+
+    HBox {
+      Bracket: Brackets.Round;
+      SumN {
+        (yi - ybar)^2;
+      }
+    }
+  }
+};
+
+Correlation = Regression.Correlation;
+
+readonly LessonExample Content.CorrelationDefinedEx = new(#a3ee7e58-0cbd-4d05-8ef5-f6ea7e0b7ace#) {
+  Text: BinaryText("Correlation Coefficient");
+  Formula: NytrilStyle.EquationPar {r; Tex.Equals; CorrelationFormula};
+  Text2 : Computed(attribute Math.LinearRegression.Correlation);
+  Code: [attribute Correlation];
+  Show: Correlation;
+};
+
+//======================================================================
+
+CricketChart = VBox {
+  Paragraph {
+    TextHeight: 16pt;
+    "Cricket Chirps vs. Temperature";
+  };
+  HAlign: Center;
+  Chart(ExtentWidth * 0.75, 3") {
+    ChartType: ChartTypes.Scatter;
+    XAxis: ChartAxis;
+    ValueLabel: "Cricket\nChirps";
+    XLabel: "Temperature (F)";
+
+    ChartSeries {
+      new LinearTrend;
+      Label: "Temperature";
+      foreach (var x in Temperature)
+        new DataPoint(x, ChirpsPerSec[each0]);
+    };
+  }
+};
+
+readonly LessonExample Content.RegressionChartEx = new(#461790f5-c1c1-4a33-96b9-97e35f2be962#) {
+  Text: "Here is an example of how to add regression lines to a chart";
+  Code: [attribute CricketChart];
+};
+
+//======================================================================
+

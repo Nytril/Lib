@@ -1,0 +1,17 @@
+include "Site";
+include "Family Tree";
+include "Jones Family";
+
+//======================================================================
+
+Main.Documents.FamilyTree = new FamilyDocument(#57e3aaea-efcc-4882-8839-c90957729dda#, "Family History", [
+  new(Information.Couples.BarbaraJacob, 14pt, 10pt)
+]);
+
+PictureFolder = IO.Folders.Source;
+
+//=====================================================================
+
+readonly NytrilIconSite Main.Site = new("Nytril.Examples.FamilyTree", Icons.account_tree);
+
+//======================================================================

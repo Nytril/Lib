@@ -1,0 +1,113 @@
+using Format;
+//======================================================================
+
+namespace Chapters.Language.Sections.SettingUp;
+
+readonly TutorialLesson Lesson = new(#ac75c6d6-c659-46c6-b69f-21109f988e33#, Lang.CreateNewProject);
+
+//======================================================================
+
+readonly LessonExample Content.NewProjectEx = new(#73293d96-f0dc-4c99-989b-bc6d5dfdf449#) {
+  Other: Block {
+    NytrilStyle.BlockBody {
+      "Like all compiled languages, Nytril reads source code stored in plain-text files stored on your computer. ";
+      "The source code is Unicode, and files are saved in the UTF8 format (unix style \\n line endings, without a byte-order-mark). ";
+      "This makes them interchangeable between Windows, Mac and Linux systems. ";
+      "Nytril works well with Git and other source-control systems and some Git repository operations are built-in to the IDE and can be accessed through the "; NytrilStyle.Menu("Git"); " menu. ";
+    };
+
+    NytrilStyle.BlockBody {
+      "Nytril has a native source editor with syntax highlighting and multi-level undo/redo, but source files can be edited with any plain-text editor. ";
+      "Each time the Nytril IDE is brought into focus, the opened source files are checked and reloaded if they have changed. ";
+    };
+
+    NytrilStyle.BlockBody {
+      "Nytril does not produce an executable file (like an .exe or .app file). ";
+      "Instead, the code is compiled into memory in the background any time the code changes. ";
+      "When you exit Nytril there are no residual or temporary files. ";
+      "When you open Nytril, the last project will load, compile and run automatically. ";
+    };
+
+    NytrilStyle.BlockBody {
+      "The typical output of a Nytril program is one or more typeset documents. ";
+      "Most simple programs contain just one document, but it is easy to create projects that can generate dozens of different documents. ";
+      "To keep things simple, we will focus on creating a program with a single document. ";
+    };
+
+    NytrilStyle.BlockBody {
+      "To make a new program, you must first create a new project and set the path of the 'main' source file. ";
+    };
+    ListBlock {
+      Span {"Select the menu "; DesktopMenus.NewProject};
+      "Double-click on a project template. ";
+      "Specify a name for your project. ";
+      "Select OK.";
+    };
+  };
+
+  Options: NoFormat;
+};
+
+//======================================================================
+
+class NewProjectClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#d74c6b7c-b5bd-4758-8aa1-385d74c002dc#, "New Project");
+  }
+
+  override GetDocument = Document {
+    "Start from scratch";
+  };
+}
+
+NewProject = new NewProjectClass().GetDocument;
+
+readonly LessonExample Content.SimpleDocumentEx = new(#ecb0c4fe-7d81-4436-b91c-fc31ee60e0ab#) {
+  Text: "You should see the following on the screen: ";
+  Doc: [attribute NewProject];
+};
+
+//======================================================================
+
+readonly LessonExample Content.FollowStepsEx = new(#87027df5-ef1c-413c-ae08-42144b92068e#) {
+  Other: Block {
+    NytrilStyle.BlockBody {
+      var pmenu = DesktopMenus.Project;
+      "Your project settings are saved automatically and this new project will now be listed under the "; pmenu; " menu. ";
+      "You can make changes to the code, and select "; DesktopMenus.RefreshDocuments; " to update the document. ";
+      "When you switch projects using the "; pmenu; " menu, the previous settings and tabs will be restored, and the project will rebuilt and refreshed automatically. ";
+    };
+
+    NytrilStyle.BlockBody {
+      "A key feature of Nytril is that text and figures in the Document can be traced back to source code easily. ";
+      "Hold down the control-key and click on the text in any document, including this one. The IDE will take you to the immediate antecedant of that text in the code. ";
+      "That is, the expression that gave rise to that content. ";
+      "Usually this means a literal string in quotes, but sometimes it can mean a number, date or even an operator like a '+' sign. ";
+    };
+
+    NytrilStyle.BlockBody {
+      "Hold down the control and shift key together, and hover over any part of the document. ";
+      "You will see the typesetting layout lines that Nytril uses to align text and figures. ";
+    };
+
+    NytrilStyle.BlockBody {
+      "A Nytril project is defined entirely by its main source file. ";
+      "As this file is compiled, every other source file will be added to the project by any "; NytrilStyle.PropName(attribute include); " statements in the main file, and in turn, by any of the included source files. ";
+      "There are no separate project files in Nytril, as there are in other development environments. ";
+      "Instead, all repository and project settings are stored in a single ";
+      var file = "settings.ini";
+      Span {
+        TextColor: Colors.Blue;
+        file;
+        TipAction: new Action(Actions.ToFile, IO.Folders.Settings IO.FileName(file));
+      };
+      " file on your system. ";
+      "This file contains the repository and project settings for you on your system, and is not shared in source control. ";
+    };
+
+    NytrilStyle.BlockBody {
+    };
+  };
+};
+
+//======================================================================

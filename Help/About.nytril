@@ -1,0 +1,134 @@
+using Format, IO;
+
+include "Lang";
+include "NytrilStyle";
+include "License";
+//======================================================================
+
+readonly namespace Main.Documents {
+  AboutDocument       About         = new;
+  PrivacyDocument     PrivacyPolicy = new;
+  EULADocument        EULA          = new;
+  DisclaimersDocument Disclaimers   = new;
+  StandardsDocument   Standards     = new;
+}
+
+//======================================================================
+
+class Example {
+  var      Title,
+           Main;
+  var Icon Icon;
+
+  Constructor(title, main, Icon icon) {
+    Title = title;
+    Icon  = icon;
+    Main  = main + Extensions.Nytril;
+  }
+}
+
+//======================================================================
+
+HelpFolder = Folder("Help");
+
+readonly Example[] LearnMore = [
+  new(Lang.Introduction, HelpFolder FileName("Introduction"), Icons.content_paste),
+  new("Formatting Overview", HelpFolder FileName("Formatting Overview"), Icons.format_size),
+  new("Tutorial", Folder("Tutorial") FileName("Tutorial"), Icons.school),
+  new("Install Git Desktop", HelpFolder FileName("Install Git"), Icons.install_desktop),
+  new("Install Nytril Desktop", HelpFolder FileName("Install Nytril"), Icons.get_app)
+];
+
+//======================================================================
+
+class AboutDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#85b93fa9-d067-1c4f-af0c-38c759b01896#, Lang.AboutUs);
+  }
+
+  SectionHeader = Paragraph {
+    TextHeight: 16pt;
+    SpaceBefore: 16pt;
+  };
+
+  override GetDocument = Document {
+    TextHeight: 14pt;
+
+    Paragraph {
+      TextHeight: 72pt;
+      NytrilStyle.StandardLogo;
+    };
+
+    Paragraph(null, [3"]) {
+      SpaceAfter: 0.25";
+      var pro = System.IsProEdition;
+
+      pro ? Lang.ProEdition : Lang.CommunityEdition;
+      Space;
+      Lang.Version;
+      Space;
+      System.GetVersion;
+      if (not pro) {
+        Tab;
+        Span {
+          Lang.UpgradeAccount(Lang.ProEdition);
+          TextColor: NytrilPalette.Hyperlink;
+          TipAction: new URL("www.nytril.com/signup");
+        };
+      }
+    };
+
+    Paragraph {
+      SpaceAfter: 12pt;
+      SpaceBefore: 10pt;
+      Lang.VisitUsAt(
+        Span {
+          TextColor: NytrilPalette.Hyperlink;
+          new URL("www.nytril.com");
+        }
+      );
+    };
+
+    ShowExample(Lang.LearnMore, LearnMore);
+
+    SectionHeader {
+      Lang.LegalNotices;
+    };
+    DocLink(Main.Documents.Disclaimers);
+    DocLink(Main.Documents.PrivacyPolicy);
+    DocLink(Main.Documents.EULA);
+    DocLink(Main.Documents.Standards);
+  };
+
+  ShowExample(title, Example[] examples) = Block {
+    SectionHeader {
+      title;
+    };
+
+    Table(null, PadL(10), [Column.Fit(2")]) {
+      LeftIndent: 8pt;
+      foreach (var ex in examples) {
+        Row {
+          NytrilStyle.SiteIcon(ex.Icon);
+          Span {
+            Tip: "Preview this example";
+            Action: new Action(Actions.RunScript, ex.Main);
+            ex.Title;
+          };
+        };
+      }
+    };
+  };
+
+  DocLink(DocumentEntry doc) = Paragraph {
+    LeftIndent: 24pt;
+    Span {
+      TextColor: NytrilPalette.Hyperlink;
+      doc.Name;
+      Action: new Action(Actions.ToDocument, doc.FactId);
+    }
+  };
+}
+
+//======================================================================
+

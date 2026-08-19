@@ -1,0 +1,125 @@
+using Format;
+
+//====================================================================================
+
+class OpacityDocumentClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#78f266b9-27e3-41e8-8063-64a0ce558cfd#, "OpacityDoc");
+  }
+
+  override GetDocument = Document(0.5") {
+    OpacityDisplay(@OpacityImage);
+    OpacityDisplay(@ShowFrameWithBorder);
+    OpacityDisplay(@SampleFigure);
+    PageBreak;
+    OpacityDisplay(@ShowCanvasWithBorderAndClipRotate);
+    OpacityDisplay(@ComplexDisplay);
+    OpacityDisplay(@SampleChart);
+  };
+}
+
+Main.Documents = new OpacityDocumentClass;
+
+//====================================================================================
+
+SampleImage = new Image(res "Recipes/Chicken-Lime.jpg");
+
+SizedImage = SampleImage.FitSize(new Size(2"));
+
+ShowColor(Color fill, opacity) = Canvas(0.5", 0.5") {
+  Background: fill;
+  Opacity: opacity;
+};
+
+ShowBlack(opacity) = ShowColor(Colors.Black, opacity);
+
+ShowFrameWithBorder(opacity) = Frame(null, null, new Edge(5pt, 0, Colors.Blue)) {
+  Opacity: opacity;
+  ShowBlack(100%);
+};
+
+ShowCanvasWithBorderAndClip(opacity) = Canvas(null, null, new Edge(5pt, 0, Colors.Red)) {
+  Opacity: opacity;
+  BorderRadius: 5;
+  BorderClip: true;
+  ShowBlack(1);
+};
+
+ShowCanvasWithBorderAndClipRotate(opacity) = ShowCanvasWithBorderAndClip(opacity) {
+  Transform: Transform.Rotate(45 degrees);
+  TransformFit: true;
+};
+
+OpacityDisplay(func) = Block {
+  Table(null, null, [Column.Expand]) {
+    Row {
+      each SampleOpacities;
+    };
+    Row {
+      func(each SampleOpacities);
+    }
+  };
+  Paragraph;
+  Paragraph;
+};
+
+CantorSet(iterations, width=1000, scale=0.5, portion = 1/3) = Shape(null, new(3pt, Colors.Black, LineStyles.Solid, LineCaps.Flat)) {
+  Transform: Transform.Scale(scale);
+  CantorSetPath(0, iterations, 0, 0, width, portion);
+};
+
+CantorSetPath(currIter, maxIter, x, y, size, portion) {
+  if (currIter >= maxIter)
+    return [];
+  return [OpenPath(x, y) {
+    LineTo(x + size, y);
+    y += 5;
+    currIter += 1;
+  }]+
+  CantorSetPath(currIter, maxIter, x,                  y, size*portion, portion) +
+  CantorSetPath(currIter, maxIter, x+(1-portion)*size, y, size*portion, portion);
+}
+
+SampleFigure(opacity) = OpacityObject(CantorSet(10, 500, 0.25), opacity);
+
+SampleChart(opacity) = Chart(1", 1") {
+  Opacity: opacity;
+  ChartType: ChartTypes.Scatter;
+  ChartSeries {
+    var RandomRange = 0.0..10.0;
+    Label: "RandomNames";
+    foreach (var r in 0..10)
+      new DataPoint(Math.Random(RandomRange), Math.Random(RandomRange));
+  }
+};
+
+ComplexDisplay(opacity) = Canvas(1.5", 2.5", new Edge(3pt, 8pt, Colors.Black, Dashed)) {
+  Transform: Transform.Skew(0.1);
+  Opacity: opacity;
+
+  Block {
+    CantorSet(3, 100);
+    FitBox(SampleImage, 70, 70, 2pt) {
+      Transform: Transform.Rotate(90 degrees);
+      TransformFit: true;
+    };
+    Paragraph;
+    CantorSet(3, 100);
+    ShowCanvasWithBorderAndClip(1);
+    Paragraph {
+      TextColor: Colors.Blue;
+      "Some example text";
+    };
+  };
+};
+
+OpacityObject(value, opacity) = value {Opacity: opacity};
+
+OpacityImage(opacity) = OpacityObject(FitBox(SampleImage, 0.5"), opacity);
+
+SampleOpacities = (each 0..100 step 25)%;
+
+RangeArgs(func) = func(each SampleOpacities);
+
+//====================================================================================
+

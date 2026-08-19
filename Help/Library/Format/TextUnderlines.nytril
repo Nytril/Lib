@@ -1,0 +1,23 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  TextHeight: 20pt;
+
+  Paragraph {"Regular Text"};
+  foreach (var p in TextUnderlines) {
+    Paragraph {
+      TextUnderline: p;
+      "TextUnderlines: ";
+      p.Name;
+    };
+  }
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextUnderline));
+
+//============================================================
+

@@ -1,0 +1,47 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "A row converts each of its child element into a "; HelpLink(attribute Format.Cell); ", if it is not already a cell. ";
+    "The cells of a row inherit the row's text and paragraph formatting, but can override individual properties. ";
+  };
+};
+
+Example = Block {
+  "Muscle Cars";
+  Table(1, null, [50pt, 1.25", Column.Fit(2")]) {
+    Row {
+      Background: Colors.Blue;
+      TextColor: Colors.White;
+      "Year"; "Make"; "Model";
+    };
+    Row {1968; "Chevy"; "Camaro"};
+    Row {1969; "Ford"; "Mustang"};
+    Row {1970; "Dodge"; "Charger"};
+  };
+};
+
+Example2 = Table(new Edge(3, 5, 90%), null, [20pt, Column.Fit(4")]) {
+  Row {
+    Background: Colors.Gold;
+    ParAlignment: Center;
+    Empty; "Table of Tables";
+  };
+  Row {
+    Cell {VAlign: Center; 1};
+    Cell(PadT(5)) {
+      Example;
+    };
+  };
+  Row {
+    Cell {VAlign: Center; 2};
+    Cell(PadT(5)) {
+      Background: 70%;
+      Example;
+    };
+  };
+};
+
+Main.Help = new HelpExample(attribute(Format.Row), 2);

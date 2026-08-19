@@ -1,0 +1,169 @@
+using Format;
+
+//=============================================================
+
+readonly MyDocument Main.Documents.MainDocument = new;
+
+class MyDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#00000000-1111-2222-3333-444444444444#, "Sales Ledger");
+  }
+
+  override GetDocument = Document {
+    double total = 0;
+    foreach (var sale in Sales) {
+      sale.ShowReceipt;
+      total += sale.GetTotal;
+      Paragraph;
+    }
+    Paragraph {
+      "Grand Total: "; total;
+    }
+  };
+}
+
+//=============================================================
+
+readonly namespace<ProductClass> Products {
+  Chips         = new("Snack Chips, bag", Normal, 2.50);
+  Beans         = new("Beans, Can", Food, 1.50);
+  CheddarCheese = new("CheddarCheese, 1 lb", Food, 2.75);
+  Avacado       = new("Avacado, 1 whole", Food, 3.25);
+  Beer          = new("Beer, Six-Pack", Alchohol, 7.50);
+}
+
+//=============================================================
+
+readonly SaleClass[] Sales = [
+  new(#2025-3-22 10:18:11#, [new(Products.Beans, 1), new(Products.Avacado, 2), new(Products.CheddarCheese, 1), new(Products.Beer, 3)]),
+  new(#2025-3-23 11:32:25#, [new(Products.Chips, 2), new(Products.Beer, 2)])
+];
+
+//=============================================================
+
+enum TaxRates {
+  var Rate;
+
+  Constructor(name, rate) {
+    super.Constructor(name);
+    Rate = rate;
+  }
+
+  Normal("Normal", 5%),
+  Alchohol("Alchohol", 10%),
+  Food("Food", 0),
+}
+
+//=============================================================
+
+class ProductClass {
+  var          Name;
+  var TaxRates Tax;
+  var          Price;
+
+  Constructor(name, TaxRates tax, price) {
+    Name  = name;
+    Tax   = tax;
+    Price = price;
+  }
+}
+
+//=============================================================
+
+class ItemClass {
+  var ProductClass Product;
+  var              Quantity;
+
+  Constructor(ProductClass product, quantity) {
+    Product  = product;
+    Quantity = quantity;
+  }
+}
+
+//=============================================================
+
+class SaleClass {
+  var DateTime    TimeSold;
+  var ItemClass[] Items;
+
+  Constructor(DateTime sold, ItemClass[] items) {
+    TimeSold = sold;
+    Items    = items;
+  }
+
+  double GetTotal {
+    var total = 0.0;
+    foreach (var item in Items) {
+      var product = item.Product;
+      var price   = item.Quantity * product.Price;
+      total += price * (1.0 + product.Tax.Rate);
+    }
+    return total;
+  }
+
+  ShowReceipt = Block {
+    var money = new Column(1", null, null, Right);
+    Table(0.5, null, [1.5", money, new(1", null, null, Center), money, money]) {
+      Row {
+        Cell(null, 5) {
+          Paragraph {
+            ParAlignment: Center;
+            Span {
+              TextHeight: 120%;
+              Bold;
+              "Sales Receipt";
+            };
+            LineBreak;
+            Span {
+              TextFormat: "f";
+              TimeSold;
+            };
+          };
+        };
+      };
+
+      Row {
+        Background: 95%;
+        "Product"; "Unit Price"; "Quantity"; "Tax"; "Sub-Total"
+      };
+
+      foreach (var item in Items) {
+        var product  = item.Product;
+        var price    = item.Quantity * product.Price;
+        var tax      = price * product.Tax.Rate;
+        Row {
+          product.Name;
+
+          Cell {
+            TextDigits: 2;
+            price;
+          };
+          item.Quantity;
+          Cell {
+            TextDigits: 2;
+            if (tax > 0)
+              tax;
+          };
+          Cell {
+            TextDigits: 2;
+            price + tax;
+          };
+        };
+      }
+      Row {
+        Background: 90%;
+        Empty;
+        Empty;
+        Empty;
+        "Total";
+        Cell {
+          TextDigits: 2;
+          GetTotal;
+        };
+      };
+    };
+  };
+}
+
+//=============================================================
+

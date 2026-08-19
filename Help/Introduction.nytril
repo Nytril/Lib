@@ -1,0 +1,170 @@
+include "Lang";
+include "NytrilStyle";
+
+using Format, IO;
+
+namespace Main.Documents {
+  IntroDocument IntroDocument = new;
+}
+
+//======================================================================
+
+class Example {
+  var Title,
+      Main;
+
+  Constructor(title, main=null) {
+    Title = title;
+    Main  = (main ?? ExampleFolder +  FileName(title)) + Extensions.Nytril;
+  }
+}
+
+//======================================================================
+
+readonly ExampleFolder = Folder("Examples");
+
+readonly Example[] Examples = [
+  new("Mortgage Calculator"),
+  new("Family Tree", ExampleFolder Folder("Family Tree") FileName("Main")),
+  new("Chemistry", ExampleFolder FileName("Chemistry")),
+  new("Résumé Portfolio", ExampleFolder Folder("Resumes") FileName("Main")),
+  new("Recipe Book", ExampleFolder Folder("Recipes") FileName("Main")),
+  new("Angle Calculator"),
+  new("Mad Libs Game", ExampleFolder FileName("Mad Lib")),
+  new("Random Walk"),
+  new("Time Sheet"),
+  new("White Paper"),
+  new("Color Picker"),
+  new("Finger Binary"),
+  new("White Paper"),
+  new("Split The Bill"),
+];
+
+//======================================================================
+
+class ExampleAction: Action {
+  var Example Example;
+
+  Constructor(Example example) {
+    super.Constructor(Actions.OpenProject, example.Main);
+    Example = example;
+  }
+}
+
+MakeLink(Icon icon, title, text, url) = Row {
+  Cell {
+    HAlign: Right;
+    title;
+  };
+  Paragraph {
+    TextColor: NytrilPalette.Hyperlink;
+    icon;
+    Space;
+    Span {
+      TipAction: url;
+      text;
+    };
+  };
+};
+
+//======================================================================
+
+class IntroDocument: DocumentEntry {
+  Constructor {
+    // Highlight the Guid below and press Ctrl-Shift-G to generate a unique id for your document
+    super.Constructor(#1d8c6bcc-c81e-430f-8845-a70a9848afc4#, Lang.Introduction);
+  }
+
+  // This method gets called by Nytril when the document is shown or published
+  override GetDocument = Document {
+    // This formatting applies to the whole document
+    TextHeight: 14pt;
+
+    var about = new Action(Actions.RunScript, Folder("Help") FileName("About") Extensions.Nytril);
+
+    // Create a new paragraph
+    Paragraph {
+      // The formatting below applies only to this paragraph
+      TextHeight: 40pt;
+      TextFamily: TextFamilies.Calibri;
+      ParAlignment: Center;
+
+      var logo = Span {
+        NytrilStyle.StandardLogo;
+        TipAction: about;
+      };
+
+      Lang.WelcomeToNytril(logo);
+    };
+
+    HeaderPar {
+      Lang.GettingStarted;
+    };
+
+    ListBlock {
+      LeftIndent: 32pt;
+      Lang.SelectTheMenu(DesktopMenus.NewProject);
+      Lang.CheckCreateNew;
+      Lang.ClickOkBegin(DesktopMenus.RefreshDocuments);
+    };
+
+    BodyPar {
+      Lang.NytrilRemembers
+    };
+
+    NytrilStyle.LinkSpan {
+      Lang.AboutUs;
+      TipAction: about;
+    };
+    Empty;
+
+    Table(null, PadLR(5), [Column.Fit(3")]) {
+      MakeLink(Icons.person_add, Lang.CreateUserAccount, "Sign-Up", new URL(NytrilData.WebSite + "/DesktopSignUp"));
+      MakeLink(Icons.chat_bubble, Lang.JoinDiscussion, Lang.VisitUsOn("Reddit"), NytrilData.RedditSite);
+      MakeLink(Icons.play_circle_filled, Lang.LearnFromExperts, Lang.NytrilYouTubeChannel, NytrilData.YouTubeSite);
+      MakeLink(Icons.email, "Ask the developers", Lang.DropALine, NytrilData.SupportEMail);
+    };
+    ShowExample(Lang.TryOutThese);
+  };
+
+  BodyPar = Paragraph {
+    ParAlignment: Justify;
+    SpaceAfter: 16pt;
+    LeftIndent: 16pt;
+  };
+
+  HeaderPar = Paragraph {
+    TextFamily: TextFamilies.Calibri;
+    TextHeight: 16pt;
+    SpaceBefore: 24pt;
+  };
+
+  ShowExample(title) = Block {
+    Paragraph {
+      TextHeight: 16pt;
+      SpaceBefore: 16pt;
+      title;
+    };
+
+    Table(null, PadL(10), [Column.Fit(2")]) {
+      LeftIndent: 12pt;
+      foreach (var ex in Examples) {
+        Row {
+          Span {
+            TextColor: NytrilPalette.Icon;
+            Action: new ExampleAction(ex);
+            Tip: "Open as a new project";
+            Icons.schema;
+            ex.Title;
+          };
+        };
+      }
+    };
+  };
+}
+
+//======================================================================
+
+
+
+

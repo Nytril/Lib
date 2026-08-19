@@ -1,0 +1,15 @@
+include "Help";
+
+using Format;
+
+ShowMax(x, y) = "The greater of {0} and {1} is {2}."(x, y, Math.Max(x, y));
+
+Example = Block {
+  ShowMax(3, 2);
+  ShowMax(4, 7);
+  ShowMax(-5, -18);
+};
+
+Main.Help = new HelpExample(attribute(Math.Max));
+
+

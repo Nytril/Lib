@@ -1,0 +1,25 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  var b1 = #e22705b48e06416b#;
+  "b1 = {0}"(b1);
+
+  var b2 = "1c5065e5e72a" as blob;
+  "b2 = {0}"(b2);
+
+  var b3 = blob.Convert("e22705b48e06416b9653aaa9fabcd33c");
+  "b3 = {0}"(b3);
+
+  Paragraph {
+    Separator: CommaSpace;
+    foreach (var b in b3)
+      b;
+  };
+};
+
+Main.Help = new HelpExample(attribute blob, 1);
+
+
+

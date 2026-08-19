@@ -1,0 +1,27 @@
+include "Help";
+
+using Format, IO;
+
+ShowOpacity(opacity) = VBox {
+  HAlign: Center;
+  Span {
+    TextDigits: 0;
+    opacity * 100;
+    "%";
+  };
+  Shape(Colors.Blue) {
+   Icons.camera;
+   TextHeight: 40;
+   Opacity: opacity;
+  };
+};
+
+Example = HBox(null, null) {
+  Background: Colors.Gold;
+  Separation: 10;
+  ShowOpacity(each (0.0..1.0 step 0.1));
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.Opacity));
+
+

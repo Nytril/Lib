@@ -1,0 +1,364 @@
+using Format, HelpConcepts;
+
+class ConfigurationsConcept: AuthoredContent {
+  Constructor {
+    super.Constructor("Understanding Project Configurations Settings");
+
+    Watermark = "DRAFT";
+
+    AddAuthor(People.ColbertAuthor);
+    AddAuthor(People.McCreightAuthor);
+
+    AddContent(ConfigurationPurpose);
+    AddContent(ConfigurationAbout);
+    AddContent(ConfigurationTranslations);
+    AddContent(ConfigurationOptions);
+    AddContent(ConfigurationFromRepo);
+    AddContent(ConfigurationCreate);
+    AddContent(ConfigurationManual);
+    AddContent(ConfigurationSwitching);
+    AddContent(ConfigurationApiRef);
+    AddContent(ConfigResources);
+  }
+}
+
+// ============================================================================
+
+readonly  ConfigurationPurposeSection  ConfigurationPurpose = new;
+class  ConfigurationPurposeSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Purpose";
+    };
+
+    design.NormalParagraph {
+      "This document discusses Nytril configurations including the purpose, initial setup, application, and use.";
+    };
+  };
+}
+
+// ============================================================================
+
+readonly  ConfigurationAboutSection  ConfigurationAbout = new;
+class  ConfigurationAboutSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Nytril Configurations";
+    };
+
+    design.SpacedParagraph {
+      "Configurations create various versions of the same document using different properties such as style, language, paper size, and measurement units. ";
+      "The configuration metrics apply to all documents universally. ";
+      "Configurations work directly with Nytril-IDE-document viewers and the publishing feature. ";
+      "In either case, source code will produce one or more documents given the metrics in the configurations. ";
+      "Projects published to the Nytril hosting site will produce the document in all its proposed forms allowing the web server to return the appropriate variation of the document depending on the users' personal preference. ";
+    };
+  };
+}
+
+// ============================================================================
+
+readonly  ConfigurationTranslationsSection  ConfigurationTranslations = new;
+class  ConfigurationTranslationsSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Translations";
+    };
+
+    design.SpacedParagraph {
+      "Configurations drive language translation and access to built-in language features. ";
+      "At least one configuration activates Nytril’s built-in language tools. ";
+      "During translation, Nytril writes translated text to the target language file specified in the configuration. ";
+      "Each language configuration requires a corresponding language file.";
+    };
+  };
+}
+
+// ============================================================================
+
+readonly  ConfigurationOptionsSection  ConfigurationOptions = new;
+class  ConfigurationOptionsSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Options";
+    };
+
+    design.AddFigure(OneConfigFig, Here);
+    var oneConfigRef = design.FigureReference(OneConfigFig);
+
+    design.SpacedParagraph {
+      oneConfigRef " depicts a project with one configuration. ";
+      "The settings in " oneConfigRef " will cause Nytril to produce each document once using the configuration options: English language, US paper size, and Imperial units. ";
+      "Note that for the language, the configuration must specify the language (ex. \"Languages.English\"), but there must also be an included language file (\"include \"English\"\") to serve the language variables. ";
+      "Additional configurations produce additional document variations; one config = one version, two configs = two versions, and so forth. ";
+    };
+
+    design.AddFigure(TwoConfigsFig, Here);
+    var twoConfigsRef = design.FigureReference(TwoConfigsFig);
+
+    design.SpacedParagraph {
+      "The implementation in " twoConfigsRef " will produce two versions of each document. ";
+      "Both in English and US paper size, but one with Imperial Units and one with Metric. ";
+    };
+
+    design.SpacedParagraph {
+      "The "; B{"Lang"}; " file contains the configuration data. ";
+      "The project Main file normally includes the Lang file, such as "; design.SpanHighlight { "\"include \"Lang\"\". " };
+      "If the project does not include a Lang file, then Nytril produces documents using its default configuration. ";
+      "Please review the remaining sections of this document for information on setting up the configuration environment. ";
+    };
+  };
+}
+// ============================================================================
+
+readonly  OneConfigFigure  OneConfigFig = new;
+class  OneConfigFigure: Content {
+  Constructor() {
+    super.Constructor("Basic Single Configuration");
+  }
+
+  override GetLayout(TechDesign design)  = design.CodeParagraph {
+    SourceSelectionLines(res "Lang.nytril", 1, 7);
+  };
+
+  override GetCaption(TechDesign design) = Span { "Basic Single Configuration" };
+}
+
+// ============================================================================
+
+readonly  TwoConfigsFigure  TwoConfigsFig = new;
+class  TwoConfigsFigure: Content {
+  Constructor() {
+    super.Constructor("Dual Units Configuration");
+  }
+
+  override GetLayout(TechDesign design)  = design.CodeParagraph {
+    SourceSelectionLines(res "Lang.nytril");
+  };
+
+  override GetCaption(TechDesign design) = Title;
+}
+
+// ============================================================================
+
+readonly  ConfigurationFromRepoSection  ConfigurationFromRepo = new;
+class  ConfigurationFromRepoSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Using Configuration from an Existing Repository";
+    };
+
+    Table(null, null, [new Column(62%), new Column(20), Column.Expand] ) {
+      Row {
+        Cell {
+          design.SpacedParagraph {
+            "Creating a project within an existing repository will not automatically apply the configurations to the new project. ";
+            "To add the configuration settings, add ";
+            design.SpanHighlight { "\"include \"Lang\";\" " };
+            "to the main file of the new project. ";
+            "This will cause the IDE to build documents using the configuration options and will activate the advance language features. ";
+          };
+        };
+        Cell;
+        Cell {
+          design.AddFigure(MainIncludesFig, Here);
+        };
+      };
+    };
+
+    design.SpacedParagraph {
+      "This described process assumes the Lang file is at the root of the repository. ";
+      "If it is in another location, add the relative path to the include statement. ";
+    };
+  };
+}
+
+// ============================================================================
+
+readonly MainIncludesFigure  MainIncludesFig = new;
+class  MainIncludesFigure: Content {
+  Constructor() {
+    super.Constructor("Including \"Lang\" in Main");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(res "Main.nytril", 1, 8);
+  };
+}
+
+// ============================================================================
+
+readonly  ConfigurationCreateSection  ConfigurationCreate = new;
+class  ConfigurationCreateSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Adding Configurations when Creating a Repository";
+    };
+
+    design.SpacedParagraph {
+      "For details in setting up a repository, see the ";
+      design.InLineLink {
+        Repositories
+      };
+      " help.";
+    };
+
+    design.SpacedParagraph {
+      "Nytril can automatically scaffold the configuration system during repository creation. ";
+      "Even if only using one language, it is still advantageous to establish the repository with a single language as that will activate Nytril's advanced language features. ";
+    };
+
+    var mainIncludesRef = design.FigureReference(MainIncludesFig);
+    var twoConfigsRef   = design.FigureReference(TwoConfigsFig);
+    design.SpacedParagraph {
+      "After creating the repository, Nytril will add the Lang file to the initial project's main file, as shown in " mainIncludesRef ". ";
+      "The Lang file will, as shown in " twoConfigsRef ", contain the \"include\" statements for each selected language. ";
+      "Additional configuration options, such as paper size or units, can now be set by altering the existing configurations or adding new ones. ";
+    };
+  };
+}
+
+// ============================================================================
+
+readonly  ConfigurationManualSection  ConfigurationManual = new;
+class  ConfigurationManualSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Manual Configuration Setup";
+    };
+
+    design.SpacedParagraph {
+      "Nytril supports creating or modifying configuration systems as needed. ";
+    };
+
+    design.SpacedParagraph {
+      "Create an empty text file named Lang.nytril in the repository root. ";
+      "Do this using OS tools or within Nytril by selecting "; design.SpanHighlight { "File..New..File" }; ", then saving the file with the noted name. ";
+    };
+
+    design.SpacedParagraph {
+      "Create an empty text file in the same location for each intended language. ";
+      "Each filename must match a language listed in the Languages enumeration. ";
+      "The Languages Enum is located at "; design.SpanHighlight { "Help => Runtime Library => Enum => Languages" }; ".";
+    };
+
+    var mainIncludesRef = design.FigureReference(MainIncludesFig);
+    var twoConfigsRef   = design.FigureReference(TwoConfigsFig);
+    design.SpacedParagraph {
+      "Include the Lang file in the project Main as shown in " mainIncludesRef ". ";
+    };
+
+    design.SpacedParagraph {
+      "Add the configurations and language-file \"includes\" to the Lang file as shown in " twoConfigsRef ". ";
+    };
+
+    design.SpacedParagraph {
+      "Finally, building the solution activates the language features. ";
+    };
+  };
+}
+
+// ============================================================================
+
+readonly  ConfigurationSwitchingContent  ConfigurationSwitching = new;
+class  ConfigurationSwitchingContent: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Viewing Documents in Various Configurations";
+    };
+
+    design.SpacedParagraph {
+      "The Documents menu switches the configuration at runtime and appears only when multiple configurations exist. ";
+    };
+
+    design.SpacedParagraph {
+      "With more than one configuration in the Lang file, open the Documents menu and note the configuration names at the top of the menu. ";
+      "Select a configuration. ";
+    };
+
+    design.SpacedParagraph {
+      "Open documents reload using the selected configuration. ";
+    };
+
+    design.SpacedParagraph {
+      "Newly opened documents use the selected configuration. ";
+    };
+  };
+}
+
+// ============================================================================
+
+readonly  ConfigurationApiRefSection  ConfigurationApiRef = new;
+class  ConfigurationApiRefSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "API Reference";
+    };
+
+    design.SpacedParagraph {
+      "Api Reference: "; design.SpanHighlight { "Help => Runtime Library => Class => Configuration" }; ".";
+    };
+  };
+}
+
+//=========================================================================
+
+readonly ConfiResourcesSection ConfigResources = new;
+class ConfiResourcesSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Resources";
+    };
+
+    design.HyperlinkParagraph {
+      var action = new ActionObj(Actions.ToLink, "Repository Introduction Video", "https://youtu.be/eydMErOaSMo");
+      design.ActionSpan(action);
+    };
+
+    design.HyperlinkParagraph {
+      Repositories;
+    };
+  };
+}

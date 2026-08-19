@@ -1,0 +1,15 @@
+include "Help";
+
+using Format;
+
+Example = ListBlock {
+  Paragraph { "unsigned integer literal "; 0b011100111U};
+  Paragraph { "unsigned integer literal "; 5U};
+  Paragraph { "Min value "; uint.MinValue};
+  Paragraph { "Max value "; uint.MaxValue};
+};
+
+Main.Help = new HelpExample(attribute uint);
+
+
+

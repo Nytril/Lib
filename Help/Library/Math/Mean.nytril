@@ -1,0 +1,38 @@
+include "Help";
+
+using Format;
+
+Description = EquationPar {
+  var x = Symbol("x");
+  var i = Symbol("i");
+  var N = Symbol("n");
+
+  Span {
+    TextOverline: true;
+    x
+  };
+  Tex.Equals;
+  Fraction {
+    Nary {
+      Operator: Tex.sum;
+      Lower: i;
+      Upper: N;
+      x sub i;
+    };
+    N;
+  };
+};
+
+ShowMean(values) = ShowValues("mean", values) {
+  Math.Mean(values);
+};
+
+Example = Block {
+  ShowMean([14, 2]);
+  ShowMean([1, 10]);
+  ShowMean([-12, 18, 13, 56, 23]);
+};
+
+Main.Help = new HelpExample(attribute(Math.Mean));
+
+

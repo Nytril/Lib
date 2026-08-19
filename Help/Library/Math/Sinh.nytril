@@ -1,0 +1,47 @@
+include "Help";
+
+using Format;
+
+Range = -Math.PI..Math.PI;
+
+Description = DescriptionBlock {
+  EquationPar {
+    var x = Symbol("x");
+    Symbol("y");
+    Tex.Equals;
+    Fraction {
+      Symbolic.E sup x - Symbolic.E sup -x;
+      2;
+    };
+  };
+
+  Chart(100%, 2") {
+    ChartType: ChartTypes.Line;
+    XAxis: ChartAxis {
+      TextDigits: 1;
+      Range step Math.PI/6;
+    };
+
+    ValueAxis: ChartAxis;
+
+    ChartSeries {
+      foreach (var x in Range step Math.PI/8)
+        new DataPoint(x, Math.Sinh(x));
+    };
+  };
+};
+
+ShowSinh(x) = Span {
+  TextDigits: 8;
+  "The hyperbolic sine of {0} is {1}."(x, Math.Sinh(x));
+};
+
+Example = Block {
+  ShowSinh(0);
+  ShowSinh(Math.PI / 3);
+  ShowSinh(Math.PI / 2);
+};
+
+Main.Help = new HelpExample(attribute(Math.Sinh));
+
+

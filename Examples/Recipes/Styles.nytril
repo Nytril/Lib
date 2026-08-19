@@ -1,0 +1,295 @@
+using Format, IO, Units, Measures, Math;
+
+include "Tags";
+
+namespace RecipeStyle {
+  Header1(title) = Paragraph {
+    TextHeight: 20pt;
+    TextUnderline: TextUnderlines.Single;
+    Bold;
+    title;
+  };
+
+  Header = Span {
+    TextHeight: 16pt;
+    TextFamily: TextFamilies.TimesNewRoman;
+    TextColor: Colors.Black;
+  };
+
+  SubHeader = Span {
+    TextHeight: 14pt;
+    TextColor: Colors.DarkGray;
+  };
+
+  MainText = Span {
+    TextHeight: 9pt;
+  };
+
+// Styling for the Ingredients in each Recipe
+  IngredientStyles(food, multiplier) = Paragraph {
+    LeftIndent: Metrics.Indent;
+    MainText {
+      Separator: Space;
+      if (food.Portion.Amount > 0)
+        food.Portion.Unit.Show(food.Portion.Amount * multiplier) {Italic};
+      food.Text ?? food.Food.Name;
+    }
+  };
+
+  ShowIngredients(istep, multiplier) = Block {
+    Paragraph {
+      SubHeader {
+        istep.?Title;
+      };
+    };
+    IngredientStyles(each istep.Ingredients, multiplier);
+  };
+
+// Formatting information for the Disclaimer section
+  DisclaimerStyles(recipe) {
+    var diets = recipe.?Diets;
+
+    if (diets is valid and (diets.Length > 0)) {
+      return Paragraph {
+        X: ExtentMargin.Left;
+        // Puts the Paragraph at the bottom of the page
+        Y: ExtentHeight - 1";
+        Header {
+          TextHeight: 12pt;
+          "Disclaimer: ";
+        };
+        MainText {
+          "This recipe is ";
+          Span {
+            Separator: ", ";
+            LastSeparator: " and ";
+            (each diets).Name;
+          };
+        };
+      };
+    }
+    return null;
+  }
+
+// Styling information for the Instructions for each Recipe
+  PortionFormat(multiplier, food) = Span {
+    if (food.Portion.Amount > 0)
+      food.Portion.Unit.Show(food.Portion.Amount * multiplier);
+    Space;
+    food.Food.Name;
+  };
+
+  InstructionAmounts(foodlist, multiplier) = Span {
+    Separator: ", ";
+    LastSeparator: " and ";
+    PortionFormat(multiplier, each foodlist);
+  };
+
+  InstructionStyles(instruction, multiplier) = Paragraph {
+    LeftIndent: Metrics.Indent;
+    SpaceAfter: 6pt;
+    MainText {
+      Separator: Space;
+      if (instruction.Food is valid)
+        instruction.Text(InstructionAmounts(instruction.Food, multiplier));
+      else
+        instruction.Text;
+    };
+  };
+
+  ShowInstructions(istep, multiplier) = Block {
+    if (exists istep.?Title) {
+      SubHeader {
+        istep.Title;
+      };
+    }
+    InstructionStyles(each istep.Instructions, multiplier);
+  };
+
+// Main Display Function: All above functions get called here
+  ShowRecipe(recipe, multiplier) = Paragraph {
+    DocFields.Anchor(recipe.Id);
+    var body  = ExtentSize;
+    var width = body.Width;
+    var x     = width * 0.15;
+    var y     = body.Height * 0.1;
+    var size  = new Size(width - x, body.Height - y);
+
+    Canvas(size.Width, size.Height) {
+      var picture = recipe.?Picture;
+      if (picture is valid) {
+        Frame {
+          X: x;
+          Y: y;
+          Canvas(null, null, new Edge(5, 0, 80%)) {
+            BorderRadius: 10;
+            BorderClip: true;
+            Opacity: 20%;
+            FitBox(picture, size.Width, size.Height);
+          };
+        };
+      }
+      VBox {
+        // Aligns Frames within Group on on top of each other
+        Frame(width) {
+          Header {
+            Bold;
+            recipe.Title;
+          };
+          MainText {
+            recipe.?Blurb;
+          };
+          var author = recipe.?Author;
+          if (author is valid) {
+            SubHeader {
+              Bold;
+              "Recipe by {0} {1}"(author.First, author.Last) ?? null;
+            };
+          }
+        };
+
+        var steps = recipe.Steps.ToArray;
+        Frame(width * 0.6) {
+          HAlignment: HAligns.Right;
+          ShowIngredients(each steps, multiplier);
+        };
+        Space;
+        Frame(width * (steps.Length > 1 ? 1 : 0.6)) {
+          ShowInstructions(each steps, multiplier);
+          DisclaimerStyles(recipe);
+        };
+      };
+    };
+    PageBreak;
+  };
+}
+
+namespace RecipeStyle.TableOfContents {
+  BuildList(recipe) = Paragraph(null, [new(ExtentWidth, TabTypes.Right, TabLeaders.Dot)]) {
+    TextHeight: 14pt;
+    LeftIndent: Metrics.Indent;
+    Span {
+      Action: new Action(Actions.ToAnchor, recipe.Id);
+      recipe.Title;
+    };
+    Tab;
+    // Page Number of each Recipe
+    DocFields.PageReference(recipe.Id);
+  };
+
+  ListRecipes(recipes) = Block {
+    Header1("Table of Contents");
+    BuildList(each recipes);
+  };
+}
+
+namespace RecipeStyle.Index {
+  bool HasFood(s, food) {
+    if (exists s.Ingredients) {
+      foreach (var i in s.Ingredients) {
+        if (i.Food == food)
+          return true;
+      }
+    }
+    return false;
+  }
+
+  // Checks if each recipe contains the food specified
+  void GatherRecipes(StringDictionary list, recipe, Food food) {
+    foreach (var s in recipe.Steps) {
+      if (HasFood(s, food)) {
+        list.Add(recipe, food.Name);
+        break;
+      }
+    }
+  }
+
+  IndexLinks(recipe) = Paragraph {
+    TextHeight: 12pt;
+    FirstIndent: Metrics.Indent;
+    Separator: LineBreak;
+    Span {
+      Action: new Action(Actions.ToAnchor, recipe.Id);
+      recipe.Title;
+    };
+  };
+
+  // Gathers Foods that are in each recipe
+  GatherFoods(food, recipes) {
+    var list = new StringDictionary(recipes.Length);
+    GatherRecipes(list, each recipes, food);
+    return Block {
+      if (list.Length > 0) {
+        Paragraph {
+          TextHeight: 14pt;
+          food.Name;
+        };
+        IndexLinks(each list.ToArray);
+      }
+    };
+  }
+
+  int Alphabetize(x, y) = x.Name.Compare(y.Name);
+
+  AlphaFoods = Foods.ToSortedArray(true, @Alphabetize);
+
+  ListIndex(recipes) = Block {
+    Header1("Index");
+    foreach (var f in AlphaFoods)
+      GatherFoods(f, recipes);
+  };
+}
+
+namespace RecipeStyle.TitlePage {
+  const BorderSize = 3pt;
+  const Angle      = 4 degrees;
+
+
+  BookFrame(Size size, angle, color) {
+    var e = new Edge(BorderSize, 0, color);
+
+    return Canvas(size.Width + BorderSize*2, size.Height + BorderSize*2, angle < 0 ? new Border(e, e, new(BorderSize, 0, 80%), e) : new Border(new(BorderSize, 0, 90%), e, e, e)) {
+      BorderClip: true;
+      Transform: Transform.Rotate(angle) Transform.Skew(angle, angle);
+      TransformFit: true;
+    };
+  }
+
+  ShowPage = Block {
+    var size = new Size((ExtentWidth * 0.48), 5");
+
+    SectionNextPage;
+    Paragraph {
+      SpaceBefore: 1";
+      HBox {
+        VAlign: Top;
+        BookFrame(size, -Angle, Colors.Brown) {
+          FitBox(new Image(res "frontimage.jpg"), size.Width, size.Height);
+        };
+        BookFrame(size, Angle, #c54A4A#) {
+          Frame(size.Width, size.Height) {
+            ParAlignment: Center;
+            Paragraph {
+              SpaceBefore: 0.5 inch;
+              TextHeight: 64pt;
+              TextColor: Colors.Brown;
+              TextFamily: TextFamilies.TimesNewRoman;
+              "Recipe Book";
+            };
+            Paragraph {
+              TextHeight: 14pt;
+              SpaceBefore: 1";
+              MyRecipes.Length;
+              Space;
+              "Delicious Recipes Inside";
+            };
+            Paragraph {
+              TextFormat: "MMMM yyyy";
+              DateTime.Now;
+            };
+          };
+        };
+      };
+    };
+  };
+}

@@ -1,0 +1,31 @@
+using Format;
+
+//======================================================================
+
+Main.Documents = new MainDocumentClass;
+
+class MainDocumentClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#1a300c2d-9765-4aad-9e17-991b7b6a158d#, "Document with Sidebar")
+  }
+
+  override GetDocument = Document {
+     var borderwidth   = 5pt;
+     var borderpadding = 10pt;
+
+    Frame(1", ExtentPage.Height - borderwidth*2 - borderpadding*2, new Edge(borderwidth, borderpadding, Colors.Blue)) {
+      Wrapping: Wrappings.BehindText;
+      HRelative: HRelatives.Page;
+      VRelative: VRelatives.Page;
+      Background: Colors.AntiqueWhite;
+      TextColor: Colors.Brown;
+
+      "Side Line " + each 1..20;
+    };
+    Block {
+      "Content Line " + each 1..40;
+    }
+  };
+}
+//======================================================================
+

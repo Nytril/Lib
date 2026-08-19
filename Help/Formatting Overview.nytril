@@ -1,0 +1,483 @@
+using Format;
+
+include "NytrilStyle";
+
+//==========================================================================
+
+readonly MyDocument Main.Documents.FormattingOverview = new;
+
+//==========================================================================
+
+readonly namespace<Attribute[]> FormatSet {
+  CSpan  = [attribute Span, attribute object];
+  CPar   = [attribute Paragraph] + CSpan;
+  CBlock = [attribute Block, attribute Table, attribute ListBlock] + CPar;
+  CPath  = [attribute LineTo, attribute QuadTo, attribute CurveTo, attribute ArcTo];
+}
+
+//==========================================================================
+
+readonly namespace Examples {
+
+ExamplePar = Paragraph {
+  TextHeight: 8pt;
+  "First element. ";
+  "Second element. ";
+};
+
+RevisedPar = ExamplePar {
+  TextColor: Colors.Red;
+  "Third element. ";
+};
+
+BluePar = RevisedPar {
+  TextColor: Colors.Blue;
+};
+
+ExampleSpan = Span {
+  "Here is a span of text with ";
+  Span {
+    TextColor: Colors.Red;
+    "a red";
+  };
+  "span inside. ";
+};
+
+ComplexPar = Paragraph {
+  ParAlignment: Justify;
+  LeftIndent: 8pt;
+  RevisedPar;
+  "Plain text";
+  Span {
+    "Inline span with custom formatting";
+    TextHeight: 120%;
+    Underline;
+  };
+};
+
+ExampleBlock = Block {
+  TextHeight: 12pt;  // All the text, in all the elements, will be 12pt
+  ComplexPar;
+  Paragraph {
+    "Inline paragraph";
+    TextHeight: 10pt;   // Override the TextHeight setting above
+  };
+  Span {"Converts to a separate paragraph"};
+  "This string becomes a paragraph";
+  5 + 3;  // Computes the value 8 and becomes a paragraph;
+};
+
+ExampleDoc = Document(new(0.5", 1", 0.5", 0.75")) {
+  Header: MarginBlock {
+    "Title";
+  };
+  Footer: MarginBlock {
+    Paragraph {
+      ParAlignment: Center;
+      "Page "; DocFields.PageNumber;
+    };
+  };
+  "Here is the content";
+  ExampleBlock;
+};
+
+
+namespace TestOutput {
+  TestNumber(number) = Span {
+    "The number is ";
+    number;
+    if (number > 9)
+      ", which is quite large. ";
+    else
+      ". ";
+  };
+
+  UseContent = Block {
+    // Call the function declared above
+    TestNumber(5);
+    TestNumber(15);
+  };
+}
+
+}
+//==========================================================================
+
+class MyDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#50caebbc-2e60-41dd-a67c-2da8953df8f3#, "Formatting and Styling Basics");
+  }
+
+  override GetDocument = Document(0.6") {
+    TextHeight: 11pt;
+
+    Heading {
+      TextHeight: 24pt;
+      Name;
+    };
+
+    BodyPar {
+      "Nytril lets you put text and data into a document quickly and easily. ";
+      "Once you have done that, you'll want to add some formatting and style. ";
+      "Please take a few minutes to read the sections below to learn the basics of revisions and formatting to prevent common misunderstandings. ";
+     };
+
+    BodyPar {
+      "Formatters are the way to turn data into visible content. ";
+      "Use them to place your data into a paragraph, table, document or even a popup tip. ";
+      "Formatters retain a link to the data so you and your users can easily find the source for any part of a document with a simple control-click. ";
+    };
+
+    Heading {"Revisions"};
+    BodyPar {
+      "A revision is a set of expressions (each one ending with a semicolon) that are enclosed in curly braces {...}. ";
+      "Each expression in the revision can either be an "; Emph "element"; " or a "; Emph "property"; DotSpace;
+    };
+
+    ListBlock {
+      Paragraph {
+        "An element is a number, string or some other value like a date. ";
+        "It can be a variable holding a value or function call that returns a value. ";
+      };
+      Paragraph {
+        "A property is a "; Bold "field: value"; " pair that gives a formatter styling information. ";
+        "It can also be used to specify content for some formatters. ";
+      };
+    };
+    BodyPar {
+      "Elements are added to a revision in order of appearance. ";
+      "If an element is an array, then the array itself is not added to the revision. Instead, all the values in the array are added to the revision in order, without changing the array. ";
+      "Properties, on the other hand, have no order and can be specified at any place in the revision. ";
+      "Regardless of where they are placed, they effect the entire revision. ";
+      "For instance the "; attribute Bold; " property makes all the text bold, regardless of whether it is placed at the beginning, middle or end of the revision. ";
+    };
+    BodyPar {
+      "The entire revision {...} is treated as a single object that can be used to 'operate' on a formatter. ";
+      "When a formatter is 'revised' in this way, a separate object is created that represents the revised formatter. ";
+      Emph "Neither the formatter nor the revision are changed by this operation. ";
+      "This means that revisions can be built from other revisions without causing side effects. ";
+      "A revised formatter can, in turn, be revised further to achieve the desired style structure. ";
+      "This is same idea as cascading style sheets in web programming and styles in word processors. ";
+    };
+
+    BodyPar {
+      "In the example below, the Paragraph is revised to contain one property and two elements. ";
+    };
+    SourcePar(attribute Examples.ExamplePar);
+
+    BodyPar {
+      "These revisions can be combined with other revisions. ";
+      "The next example shows another revision being applied to the previous one, to give it more content and change its color. ";
+    };
+    SourcePar(attribute Examples.RevisedPar);
+
+    BodyPar {
+      "If a new revision has a property that is the same as a property from a previous revision (in this case TextColor), then the latter overrides the former. ";
+      "In the next example, the red paragraph from the previous example is revised with a blue color. ";
+      "Again, this does not change the previous paragraph, but instead makes a new object with the revised properties. ";
+      "This allows you to reuse existing styles, while making surgical changes as needed. ";
+    };
+    SourcePar(attribute Examples.BluePar);
+
+    Heading {"Computed Content"};
+    BodyPar {
+      "If you are used to working with markup languages, it is easy to forget that the content in Nytril is not static. ";
+      "In Nytril, no content is actually added until the statements creating the content are executed at runtime. ";
+      "This execution occurs when you refresh the document (by pressing F5). ";
+      "As you look at the examples, keep in mind that each of them is a function that executes line by line, just like a normal computer program. ";
+      "If you want to see this in action, simply set a breakpoint on a line by clicking just to the left of the line numbers in your code. ";
+      "When you refresh the document, the program will stop at the breakpoint, and you will be able to step through the logic of your code. ";
+      "The code below shows a more complex set of functions that use an "; ShowStatement(attribute if); " statement to make a decision about what content to include depending on the value of a number. ";
+      "This topic is covered more detain in the "; DocLink("Tutorial", #fda46c87-c829-4c9d-9d64-c89b07aa6643#, "Chapters.Language.Sections.Revisions.Content.Introduction"); DotSpace;
+    };
+    SourcePar(attribute Examples.TestOutput);
+
+    Heading {"Content Flow"};
+    BodyPar {
+      "In general there are two ways that content can flow in a document. ";
+      ListBlock {
+        ListItem {
+          Paragraph {
+            Bold;
+            "Vertical or 'block'";
+          };
+          ListPar {
+            "In vertical flow, the children are allowed to take up the entire horizontal space between margins, and flow downward to the bottom of the page. ";
+            "If the bottom of the page is reached, a new page is created, and the content will continue to flow. ";
+          };
+          DocCanvas {
+            HAlign: Center;
+            Canvas(80%, 20%) {
+              Margin: PadT(20%);
+              HAlign: Center;
+              VAlign: Center;
+              "Paragraph";
+              Background: 95%;
+            };
+            Canvas(80%, 40%) {
+              Margin: PadT(20%);
+              HAlign: Center;
+              VAlign: Center;
+              "Table";
+              Background: 95%;
+            };
+            Icons.arrow_downward;
+          };
+        };
+        ListItem {
+          Bold "Horizontal or 'span'";
+          ListPar {
+            "In horizontal flow, the child elements become runs of rectangular 'characters' like text, icons, frames, canvases and images. ";
+            "These characters are aligned horizontally, end-to-end on a line, and vertically on the baseline of the text. ";
+            "When the line is too long, a new line is created. ";
+            "When the paragraph runs out of room on a page, a new page is created and the process continues. ";
+          };
+          DocCanvas {
+            TextHeight: 7pt;
+            HAlign: Center;
+            HBox(80%, 20%) {
+              Margin: PadT(20%);
+              Paragraph {
+                ParAlignment: Justify;
+                "Content fills horizontally ";
+                Icons.arrow_forward;
+                " until the end of the line is reached and a "; Underline "new line"; " is created. ";
+              }
+            };
+          };
+        };
+      }
+    };
+
+    Heading {"The Basic Formatters"};
+    BodyPar {
+      "Now that you understand a little about the two kinds of flow, let's take a look at a few of the workhorses. ";
+      "In most documents, almost all of the formatting work will be handled by the formatters below. ";
+      "There is a comprehensive list of formatters at the end. ";
+    };
+
+    SubHeading {"Span"};
+    BodyPar {
+      "A Span is a collection of elements with its own text-formatting properties. ";
+      "A Span never exists in a document by itself and will always be placed inside a Paragraph either explicitly or implicitly. ";
+      "If you want to changed the formatting of some text in a paragraph without changeing the text around it, put it in a Span. ";
+    };
+    SourcePar(attribute Examples.ExampleSpan);
+
+    SubHeading {"Paragraph"};
+    BodyPar {
+      "A Paragraph can be thought of as a block that has flowing Spans within. It also has extra properties such as tab stops, indenting, justification and borders. ";
+      "A Paragraph will take up the available horizontal space inside the margins of whatever space it happens to be inside, and will flow left-to-right and downward. ";
+      "There are no 'levels' in a Paragraph. If there are inner Spans, they simply become a differently formatted sections of text inside the Paragraph. ";
+    };
+    SourcePar(attribute Examples.ComplexPar);
+
+    SubHeading {"Block"};
+    BodyPar {
+      "A Block is a collection of Paragraphs and Tables (and other Blocks) that flow downward in a document. ";
+      "A Block is a convenient way of gathering vertically oriented content together and assigning common properties to the elements. ";
+      "If a child element of a block is not already a Paragraph or Table, it will be 'promoted' the be a Paragraph and it will appear on a new line. ";
+      "If a Block contains another Block, it simply means that the outer Block will add the content of the inner Block to itself. ";
+      "In other words, no nesting 'levels' are created inside a block. ";
+      "In this way, pre-formed Paragraphs and Blocks can be stitched together and reused in a different contexts. ";
+    };
+    BodyPar {
+      "The nature of the outer formatter determines how its inner elements are interpreted. ";
+      "Keep in mind that each formatter can only allow certain formatters to be its children. ";
+      "For example, if we try to add a complex formatter like a Table to a Paragraph, there would be no clear way for the table to \"flow\" with the other text in the paragraph horizontally. ";
+      "A table needs to take up the entire horizontal extent of its parent, so a table must be placed in a block. ";
+    };
+    SourcePar(attribute Examples.ExampleBlock);
+
+    SubHeading {"Document"};
+    BodyPar {
+      "A Document is a Block with many additional properties such as paper size, headers, footers, gutter, etc. ";
+      "The example below shows a Document with custom margins. ";
+      "Notice that the Header and Footer are not Elements of the Document, but are expressed as Properties. ";
+      "Just as in a Block, the content of the document itself is expressed as separate Elements of the Revision that operates on the document. ";
+    };
+    SourcePar(attribute Examples.ExampleDoc);
+
+    SubHeading {"Formatters by category"};
+    BodyPar {
+      "Below is a comprehensive list of the formatters and the container rules. ";
+      "It is critical to understand that each formatter has a very specific set of characteristics the serve a particular formatting need. ";
+      "The important thing is that these formatters can be mixed and matched to generate documents of great complexity. ";
+    };
+
+    Category("Common") {
+      ShowGroup(attribute Span, FormatSet.CSpan);
+      ShowGroup(attribute DropCap, FormatSet.CSpan);
+      ShowGroup(attribute ListSpan, FormatSet.CSpan);
+      ShowGroup(attribute Paragraph, FormatSet.CSpan);
+      ShowGroup(attribute Block, FormatSet.CBlock, attribute Paragraph);
+      ShowGroup(attribute ListBlock, FormatSet.CPar, attribute Paragraph);
+      ShowGroup(attribute ListItem, FormatSet.CBlock, attribute Paragraph);
+      ShowGroup(attribute TextBlock, FormatSet.CPar, attribute Paragraph);
+      ShowGroup(attribute Frame, FormatSet.CBlock, attribute Paragraph);
+    };
+
+    Category("Tables") {
+      ShowGroup(attribute Table, [attribute Row], attribute Row);
+      ShowGroup(attribute Row, [attribute Cell], attribute Cell);
+      ShowGroup(attribute Cell, FormatSet.CBlock, attribute Paragraph);
+    };
+
+    Category("Math") {
+      ShowGroup(attribute Fraction, FormatSet.CBlock, attribute Paragraph);
+      ShowGroup(attribute Nary, FormatSet.CBlock, attribute Paragraph);
+      ShowGroup(attribute Radical, FormatSet.CBlock);
+      ShowGroup(attribute AlignBlock, [attribute Paragraph], attribute Paragraph);
+      ShowGroup(attribute MatrixBox, [attribute Row], attribute Row);
+    };
+
+    Category("Chart") {
+      ShowGroup(attribute Chart, [attribute ChartSeries]);
+      ShowGroup(attribute ChartSeries, [attribute DataPoint, attribute double]);
+      ShowGroup(attribute ChartAxis, [attribute double]);
+      ShowGroup(attribute ChartLegend, [attribute Paragraph]);
+    };
+
+    Category("Drawing") {
+      ShowGroup(attribute TreeBox);
+      ShowGroup(attribute QRBox);
+      ShowGroup(attribute FitBox);
+      ShowGroup(attribute Canvas, [attribute Block]);
+      ShowGroup(attribute HBox, [attribute Block]);
+      ShowGroup(attribute VBox, [attribute Block]);
+    };
+
+    Category("Shape") {
+      ShowGroup(attribute Shape, [attribute object, attribute ClosedPath, attribute OpenPath]);
+      ShowGroup(attribute ClosedPath, FormatSet.CPath);
+      ShowGroup(attribute OpenPath, FormatSet.CPath);
+      ShowGroup(each FormatSet.CPath);
+    };
+
+    Category("Document") {
+      ShowGroup(attribute Document, FormatSet.CBlock + [attribute MarginBlock, attribute SectionContinuous, attribute SectionNextPage, attribute SectionOddPage, attribute SectionEvenPage], attribute Paragraph);
+      ShowGroup(attribute SectionNextPage, [attribute MarginBlock]);
+      ShowGroup(attribute SectionOddPage, [attribute MarginBlock]);
+      ShowGroup(attribute SectionEvenPage, [attribute MarginBlock]);
+      ShowGroup(attribute SectionContinuous);
+      ShowGroup(attribute Cite, [attribute DocReference], attribute DocReference);
+      ShowGroup(attribute Figure, FormatSet.CBlock);
+      ShowGroup(attribute DocumentIndex);
+      ShowGroup(attribute DocumentEndnotes);
+    };
+  };
+
+  BodyPar = Paragraph {
+    SpaceBefore: 8pt;
+    ParAlignment: Justify;
+  };
+
+  ListPar = Paragraph {
+    ParAlignment: Justify;
+  };
+
+  Emph = Bold Italic;
+
+  Heading = Paragraph {
+    KeepWithNext: true;
+    ParAlignment: Center;
+    SpaceBefore: 10pt;
+    TextHeight: 16pt;
+    Bold;
+  };
+
+  SubHeading = Paragraph {
+    KeepWithNext: true;
+    TextBackground: 95%;
+    SpaceBefore: 8pt;
+    TextHeight: 14pt;
+    TextFace: Mono;
+    Bold;
+  };
+
+  DocCanvas = VBox(1.5", 1.5", new Edge(0.5, 0, Colors.Gray)) {
+    Margin: PadTB(5);
+  };
+
+  DocLink(name, Guid id, anchor) = Span {
+    name;
+    TextColor: NytrilPalette.Hyperlink;
+    Action: new Action(ToDocAnchor, "{0}/{1}"(id, anchor));
+  };
+
+  SourcePar(Attribute value) = Paragraph  {
+    TextFace: Mono;
+    SpaceBefore: 8pt;
+    LeftIndent: 16pt;
+    RightIndent: 16pt;
+    TextHeight: 9pt;
+    ParBackground: 97%;
+    SourceSelection(value);
+  };
+
+  ShowStatement(Attribute a) = Span {
+    a;
+    Tip: a;
+  };
+
+  Category(name) = Block {
+    LeftIndent: 8pt;
+    Paragraph {
+      ParBackground: NytrilPalette.TableTitleBack;
+      LeftIndent: -8pt;
+      KeepWithNext: true;
+      SpaceBefore: 8pt;
+      TextHeight: 14pt;
+      Bold;
+      ParAlignment: Center;
+      TextColor: NytrilPalette.TableTitleFore;
+      name;
+    };
+  };
+
+  ShowGroup(Attribute a, Attribute[] inputs=null, Attribute convert=null) = Block {
+    Paragraph {
+      KeepWithNext: true;
+      SpaceBefore: 8pt;
+      TextHeight: 13pt;
+      TextFace: Mono;
+      Bold;
+      Span {
+        a.Name;
+        Tip: a;
+      }
+    };
+
+    Paragraph {
+      LeftIndent: 16pt;
+      a.Description;
+      DotSpace;
+
+      if (inputs is valid) {
+        "Children may include: [";
+        Span {
+          TextFace: Mono;
+          Separator: CommaSpace;
+          foreach (var i in inputs) {
+            Span {
+              i.Name;
+              Tip: i;
+            };
+          }
+        };
+        "]. ";
+      }
+
+      if (convert is valid) {
+        "It will convert its child elements to ";
+        Span {
+          TextFace: Mono;
+          convert.Name;
+          Tip: convert;
+        };
+        " if they are not already of that type. ";
+      }
+    };
+  };
+}
+
+

@@ -1,0 +1,19 @@
+using Format, IO, Units, Math;
+
+//TypeSearch(func) = RecipeTags.FindSlice(func);
+
+//FoodName(num) = RecipeTags.Foods.num.SymboName;
+
+Diet(name, restrictions=null) = {
+  Name: name;
+  Restrictions: restrictions
+};
+
+namespace DietTags {
+  Vegetarian = Diet("Vegetarian", [Foods.Chicken]);
+  Vegan      = Diet("Vegan", [Foods.Chicken, Foods.Milk]);
+  DairyFree  = Diet("Dairy Free", [Foods.Milk]);
+  GlutenFree = Diet("Gluten Free", [Foods.Bread]);
+  Kosher     = Diet("Kosher");
+  Halal      = Diet("Halal");
+}

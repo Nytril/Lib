@@ -1,0 +1,15 @@
+include "English";
+include "Spanish";
+
+Configuration Main.Configurations.English = new(#6bdcd55c-ca02-403a-abc6-199166ade49b#, "English",
+  Languages.English,
+  PaperSystems.US,
+  UnitSystems.Imperial
+);
+
+Configuration Main.Configurations.Spanish = new(#d76d7dc5-6d8f-42f1-bf8b-256f461d54e0#, "Spanish",
+  Languages.Spanish,
+  PaperSystems.A,
+  UnitSystems.Metric,
+  "es-ES"
+);

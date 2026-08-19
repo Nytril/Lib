@@ -1,0 +1,13 @@
+include "Help";
+
+using Format;
+
+Example = Paragraph {
+  TextPercent: true;
+  TextDigits: 2;
+  0.0423857;
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextPercent));
+
+

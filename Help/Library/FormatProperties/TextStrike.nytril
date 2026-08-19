@@ -1,0 +1,18 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  TextHeight: 20pt;
+
+  Paragraph {"Regular Text"};
+  Paragraph {TextStrike: TextStrikes.Single; "Single Strike"};
+  Paragraph {TextStrike: TextStrikes.Double; "Double Strike"};
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextStrike));
+
+//============================================================
+

@@ -1,0 +1,245 @@
+using Format;
+//======================================================================
+
+namespace Chapters.Formatting.Sections.ImageFormatting;
+
+readonly TutorialLesson Lesson = new(#9c7a42e1-3824-4a13-873f-0aa1ab491b65#, "Image Formatting", "ImageFormatting", "img", "https://youtu.be/pO2NJcN5Ae0?si=de92dwNemAeKf1BD") {
+  Description: Span {
+    "Images loaded from external files are an important part of most documents. ";
+    "To use an image find the path relative to your source code. Then, load the image into a variable. ";
+    "Next, you can scale and format the image, and place it into a Paragraph.";
+  };
+};
+
+//======================================================================
+
+readonly Image Zombie = new(res "Zombie.png");
+
+ZombieText = Paragraph {
+  "Zombies eat brains! ";
+  FitBox(Zombie, 20%, 20%);
+};
+
+readonly LessonExample Content.LoadImageEx = new(#9803ccd8-0261-48f8-b5b2-26bf7a61e4b6#, "Bitmap Images") {
+  Text: Span {
+    "Bitmap pictures are represented with an {0} object which accepts a path to a local file. "(NytrilStyle.Class(attribute Image));
+    "Placing the {0} operator in front of the file name to causes the compiler to search for the path at compile time. "(NytrilStyle.KW(attribute res));
+    "This causes a missing file to be a compile error, rather than a runtime error. ";
+  };
+  Code: [attribute Zombie, attribute ZombieText];
+  Sel: new(0, 9, 5);
+  Options: NoShort;
+};
+
+//======================================================================
+
+readonly Drawing NytrilBug = new(res "Figure.svg");
+
+ScaleFigure = Paragraph {
+  FitBox(NytrilBug, 10%);
+};
+
+readonly LessonExample Content.LoadDrawingEx = new(#3d077b1f-51fd-4a78-a954-23944ab04242#, "Scalable Drawings") {
+  Text: Span {
+    "Scalable drawings like SVG files are represented with a {0} object. "(NytrilStyle.Class(attribute Drawing));
+    "Whether an {0} or {1}, it is a good practice to load images into a variable with the {2} attribute to ensure that the file is loaded only once. "(NytrilStyle.Class(attribute Image), NytrilStyle.Class(attribute Drawing), NytrilStyle.KW(attribute readonly));
+  };
+  Code: [attribute NytrilBug, attribute ScaleFigure];
+  Sel: new(0, 9, 7);
+  Options: NoShort;
+};
+
+//======================================================================
+
+ChangeBaseline = Block {
+  Paragraph {
+    "No baseline adjustment: ";
+    FitBox(NytrilBug, 5%);
+  };
+  Paragraph {
+    "Baseline at 70%: ";
+    FitBox(NytrilBug, 5%) {Baseline: 70%};
+  };
+};
+
+readonly LessonExample Content.ChangeBaselineEx = new(#c5e37bf9-11d3-444f-8de2-28dcf2d9bf99#, "Change Baseline") {
+  Text: "Use the {0} property to set the baseline of the image for alignment with other text. "(NytrilStyle.PropName(attribute FormatProperties.Baseline));
+  Code: [attribute ChangeBaseline];
+  Sel: new(7, 27, 13);
+  Options: NoShort;
+};
+
+//======================================================================
+
+PictureWidth = FitBox(Zombie, 4%);
+
+readonly LessonExample Content.ResizeWidthEx = new(#cb60234b-449a-4bb2-902c-8354c38fd9f5#, "Fit to Width") {
+  Text: Span {
+    "You can fit an image to a given size using the {0} formatter. "(NytrilStyle.Formatter(attribute FitBox));
+    "Here we set the width parameter to fit an image to a given width, while scaling the height proportionately. ";
+  };
+  Code: [attribute PictureWidth];
+  Sel: new(0, 30, 2);
+};
+
+//======================================================================
+
+PictureHeight = FitBox(Zombie, null, 10%);
+
+readonly LessonExample Content.ResizeHeightEx = new(#e97b37b3-83b8-4a32-b0e1-ca100817d640#, "Fit to Height") {
+  Text: Span {
+    "Set the height parameter to fit an image to a given height, while scaling the width proportionately. ";
+  };
+  Code: [attribute PictureHeight];
+  Sel: new(0, 37, 3);
+};
+
+//======================================================================
+
+PictureBoth = FitBox(Zombie, 10%, 20%);
+
+readonly LessonExample Content.ProportionalEx = new(#3b83f10a-3744-4cf8-aa70-8ed4a50108ef#, "Fit to Rectangle") {
+  Text: "Fit an image inside both a given width and height, while maintaining proportion. ";
+  Code: [attribute PictureBoth];
+  Sel: new(0, 29, 8);
+};
+
+//======================================================================
+
+PictureSkew = FitBox(Zombie, 20%, 10%, null, true);
+
+readonly LessonExample Content.PictureSizeEx = new(#42acc03e-7ef1-478a-bf2b-8a53f8ce40db#, "Force Dimensions") {
+  Text: "Force an image to a given size without preserving the image aspect ratio by setting the skew parameter to true. ";
+  Code: [attribute PictureSkew];
+  Sel: new(0, 45, 4);
+  Tip: [LessonTip(10, 2, "Out of proportion", 0, 5)];
+};
+
+//======================================================================
+
+PictureOpacity(opacity) = VBox {
+  Opacity: opacity;
+  HAlign: Center;
+  TextDigits: 0;
+  opacity;
+  FitBox(Zombie, 5%);
+};
+
+ShowPictureOpacity = Paragraph {
+  Separator: Space*5;
+  PictureOpacity(each (10%..100% step 10%))
+};
+
+readonly LessonExample Content.OpacityEx = new(#265759f2-86d3-4e82-a35d-e77e15c21ad9#, "Opacity") {
+  Text: "Use the {0} property to change how opaque the contents of a formatter appear. "(NytrilStyle.PropName(attribute FormatProperties.Opacity));
+  Code: [attribute PictureOpacity, attribute ShowPictureOpacity];
+  Sel: new(1, 2, 17);
+};
+
+//======================================================================
+
+ImageMode(ScalingModes mode) = VBox {
+  Margin: PadR(10pt);
+  HAlign: Center;
+  mode;
+  FitBox(Zombie, 7%) {ScalingMode: mode};
+};
+
+ShowPictureMode = Paragraph {
+  ImageMode(each ScalingModes);
+};
+
+readonly LessonExample Content.PictureModesEx = new(#76ad82ae-4dee-495f-8de8-78e8f0996a31#, "Scaling Mode") {
+  Text: "Use the {0} property to change how the pixels of the bitmap scale and resolve. "(NytrilStyle.PropName(attribute FormatProperties.ScalingMode));
+  Code: [attribute ImageMode, attribute ShowPictureMode];
+  Sel: new(4, 22, 17);
+  Options: NoShort;
+};
+
+//======================================================================
+
+readonly Image Sally = new(res "../Examples/Family Tree/SallyJones.jpg");
+
+FrameFigure(Image image, w) = Canvas(null, w*1.6, new Edge(w*10%, 0, #DCBC93#)) {
+  Background: 95%;
+  BorderRadius: w*50%;
+  BorderClip: true;
+  FitBox(image, null, w*1.4);
+};
+
+SallyFrame = FrameFigure(Sally, Math.Max(ExtentWidth, ExtentHeight) * 10%);
+
+readonly LessonExample Content.FrameFigureEx = new(#cd2b5c8f-df81-4fc3-a80c-c6f3b0973f46#, "Framed Drawings") {
+  Text: "Clip an image inside a border by setting the {0} property to true. "((NytrilStyle.PropName(attribute FormatProperties.BorderClip)));
+  Code: [attribute Sally, attribute SallyFrame];
+  Sel: new(5, 2, 17);
+};
+
+//======================================================================
+
+readonly Image Michael = new(res "../Examples/Family Tree/MichaelJones.jpg");
+
+RotateFrame(Image image, w, angle) = FrameFigure(image, w) {
+  Transform: Transform.Rotate(angle) Transform.Skew(angle, angle);
+  TransformFit: true;
+};
+
+Locket = HBox {
+  VAlign: Top;
+  var w = Math.Max(ExtentWidth, ExtentHeight) * 5%;
+  RotateFrame(Sally, w, -8 degrees);
+  Canvas(w*5%, w*50%) {Margin: PadT(w*60%); Background: #C9AC87#};
+  RotateFrame(Michael, w, 8 degrees);
+};
+
+readonly LessonExample Content.RotateFrameEx = new(#89a68c6f-64ab-442c-9c2f-0c8bd3a7e481#, "Rotated Drawings") {
+  Text: "Rotate and skew an image by setting the {0} property. "(NytrilStyle.PropName(attribute FormatProperties.Transform));
+  Code: [attribute Michael, attribute Locket];
+  Sel: new(3, 2, 86);
+  Options: NoShort;
+};
+
+//======================================================================
+
+MenuItem = Paragraph {
+  TextHeight: 200%;
+  Span {Icons.folder; TextColor: Colors.Gold};
+  Space;
+  "Open the folder";
+};
+
+readonly LessonExample Content.IconsEx = new(#0ad2e84e-d10e-4d16-ae64-140f14a561e0#, "Icons") {
+  Text: "The {0} namespace has a library of common material icons. "(NytrilStyle.PropName(attribute Icons));
+  Code: [attribute MenuItem];
+  Sel: new(2, 8, 12);
+  Options: NoShort;
+};
+
+//======================================================================
+
+YouTube(height, URL url) = Canvas(height * 1.4, height) {
+  TipAction: url;
+  HAlign: Center; VAlign: Center;
+  BorderRadius: height * 20%;  Background: #FF0033#;
+  TextColor: Colors.White;
+  TextHeight: height*0.85; TextOffset: 4%;
+  Baseline: 83%;
+  Icons.play_arrow;
+};
+
+IconFigure = Paragraph {
+  YouTube(ExtentWidth * 3%, new("www.youtube.com/@Nytril"));
+  Space;
+  "Follow us on YouTube";
+};
+
+readonly LessonExample Content.IconFigureEx = new(#0ad2e84e-d10e-4d16-ae64-140f14a561e0#, "Icon Drawing") {
+  Text: "Here we place the icon in a box with a hoverable tip, by applying the {0} formatter with a {1} property. "(NytrilStyle.Formatter(attribute Canvas), NytrilStyle.Formatter(attribute FormatProperties.TipAction));
+  Code: [attribute YouTube, attribute IconFigure];
+  Sel: new(1, 2, 15);
+  Tip: [LessonTip(11.5, 1, "https://www.youtube.com/@Nytril", 5 degrees, 5)];
+};
+
+//======================================================================
+
+

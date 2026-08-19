@@ -1,0 +1,11 @@
+include "../Deploy/Tutorial/TextFormatting";
+include "../Deploy/Tutorial/FormatNumbers";
+include "../Deploy/Tutorial/MathFormatting";
+include "../Deploy/Tutorial/Paragraphs";
+
+readonly Attribute[] VideoLessons = [
+  attribute Chapters.Formatting.Sections.TextFormatting,
+  attribute Chapters.Formatting.Sections.FormatNumbers,
+  attribute Chapters.Formatting.Sections.MathFormatting,
+  attribute Chapters.Formatting.Sections.Paragraphs,
+];

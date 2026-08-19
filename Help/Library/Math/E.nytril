@@ -1,0 +1,12 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  "The value of e is {0}"(Math.E);
+  "The natural log of e is {0}"(Math.Log(Math.E));
+};
+
+Main.Help = new HelpExample(attribute(Math.E));
+
+

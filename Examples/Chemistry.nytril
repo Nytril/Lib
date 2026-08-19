@@ -1,0 +1,178 @@
+include "Elements";
+include "Site";
+
+using Format;
+
+readonly namespace Main.Documents {
+  HomePage              Home            = new;
+  PeriodicTableDocument PeriodicTable   = new;
+  PropertiesDocument    PropertiesTable = new;
+  CompoundsDocument     Compounds       = new;
+}
+
+readonly NytrilIconSite Main.Site = new("Nytril.Examples.Chemistry", Icons.science);
+
+//===============================================================
+
+readonly namespace Main.Facts {
+  AE = AtomicElements;
+  CC = ChemicalCompounds;
+  RE = Reactions;
+}
+
+//===========================================================================
+
+Header = Paragraph {
+  KeepWithNext: true;
+  ParAlignment: Center;
+  TextHeight: 20pt;
+  SpaceBefore: 10pt;
+};
+
+//===============================================================
+
+class HomePage: SitePage {
+  Constructor {
+    super.Constructor(Main.Site, #4cff4ec6-8958-499d-a9f3-574593f4ec68#, "Chemistry", "Chemistry and Chemical Compounds");
+
+    Tiles = [
+      new DocTile(Main.Documents.PeriodicTable, Icons.grid_view),
+      new DocTile(Main.Documents.PropertiesTable, Icons.list),
+      new DocTile(Main.Documents.Compounds, Icons.subscript)
+    ];
+  }
+
+  override GetHeader = Block {
+    Paragraph {
+      TextHeight: 40pt;
+      NytrilStyle.SiteIcon(Icons.science);
+      Space;
+      Name;
+    };
+    Paragraph {
+      SpaceAfter: 30;
+      TextHeight: 20pt;
+      Description;
+    };
+  };
+}
+
+//===========================================================================
+
+class PropertiesDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#bc4943cb-c846-4d6a-a9bb-f652f2e11632#, "Element Properties");
+    Description = "List of the properties of each element";
+  }
+
+  override GetDocument = Document(0.75") {
+    Header {Name};
+    ElementPropertiesTable;
+    Paragraph {
+      "Source: ";
+      new URL("pubchem.ncbi.nlm.nih.gov/periodic-table/");
+    };
+
+    Header {"Atomic Mass vs Atomic Number"};
+    Chart(100%, 40%) {
+      ChartType: Line;
+      ChartSeries {
+        Marker: Markers.Circle;
+        foreach (var e in AtomicElements)
+          new DataPoint(each1, e.AtomicWeight) {Reference: e};
+      };
+    };
+
+    Header {"Electronegativity vs Atomic Number"};
+    Chart(100%, 40%) {
+      ChartType: Line;
+      ChartSeries {
+        Marker: Markers.Circle;
+        foreach (var e in AtomicElements)
+          new DataPoint(each0, e.Negativity) {Reference: e};
+      }
+    };
+  };
+}
+
+//===========================================================================
+
+class CompoundsDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#a9395460-f237-4e85-8fd4-242f6b1150b8#, "Compounds");
+    Description = "Some familiar chemical compounds";
+  }
+
+  override GetDocument = Document(0.75") {
+    Header {Name};
+    Table(null, PadR(10), [Column.Fit(3")]) {
+      foreach (var c in ChemicalCompounds) {
+        Row {
+          c.Formula;
+          c.FullName;
+        };
+      }
+    };
+
+    Header {"Chemical Reactions"};
+    Reactions.ToArray;
+    ShowGraph(AtomicElements.Carbon);
+    Header {"Nuclear Reactions"};
+    ThoriumDecay;
+  };
+
+  Decay(e) = VBox(40) {
+    VAlignment: Top;
+    Bracket: Brackets.RightArrow.Bottom;
+    HAlign: Center;
+    e;
+  };
+
+  ThoriumDecay = HBox {
+    VAlign: Center;
+    AtomicElements.Thorium.Isotope(232);
+    Decay(Tex.alpha);
+    AtomicElements.Radium.Isotope(228);
+    Decay(Tex.beta sup Tex.Minus);
+    AtomicElements.Actinium.Isotope(228);
+  };
+
+  ShowGraph(AtomicElement element) = Block {
+    Paragraph {
+      KeepWithNext: true;
+      ParAlignment: Center;
+      ParBackground: 95%;
+      SpaceBefore: 10pt;
+      "Compounds containing ";
+      Span {
+        element.Name;
+        Tip: element;
+      }
+    };
+
+    new Graph {
+      MatchAny(Compound) {
+        MatchAny(AtomicElement) {
+          element;
+        }
+      }
+    };
+  };
+}
+
+//===========================================================================
+
+class PeriodicTableDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#1f930e8e-1b56-4d9f-9a95-432a425055d2#, "Periodic Table of the Elements");
+  }
+
+  override GetDocument = Document(0.25", true) {
+    Header {Name};
+
+    PeriodicTable(ExtentWidth, Math.Min(ExtentWidth*0.7, ExtentHeight));
+  };
+}
+
+//===========================================================================
+

@@ -1,0 +1,122 @@
+using Format;
+
+include "Site";
+
+//=====================================================================
+
+readonly NytrilIconSite Main.Site = new("Nytril.Examples.FingerBinary", Icons.back_hand);
+
+//=====================================================================
+
+readonly HandDocument Main.Documents.MainDocument = new;
+
+class HandDocument: DocumentEntry {
+  const int Fingers    = 5;
+  const int FingerMask = (1 << Fingers) - 1;
+  const BoxHeight      = 0.6";
+
+  Constructor {
+    super.Constructor(#9cb86582-ab51-455a-8350-c69f1d90008a#, "Finger Binary");
+    Title       = Name;
+    Description = "Powerful finger couting method";
+  }
+
+  override GetDocument = Document(0.5") {
+    ShowHands(true, "Palms facing the person counting");
+    PageBreak;
+    ShowHands(false, "Palms facing away from the person counting");
+  };
+
+  ShowHands(bool facing, name) = Block {
+    Paragraph {
+      ParAlignment: Center;
+      Bold;
+      TextHeight: 16pt;
+      Name;
+    };
+    Paragraph {
+      ParAlignment: Center;
+      TextHeight: 16pt;
+      SpaceAfter: 20pt;
+      Italic name;
+    };
+    Paragraph {
+      ParAlignment: Justify;
+      Separator: Space;
+      DrawHandBox(facing, each 0..120);
+    };
+  };
+
+  DrawDigit(int hand, int d, width, Point start, Point end) = {
+    var dx = end.X - start.X;
+    var dy = end.Y - start.Y;
+    var a  = Math.Atan2(dx, dy);
+    var w  = ExtentWidth * width;
+    var ax = -w*Math.Cos(a);
+    var ay = w*Math.Sin(a);
+
+    if ((hand & d) == 0)
+      end = new(end.X - dx, end.Y - dy);
+
+    LineTo(end.X, end.Y);
+    ArcTo(new(end.X+ax, end.Y+ay), new(w*0.5, ExtentWidth * 0.03), -a, false, true);
+    LineTo(start.X+ax, start.Y+ay);
+  };
+
+  int MirrorBits(int hand) {
+    return ((hand & 1) << 4 )| ((hand & 2) << 2) | (hand & 4) | ((hand & 8) >> 2) | ((hand & 16) >> 4);
+  }
+
+  DrawHand(bool right, int hand) = Canvas(BoxHeight, BoxHeight) {
+    if (right) {
+      Transform: new Transform(-1, 0, 0, 1, 0, 0);
+      TransformFit: true;
+    }
+    else
+      hand = MirrorBits(hand);
+
+    Shape(#CFC286#) {
+      ClosedPath(53%, 99%) {
+        LineTo(49%, 92%);
+        QuadTo(new(38%, 85%), new(30%, 72%));
+        DrawDigit(hand, 1, 11%, new(28%, 70%), new(12%, 58%));
+        QuadTo(new(42%, 61%), new(38%, 44%));
+        DrawDigit(hand, 2, 8%, new(38%, 44%), new(28%, 11%));
+        ArcTo(new(52%, 38%), new(1.5, 1), -40 degrees, false, false);
+        DrawDigit(hand, 4, 8.5%, new(52%, 38%), new(49%, 3%));
+        ArcTo(new(66%, 39%), new(1.5, 1), 25 degrees, false, false);
+        DrawDigit(hand, 8, 7.5%, new(66%, 39%), new(68%, 7%));
+        ArcTo(new(79%, 44%), new(1.5, 1), 70 degrees, false, false);
+        DrawDigit(hand, 16, 7%, new(79%, 44%), new(87%, 22%));
+
+        // Hand
+        QuadTo(new(86%, 70%), new(78%, 90%));
+        LineTo(79%, 99%);
+      };
+    };
+  };
+
+  DrawHandBox(bool facing, int i) = VBox(null, null, new Edge(0.25, null, 75%)) {
+    HAlign: Center;
+    VBox(null, null, PadB(3)) {
+      TextColor: Colors.Blue;
+      i;
+    };
+    if (i > FingerMask) {
+      HBox {
+        DrawHand(not facing, (i >> Fingers) & FingerMask);
+        DrawHand(facing, i & FingerMask);
+      };
+    }
+    else
+      DrawHand(facing, i);
+
+    Span {
+      TextColor: Colors.Green;
+      TextNumPadding: 5;
+      TextRadix : 2;
+      i;
+    };
+  };
+}
+

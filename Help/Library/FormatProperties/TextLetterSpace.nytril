@@ -1,0 +1,28 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  "Number can be a Measure or a percentage of the font height";
+};
+
+Example = Block {
+  Paragraph {
+    "Letter Space 0";
+  };
+  Paragraph {
+    TextLetterSpace: 3;
+    "Letter Space 3";
+  };
+  Paragraph {
+    TextLetterSpace: 25%;
+    "Letter Space 25%";
+  }
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextLetterSpace));
+
+//============================================================
+

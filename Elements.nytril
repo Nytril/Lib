@@ -1,0 +1,845 @@
+using Format, Units, AtomicElements, ChemicalCompounds, LinkTypes;
+
+enum MatterStates {
+  var Abreviation;
+
+  Constructor(name, ab) {
+    super.Constructor(name);
+    Abreviation = ab;
+  }
+
+  override GetLayoutNode = HBox(null, null, new Edge(0.5, 2)) {
+    Background: Colors.LightBlue;
+    BorderRadius: 1;
+    TextColor: Colors.White;
+    Label;
+    Tip: this;
+  };
+
+
+  None("None", null),
+  Solid("Solid", "s"),
+  Liquid("Liquid", "l"),
+  Gas("Gas", "g"),
+  Plasma("Plasma", "p"),
+  Aqueous("Aqueous", "aq"),
+  Unknown("Unknown", "u"),
+}
+
+enum ElementOrigins {
+  Primordial("Primordial"),
+  FromDecay("From decay"),
+  Synthetic("Synthetic"),
+}
+
+enum ElementBlocks {
+  override GetLayoutNode = HBox(null, null, new Edge(0.5, 2)) {
+    Background: Colors.SteelBlue;
+    TextColor: Colors.White;
+    Label;
+    Tip: this;
+  };
+
+  Sblock("S-block"),
+  Dblock("D-block"),
+  Pblock("P-block"),
+  Fblock("F-block"),
+}
+
+enum MatterTypes {
+  var Color BackColor;
+
+  Constructor(name, Color color) {
+    super.Constructor(name);
+    BackColor = color;
+  }
+
+  override GetLayoutNode = VBox(null, null, new Edge(0.5, 2)) {
+    Background: BackColor;
+    Label;
+    Tip: this;
+  };
+
+  Unknown("Unknown", Colors.White),
+  AlkaliMetal("Alkali metal", #FFC9C9#),
+  AEMetal("Alkaline-earth metal", #D2D2FF#),
+  TMetal("Transition metal", #B9DDFF#),
+  PTMetal("Post-transition metal", #C5FFC5#),
+  Halogen("Halogen", #FFFFB9#),
+  Metalloid("Metalloid", #DEECB8#),
+  NonMetal("Non-metal", #FFFFBB#),
+  NobleGas("Noble gas", #FFE2B9#),
+  Lanthanide("Lanthanide", #ADFFFF#),
+  Actinide("Actinide", #C1FFEB#),
+}
+
+//==================================================================================================
+
+class AtomicElement: Fact {
+  field string         Name,
+                       Symbol;
+  field int            AtomicNumber,
+                       Group,
+                       Period;
+  field ElementBlocks  Block;
+  field MatterTypes    Type;
+  field double         Density,
+                       AtomicWeight,
+                       HeatCapacity,
+                       Negativity,
+                       Abundance;
+  field Measure        MeltingPoint,
+                       BoilingPoint;
+  field MatterStates   State;
+  field ElementOrigins Origin;
+  field string         EConfiguration,
+                       Notes;
+  field DateTime       Discovered;
+  var int              SubGroup;
+  var int[]            OxidationStates;
+
+  Constructor(int z, sym, name, Guid id, MatterTypes type, DateTime disc, group, period, subgroup, ElementBlocks block, econfig, int[] oxidation, weight, density, melting, boiling, heat, neg, abundance, ElementOrigins origin, MatterStates state, string notes=null) {
+    super.Constructor(id);
+    Block           = block;
+    Group           = group;
+    SubGroup        = subgroup;
+    Period          = period;
+    EConfiguration  = econfig;
+    Discovered      = disc;
+    Type            = type;
+    AtomicNumber    = z;
+    Symbol          = sym;
+    Name            = name;
+    Notes           = notes;
+    Density         = density;
+    AtomicWeight    = weight;
+    OxidationStates = oxidation;
+    if (melting is valid)
+      MeltingPoint = melting Kelvin;
+    if (boiling is valid)
+      BoilingPoint = boiling Kelvin;
+    HeatCapacity    = heat;
+    Negativity      = neg;
+    Abundance       = abundance;
+    State           = state;
+    Origin          = origin;
+  }
+
+  override Icon GetIcon {
+    return Icons.filter_vintage;
+  }
+
+  static operator Affinity(AtomicElement e, int number) {
+    return new ElementNumber(e, number);
+  }
+
+  static operator Affinity(int number, AtomicElement e) {
+    return new CompoundNumber(e.GetCompound(1), number);
+  }
+
+  Compound GetCompound(int number) = new(FactId, Name, [new(this, number)], State);
+
+  Isotope(weight) = Nary {
+    PreUpper: weight;
+    PreLower: AtomicNumber;
+    Operator: Span {TextHeight: 150%; GetLayoutSpan};
+  };
+
+  GetTile(width, height, Stroke stroke) = Canvas(width, height, new Edge(stroke.Size, width * 0.05, stroke.Fill)) {
+    Shadow: new Edge(1, 0, Colors.DarkGray);
+    Tip: this;
+    TextFamily: TextFamilies.Arial;
+    Background: Type.BackColor;
+
+    var h = Math.Min(height * 0.4, width * 0.4);
+
+    HBox {
+      TextHeight: height * 0.08;
+      Bold;
+      HAlignment: Left;
+      VAlignment: Top;
+      TextHeight: h * 0.4;
+      AtomicNumber;
+    };
+    HBox {
+      HAlignment: Right;
+      VAlignment: Top;
+      TextHeight: h * 0.3;
+      AtomicWeight;
+    };
+    HBox {
+      HAlignment: Center;
+      VAlignment: Center;
+      TextHeight: h;
+      Symbol;
+    };
+    VBox {
+      HAlign: Center;
+      HAlignment: Center;
+      VAlignment: Bottom;
+      Span {
+        TextHeight: Math.Min(h * 0.3, width / Name.Length * 1.7);
+        Name;
+      };
+      Span {
+        var name = Type.Label;
+        TextColor: #101010#;
+        TextHeight: Math.Min(h * 0.3, width / name.Length * 1.65);
+        name;
+      }
+    };
+  };
+
+  ShowOxidationStates = Span {
+    Separator: Space;
+    foreach (var s in OxidationStates) {
+      if (s > 0)
+        "+{0}"(s);
+      else
+        s;
+    }
+  };
+
+  override GetLayoutSpan = Span {
+    Symbol;
+    Tip: this;
+  };
+
+  override GetLayoutNode = HBox(40, 40, new Edge(0.5, 2, 85%)) {
+    Background: new RadialGradient(0.5, 0.5, 0.5, 0.5, 0.5, 0.5,
+      [new(0, Colors.White),
+       new(0.6, 85%),
+       new(0.7, Colors.White),
+       new(0.8, 85%),
+       new(0.9, Colors.White),
+       new(100%, 85%)]
+    );
+
+    BorderRadius: 20;
+    HAlign: Center;
+    VAlign: Center;
+    TextHeight: 12pt;
+    TextOffset: -10%;
+    Bold; Symbol;
+    Tip: this;
+  };
+
+  override GetLayoutTip = VBox(4 inch) {
+    HAlign: Center;
+
+    GetTile(2 inch, 2.25 inch, new Stroke(0.25, Colors.LightGray)) {
+      BorderRadius: 8;
+    };
+
+    Frame {
+      Margin: PadT(10);
+      TextHeight: 14pt;
+      Table(null, PadR(5), [Column.Fit(2 inch), Column.Fit(2 inch)]) {
+        Row {
+          Bold "Electron Configuration";
+          EConfiguration;
+        };
+        Row {
+          Bold "Oxidation States";
+          ShowOxidationStates;
+        };
+        if (MeltingPoint is valid) {
+          Row {
+            Bold "Melting point";
+            MeltingPoint;
+          };
+        }
+        if (BoilingPoint is valid) {
+          Row {
+            Bold "Boiling point";
+            BoilingPoint;
+          };
+        }
+        if (Discovered is valid) {
+          Row {
+            Bold "Discovered";
+            Discovered;
+          };
+        }
+      };
+      Paragraph;
+      Paragraph {
+        Bold "Name derivation: ";
+        Notes;
+      };
+    }
+  };
+}
+
+//==================================================================================================
+
+PeriodicTable(width, height) = Canvas(width, height) {
+  var outline = new Stroke(0.125, Colors.LightGray);
+  var d       = height * 0.005;
+  var top     = d * 4;
+  var left    = d * 3;
+
+  width -= left;
+  var cw = (width - d * (17 - 1)) / 18;
+  var ch = (height - top - d * 8) / 9;
+  var dx = cw + d;
+  var dy = ch + d;
+
+  foreach (var e in AtomicElements) {
+    var period   = e.Period;
+    var group    = e.Group;
+    var subgroup = e.SubGroup;
+
+    if (period > 5 and subgroup is valid) {
+      group  += subgroup + 1;
+      period += 2;
+    }
+
+    var x = left + (group -1) * dx;
+    var y = top + (period - 1) * dy;
+
+    if (period <= 7 and group == 1) {
+      HBox(left) {
+        TextHeight: left;
+        Y: y + ch*0.44;
+        period;
+      };
+    }
+
+    if ((period == 1 and (group == 1 || group == 18)) or (period == 2 and (group == 2 || (group >= 13 and group <= 17))) or (period == 4 and (group >= 3 and group <= 12))) {
+      HBox(left) {
+        TextHeight: left;
+        Y: y - top;
+        X: x + cw*0.4;
+        group;
+      };
+    }
+
+    if (e is not null) {
+      e.GetTile(cw, ch, outline) {
+        BorderRadius: d * 0.25;
+        X: x;
+        Y: y;
+      }
+    }
+  }
+
+  var x = left + 2 * dx;
+  var y = top + 5 * dy;
+  Shape(MatterTypes.Lanthanide.BackColor, outline) {
+    ClosedPath(x, y) {
+      var x1 = x + cw;
+      var y1 = y + 2 * dy;
+      LineTo(x1, y1);
+      LineTo(x1, y1 + ch);
+      LineTo(x, y + ch);
+    }
+  };
+
+  y = top + 6 * dy;
+  Shape(MatterTypes.Actinide.BackColor, outline) {
+    ClosedPath(x, y) {
+      var x1 = x + cw;
+      var y1 = y + 2 * dy;
+      LineTo(x1, y1);
+      LineTo(x1, y1 + ch);
+      LineTo(x, y + ch);
+    }
+  };
+};
+
+ElementPropertiesTable = Table(0.5pt, PadLR(2), [Column.Fit(2 inch)]) {
+  TextHeight: 10pt;
+  Row(BorderB(0.5)) {
+    Bold;
+    Empty;
+    Empty;
+    "Name";
+    "Weight";
+    "Oxidation States";
+    "e" sup "-" " Configuration";
+    "eNeg";
+    Span {"Mp"; Tex.degree; "K"};
+    Span {"Bp"; Tex.degree; "K"};
+  };
+  foreach (var e in AtomicElements) {
+    Row {
+      Background: e.Type.BackColor;
+      e.AtomicNumber;
+      e.Symbol;
+      Span {e.Name; Tip: e};
+      e.AtomicWeight;
+      e.ShowOxidationStates;
+      e.EConfiguration;
+      e.Negativity;
+      if (e.MeltingPoint is valid)
+       e.MeltingPoint toscale Kelvin;
+      if (e.BoilingPoint is valid)
+       e.BoilingPoint toscale Kelvin;
+    };
+  }
+};
+
+//==================================================================================================
+
+readonly namespace<AtomicElement> AtomicElements {
+  Hydrogen      = new(1,   "H",  "Hydrogen",      #a0cd1255-76be-4eec-8327-6e4d6d3c88a5#, NonMetal,    #1766#, 1,  1, null, Sblock, "1s1",                         [1, -1],                     1.008,      0.00008988, 14.01,   20.28,   14.304,   2.20,  1400,    Primordial, Gas,     "Greek roots hydro- + -gen, 'water-forming'");
+  Helium        = new(2,   "He", "Helium",        #c2aa459e-31fd-41dd-8336-b5f398d8b82d#, NobleGas,    #1868#, 18, 1, null, Sblock, "1s2",                         [0],                         4.0026,     0.0001785, null,     4.22,    5.193,    null,  0.008,   Primordial, Gas,     "Greek hḗlios 'sun'. Melting point: helium does not solidify at a pressure of 1 atmosphere. Helium can only solidify at pressures above 25 atm.");
+  Lithium       = new(3,   "Li", "Lithium",       #19394d98-82b3-4c85-9329-84af6708f66d#, AlkaliMetal, #1817#, 1,  2, null, Sblock, "[He]2s1",                     [1],                         7,          0.534,     453.69,   1560,    3.582,    0.98,  20,      Primordial, Solid,   "Greek líthos 'stone'");
+  Beryllium     = new(4,   "Be", "Beryllium",     #6bef28b5-9283-400c-8649-7202085bca94#, AEMetal,     #1798#, 2,  2, null, Sblock, "[He]2s2",                     [2],                         9.012183,   1.85,      1560,     2742,    1.825,    1.57,  2.8,     Primordial, Solid,   "Beryl, mineral (ultimately after Belur, Karnataka, India?)");
+  Boron         = new(5,   "B",  "Boron",         #4b422bc5-c55b-403f-8c3c-64576777df94#, Metalloid,   #1808#, 13, 2, null, Pblock, "[He]2s2 2p1",                 [3],                         10.81,      2.34,      2349,     4200,    1.026,    2.04,  10,      Primordial, Solid,   "Borax, mineral (from Arabic: bawraq, Middle Persian: *bōrag)");
+  Carbon        = new(6,   "C",  "Carbon",        #b22b1236-0d0b-4011-a7b3-2b3856e64d06#, NonMetal,    null,   14, 2, null, Pblock, "[He]2s2 2p2",                 [4, 2, -4],                  12.011,     2.267,     4000,     4300,    0.709,    2.55,  200,     Primordial, Solid,   "Latin carbo 'coal'");
+  Nitrogen      = new(7,   "N",  "Nitrogen",      #788fbf7f-dd3c-40d2-81d5-c41b3242adc0#, NonMetal,    #1772#, 15, 2, null, Pblock, "[He] 2s2 2p3",                [5, 4, 3, 2, 1, -1, -2, -3], 14.007,     0.0012506, 63.15,    77.36,   1.04,     3.04,  19,      Primordial, Gas,     "Greek nítron + -gen, 'niter-forming'");
+  Oxygen        = new(8,   "O",  "Oxygen",        #3b00da55-5c8d-42a9-ac1c-1e074b625e5a#, NonMetal,    #1774#, 16, 2, null, Pblock, "[He]2s2 2p4",                 [-2],                        15.999,     0.001429,  54.36,    90.20,   0.918,    3.44,  461000,  Primordial, Gas,     "Greek oxy- + -gen, 'acid-forming'");
+  Fluorine      = new(9,   "F",  "Fluorine",      #0ee7307d-14d2-423e-aff7-1d23b5f163a8#, NonMetal,    #1670#, 17, 2, null, Pblock, "[He]2s2 2p5",                 [-1],                        18.99840316,0.001696,  53.53,    85.03,   0.824,    3.98,  585,     Primordial, Gas,     "Latin fluo 'to flow'");
+  Neon          = new(10,  "Ne", "Neon",          #b8da2c3c-1680-42ad-8da9-9a768227aee0#, NobleGas,    #1898#, 18, 2, null, Pblock, "[He]2s2 2p6",                 [0],                         20.18,      0.0009002, 24.56,    27.07,   1.03,    null,   0.005,   Primordial, Gas,     "Greek néon 'new'");
+  Sodium        = new(11,  "Na", "Sodium",        #6bf23403-94e6-4511-8794-0d381c03f570#, AlkaliMetal, #1807#, 1,  3, null, Sblock, "[Ne]3s1",                     [1],                         22.9897693, 0.968,     370.87,   1156,    1.228,    0.93,  23600,   Primordial, Solid,   "Coined by Humphry Davy who first isolated it, from English soda (specifically caustic soda), via Italian from Arabic ṣudāʕ 'headache'");
+  Magnesium     = new(12,  "Mg", "Magnesium",     #1cd02cdc-c7e8-4d7e-aa8e-b612593b7558#, AEMetal,     #1808#, 2,  3, null, Sblock, "[Ne]3s2",                     [2],                         24.305,     1.738,     923,      1363,    1.023,    1.31,  23300,   Primordial, Solid,   "Magnesia region, eastern Thessaly, Greece");
+  Aluminium     = new(13,  "Al", "Aluminium",     #fbc0bae9-33ee-4715-89b6-b3db9fae73ba#, PTMetal,     null,   13, 3, null, Pblock, "[Ne]3s2 3p1",                 [3],                         26.981538,  2.70,      933.47,   2792,    0.897,    1.61,  82300,   Primordial, Solid,   "Alumina, from Latin alumen (gen. aluminis) 'bitter salt, alum'");
+  Silicon       = new(14,  "Si", "Silicon",       #cba1e5f7-0a72-4a03-8ec1-090a00191d91#, Metalloid,   #1854#, 14, 3, null, Pblock, "[Ne]3s2 3p2",                 [4, 2, -4],                  28.085,     2.3290,    1687,     3538,    0.705,    1.9,   282000,  Primordial, Solid,   "Latin silex 'flint' (originally silicium)");
+  Phosphorus    = new(15,  "P",  "Phosphorus",    #c6db64dc-fd1e-40fe-90d3-5343a6fa62d6#, NonMetal,    #1669#, 15, 3, null, Pblock, "[Ne]3s2 3p3",                 [5, 3, -3],                  30.973762,  1.823,     317.30,   550,     0.769,    2.19,  1050,    Primordial, Solid,   "Greek phōsphóros 'light-bearing'");
+  Sulfur        = new(16,  "S",  "Sulfur",        #6c35c74a-67ae-4e56-8a8c-5bfd0004e194#, NonMetal,    null,   16, 3, null, Pblock, "[Ne]3s2 3p4",                 [6, 4, -2],                  32.07,      2.07,      388.36,   717.87,  0.71,     2.58,  350,     Primordial, Solid,   "Latin");
+  Chlorine      = new(17,  "Cl", "Chlorine",      #54d84fb6-f5c6-4208-9223-70bd21726318#, NonMetal,    #1774#, 17, 3, null, Pblock, "[Ne]3s2 3p5",                 [7, 5, 1, -1],               35.45,      0.0032,    171.6,    239.11,  0.479,   3.16,   145,     Primordial, Gas,     "Greek chlōrós 'greenish yellow'");
+  Argon         = new(18,  "Ar", "Argon",         #1af81579-b52a-4960-896f-f4f5fe93daba#, NobleGas,    #1894#, 18, 3, null, Pblock, "[Ne]3s2 3p6",                 [0],                         39.9,       0.001784,  83.80,    87.30,   0.52,    null,   3.5,     Primordial, Gas,     "Greek argós 'idle' (it is inert)");
+  Potassium     = new(19,  "K",  "Potassium",     #6e0e817a-e306-4a1a-b782-8b219eb6e6b6#, AlkaliMetal, #1807#, 1,  4, null, Sblock, "[Ar]4s1",                     [1],                         39.0983,    0.89,      336.53,   1032,    0.757,   0.82,   20900,   Primordial, Solid,   "Neo-Latin potassa 'potash', from pot + ash");
+  Calcium       = new(20,  "Ca", "Calcium",       #292568c2-1aaa-418b-8acf-f991235feac6#, AEMetal,     null,   2,  4, null, Sblock, "[Ar]4s2",                     [2],                         40.08,      1.55,      1115,     1757,    0.647,   1.00,   41500,   Primordial, Solid,   "Latin calx 'lime'");
+  Scandium      = new(21,  "Sc", "Scandium",      #fe910858-55dc-4457-b6ea-9e6fb9c98dd2#, TMetal,      #1879#, 3,  4, null, Dblock, "[Ar]4s2 3d1",                 [3],                         44.95591,   2.985,     1814,     3109,    0.568,   1.36,   22,      Primordial, Solid,   "Latin Scandia 'Scandinavia'");
+  Titanium      = new(22,  "Ti", "Titanium",      #e099726c-665b-40be-a204-b0abfe91b9a1#, TMetal,      #1791#, 4,  4, null, Dblock, "[Ar]4s2 3d2",                 [4, 3, 2],                   47.867,     4.506,     1941,     3560,    0.523,   1.54,   5650,    Primordial, Solid,   "Titans, children of Gaia and Ouranos");
+  Vanadium      = new(23,  "V",  "Vanadium",      #ed9fc23e-bd8f-4ec9-b0b9-104857ab01d7#, TMetal,      #1801#, 5,  4, null, Dblock, "[Ar]4s2 3d3",                 [5, 4, 3, 2],                50.9415,    6.11,      2183,     3680,    0.489,   1.63,   120,     Primordial, Solid,   "Vanadis, a name for Norse goddess Freyja");
+  Chromium      = new(24,  "Cr", "Chromium",      #2de577f3-eaa8-4b54-9547-aa99f4f9e0f5#, TMetal,      #1797#, 6,  4, null, Dblock, "[Ar]3d5 4s1",                 [6, 3, 2],                   51.996,     7.15,      2180,     2944,    0.449,   1.66,   102,     Primordial, Solid,   "Greek chróma 'color'");
+  Manganese     = new(25,  "Mn", "Manganese",     #66fe5668-dec8-4021-9158-27cc84d38972#, TMetal,      #1774#, 7,  4, null, Dblock, "[Ar]4s2 3d5",                 [7, 4, 3, 2],                54.93804,   7.21,      1519,     2334,    0.479,   1.55,   950,     Primordial, Solid,   "Corrupted from magnesia negra; see magnesium");
+  Iron          = new(26,  "Fe", "Iron",          #8bced6f0-294a-45da-a14b-cf2004427bdd#, TMetal,      null,   8,  4, null, Dblock, "[Ar]4s2 3d6",                 [3, 2],                      55.84,      7.874,     1811,     3134,    0.449,   1.83,   56300,   Primordial, Solid,   "English, from Proto-Celtic *īsarnom 'iron', from a root meaning 'blood'");
+  Cobalt        = new(27,  "Co", "Cobalt",        #a1ea3b69-4702-4e1c-ab28-b74ed76b3846#, TMetal,      #1735#, 9,  4, null, Dblock, "[Ar]4s2 3d7",                 [3, 2],                      58.93319,   8.90,      1768,     3200,    0.421,   1.88,   25,      Primordial, Solid,   "German Kobold, 'goblin'");
+  Nickel        = new(28,  "Ni", "Nickel",        #8b45884d-800a-42d5-815f-f167e4c8ab6d#, TMetal,      #1751#, 10, 4, null, Dblock, "[Ar]4s2 3d8",                 [3, 2],                      58.693,     8.908,     1728,     3186,    0.444,   1.91,   84,      Primordial, Solid,   "Nickel, a mischievous sprite in German miner mythology");
+  Copper        = new(29,  "Cu", "Copper",        #f5556323-0b43-46d1-9c73-82647cd706fc#, TMetal,      null,   11, 4, null, Dblock, "[Ar]4s1 3d10",                [2, 1],                      63.55,      8.96,      1357.77,  2835,    0.385,   1.90,   60,      Primordial, Solid,   "English, from Latin cuprum, after Cyprus");
+  Zinc          = new(30,  "Zn", "Zinc",          #9a7cc93a-95a5-43a9-8423-0ed8398aa998#, TMetal,      #1746#, 12, 4, null, Dblock, "[Ar]4s2 3d10",                [2],                         65.4,       7.14,      692.88,   1180,    0.388,   1.65,   70,      Primordial, Solid,   "Most likely German Zinke, 'prong, tooth', but some suggest Persian sang 'stone'");
+  Gallium       = new(31,  "Ga", "Gallium",       #f3c0efeb-277b-4d73-aeb1-4c8df866794b#, PTMetal,     #1875#, 13, 4, null, Pblock, "[Ar]4s2 3d10 4p1",            [3],                         69.723,     5.91,      302.9146, 2673,    0.371,   1.81,   19,      Primordial, Solid,   "Latin Gallia 'France'");
+  Germanium     = new(32,  "Ge", "Germanium",     #806a7486-6a82-4494-845e-1ad388a8f3d0#, Metalloid,   #1886#, 14, 4, null, Pblock, "[Ar]4s2 3d10 4p2",            [4, 2],                      72.63,      5.323,     1211.40,  3106,    0.32,    2.01,   1.5,     Primordial, Solid,   "Latin Germania 'Germany'");
+  Arsenic       = new(33,  "As", "Arsenic",       #a768e1c8-0fc4-4029-b381-8e39e928563d#, Metalloid,   null,   15, 4, null, Pblock, "[Ar]4s2 3d10 4p3",            [5, 3, -3],                  74.92159,   5.727,     1090,     887,     0.329,   2.18,   1.8,     Primordial, Solid,   "Middle English, from Middle French arsenic, from Greek arsenikón 'yellow arsenic' (influenced by arsenikós 'masculine, virile'), from a West Asian wanderword ultimately from Old Persian: *zarniya-ka, lit. 'golden'. Arsenic sublimes at 1 atmosphere pressure.");
+  Selenium      = new(34,  "Se", "Selenium",      #bc086ae5-9078-4df3-85d7-f0a01fc5e3ec#, NonMetal,    #1817#, 16, 4, null, Pblock, "[Ar]4s2 3d10 4p4",            [6, 4, -2],                  78.97,      4.81,      453,      958,     0.321,   2.55,   0.05,    Primordial, Solid,   "Greek selḗnē 'moon'");
+  Bromine       = new(35,  "Br", "Bromine",       #f17d0fbf-587c-4232-8325-68c071ec26b4#, NonMetal,    #1826#, 17, 4, null, Pblock, "[Ar]4s2 3d10 4p5",            [5, 1, -1],                  79.9,       3.1028,    265.8,    332.0,   0.474,   2.96,   2.4,     Primordial, Liquid,  "Greek brômos 'stench'");
+  Krypton       = new(36,  "Kr", "Krypton",       #6ea9d56c-f3ee-4221-9990-2632465da2e5#, NobleGas,    #1898#, 18, 4, null, Pblock, "[Ar]4s2 3d10 4p6",            [0],                         83.8,       0.003749,  115.79,   119.93,  0.248,   3.00,   1.0e-4,  Primordial, Gas,     "Greek kryptós 'hidden'");
+  Rubidium      = new(37,  "Rb", "Rubidium",      #ca6cdcf2-5428-4944-bbff-cafe2c4c91b2#, AlkaliMetal, #1861#, 1,  5, null, Sblock, "[Kr]5s1",                     [1],                         85.468,     1.532,     312.46,   961,     0.363,   0.82,   90,      Primordial, Solid,   "Latin rubidus 'deep red'");
+  Strontium     = new(38,  "Sr", "Strontium",     #e88878f9-68f2-456c-9184-2a370e2389d2#, AEMetal,     #1790#, 2,  5, null, Sblock, "[Kr]5s2",                     [2],                         87.62,      2.64,      1050,     1655,    0.301,   0.95,   370,     Primordial, Solid,   "Strontian, a village in Scotland, where it was found");
+  Yttrium       = new(39,  "Y",  "Yttrium",       #4053d6f2-72f2-4c66-a6df-8bb5e3844ad7#, TMetal,      #1794#, 3,  5, null, Dblock, "[Kr]5s2 4d1",                 [3],                         88.90584,   4.472,     1799,     3609,    0.298,   1.22,   33,      Primordial, Solid,   "Ytterby, Sweden, where it was found; see terbium, erbium, ytterbium");
+  Zirconium     = new(40,  "Zr", "Zirconium",     #adc55216-2e5e-4e84-a607-f3db4e7ad623#, TMetal,      #1789#, 4,  5, null, Dblock, "[Kr]5s2 4d2",                 [4],                         91.22,      6.52,      2128,     4682,    0.278,   1.33,   165,     Primordial, Solid,   "Zircon, mineral, from Persian zargun 'gold-hued'");
+  Niobium       = new(41,  "Nb", "Niobium",       #45e8fb22-038f-4cad-b81a-15042d6eacd0#, TMetal,      #1801#, 5,  5, null, Dblock, "[Kr]5s1 4d4",                 [5, 3],                      92.90637,   8.57,      2750,     5017,    0.265,   1.6,    20,      Primordial, Solid,   "Niobe, daughter of king Tantalus in Greek myth; see tantalum");
+  Molybdenum    = new(42,  "Mo", "Molybdenum",    #03df0e52-f3bb-4f3d-8c5e-a6d6b3108dc1#, TMetal,      #1778#, 6,  5, null, Dblock, "[Kr]5s1 4d5",                 [6],                         95.95,      10.28,     2896,     4912,    0.251,   2.16,   1.2,     Primordial, Solid,   "Greek molýbdaina 'piece of lead', from mólybdos 'lead', due to confusion with lead ore galena (PbS)");
+  Technetium    = new(43,  "Tc", "Technetium",    #befd9c90-cd4e-4f7b-ac48-0da99c3139c7#, TMetal,      #1937#, 7,  5, null, Dblock, "[Kr]5s2 4d5",                 [7, 6, 4],                   96.90636,   11,        2430,     4538,    null,    1.9,    3.0e-9,  FromDecay,  Solid,   "Greek tekhnētós 'artificial'");
+  Ruthenium     = new(44,  "Ru", "Ruthenium",     #e91cab05-0b20-447e-9caa-44ef0f42abdb#, TMetal,      #1827#, 8,  5, null, Dblock, "[Kr]5s1 4d7",                 [3],                         101.1,      12.45,     2607,     4423,    0.238,   2.2,    0.001,   Primordial, Solid,   "Neo-Latin Ruthenia 'Russia'");
+  Rhodium       = new(45,  "Rh", "Rhodium",       #e29422e4-bb9a-4bdb-bfc5-9eede4f9bcd9#, TMetal,      #1803#, 9,  5, null, Dblock, "[Kr]5s1 4d8",                 [3],                         102.9055,   12.41,     2237,     3968,    0.243,   2.28,   0.001,   Primordial, Solid,   "Greek rhodóeis 'rose-colored', from rhódon 'rose'");
+  Palladium     = new(46,  "Pd", "Palladium",     #217efc47-040d-41c1-9adf-e9851edbd8e7#, TMetal,      #1803#, 10, 5, null, Dblock, "[Kr]4d10",                    [3, 2],                      106.42,     12.023,    1828.05,  3236,    0.244,   2.20,   0.015,   Primordial, Solid,   "Pallas, asteroid, then considered a planet");
+  Silver        = new(47,  "Ag", "Silver",        #2af03cc6-7bef-48f1-8c53-1ce1551c2c1f#, TMetal,      null,   11, 5, null, Dblock, "[Kr]5s1 4d10",                [1],                         107.868,    10.49,     1234.93,  2435,    0.235,   1.93,   0.075,   Primordial, Solid,   "English, from Proto-Germanic");
+  Cadmium       = new(48,  "Cd", "Cadmium",       #acfb82e6-9a88-48b3-824b-2a5dd419419a#, TMetal,      #1817#, 12, 5, null, Dblock, "[Kr]5s2 4d10",                [2],                         112.41,     8.65,      594.22,   1040,    0.232,   1.69,   0.159,   Primordial, Solid,   "Neo-Latin cadmia 'calamine', from King Cadmus, mythic founder of Thebes");
+  Indium        = new(49,  "In", "Indium",        #a9f56bb9-cbf5-4203-9082-89000b34449c#, PTMetal,     #1863#, 13, 5, null, Pblock, "[Kr]5s2 4d10 5p1",            [3],                         114.818,    7.31,      429.75,   2345,    0.233,   1.78,   0.25,    Primordial, Solid,   "Latin indicum 'indigo', the blue color named after India and observed in its spectral lines");
+  Tin           = new(50,  "Sn", "Tin",           #adcbe557-bda2-4b89-a4b7-3284e5afeb9d#, PTMetal,     null,   14, 5, null, Pblock, "[Kr]5s2 4d10 5p2",            [4, 2],                      118.71,     7.265,     505.08,   2875,    0.228,   1.96,   2.3,     Primordial, Solid,   "English, from Proto-Germanic");
+  Antimony      = new(51,  "Sb", "Antimony",      #3e7ffe8f-625a-4df9-85f8-8c966976d49b#, Metalloid,   null,   15, 5, null, Pblock, "[Kr]5s2 4d10 5p3",            [5, 3, -3],                  121.76,     6.697,     903.78,   1860,    0.207,   2.05,   0.2,     Primordial, Solid,   "Latin antimonium, of unclear origin: folk etymologies suggest Greek antí 'against' + mónos 'alone', or Old French anti-moine 'monk's bane', but could be from or related to Arabic ʾiṯmid 'antimony'");
+  Tellurium     = new(52,  "Te", "Tellurium",     #7b12fd66-1d0b-446e-83a7-2571e1c7157a#, Metalloid,   #1782#, 16, 5, null, Pblock, "[Kr]5s2 4d10 5p4",            [6, 4, -2],                  127.6,      6.24,      722.66,   1261,    0.202,   2.1,    0.001,   Primordial, Solid,   "Latin tellus 'ground, earth'");
+  Iodine        = new(53,  "I",  "Iodine",        #8715d8ed-5f4e-4ee1-ac3e-7df9911501d3#, NonMetal,    #1811#, 17, 5, null, Pblock, "[Kr]5s2 4d10 5p5",            [7, 5, 1, -1],               126.9045,   4.933,     386.85,   457.4,   0.214,   2.66,   0.45,    Primordial, Solid,   "French iode, from Greek ioeidḗs 'violet'");
+  Xenon         = new(54,  "Xe", "Xenon",         #13b1fa65-e7db-472c-9b45-9d03343b243d#, NobleGas,    #1898#, 18, 5, null, Pblock, "[Kr]5s2 4d10 5p6",            [0],                         131.29,     0.005894,  161.4,    165.03,  0.158,   2.60,   3e-5,    Primordial, Gas,     "Greek xénon, neuter of xénos 'strange, foreign'");
+  Cesium        = new(55,  "Cs", "Cesium",        #4a0234a3-d627-4824-b268-c64785e99236#, AlkaliMetal, #1860#, 1,  6, null, Sblock, "[Xe]6s1",                     [1],                         132.905452, 1.93,      301.59,   944,     0.242,   0.79,   3,       Primordial, Solid,   "Latin caesius 'sky-blue'");
+  Barium        = new(56,  "Ba", "Barium",        #d3f9f876-1941-4697-952c-d33428741719#, AEMetal,     #1808#, 2,  6, null, Sblock, "[Xe]6s2",                     [2],                         137.33,     3.51,      1000,     2170,    0.204,   0.89,   425,     Primordial, Solid,   "Greek barýs 'heavy'");
+  Lanthanum     = new(57,  "La", "Lanthanum",     #45b99197-c43e-436d-a76a-b8dd05b45d33#, Lanthanide,  #1839#, 3,  6, 0,    Fblock, "[Xe]6s2 5d1",                 [3],                         138.9055,   6.162,     1193,     3737,    0.195,   1.1,    39,      Primordial, Solid,   "Greek lanthánein 'to lie hidden'");
+  Cerium        = new(58,  "Ce", "Cerium",        #4bcf9d15-e350-4737-81df-4e661a80f90a#, Lanthanide,  #1803#, 3,  6, 1,    Fblock, "[Xe]6s2 4f1 5d1",             [4, 3],                      140.116,    6.770,     1068,     3716,    0.192,   1.12,   66.5,    Primordial, Solid,   "Ceres (dwarf planet), then considered a planet");
+  Praseodymium  = new(59,  "Pr", "Praseodymium",  #a7e89ed1-0a6e-42f8-87c6-818b253afade#, Lanthanide,  #1885#, 3,  6, 2,    Fblock, "[Xe]6s2 4f3",                 [3],                         140.90766,  6.77,      1208,     3793,    0.193,   1.13,   9.2,     Primordial, Solid,   "Greek prásios dídymos 'green twin'");
+  Neodymium     = new(60,  "Nd", "Neodymium",     #facc1c08-cf6d-4f3d-93f2-aca45891b841#, Lanthanide,  #1885#, 3,  6, 3,    Fblock, "[Xe]6s2 4f4",                 [3],                         144.24,     7.01,      1297,     3347,    0.19,    1.14,   41.5,    Primordial, Solid,   "Greek néos dídymos 'new twin'");
+  Promethium    = new(61,  "Pm", "Promethium",    #14371625-c2bd-489a-801f-998119f12ba4#, Lanthanide,  #1945#, 3,  6, 4,    Fblock, "[Xe]6s2 4f5",                 [3],                         144.91276,  7.26,      1315,     3273,    null,    1.13,   2e-19,   FromDecay,  Solid,   "Prometheus, a Titan");
+  Samarium      = new(62,  "Sm", "Samarium",      #60868b1f-38ec-4875-ba6a-86fd17ec0a36#, Lanthanide,  #1879#, 3,  6, 5,    Fblock, "[Xe]6s2 4f6",                 [3, 2],                      150.4,      7.52,      1345,     2067,    0.197,   1.17,   7.05,    Primordial, Solid,   "Samarskite, a mineral named after V. Samarsky-Bykhovets, Russian mine official");
+  Europium      = new(63,  "Eu", "Europium",      #f6c2010f-8518-441c-b10a-e74287b091b5#, Lanthanide,  #1901#, 3,  6, 6,    Fblock, "[Xe]6s2 4f7",                 [3, 2],                      151.964,    5.244,     1099,     1802,    0.182,   1.2,    2,       Primordial, Solid,   "Europe");
+  Gadolinium    = new(64,  "Gd", "Gadolinium",    #18ca7fdf-b571-412a-b77c-a72218dc848d#, Lanthanide,  #1880#, 3,  6, 7,    Fblock, "[Xe]6s2 4f7 5d1",             [3],                         157.25,     7.90,      1585,     3546,    0.236,   1.2,    6.2,     Primordial, Solid,   "Gadolinite, a mineral named after Johan Gadolin, Finnish chemist, physicist and mineralogist");
+  Terbium       = new(65,  "Tb", "Terbium",       #83247d52-7581-4564-9b97-3058b3e8fb87#, Lanthanide,  #1843#, 3,  6, 8,    Fblock, "[Xe]6s2 4f9",                 [3],                         158.92535,  8.23,      1629,     3503,    0.182,   1.2,    1.2,     Primordial, Solid,   "Ytterby, Sweden, where it was found; see yttrium, erbium, ytterbium");
+  Dysprosium    = new(66,  "Dy", "Dysprosium",    #683b0db2-acc4-430d-b02a-ad7e5c081fd6#, Lanthanide,  #1886#, 3,  6, 9,    Fblock, "[Xe]6s2 4f10",                [3],                         162.5,      8.540,     1680,     2840,    0.17,    1.22,   5.2,     Primordial, Solid,   "Greek dysprósitos 'hard to get'");
+  Holmium       = new(67,  "Ho", "Holmium",       #9ae585eb-3d49-4062-8aaa-1c0d1cf4b94e#, Lanthanide,  #1878#, 3,  6, 10,   Fblock, "[Xe]6s2 4f11",                [3],                         164.93033,  8.79,      1734,     2993,    0.165,   1.23,   1.3,     Primordial, Solid,   "Neo-Latin Holmia 'Stockholm'");
+  Erbium        = new(68,  "Er", "Erbium",        #c74b031f-8283-4709-a76a-8944a92ef3cc#, Lanthanide,  #1843#, 3,  6, 11,   Fblock, "[Xe]6s2 4f12",                [3],                         167.26,     9.066,     1802,     3141,    0.168,   1.24,   3.5,     Primordial, Solid,   "Ytterby, where it was found; see yttrium, terbium, ytterbium");
+  Thulium       = new(69,  "Tm", "Thulium",       #1722f0ca-78ee-4c9d-ad38-b2760ea66f19#, Lanthanide,  #1879#, 3,  6, 12,   Fblock, "[Xe]6s2 4f13",                [3],                         168.93422,  9.32,      1818,     2223,    0.16,    1.25,   0.52,    Primordial, Solid,   "Thule, the ancient name for an unclear northern location");
+  Ytterbium     = new(70,  "Yb", "Ytterbium",     #6e8ecb2c-92f6-4bfb-a6a2-ecda1f36728a#, Lanthanide,  #1878#, 3,  6, 13,   Fblock, "[Xe]6s2 4f14",                [3, 2],                      173.05,     6.90,      1097,     1469,    0.155,   1.1,    3.2,     Primordial, Solid,   "Ytterby, where it was found; see yttrium, terbium, erbium");
+  Lutetium      = new(71,  "Lu", "Lutetium",      #cb6a6b92-fc3f-43d6-8466-2679a0d80a87#, Lanthanide,  #1907#, 3,  6, 14,   Dblock, "[Xe]6s2 4f14 5d1",            [3],                         174.9667,   9.841,     1925,     3675,    0.154,   1.27,   0.8,     Primordial, Solid,   "Latin Lutetia 'Paris'");
+  Hafnium       = new(72,  "Hf", "Hafnium",       #a458deec-fd9d-46ae-8029-4aae34eb76ad#, TMetal,      #1923#, 4,  6, null, Dblock, "[Xe]6s2 4f14 5d2",            [4],                         178.49,     13.31,     2506,     4876,    0.144,   1.3,    3,       Primordial, Solid,   "Neo-Latin Hafnia 'Copenhagen' (from Danish havn, harbor)");
+  Tantalum      = new(73,  "Ta", "Tantalum",      #d05c7bdd-505b-4a0f-88ed-dc4fd9cc0428#, TMetal,      #1802#, 5,  6, null, Dblock, "[Xe]6s2 4f14 5d3",            [5],                         180.9479,   16.69,     3290,     5731,    0.14,    1.5,    2,       Primordial, Solid,   "King Tantalus, father of Niobe in Greek myth; see niobium");
+  Tungsten      = new(74,  "W",  "Tungsten",      #4bfb2f52-d5d2-4cb7-8d0b-c8534bfd8d83#, TMetal,      #1783#, 6,  6, null, Dblock, "[Xe]6s2 4f14 5d4",            [6],                         183.84,     19.25,     3695,     6203,    0.132,   2.36,   1.3,     Primordial, Solid,   "Swedish tung sten 'heavy stone'");
+  Rhenium       = new(75,  "Re", "Rhenium",       #c2260077-ac0a-4e9e-bdff-f01b64e445d5#, TMetal,      #1925#, 7,  6, null, Dblock, "[Xe]6s2 4f14 5d5",            [7, 6, 4],                   186.207,    21.02,     3459,     5869,    0.137,   1.9,    7e-4,    Primordial, Solid,   "Latin Rhenus 'Rhine'");
+  Osmium        = new(76,  "Os", "Osmium",        #8ae92de9-92c0-4937-a8cf-0286b6f59fe2#, TMetal,      #1803#, 8,  6, null, Dblock, "[Xe]6s2 4f14 5d6",            [4, 3],                      190.2,      22.59,     3306,     5285,    0.13,    2.2,    0.002,   Primordial, Solid,   "Greek osmḗ 'smell'");
+  Iridium       = new(77,  "Ir", "Iridium",       #a8a62c35-77f8-46dc-98ee-224d789ab26f#, TMetal,      #1803#, 9,  6, null, Dblock, "[Xe]6s2 4f14 5d7",            [4, 3],                      192.22,     22.56,     2719,     4701,    0.131,   2.20,   0.001,   Primordial, Solid,   "Iris, Greek goddess of rainbow");
+  Platinum      = new(78,  "Pt", "Platinum",      #a1df68d2-864d-442a-8c5d-8035e9bd5696#, TMetal,      #1735#, 10, 6, null, Dblock, "[Xe]6s1 4f14 5d9",            [4, 2],                      195.08,     21.45,     2041.4,   4098,    0.133,   2.28,   0.005,   Primordial, Solid,   "Spanish platina 'little silver', from plata 'silver'");
+  Gold          = new(79,  "Au", "Gold",          #1bd16dd4-d078-40b1-9dc0-0e9572e41e72#, TMetal,      null,   11, 6, null, Dblock, "[Xe]6s1 4f14 5d10",           [3, 1],                      196.96657,  19.3,      1337.33,  3129,    0.129,   2.54,   0.004,   Primordial, Solid,   "English, from same Proto-Indo-European root as 'yellow'");
+  Mercury       = new(80,  "Hg", "Mercury",       #ff9bc19e-89de-410e-a7e8-ae891e2e51d3#, TMetal,      null,   12, 6, null, Dblock, "[Xe]6s2 4f14 5d10",           [2, 1],                      200.59,     13.534,    234.43,   629.88,  0.14,    2.00,   0.085,   Primordial, Liquid,  "Mercury, Roman god of commerce, communication, and luck, known for his speed and mobility");
+  Thallium      = new(81,  "Tl", "Thallium",      #32702b28-9375-4948-bae9-1e8f59e287d1#, PTMetal,     #1861#, 13, 6, null, Pblock, "[Xe]6s2 4f14 5d10 6p1",       [3, 1],                      204.383,    11.85,     577,      1746,    0.129,   1.62,   0.85,    Primordial, Solid,   "Greek thallós 'green shoot / twig'");
+  Lead          = new(82,  "Pb", "Lead",          #53612a73-0eae-4c14-8de9-40bb5d4070c7#, PTMetal,     null,   14, 6, null, Pblock, "[Xe]6s2 4f14 5d10 6p2",       [4, 2],                      207,        11.34,     600.61,   2022,    0.129,   1.87,   14,      Primordial, Solid,   "English, from Proto-Celtic *ɸloudom, from a root meaning 'flow'");
+  Bismuth       = new(83,  "Bi", "Bismuth",       #c5603046-3ca9-4db8-a321-d7f3c8a78c5a#, PTMetal,     #1753#, 15, 6, null, Pblock, "[Xe]6s2 4f14 5d10 6p3",       [5, 3],                      208.9804,   9.78,      544.7,    1837,    0.122,   2.02,   0.009,   Primordial, Solid,   "German Wismut, via Latin and Arabic from Greek psimúthion 'white lead'");
+  Polonium      = new(84,  "Po", "Polonium",      #eda5dbd0-5bd9-47f9-8ef0-3a6d92a89cd9#, Metalloid,   #1898#, 16, 6, null, Pblock, "[Xe]6s2 4f14 5d10 6p4",       [4, 2],                      208.98243,  9.196,     527,      1235,    null,    2.0,    2e-10,   FromDecay,  Solid,   "Latin Polonia 'Poland', home country of discoverer Marie Curie");
+  Astatine      = new(85,  "At", "Astatine",      #a48f7796-c77e-4e99-9f61-7c34b63a8169#, NonMetal,    #1940#, 17, 6, null, Pblock, "[Xe]6s2 4f14 5d10 6p5",       [7, 5, 3, 1, -1],            209.98715,  8.91,      575,      610,     null,    2.2,    3e-20,   FromDecay,  Unknown, "Greek ástatos 'unstable'; it has no stable isotopes");
+  Radon         = new(86,  "Rn", "Radon",         #09a638ae-3474-4b26-a9d9-8b650fed19ed#, NobleGas,    #1900#, 18, 6, null, Pblock, "[Xe]6s2 4f14 5d10 6p6",       [0],                         222.01758,  0.00973,   202,      211.3,   0.094,   2.2,    4e-13,   FromDecay,  Gas,     "Radium emanation, originally the name of 222Rn");
+  Francium      = new(87,  "Fr", "Francium",      #90c81628-ce76-4324-a89a-9b12e16b7474#, AlkaliMetal, #1939#, 1,  7, null, Sblock, "[Rn]7s1",                     [1],                         223.01973,  2.48,      281,      890,     null,    0.79,   1e-18,   FromDecay,  Unknown, "France, home country of discoverer Marguerite Perey");
+  Radium        = new(88,  "Ra", "Radium",        #5c62e386-13a7-417a-9e1f-9019a9586c3b#, AEMetal,     #1898#, 2,  7, null, Sblock, "[Rn]7s2",                     [2],                         226.02541,  5.5,       973,      2010,    0.094,   0.9,    9e-7,    FromDecay,  Solid,   "Coined in French by discoverer Marie Curie, from Latin radius 'ray'");
+  Actinium      = new(89,  "Ac", "Actinium",      #5101080b-a293-4c6b-9eaf-815b7a67630d#, Actinide,    #1899#, 3,  7, 0,    Fblock, "[Rn]7s2 6d1",                 [3],                         227.02775,  10,        1323,     3471,    0.12,    1.1,    5.5e-10, FromDecay,  Solid,   "Greek aktís 'ray'");
+  Thorium       = new(90,  "Th", "Thorium",       #e885d355-3bd3-42b4-8e7e-23abef19084b#, Actinide,    #1828#, 3,  7, 1,    Fblock, "[Rn]7s2 6d2",                 [4],                         232.038,    11.7,      2115,     5061,    0.113,   1.3,    9.6,     Primordial, Solid,   "Thor, the Norse god of thunder");
+  Protactinium  = new(91,  "Pa", "Protactinium",  #55b7b4af-8a7f-405f-9875-4abdc5c8522f#, Actinide,    #1913#, 3,  7, 2,    Fblock, "[Rn]7s2 5f2 6d1",             [5, 4],                      231.03588,  15.37,     1841,     4300,    null,    1.5,    1.4e-6,  FromDecay,  Solid,   "English prefix proto- (from Greek prôtos 'first, before') + actinium; protactinium decays into actinium.");
+  Uranium       = new(92,  "U",  "Uranium",       #42998624-dcec-4a64-99a7-4cb88fe2a342#, Actinide,    #1789#, 3,  7, 3,    Fblock, "[Rn]7s2 5f3 6d1",             [6, 5, 4, 3],                238.0289,   19.1,      1405.3,   4404,    0.116,   1.38,   2.7,     Primordial, Solid,   "Uranus, the seventh planet");
+  Neptunium     = new(93,  "Np", "Neptunium",     #36d36e7c-2530-4d21-b876-ebfe920b7ef4#, Actinide,    #1940#, 3,  7, 4,    Fblock, "[Rn]7s2 5f4 6d1",             [6, 5, 4, 3],                237.048172, 20.45,     917,      4273,    null,    1.36,   3e-12,   FromDecay,  Solid,   "Neptune, the eighth planet");
+  Plutonium     = new(94,  "Pu", "Plutonium",     #c11b42b0-fad5-426f-b186-29470d66cb57#, Actinide,    #1940#, 3,  7, 5,    Fblock, "[Rn]7s2 5f6",                 [6, 5, 4, 3],                244.0642,   19.85,     912.5,    3501,    null,    1.28,   3e-11,   FromDecay,  Solid,   "Pluto, dwarf planet, then considered a planet");
+  Americium     = new(95,  "Am", "Americium",     #3ae92166-17b8-4dee-bb2f-58c9dc9ce787#, Actinide,    #1944#, 3,  7, 6,    Fblock, "[Rn]7s2 5f7",                 [6, 5, 4, 3],                243.06138,  12,        1449,     2880,    null,    1.13,   null,    Synthetic,  Solid,   "Americas, where the element was first synthesized, by analogy with its homolog europium");
+  Curium        = new(96,  "Cm", "Curium",        #7e92e585-5383-4017-83ab-91fa95b131d1#, Actinide,    #1944#, 3,  7, 7,    Fblock, "[Rn]7s2 5f7 6d1",             [3],                         247.07035,  13.51,     1613,     3383,    null,    1.28,   null,    Synthetic,  Solid,   "Pierre and Marie Curie, physicists and chemists");
+  Berkelium     = new(97,  "Bk", "Berkelium",     #c3dabeb9-7bb9-4e66-9d5c-d5047d2ce665#, Actinide,    #1949#, 3,  7, 8,    Fblock, "[Rn]7s2 5f9",                 [4, 3],                      247.07031,  14.78,     1259,     2900,    null,    1.3,    null,    Synthetic,  Solid,   "Berkeley, California, where it was first synthesized");
+  Californium   = new(98,  "Cf", "Californium",   #a99d11f6-bded-417b-93bc-113eb2fa2b76#, Actinide,    #1950#, 3,  7, 9,    Fblock, "[Rn]7s2 5f10",                [3],                         251.07959,  15.1,      1173,     1743,    null,    1.3,    null,    Synthetic,  Solid,   "California, where it was first synthesized in LBNL");
+  Einsteinium   = new(99,  "Es", "Einsteinium",   #2cd11bc8-9f62-405b-b5d6-f3cdc1e24032#, Actinide,    #1952#, 3,  7, 10,   Fblock, "[Rn]7s2 5f11",                [3],                         252.083,    8.84,      1133,     1269,    null,    1.3,    null,    Synthetic,  Solid,   "Albert Einstein, German physicist");
+  Fermium       = new(100, "Fm", "Fermium",       #401858a0-a599-45f4-ad87-a979a7badfe4#, Actinide,    #1952#, 3,  7, 11,   Fblock, "[Rn] 5f12 7s2",               [3],                         257.09511,  9.7,       1125,     7,       null,    null,   1.3,     Synthetic,  Unknown, "Enrico Fermi, Italian physicist");
+  Mendelevium   = new(101, "Md", "Mendelevium",   #674846b0-4938-4cfa-a5c2-add5f2bbc60b#, Actinide,    #1955#, 3,  7, 12,   Fblock, "[Rn]7s2 5f13",                [3, 2],                      258.09843,  10.3,      1100,     null,    null,    1.3,    null,    Synthetic,  Unknown, "Dmitri Mendeleev, Russian chemist who proposed the periodic table");
+  Nobelium      = new(102, "No", "Nobelium",      #64cf80e7-6124-4b26-a3c2-f6f477b8add9#, Actinide,    #1957#, 3,  7, 13,   Fblock, "[Rn]7s2 5f14",                [3, 2],                      259.101,    9.9,       1100,     null,    null,    1.3,    null,    Synthetic,  Unknown, "Alfred Nobel, Swedish chemist and engineer");
+  Lawrencium    = new(103, "Lr", "Lawrencium",    #4e1d598f-8f4e-4d0d-a9c5-88670b87f822#, Actinide,    #1961#, 3,  7, 14,   Dblock, "[Rn]7s2 5f14 6d1",            [3],                         266.12,     14.4,      1900,     null,    null,    1.3,    null,    Synthetic,  Unknown, "Ernest Lawrence, American physicist");
+  Rutherfordium = new(104, "Rf", "Rutherfordium", #dabd4c82-f01f-4131-8ed0-cb087e3aaf3d#, TMetal,      #1964#, 4,  7, null, Dblock, "[Rn]7s2 5f14 6d2",            [4],                         267.122,    17,        2400,     5800,    null,    null,   null,    Synthetic,  Unknown, "Ernest Rutherford, chemist and physicist from New Zealand");
+  Dubnium       = new(105, "Db", "Dubnium",       #2a3d0a3e-44ad-4ae6-8817-9c7886bf7e02#, TMetal,      #1967#, 5,  7, null, Dblock, "[Rn]7s2 5f14 6d3",            [5, 4, 3],                   268.126,    21.6,      null,     null,    null,    null,   null,    Synthetic,  Unknown, "Dubna, Russia, where it was discovered in JINR");
+  Seaborgium    = new(106, "Sg", "Seaborgium",    #8f64194a-8280-4896-be37-7caa6dbd7b2e#, TMetal,      #1974#, 6,  7, null, Dblock, "[Rn]7s2 5f14 6d4",            [6, 5, 4, 3, 0],             269.128,    23,        null,     null,    null,    null,   null,    Synthetic,  Unknown, "Glenn Seaborg, American chemist");
+  Bohrium       = new(107, "Bh", "Bohrium",       #0ee3527e-7e7d-4112-9f54-c2146eb005d4#, TMetal,      #1976#, 7,  7, null, Dblock, "[Rn]7s2 5f14 6d5",            [7, 5, 4, 3],                270.133,    26,        null,     null,    null,    null,   null,    Synthetic,  Unknown, "Niels Bohr, Danish physicist");
+  Hassium       = new(108, "Hs", "Hassium",       #27561b7c-7135-4a9c-8ad3-9389823cee07#, TMetal,      #1984#, 8,  7, null, Dblock, "[Rn]7s2 5f14 6d6",            [8, 6, 5, 4, 3, 2],          269.1336,   27,        null,     null,    null,    null,   null,    Synthetic,  Unknown, "Neo-Latin Hassia 'Hesse', a state in Germany");
+  Meitnerium    = new(109, "Mt", "Meitnerium",    #a76493dc-3d76-45ad-8e1f-425471540202#, TMetal,      #1982#, 9,  7, null, Dblock, "[Rn]7s2 5f14 6d7, est.",      [9, 8, 6, 4, 3, 1],          277.154,    27,        null,     null,    null,    null,   null,    Synthetic,  Unknown, "Lise Meitner, Austrian physicist");
+  Darmstadtium  = new(110, "Ds", "Darmstadtium",  #b2461ca8-f54b-4137-93dc-faf0b13f9003#, TMetal,      #1994#, 10, 7, null, Dblock, "[Rn]7s2 5f14 6d8, est.",      [8, 6, 4, 2, 0],             282.166,    26,        null,     null,    null,    null,   null,    Synthetic,  Unknown, "Darmstadt, Germany, where it was first synthesized in the GSI labs");
+  Roentgenium   = new(111, "Rg", "Roentgenium",   #bad402ce-a24f-49b3-a3aa-04c17276536d#, TMetal,      #1994#, 11, 7, null, Dblock, "[Rn]7s2 5f14 6d9, est.",      [5, 3, 1, -1],               282.169,    22,        null,     null,    null,    null,   null,    Synthetic,  Unknown, "Wilhelm Röntgen, German physicist");
+  Copernicium   = new(112, "Cn", "Copernicium",   #bf954675-91b2-461e-8321-759479b3d909#, TMetal,      #1996#, 12, 7, null, Dblock, "[Rn]7s2 5f14 6d10, est.",     [2, 1, 0],                   286.179,    14.0,      283,      340,     null,    null,   null,    Synthetic,  Unknown, "Nicolaus Copernicus, Polish astronomer");
+  Nihonium      = new(113, "Nh", "Nihonium",      #cb9646de-3155-4187-a0f3-90b46cf1c294#, PTMetal,     #2004#, 13, 7, null, Pblock, "[Rn]5f14 6d10 7s2 7p1, est.", [],                          286.182,    16,        700,      1400,    null,    null,   null,    Synthetic,  Unknown, "Japanese Nihon 'Japan', where it was first synthesized in Riken");
+  Flerovium     = new(114, "Fl", "Flerovium",     #9f907852-d089-4160-9003-0bdf289e273a#, PTMetal,     #1998#, 14, 7, null, Pblock, "[Rn]7s2 7p2 5f14 6d10, est.", [6, 4, 2, 1, 0],             290.192,    11.4,      284,      null,    null,    null,   null,    Synthetic,  Unknown, "Flerov Laboratory of Nuclear Reactions, part of JINR, where it was synthesized; itself named after Georgy Flyorov, Russian physicist");
+  Moscovium     = new(115, "Mc", "Moscovium",     #bc8737e3-7154-49b6-ac7f-d4c59aae257a#, PTMetal,     #2003#, 15, 7, null, Pblock, "[Rn]7s2 7p3 5f14 6d10, est.", [3, 1],                      290.196,    13.5,      700,      1400,    null,    null,   null,    Synthetic,  Unknown, "Moscow, Russia, where it was first synthesized in JINR");
+  Livermorium   = new(116, "Lv", "Livermorium",   #8a030f29-6093-424c-9c21-7e9324256114#, PTMetal,     #2000#, 16, 7, null, Pblock, "[Rn]7s2 7p4 5f14 6d10, est.", [4, 2, -2],                  293.205,    12.9,      700,      1100,    null,    null,   null,    Synthetic,  Unknown, "Lawrence Livermore National Laboratory in Livermore, California");
+  Tennessine    = new(117, "Ts", "Tennessine",    #bf61d14d-df1c-4d93-808c-6fb305c2d483#, NonMetal,    #2010#, 17, 7, null, Pblock, "[Rn]7s2 7p5 5f14 6d10, est.", [5, 3, 1, -1],               294.211,    7.1,       700,      883,     null,    null,   null,    Synthetic,  Unknown, "Tennessee, US, home to ORNL");
+  Oganesson     = new(118, "Og", "Oganesson",     #c8e67a7e-8146-4dab-a925-40ea78b68028#, NobleGas,    #2006#, 18, 7, null, Pblock, "[Rn]7s2 7p6 5f14 6d10, est.", [6, 4, 2, 1, 0, -1],         295.216,    7,         325,      450,     null,    null,   null,    Synthetic,  Unknown, "Yuri Oganessian, Russian physicist");
+}
+
+//==================================================================================================
+
+class ElementNumber {
+  var AtomicElement Element;
+  var int           Number;
+
+  Constructor(AtomicElement e, int number=1) {
+    System.Assert(e is valid);
+    Element = e;
+    Number  = number;
+  }
+
+  Show(bool hint) = Span {
+    hint ? Element : Element.Symbol;
+    if (Number > 1) {
+      Span {
+        TextAlignment: Subscript;
+        Number;
+      }
+    }
+  };
+
+  static implicit operator ElementNumber(AtomicElement e) = new(e, 1);
+
+  override GetLayoutSpan = Show(true);
+
+  override GetLayoutTip = Show(true);
+}
+
+//==================================================================================================
+
+class Compound: Fact {
+  field string        Name,
+                      CommonName;
+  field MatterStates  State;
+  var ElementNumber[] Components;
+
+  Constructor(Guid id, name, ElementNumber[] components, MatterStates state, commonname=null) {
+    super.Constructor(id);
+    Name       = name;
+    State      = state;
+    CommonName = commonname;
+    Components = components;
+    Link.Connect(this, (each components).Element);
+  }
+
+  override Icon GetIcon {
+    return Icons.polyline;
+  }
+
+  static operator Affinity(int number, Compound c) {
+    return new CompoundNumber(c, number);
+  }
+
+  static operator Affinity(Compound c, int number) {
+    System.Assert(false);
+    return new CompoundNumber(c, number);
+  }
+
+  static implicit operator Compound(AtomicElement e) = e.GetCompound(1);
+
+  CompoundNumber Aqueous = new(this, 1, MatterStates.Aqueous);
+  CompoundNumber Gas     = new(this, 1, MatterStates.Gas);
+
+  Formula = Span {
+    TextEquation: true;
+    Components;
+  };
+
+  Show(MatterStates state, bool hint) = Span {
+    (each Components).Show(hint);
+    if (state == MatterStates.None)
+      state = State;
+    if (state != MatterStates.None) {
+      Span {
+        TextAlignment:Subscript;
+        "(";
+        state.Abreviation;
+        ")"
+      };
+    }
+  };
+
+  override GetLayoutSpan = Show(None, false);
+
+  FullName = Span {
+    Name;
+    if (CommonName is valid)
+      " - \"{0}\""(CommonName);
+  };
+
+  override GetLayoutTip = Block {
+    Paragraph {
+      TextHeight: 110%;
+      Bold;
+      FullName;
+    };
+    Formula;
+  };
+
+  override GetLayoutNode = VBox(null, null, new Edge(0.5, 3, Colors.DarkGreen)) {
+    Background: #D0EED0#;
+    BorderRadius: 5;
+    HAlign: Center;
+    Span {
+      TextColor: 40%;
+      CommonName ?? Name;
+    };
+    Formula;
+    Tip: this;
+  };
+
+  override GetLayoutBlock = Block {
+    Paragraph {
+      FullName;
+    };
+    Paragraph {
+      LeftIndent: 8pt;
+      Formula;
+    }
+  };
+
+  override GetLayoutFact = GetLayoutBlock;
+}
+
+//==================================================================================================
+
+class CompoundNumber {
+  var Compound     Compound;
+  var int          Number;
+  var MatterStates State;
+
+  Constructor(Compound c, int number=1, MatterStates state=MatterStates.None) {
+    Compound = c;
+    Number   = number;
+    State    = state == MatterStates.None ? c.State : state;
+  }
+
+  static operator Affinity(int number, CompoundNumber c) {
+    return new CompoundNumber(c.Compound, number, c.State);
+  }
+
+  static implicit operator CompoundNumber(Compound c) {
+    return new(c, 1, c.State);
+  }
+
+  static implicit operator CompoundNumber(AtomicElement e) {
+    return new(e.GetCompound(1), 1, e.State);
+  }
+
+  override GetLayoutSpan = Span {
+    if (Number > 1) {
+      Number;
+      Tex.hairspace;
+    }
+    Span {
+      Compound.Show(State, false);
+      Tip: this;
+    };
+  };
+
+  override GetLayoutTip = Block {
+    TextHeight: 16pt;
+    Paragraph {
+      TextHeight: 110%;
+      Bold;
+      Compound.FullName;
+      " ({0})"(State);
+    };
+    Compound.Formula;
+  };
+}
+
+//==================================================================================================
+
+readonly LinkType ReagentLink  = new(ChemicalReaction, Compound, "Reagent");
+readonly LinkType ReactionLink = new(ChemicalReaction, Compound, "Product");
+
+class ChemicalReaction: Fact {
+  enum ReactionTypes {
+    override GetLayoutNode = VBox(null, null, new Edge(0.5, 2)) {
+      Background: Colors.SandyBrown;
+      BorderRadius: 1;
+      TextColor: Colors.White;
+      Name;
+      Tip: this;
+    };
+
+    Directed,
+    Bidirectional,
+  }
+
+  field string         Name;
+  field ReactionTypes  ReactionType;
+  var CompoundNumber[] Left,
+                       Right;
+
+  Constructor(Guid id, name, CompoundNumber[] left, CompoundNumber[] right, ReactionTypes type=ReactionTypes.Directed) {
+    super.Constructor(id);
+    Name         = name;
+    ReactionType = type;
+    Left         = GetCompounds(left, ReagentLink);
+    Right        = GetCompounds(right, ReactionLink);
+  }
+
+  override Icon GetIcon {
+    return Icons.science;
+  }
+
+  CompoundNumber[] GetCompounds(CompoundNumber[] list, LinkType link) {
+    foreach (var v in list)
+      link.Connect(this, v.Compound);
+    return list;
+  }
+
+  override GetLayoutBlock = Block {
+    Paragraph {
+      KeepWithNext: true;
+      SpaceBefore: 4pt;
+      TextHeight: 120%;
+      Bold;
+      Name;
+    };
+    Paragraph {
+      LeftIndent: 8pt;
+      GetLayoutSpan;
+    }
+  };
+
+  override GetLayoutNode = VBox(null, null, new Edge(0.5, 4, Colors.DarkGray)) {
+    Background: Colors.Beige;
+    BorderRadius: 5;
+    Span {
+      Icons.science; Space; Name;
+    };
+    Tip: this;
+  };
+
+  override GetLayoutSpan = Span {
+    TextEquation: true;
+    Span {
+      Separator: Tex.Plus;
+      Left;
+    };
+    var icon = ReactionType == ReactionTypes.Bidirectional ? Tex.rightleftarrows : Tex.rightarrow;
+    Span {
+      icon;
+      Tip: Span {TextHeight: 16pt; "Reagents"; icon; "Products"};
+    };
+    Span {
+      Separator: Tex.Plus;
+      Right;
+    };
+  };
+
+  override GetLayoutTip = GetLayoutBlock;
+
+  override GetLayoutFact = GetLayoutBlock;
+}
+
+//==================================================================================================
+
+readonly namespace<Compound> ChemicalCompounds {
+  Water             = new(#cd3deb9e-ccac-4f28-8e95-184faf732ce4#, "Water", [Hydrogen 2, Oxygen], Liquid);
+  SodiumCloride     = new(#f3e94bd7-07d9-441f-aa60-0c48f2f782bd#, "Sodium Cloride", [Sodium, Chlorine], Solid, "Table Salt");
+  DiOxygen          = new(#7e6339f8-3aa9-4e08-8650-302d662b26bc#, "DiOxygen", [Oxygen 2], Gas);
+  DiHydrogen        = new(#27176e87-f6cf-4a9f-b248-bcb7b61d9e4e#, "DiHydrogen", [Hydrogen 2], Gas);
+  DiNitrogen        = new(#3edf6429-425e-4c73-87ee-12ac01ca1376#, "DiNitrogen", [Nitrogen 2], Gas);
+  Ammonia           = new(#19fb50ec-900f-4d1f-8073-4d232d2f3db7#, "Amonia", [Nitrogen, Hydrogen 3], Gas);
+  CarbonDioxide     = new(#59606d40-6760-434c-8b59-580ab58035ca#, "Carbon Dioxide", [Carbon, Oxygen 2], Gas);
+  PotasiumClorate   = new(#afbf1b28-08bb-41b3-a6a6-2a96eaa5e514#, "Potasium Clorate", [Potassium, Chlorine, Oxygen 3], Solid);
+  PotasiumCloride   = new(#84239633-a47a-4824-af95-5ef493448cb2#, "Potasium Cloride", [Potassium, Chlorine], Solid);
+  Glucose           = new(#82e16270-5f01-4109-824b-0f3461cd91f9#, "Glucose", [Carbon 6, Hydrogen 12, Oxygen 6], Solid);
+  SulfuricAcid      = new(#8312b399-c0f1-4bfb-8623-e62fda20608c#, "Sulfuric Acid", [Hydrogen 2, Sulfur, Oxygen 4], Aqueous);
+  IronOxide         = new(#c71edb61-f014-4d41-bd90-df0180272d50#, "Iron Oxide", [Iron 2, Oxygen 3], Solid, "Rust");
+  TartaricAcid      = new(#049482bb-f3eb-428e-af93-47ff694fc0d6#, "Tartaric Acid", [Carbon 4, Hydrogen 6, Oxygen 3], Solid);
+  SodiumTartrate    = new(#b2f09cd7-f03d-4111-b1e6-c3a3e1f43cdf#, "Sodium Tartrate", [Sodium, Carbon 4, Hydrogen 5, Oxygen 6], Solid);
+  SodiumBiCarbonate = new(#36bbbd06-021c-438b-bc3b-81230e9651eb#, "Sodium BiCarbonate", [Sodium, Hydrogen, Carbon, Oxygen 3], Solid, "Baking Soda");
+  Methane           = new(#884ce9df-1b34-4ccf-a768-6a26ed6f7268#, "Methane", [Carbon, Hydrogen 4], Gas, "Natural Gas");
+  Ethane            = new(#8c87960e-a960-42fe-a898-6eb761071ee4#, "Ethane", [Carbon 2, Hydrogen 6], Gas);
+  Propane           = new(#df9fe12c-d703-43a7-a5be-4e1310728832#, "Propane", [Carbon 3, Hydrogen 8], Gas);
+  Butane            = new(#b6960ab1-960e-4295-b5a9-1a88ab8f6cd4#, "Butane", [Carbon 4, Hydrogen 10], Gas);
+  Pentane           = new(#ceda10d5-fd2d-4026-a197-44f23c797fd7#, "Pentane", [Carbon 5, Hydrogen 12], Gas);
+  Hexane            = new(#869c2992-6e9c-4e4b-9aea-b6aa9d367250#, "Hexane", [Carbon 6, Hydrogen 12], Liquid);
+  Heptane           = new(#9fda7f02-8b74-418d-9003-57dc2b8f927e#, "Heptane", [Carbon 7, Hydrogen 14], Liquid);
+  Octane            = new(#d40dd0d0-4ad4-461f-b4e7-2907c3576446#, "Octane", [Carbon 8, Hydrogen 16], Liquid);
+}
+
+//==================================================================================================
+
+readonly namespace<ChemicalReaction> Reactions {
+  WaterElectrolysis = new(#01661471-427b-4cf4-8cf5-3a728edd0883#, "Electrolysis of water",
+    [2 Water],
+    [2 DiHydrogen, DiOxygen]
+  );
+
+  AmoniaSynthesis = new(#4fcef38a-7553-4abe-a500-825840015768#, "Synthesis of ammonia",
+    [2 DiHydrogen, 2 DiNitrogen],
+    [2 Ammonia]
+  );
+
+  HydrogenCombustion = new(#19c0ac55-f349-45e7-bb66-6ac9d7c50d1c#, "Combustion of hydrogen",
+    [2 DiHydrogen, DiOxygen],
+    [2 Water.Gas]
+  );
+
+  MethaneCombustion = new(#b21d1a69-e6d7-4d0c-b7f9-fb968a1478eb#, "Combustion of methane",
+    [2 Methane, 2 DiOxygen],
+    [CarbonDioxide, 2 Water.Gas]
+  );
+
+  Photosynthesis = new(#c06fb71f-8879-45a3-acfc-4f32fd1ba5ca#, "Photosynthesis",
+    [CarbonDioxide, 6 Water],
+    [6 DiOxygen, Glucose.Aqueous]
+  );
+
+  SulfuricAcidSynthesis = new(#895ff1dc-dfb6-42e2-a121-1307a55e40bb#, "Sulfuric Acid Synthesis",
+    [2 Sulfur, 3 DiOxygen, Water],
+    [3 SulfuricAcid]
+  );
+
+  RustingIron = new(#50bd189c-5f5a-4541-af37-148d48577b02#, "Rusting Iron",
+    [4 Iron, 3 DiOxygen],
+    [2 IronOxide]
+  );
+
+  PotassiumCloride = new(#a8472869-8ffb-4d79-8923-47aba73e9c8b#, "Potassium Cloride Synthesis",
+    [2 PotasiumClorate],
+    [3 PotasiumCloride, 2 DiOxygen]
+   );
+
+  BatterRising = new(#80750a60-7dba-4026-8d36-296325d4aefd#, "Baked goods rising",
+    [TartaricAcid.Aqueous, SodiumBiCarbonate.Aqueous],
+    [SodiumTartrate, Water, CarbonDioxide]
+   );
+}
+
+//==================================================================================================
+
+

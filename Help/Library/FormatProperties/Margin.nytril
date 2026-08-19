@@ -1,0 +1,21 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "The margin forms a invisible padding layer to an object. The size of the margin is not subtracted from the object's size, but contributes to the amount of space that the object occupies in a container. ";
+  };
+};
+
+Box = Canvas(30, 30, 1);
+
+Example = HBox(null, null, new Edge(3, 0, 90%)) {
+  VAlign: Top;
+  Box;              // No margin
+  Box {Margin: 10}; // Same size all around
+  Box {Margin: new Thickness(0, 5, 20, 10)};
+};
+
+
+Main.Help = new HelpExample(attribute FormatProperties.Margin);

@@ -1,0 +1,18 @@
+include "Help";
+
+using Format;
+
+Example = Paragraph {
+  Canvas(40, 40, 1) {
+    Shadow: new Edge(2, 0, Colors.DarkGray);
+  };
+  Space;
+  Canvas(40, 40, 1) {
+    BorderRadius: 6;
+    Shadow: new Edge(4, 0, Colors.LightGray);
+  };
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.Shadow));
+
+

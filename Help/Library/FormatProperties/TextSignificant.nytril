@@ -1,0 +1,27 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  var x = 123.4567;
+
+  Span {"Number = "; x};
+
+  for (var digits = 1; digits <= 8; ++digits) {
+    Paragraph {
+      "TextSignificant: {0}\t\t"(digits);
+      Span {
+        TextSignificant: true;
+        TextDigits: digits;
+        x;
+      };
+    };
+  }
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextSignificant));
+
+//============================================================
+

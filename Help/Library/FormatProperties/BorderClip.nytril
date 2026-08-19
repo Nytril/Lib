@@ -1,0 +1,20 @@
+include "Help";
+
+using Format;
+
+BorderBox(text) = Canvas(1.25", 1", new Edge(5, 0, 80%)) {
+  BorderRadius: 20;
+  TextColor: Colors.Blue;
+  HBox(5") {
+    text;
+  }
+};
+
+Example = Block {
+  BorderBox("This canvas has no clipping");
+  BorderBox("This canvas has clipping") {
+    BorderClip: true;
+  }
+};
+
+Main.Help = new HelpExample(attribute FormatProperties.BorderClip);

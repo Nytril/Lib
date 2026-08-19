@@ -1,0 +1,18 @@
+using LinkTypes;
+
+readonly namespace<Person> People {
+  ColbertAuthor = new(#734d1c3e-3c33-4deb-893b-bcd09cf1d978#, "John", "P.", "Colbert") {
+    DepartmentLink to Organizations.Nytril;
+    WorkEmailLink to new Email("john.colbert@nytril.com");
+  };
+
+  McCreightAuthor = new(#6e3cd9c2-f2cb-471e-a1c5-0d969edf4984#, "Shawn", null, "McCreight") {
+    DepartmentLink to Organizations.Nytril;
+    WorkEmailLink to new Email("shawn.mccreight@nytril.com");
+  };
+}
+
+
+readonly namespace<Organization> Organizations {
+  Nytril = new(#b61aa3e4-9a9d-4b3f-a6c0-0c9e04b154f4#, "Nytril LLC");
+}

@@ -1,0 +1,30 @@
+using Format;
+
+//=============================================================================
+
+Main.Documents = new MainDocumentClass;
+
+class MainDocumentClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#60d15827-55ba-42d9-ab2a-87303c07c293#, "Simple Document");
+  }
+
+  Square(n) = "The square of {0} is {1}"(n, Span {Bold; TextColor: Colors.Red; n^2});
+
+  override GetDocument = Document {
+    Paragraph {
+      ParBackground: 95%;
+      TextFamily: TextFamilies.TimesNewRoman;
+      TextHeight: 20pt;
+      "And the results are:"
+    };
+    Block {
+      LeftIndent: 0.25";
+      TextHeight: 12pt;
+      Square(each -10..10);
+      Square(each Symbol(each 'a'..'c'));
+    }
+  };
+}
+
+//=============================================================================

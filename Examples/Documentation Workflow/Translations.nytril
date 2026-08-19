@@ -1,0 +1,7 @@
+using Format, HelpConcepts;
+
+class TranslationsHelpConcept: AuthoredContent {
+  Constructor {
+    super.Constructor("Translations");
+  }
+}

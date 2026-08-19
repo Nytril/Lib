@@ -1,0 +1,52 @@
+using Format;
+
+readonly FontFamilyDocument Main.Documents.FontFamilies = new;
+
+//===============================================================
+
+class FontFamilyDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#1c31fa66-36a3-4a0a-bcdc-102935a060db#, "Font Families");
+  }
+
+   override GetDocument = Document {
+    TextHeight: 16pt;
+
+    Paragraph {
+      ParAlignment: Center;
+      TextHeight: 40pt;
+      "Available Font Families";
+    };
+
+    foreach (var family in TextFamilies) {
+      Paragraph {
+        KeepWithNext: true;
+        TextHeight: 20pt;
+        SpaceBefore: 10pt;
+        TextFamily: TextFamilies.Calibri;
+        Underline;
+        family.Name;
+      };
+
+      foreach (var tf in family.FamilyTypefaces) {
+        Paragraph(null, [1.25"]) {
+          TextHeight: 13pt;
+
+          tf.Weight;
+          if (tf.Italic)
+           "-Italic";
+          Tab;
+          Span {
+            TextFamily: family;
+            TextWeight: tf.Weight;
+            TextItalic: tf.Italic;
+            "The quick brown fox jumped over the lazy dog";
+          };
+        };
+      }
+    }
+    Paragraph;
+  };
+}
+
+//===============================================================

@@ -1,0 +1,68 @@
+using Format;
+//======================================================================
+
+namespace Chapters.Language.Sections.Strings;
+
+readonly TutorialLesson Lesson = new(#86f7aebe-79a5-4293-9ec0-ec13172ebc45#, "Strings");
+
+//======================================================================
+
+SimpleString = "This is an array of characters";
+StringSlice  = SimpleString[10..15];
+StringNew    = SimpleString.Insert(5..11, "really ");
+
+readonly LessonExample Content.StringDefinition = new(#564e4501-f117-4a11-8a73-130c160dcd0f#, "Strings") {
+  Text: "A {0} is an array of characters enclosed in quotation marks (\"...\") in source code. "(NytrilStyle.Class(attribute string));
+  Code: [attribute SimpleString];
+};
+
+//======================================================================
+
+readonly LessonExample Content.StringSlices = new(#87abf791-2c7d-4d13-b08a-615f5c50b2a5#, "String slices") {
+  Text: "All array operations work on strings, in the same way";
+  Code: [attribute SimpleString, attribute StringSlice, attribute StringNew];
+  Show: [SimpleString, StringSlice, StringNew];
+};
+
+//======================================================================
+
+JoinString = SimpleString ", and some more" + ", and some more still";
+
+readonly LessonExample Content.Join = new(#a76ff739-795f-4ad4-888b-ad98e9595038#) {
+  Text: "Strings can be concatenated by simply placing them together or by using {0}"(NytrilStyle.OpAttribute(attribute +));
+  Code: [attribute JoinString];
+};
+
+//======================================================================
+
+Message   = "There is an error in \"{0}\"";
+FileError = Message("file.txt");
+
+readonly LessonExample Content.Arguments = new(#951cff2a-18fd-4cde-b500-b407b04c5644#, "String Arguments") {
+  Text: "Strings can contain numbered sections that allow for substitutions supplied by arguments to the string";
+  Code: [attribute Message, attribute FileError];
+};
+
+//======================================================================
+
+Warning     = "Please wait {1} seconds for {0}";
+WaitWarning = Warning("the report to generate", 5);
+
+readonly LessonExample Content.ArgumentOrder = new(#14ba0069-d5c9-4c4f-8b81-5f101728c23e#) {
+  Text: "The sections can be out of order in the string, but they will still correspond to the order of the arguments";
+  Code: [attribute Warning, attribute WaitWarning];
+};
+
+//======================================================================
+
+RootFormat      = "The inverse square root of {0} is {1}";
+RootFunction(x) = RootFormat(x, 1 / Symbolic.Sqrt(x));
+RootArray       = Span {Separator: ", "; RootFunction(each [2, Symbol("x"), "two"])};
+
+readonly LessonExample Content.FancyFormat = new(#cc961eb8-a462-4959-83c9-478ca58fe779#) {
+  Text: "The arguments to a string format can be any type, including equations or pictures";
+  Code: [attribute RootFormat, attribute RootArray];
+};
+
+//======================================================================
+

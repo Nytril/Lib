@@ -1,0 +1,15 @@
+include "Help";
+
+using Format;
+
+ShowRealPart(x) = "The real part of of {0} is {1}."(x, Math.RealPart(x));
+
+Example = Block {
+  ShowRealPart(3 + 5*Math.I);
+  ShowRealPart(Math.I);
+  ShowRealPart(2);
+};
+
+Main.Help = new HelpExample(attribute(Math.RealPart));
+
+

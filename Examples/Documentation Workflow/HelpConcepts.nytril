@@ -1,0 +1,54 @@
+namespace HelpConcepts;
+using Format, Main.Documents;
+
+
+Repositories = Span {
+  "Repositories";
+  Action: new Action(Actions.ToDocument, RepoAndSourceDoc.FactId);
+};
+
+
+ConfigsConcept = Span {
+  "Configurations";
+  Action: new Action(Actions.ToDocument, ConfigurationConceptsDoc.FactId);
+};
+
+Publishing = Span {
+  "Publishing";
+  Action: new Action(Actions.ToDocument, PublishingConceptsDoc.FactId);
+};
+
+SourceControl = Span {
+  "Source Control";
+  Action: new Action(Actions.ToDocument, SourceControlDoc.FactId);
+};
+
+DataSource = Span {
+  "Connecting Datasource";
+  Action: new Action(Actions.ToDocument, DataSourceDoc.FactId);
+};
+
+MeasuresConcept = Span {
+  "Measures";
+  Action: new Action(Actions.ToDocument, DataSourceDoc.FactId);
+};
+
+DocumentsSetup = Span {
+  "Document Set Up";
+  Action: new Action(Actions.ToDocument, DocumentSetupDoc.FactId);
+};
+
+DesignTemplates = Span {
+  "Design Templates";
+  Action: new Action(Actions.ToDocument, DesignTemplatesDoc.FactId);
+};
+
+HeadersAndFooters = Span {
+  "Headers and Footers";
+  Action: new Action(Actions.ToDocument, HeadersAndFootersDoc.FactId);
+};
+
+TranslationsConcept = Span {
+  "Translations";
+  Action: new Action(Actions.ToDocument, TranslationsDoc.FactId);
+};

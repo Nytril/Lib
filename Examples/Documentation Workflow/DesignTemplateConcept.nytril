@@ -1,0 +1,7 @@
+using Format, HelpConcepts;
+
+class DesignTemplateConcept: AuthoredContent {
+  Constructor {
+    super.Constructor("Understanding Design Templates");
+  }
+}

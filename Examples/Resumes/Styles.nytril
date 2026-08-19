@@ -1,0 +1,558 @@
+using Format, Math, IO;
+//=======================================================================
+// Here is the information for each job applicant
+//=======================================================================
+
+readonly namespace Lang {
+  Experience = "Experience";
+  Skills     = "Skills";
+  References = "References";
+  Awards     = "Awards";
+  Statement  = "Statement";
+  Object     = "Object";
+  Contact    = "Contact";
+  Leadership = "Leadership";
+}
+//=======================================================================
+
+TextFormat(size, color, FontFamily family) = {
+  TextColor: color;
+  TextHeight: size;
+  TextFamily: family;
+};
+
+FullName(person) = Span {
+  Separator: Space;
+  var p = person.Identity;
+  p.First;
+  p.Last;
+};
+
+//=======================================================================
+// Define styles for resume type 1
+//=======================================================================
+
+readonly namespace Style.Resume1 {
+  Bullet(text) = Paragraph {
+    LeftIndent: 24pt;   // Bullet indent
+    FirstIndent: -12pt; // Text indent
+    SpaceAfter: 1pt;
+    Tex.bullet; Tab;
+    text;
+  };
+
+  BulletList(list) = Block {
+    Bullet(each list);
+    Paragraph;
+  };
+
+  ShowTitle(text) = Paragraph(BorderAll(new(0.3pt, 3pt, Colors.Black))) {
+    SpaceAfter: 8pt;
+    TextHeight: 13pt;
+    Span {
+      TextCase: TextCases.SmallCaps;
+      text;
+    };
+  };
+
+  HeaderLine(name, right) = Paragraph(null, [new(7.25", TabTypes.Right)]) {
+    TextHeight: 10pt;
+    Span {
+      TextHeight: 11pt;
+      name;
+    };
+    Tab;
+    right
+  };
+
+  Education(school) = Block {
+    HeaderLine(school.Name, school.Graduated);
+    BulletList(school.Highlights)
+  };
+
+  Employment(company) = Block {
+    HeaderLine(company.Title CommaSpace company.Name, company.Start "-" company.End);
+    BulletList(company.Highlights)
+  };
+
+  Skills(person) = Paragraph {
+    SpaceAfter: 4pt;
+    Span {
+      Separator: LineBreak;
+      person.Skills;
+    };
+  };
+
+  Show(person) = Block {
+    SectionNextPage(0.5");
+
+    Table(null, null, [5.25", 2"]) {
+      Row {
+        Paragraph {
+          TextHeight: 24pt;
+          FullName(person);
+        };
+        Block {
+          ParAlignment: Right;
+          person.Email;
+          person.Phone;
+          Span {person.City; ", "; person.State};
+        }
+      }
+    };
+    Paragraph {
+      SpaceBefore: 10pt;
+      SpaceAfter: 10pt;
+      RightIndent: 2.75";
+      person.Statement;
+    };
+    ShowTitle("Education");
+    Education(each person.Education);
+    ShowTitle(Lang.Experience);
+    Employment(each person.Experience);
+    ShowTitle("Skills");
+    Skills(person);
+  };
+}
+//=======================================================================
+// Define resume style 2
+//=======================================================================
+
+readonly namespace Style.Resume2 {
+  MainFamily  = TextFamilies.Arial;
+  TitleFamily = TextFamilies.CMUSansSerif;
+
+  ShowTitle(text) = Paragraph {
+    TextFormat(18pt, new Color(178, 34, 34), MainFamily);
+    SpaceAfter: 8pt;
+    text;
+  };
+
+  BulletList(list, color) = Block {
+    TextColor: color;
+    ListBlock(Markers.Diamond) {
+      list;
+    };
+    Paragraph;
+  };
+
+  Education(school, color) = Block {
+    ParAlignment: Center;
+    Paragraph {
+      TextFormat(16pt, Colors.Firebrick, MainFamily);
+      Span {
+        TextFormat(13pt, color, MainFamily);
+        school.Name;
+        LineBreak;
+      };
+      Span {
+        Italic;
+        TextFormat(12pt, Colors.White, MainFamily);
+        school.Graduated;
+      };
+    };
+    school.Highlights;
+    Paragraph
+  };
+
+  Employment(company) = Block {
+    TextFormat(14pt, Colors.Firebrick, TitleFamily);
+    Paragraph {
+      Bold;
+      company.Title " at " company.Name
+    };
+    Paragraph {
+      Italic;
+      TextHeight: 12pt;
+      company.Start " to " company.End
+    };
+    Block {
+      TextHeight: 12pt;
+      BulletList(company.Highlights, 50%);
+    }
+  };
+
+  Skills(person) = Block {
+    SpaceAfter: 4pt;
+    TextFormat(12pt, 50%, MainFamily);
+    person.Skills;
+  };
+
+  NameSec(person) = Paragraph {
+    SpaceAfter: 10pt;
+    TextFormat(36pt, new Color(89, 89, 89), TitleFamily);
+    FullName(person);
+  };
+
+  ContactSec(person) = Block {
+    TextHeight: 9pt;
+    ParAlignment: Center;
+    Paragraph {
+      TextHeight: 16pt;
+      TextUnderline: TextUnderlines.Single;
+      "Contact"
+    };
+    Paragraph {
+      Icons.home;
+      Space;
+      person.City;
+      CommaSpace;
+      person.State;
+    };
+    Paragraph {
+      Icons.email;
+      Space;
+      person.Email;
+    };
+    Paragraph {
+      Icons.phone;
+      Space;
+      person.Phone;
+    }
+  };
+
+  ExpSkills(person) = Block {
+    ShowTitle(Lang.Experience);
+    Employment(each person.Experience);
+    ShowTitle(Lang.Skills);
+    Skills(person)
+  };
+
+  EduSec(person) = Block {
+    ParAlignment: Center;
+    Paragraph {
+      TextHeight: 16pt;
+      TextUnderline: TextUnderlines.Single;
+      "Education";
+    };
+    Education(each person.Education, Colors.White);
+  };
+
+  StmntSec(person) = Block{
+    ParAlignment: Center;
+    Span {
+      TextHeight: 16pt;
+      TextUnderline: TextUnderlines.Single;
+      "About Me";
+    };
+    Span {
+      TextHeight: 12pt;
+      person.Statement;
+    };
+  };
+
+  SideBar(size) = Frame(2", ExtentPage.Height, 5pt) {
+    Wrapping: Wrappings.BehindText;
+    HRelative: HRelatives.Page;
+    VRelative: VRelatives.Page;
+    ParAlignment: Center;
+    Background: new Color(138, 35, 135);
+    TextFormat(size, Colors.White, MainFamily);
+  };
+
+  Chevron = Paragraph {
+    var cw = 2.01";
+    var ch = 0.75";
+    var ct = 20pt;
+
+    LeftIndent: 0;
+    SpaceAfter: 20pt;
+    Shape(Colors.White) {
+      Transform: Transform.Scale(1.1, 1) Transform.Translate(-10, 0);
+      OpenPath(0) {
+        LineTo(cw * 0.5, ch);
+        LineTo(cw, 0);
+        LineTo(cw, ct);
+        LineTo(cw * 0.5, ch + ct);
+        LineTo(0, ct);
+      }
+    }
+  };
+
+  Show(person) = Block {
+    SectionNextPage(new(2.5", 0, 0.5", 0));
+    SideBar(12pt) {
+      StmntSec(person);
+      Chevron;
+      ContactSec(person);
+      Chevron;
+      EduSec(person);
+      Chevron;
+    };
+
+    Block {
+      SpaceBefore: 10pt;
+      TextFormat(12pt, 50%, MainFamily);
+      NameSec(person);
+      ExpSkills(person);
+    };
+  };
+}
+//=======================================================================
+// Define resume style 3
+//=======================================================================
+
+readonly namespace Style.Resume3 {
+  TitleFont  = TextFormat(26pt, new Color(15, 51, 68), TextFamilies.Arial);
+  SubTitleF  = TextFormat(14pt, new Color(127, 79, 146), TextFamilies.Arial){Bold};
+  MainFont   = TextFormat(11pt, Colors.Black, TextFamilies.Arial);
+  SideFont   = TextFormat(11pt, Colors.White, TextFamilies.Arial);
+  FWidth     = 3.57";
+  FHeight    = 3";
+  FThick     = 5pt;
+  BottomLeft = new Point(0, ExtentPage.Height);
+
+  Cloud(Color color) = Shape(color) {
+    ClosedPath(0, 0.06) {
+      LineTo(0.12, 0);
+      CurveTo(new(0.25, -0.05), new(0.3, 0.1), new(0.4, 0.15));
+      CurveTo(new(0.45, 0.17), new(0.5, 0.17), new(0.53, 0.13));
+      CurveTo(new(0.6, 0.07), new(0.65, 0.1), new(0.7, 0.14));
+      CurveTo(new(0.75, 0.2), new(0.77, 0.24), new(0.85, 0.24));
+      LineTo(1, 0.23);
+      LineTo(1, 1);
+      LineTo(0, 1);
+    };
+  };
+
+  ExpSpace(company) = Paragraph {
+    SpaceAfter: 20pt;
+    MainFont;
+    (company.Start " - " company.End){Bold};
+    LineBreak;
+    company.Title; Space;
+    Tex.bullet;
+    Space;
+    company.Name;
+  };
+
+  EduSpace(school) = Paragraph {
+    SpaceAfter: 10pt;
+    MainFont;
+    (school.Graduated){Bold};
+    LineBreak;
+    school.Name; Space;
+    Tex.bullet;
+    Space;
+    school.Degree;
+    LineBreak;
+    Span {
+      Separator: LineBreak;
+      school.Highlights;
+    };
+  };
+
+  ProfilePic(person, Size size) = Canvas(size.Width, size.Height, 5) {
+    BorderRadius: size.Height * 0.5;
+    BorderClip: true;
+    Background: Colors.White;
+    HAlignment: HAligns.Center;
+    Y: 1";
+
+    FitBox(new Image(Folders.Source FileName(FullName(person)) Extensions.JPG), size.Width, size.Height) {
+      HAlignment: HAligns.Center;
+      VAlignment: VAligns.Center;
+    };
+  };
+
+  Show(person) = Block {
+    SectionNextPage(new(FWidth + 0.25", 0.5", 0.5", 0.5"));
+
+    var size = new Size(FWidth, ExtentPage.Height);
+
+    Paragraph {
+      Frame(size.Width, size.Height) {
+        Wrapping: Wrappings.BehindText;
+        HRelative: HRelatives.Page;
+        VRelative: VRelatives.Page;
+
+        Canvas(size.Width, size.Height) {
+          Background: new Color(15, 51, 68, 50%);
+
+          ProfilePic(person, new Size(2"));
+
+          Canvas(null, FHeight) {
+            VAlignment: VAligns.Bottom;
+            Transform: Transform.Scale(FWidth, FHeight);
+
+            Cloud(new(254, 245, 136)) {
+              Transform: Transform.Scale(1, 1);
+            };
+            Cloud(new(252, 226, 235)) {
+              Transform: Transform.Scale(1, 0.8);
+              Y:0.5;
+            };
+          };
+        }
+      };
+    };
+
+    VBox {
+      Block {
+        TitleFont;
+        FullName(person);
+      };
+      Paragraph {
+        SubTitleF;
+        Lang.Experience
+      };
+      Block {
+        SpaceBefore: 11pt;
+        ExpSpace(each person.Experience);
+        Paragraph
+      };
+      Paragraph {
+        SubTitleF;
+        "Education";
+      };
+      EduSpace(each person.Education);
+      Paragraph {
+        SubTitleF;
+        Lang.Awards
+      };
+      Paragraph;
+      Paragraph {
+        SubTitleF;
+        Lang.References
+      };
+      Paragraph;
+    };
+  };
+}
+//=======================================================================
+// Define resume style 4
+//=======================================================================
+
+readonly namespace Style.Resume4 {
+  CircleSize  = new Size(0.5");
+  MainColor   = new Color(248, 201, 116);
+  FontColor   = 25%;
+  Middle      = 0.5";
+
+  TitleFont   = TextFormat(36pt, FontColor, TextFamilies.Arial);
+  SubFont     = TextFormat(14pt, FontColor, TextFamilies.Arial);
+  SubSubFont  = TextFormat(11pt, FontColor, TextFamilies.Arial);
+  MainFont    = TextFormat(11pt, FontColor, TextFamilies.Arial);
+
+  Education(school) = Paragraph {
+    SpaceAfter: 20pt;
+    SubSubFont;
+    school.Degree " | " school.Graduated " | " school.Name {Bold};
+    LineBreak;
+    Span {
+      Separator: LineBreak;
+      school.Highlights;
+    };
+  };
+
+  Employment(company) = Paragraph {
+    SpaceAfter: 20pt;
+    MainFont;
+    company.Title " | " company.Name " | " company.Start "-";
+    company.End{Bold};
+    LineBreak;
+    Span {
+      Separator: LineBreak;
+      company.Highlights;
+    };
+  };
+
+  CircleIcon(icon) = Canvas(CircleSize.Width, CircleSize.Height) {
+    Background: MainColor;
+    BorderRadius: CircleSize.Height * 0.5;
+    TextHeight: CircleSize.Height * 0.6;
+    HAlign: Center;
+    VAlign: Center;
+    icon;
+  };
+
+  ContactIcons(person) = Table(null, PadAll(5), [50%]) {
+    MainFont;
+    Row {
+      HAlign: Center;
+      VBox {
+        HAlign: Center;
+        CircleIcon(Icons.email);
+        person.Email;
+      };
+      VBox {
+        HAlign: Center;
+        CircleIcon(Icons.phone);
+        person.Phone;
+      };
+    };
+    Row {
+      HAlign: Center;
+      VBox {
+        HAlign: Center;
+        CircleIcon(Icons.home);
+        Paragraph {
+          person.Address;
+        };
+        Paragraph {
+          person.City;
+          ", ";
+          person.State;
+        }
+      };
+    };
+  };
+
+  Show(person) = Block {
+    SectionNextPage(0.5");
+
+    Paragraph(BorderAll(new(2pt, 5pt, MainColor))) {
+      TitleFont;
+      ParAlignment: Center;
+      FullName(person);
+      SpaceAfter: 20pt;
+    };
+
+    var cw = ExtentWidth * 0.5;
+    Table(null, null, [cw]) {
+      var pad = 10pt;
+      Row {
+        VAlign: Top;
+        Cell {
+          ParAlignment: Center;
+          Paragraph {
+            SpaceAfter: 10pt;
+            SubFont;
+            Bold;
+            Lang.Skills;
+          };
+          Paragraph {
+            Separator: LineBreak;
+            TextHeight: 12pt;
+            MainFont;
+            person.Skills
+          };
+          Frame(cw-Middle, null, new Edge(2pt, pad, MainColor)) {
+            Span {"Experience"; SubFont};
+            Employment(each person.Experience);
+            Span {"Education"; SubFont};
+            Education(each person.Education);
+          };
+        };
+        Cell {
+          Paragraph(new Edge(1pt, 5pt, Colors.White)) {
+            ParAlignment: Center;
+            ParBackground: MainColor;
+            SubFont;
+            Lang.Statement;
+            LineBreak;
+            {TextHeight: 12pt} person.Statement;
+          };
+          Paragraph {
+            SpaceBefore: 10pt;
+            ParAlignment: Center;
+            SubFont;
+            Lang.Contact;
+          };
+          ContactIcons(person);
+        };
+      };
+    };
+  };
+}
+

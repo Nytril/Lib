@@ -1,0 +1,16 @@
+include "Help";
+
+using Format;
+
+
+Example = Paragraph {
+  "E = mc" ^ 2;
+  TextEquation: true;
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextEquation));
+
+//============================================================
+

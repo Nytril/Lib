@@ -1,0 +1,34 @@
+include "Help";
+
+using Format;
+
+Description = EquationPar {
+  var x = Symbol("x");
+  var i = Symbol("i");
+  var N = Symbol("n");
+
+  "H";
+  Tex.Equals;
+  Radical {
+    Degree: N;
+    Nary {
+      Upper: N;
+      Lower: i;
+      Operator: Tex.prod;
+      x sub i
+    }
+  }
+};
+
+ShowGeometricMean(values) = ShowValues("geometric mean", values) {
+  Math.GeometricMean(values);
+};
+
+Example = Block {
+  ShowGeometricMean([1, 2, 4, 8, 16]);
+  ShowGeometricMean([2, 5, 6, 12, 18]);
+};
+
+Main.Help = new HelpExample(attribute(Math.GeometricMean));
+
+

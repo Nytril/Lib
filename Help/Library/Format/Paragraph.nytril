@@ -1,0 +1,38 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "If a paragraph is in the body of a document, it may continue onto the next page. ";
+    "Formatting applies to all spans inside the paragraph, unless the format is overridden at the span level.";
+  };
+};
+
+Example = Block {
+  Paragraph(BorderB(1)) {
+    "Famous quotes"
+  };
+
+  Paragraph {
+    Span {"Success"; Italic}; " is stumbling from failure to failure with no loss of enthusiasm."
+  };
+
+  Paragraph {
+    SpaceAfter: 10pt; Bold; LeftIndent: 24pt;
+    "- Winston Churchill";
+  };
+
+  Paragraph {
+    "The road to success is always under construction.";
+  };
+
+  Paragraph {
+    SpaceAfter: 10pt; Bold; LeftIndent: 24pt;
+    "- Lily Tomlin";
+  };
+};
+
+Main.Help = new HelpExample(attribute(Paragraph));
+
+

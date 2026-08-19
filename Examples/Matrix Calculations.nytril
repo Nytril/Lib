@@ -1,0 +1,95 @@
+using Format, Math;
+
+//======================================================================
+
+Main.Documents = new MainDocumentClass;
+
+class MainDocumentClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#12638947-5d2c-4493-b329-78d7ff4be3cd#, "Matrix Calculations");
+  }
+
+  override GetDocument = Document {
+    Matrix.Convert([a]).Inverse;
+
+    each v1;
+    each m55;
+    v1.Cross(v3);
+    m7*v1;
+    v1-v1;
+    5*v1;
+
+    Multiply(s1, s2);
+
+    s1-s2;
+    Multiply(m5, m6);
+    ShowDet(m7);
+    ShowDet(s1);
+    ShowDet(s1*s2);
+    ShowDet(m55);
+
+    5*m6;
+    m6*5;
+    m9.Inverse;
+
+    I^0;
+    Multiply(m5, m5);
+    m5^(-1);
+    m9^-1;
+
+    m5^24;
+    1/m5;
+    m5.Inverse;
+    m5/2;
+    new Matrix(3, 3, a)^2;
+  };
+}
+//======================================================================
+
+x = Symbol("x");
+y = Symbol("y");
+z = Symbol("z");
+a = Symbol("a");
+b = Symbol("b");
+c = Symbol("c");
+
+l1 = Matrix.Convert([[1, 2, 3]]);
+l2 = Matrix.Convert([4, 5, 6]);
+l3 = [6, 5, 3];
+l4 = [8, 7, 9];
+
+m1 = [l1, l2];
+m2 = [l3, l4];
+m3 = Matrix.Convert([[4], [5], [6]]);
+m4 = Matrix.Convert([[1, 2, 3]]);
+m5 = Matrix.Convert([[1, 2], [3, 4]]);
+m6 = Matrix.Convert([[4, 6], [3, 8]]);
+m7 = Matrix.Convert([[6, 1, 1], [4, -2, 5], [2, 8, 7]]);
+m55 = Matrix.Convert([[1, 2, 3, 4, 5], [45, 65, 2, 0, 3], [9, 3, 3, 7, 5], [5, 4, 3, 2, 1], [9, 10, 11, 52, 6]]);
+m9 = Matrix.Convert([[3, 0, 2], [2, 0, -2], [0, 1, 1]]);
+
+s1 = Matrix.Convert([[a, b, c], [x, y, z], [a, b, c]]);
+s2 = Matrix.Convert([[x, y, z], [a, b, x], [z, c, b]]);
+
+v1 = Vector.Convert([1, 2, 3]);
+v2 = Vector.Convert([1, 2, 3, 5, 6]);
+v3 = Vector.Convert([4, 5, 6]);
+//======================================================================
+
+ShowDet(matrix) = Span {
+  matrix;
+  Tex.Equals;
+  matrix.Determinant;
+};
+
+Multiply(l1, l2) = HBox {
+  VAlign: Center;
+  l1;
+  Tex.cdot;
+  l2;
+  Tex.Equals;
+  l1 * l2;
+};
+
+//======================================================================
+

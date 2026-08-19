@@ -1,0 +1,22 @@
+include "Help";
+
+using Format;
+
+ShowMode(values) = ShowValues("mode", values) {
+  "[";
+  Span {
+    Separator: CommaSpace;
+    Math.Mode(values);
+  };
+  "]";
+};
+
+Example = Block {
+  ShowMode([14, 2, 2, 5, 7, 7, 7]);
+  ShowMode([1, 2, 3, 4, 5]);
+  ShowMode([-1, 2, 3, 6, -1]);
+};
+
+Main.Help = new HelpExample(attribute(Math.Mode));
+
+

@@ -1,0 +1,85 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "Causes an action to take place if the user clicks on the link ";
+  };
+};
+
+//============================================================
+
+class ResultDocClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#1140c1bf-0f0e-4534-af87-92a5bc6bd23d#, "Results");
+  }
+
+  override GetDocument = Document {
+    Span {"Results computed on "; DateTime.Now};
+  };
+}
+
+//============================================================
+
+Example = Paragraph {
+  "Click ";
+  Span {
+    TextColor: Colors.Blue;
+    "here";
+    Action: new Action(Actions.ToDocument, new ResultDocClass);
+  };
+  " to see the results.";
+};
+
+//============================================================
+
+class MessageActionClass: Action {
+  Constructor {
+    super.Constructor(Actions.Execute, null);
+  }
+
+  override EventResponse Execute {
+    var message = Paragraph {
+      HBox {
+        TextHeight: 24pt;
+        VAlign: Center;
+        Shape(Colors.Red, Colors.Black) {
+          Icons.message;
+        };
+        Space;
+        "Important message";
+      };
+    };
+
+    return EventResponses.MessageTip(message);
+  }
+}
+
+Example2 = Paragraph {
+  "Click ";
+  Span {
+    TextColor: Colors.Blue;
+    "here";
+    Action: new MessageActionClass;
+  };
+  " to see the message.";
+};
+
+//============================================================
+
+Example3 = Paragraph {
+  "Visit us at ";
+  Span {
+    TextColor: Colors.Blue;
+    "nytril.com";
+    Action: new Action(Actions.ToLink, new URL("www.nytril.com"));
+  };
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.Action), 3);
+
+//============================================================
+

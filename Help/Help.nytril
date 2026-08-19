@@ -1,0 +1,247 @@
+include "Lang";
+include "NytrilStyle";
+
+using Format;
+//======================================================================
+
+Clause = Paragraph {
+  SpaceBefore: 8pt;
+  SpaceAfter: 2pt;
+};
+
+IfClause = Paragraph {
+  TextHeight: 120%;
+  SpaceAfter: 2pt;
+};
+
+DescriptionBlock = Block {
+  ParAlignment: Justify;
+  LeftIndent: 16pt;
+};
+
+EquationPar = Paragraph {
+  LeftIndent: 16pt;
+  TextHeight: 14pt;
+  TextEquation: true;
+  TextStacked: true;
+};
+
+ShowValues(name, a) = Paragraph {
+  "The "; name; " of ";
+  Span {
+    Separator: CommaSpace;
+    LastSeparator: " and ";
+    a;
+  };
+  " is ";
+};
+
+HelpLink(Attribute prop) = Span {
+  prop.Name;
+  TextColor: Colors.Blue;
+  TextFace: Mono;
+  TipAction: new Action(Actions.ToDocument, prop);
+};
+
+readonly namespace MeasureText {
+  UseNumber = IfClause {
+    "Numbers will be converted to virtual pixels (1/96 of an inch).";
+  };
+
+  UsePercentWidth = IfClause {
+    "Percentages (%) will represent a percentage of the ExtentWidth";
+  };
+
+  UsePercentHeight = IfClause {
+    "Percentages (%) will represent a percentage of the ExtentHeight";
+  };
+
+  UsePercentSize = IfClause {
+    "Percentages (%) will represent a percentage of the minimum of ExtentWidth and ExtentHeight";
+  };
+
+  UseMeasure = IfClause {
+    "Any linear Measure will be represented exactly";
+  };
+}
+
+//======================================================================
+
+class HelpExample: HelpSystem {
+  var int  Examples;
+  var bool Parameter;
+
+  Constructor(Attribute attr, int examples=1, name=null) {
+    super.Constructor(attr, name);
+    Examples  = examples;
+    Parameter = name is valid;
+  }
+
+  ShowCode(selection) = Paragraph {
+    ParBackground: NytrilPalette.SourceBack;
+    TextFace: Mono;
+    TextHeight: 9pt;
+    selection;
+  };
+
+  ShowHeader(bool all) = Block {
+    TextHeight: 12pt;
+    ParAlignment: Justify;
+
+    var desc = System.ProgramNameSpace.GetField("Description")?.Value;
+
+    Paragraph {
+      ParAlignment: Left;
+      ParBackground: 95%;
+      Attribute.Prototype(true);
+    };
+
+    if (Parameter) {
+      Paragraph {
+        Italic;
+        ParAlignment: Left;
+        LeftIndent: 0;
+        desc;
+      }
+    }
+    else {
+      Paragraph {
+        Italic;
+        LeftIndent: 16pt;
+        Attribute.Description;
+        DotSpace;
+      };
+      desc;
+
+      Paragraph;
+
+      if (all) {
+        Block {
+          ParAlignment: Left;
+          TextHeight: 10pt;
+          Attribute.Children;
+        };
+        Paragraph;
+      }
+    }
+  };
+
+  static int CompareProp(Attribute p1, Attribute p2) {
+    return p1.Name.Compare(p2.Name);
+  }
+
+  Yields = Paragraph {
+    KeepWithNext: true;
+    SpaceBefore: 4pt;
+    TextColor: NytrilPalette.Arrow;
+    Markers.TriangleDown;
+  };
+
+  ShowExample(number) = Block {
+    var block = true;
+    var value = System.ProgramNameSpace.GetField(number == 1 ? "ExampleBlock" : "ExampleBlock" + number);
+    if (value is null) {
+      block = false;
+      value = System.ProgramNameSpace.GetField(number == 1 ? "Example" : "Example" + number);
+    }
+
+    if (value is not null) {
+      var header = value.GetField("Header");
+      if (header is valid) {
+        value  = value.GetField("Body");
+        ExampleHeader {
+          header.Value;
+        };
+      }
+      else if (Examples > 1) {
+        ExampleHeader {
+          Lang.Example;
+          Space;
+          number;
+        };
+      }
+
+      ShowCode(NytrilStyle.CodeSelection([value]));
+      Yields;
+      if (block)
+        value.Value;
+      else {
+        Paragraph {
+          Frame(ExtentWidth) {
+            value.Value;
+          }
+        };
+      }
+    }
+  };
+
+  ExampleHeader = Paragraph {
+    TextHeight: 12pt;
+    SpaceBefore: 8pt;
+    Bold;
+  };
+
+  ExampleBody = Block {
+    TextHeight: 10pt;
+  };
+
+  override GetDocument = Document {
+    ShowHeader(true);
+    ExampleBody {
+      ShowSample;
+      for (int i = 1; i <= Examples; ++i) {
+        ShowExample(i);
+        Paragraph;
+      }
+    };
+
+    var fields = Attribute.GetFormatProperties;
+    if (fields is valid) {
+      fields = fields.ToSortedArray(false, @CompareProp);
+      Paragraph(BorderB(0.5pt)) {
+        SpaceBefore: 10pt;
+        Bold;
+        "Properties";
+      };
+
+      Table(0.5pt, PadL(2pt), [1.5", Column.Expand]) {
+        Row {
+          Background: NytrilPalette.TableTitleBack;
+          TextColor: NytrilPalette.TableTitleFore;
+          "Name";
+          "Description";
+        };
+        foreach (var f in fields) {
+          NytrilStyle.ListRow(each0) {
+            Span {
+              TextFace: Mono;
+              TextColor: #000080#;
+              f.Name;
+              TipAction: new Action(Actions.ToDocument, f);
+            };
+            f.Description;
+          }
+        }
+      }
+    }
+  };
+
+  ShowSample = Block {
+    var sample = System.ProgramNameSpace.GetField("SampleCode");
+    if (sample is valid) {
+      ShowCode(NytrilStyle.CodeSelection([sample]));
+      var value = System.ProgramNameSpace.GetField("Example");
+      if (value is valid)
+        value.Value;
+    }
+  };
+
+  override GetLayoutTip = ExampleBody {
+    ShowHeader(false);
+    ShowSample;
+    if (Examples >= 1)
+      ShowExample(1);
+  };
+}
+
+//======================================================================

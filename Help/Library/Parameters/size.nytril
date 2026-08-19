@@ -1,0 +1,34 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  "The size of the line can be specified in the following ways:";
+};
+
+MakeExample(size) = HBox {
+  VAlign: Center;
+  Shape(null, new(size, Colors.Red)) {
+    OpenPath(0, size) {
+      LineTo(30, size)
+    };
+  };
+  " size = "; size;
+};
+
+readonly namespace Example {
+  Header = MeasureText.UseNumber;
+  Body = MakeExample(10);
+}
+
+readonly namespace Example2 {
+  Header = MeasureText.UseMeasure;
+  Body = MakeExample(0.25");
+}
+
+readonly namespace Example3 {
+  Header = MeasureText.UsePercentSize;
+  Body = MakeExample(5%);
+}
+Main.Help = new HelpExample(null, 3, "size");
+

@@ -1,0 +1,35 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  "Sets the default vertical alignment for all children. The container must have its height specified.";
+};
+
+Container(text, VAligns valign) = HBox(null, 1.5", 0.25) {
+  VAlign: valign;
+
+  Span {
+    TextColor: 80%;
+    TextHeight: 50pt;
+    text;
+  };
+
+  Canvas(null, null) {
+    TextHeight: 12pt;
+    valign;
+  };
+};
+
+Example = HBox(null, null) {
+  VAlign: Top;
+  Separation: 10;
+  Container("A", VAligns.Top);
+  Container("x", VAligns.Center);
+  Container("q", VAligns.Baseline);
+  Container("j", VAligns.Bottom);
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.VAlign));
+
+

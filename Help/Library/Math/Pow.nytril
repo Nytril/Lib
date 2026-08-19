@@ -1,0 +1,43 @@
+include "Help";
+
+using Format;
+
+Range = 0..5;
+
+Description = DescriptionBlock {
+  "A plot of Math.Pow(2, x)";
+
+  Chart(100%, 2") {
+    ChartType: ChartTypes.Line;
+    XAxis: ChartAxis {
+      Range step 1;
+    };
+
+    ValueAxis: ChartAxis;
+
+    ChartSeries {
+      Marker: Markers.Circle;
+      foreach (var x in Range step 1)
+        new DataPoint(x, Math.Pow(2, x));
+    };
+  };
+
+  Paragraph {
+    SpaceBefore: 8pt;
+    "Input ranges and output values";
+  };
+};
+
+ShowPow(x, y) = Paragraph {
+  x sup y; Tab; "= "; Math.Pow(x, y);
+};
+
+Example = Block {
+  ShowPow(10, 3);
+  ShowPow(2, 10);
+  ShowPow(5.3, 2.5);
+};
+
+Main.Help = new HelpExample(attribute(Math.Pow));
+
+

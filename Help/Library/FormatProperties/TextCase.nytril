@@ -1,0 +1,32 @@
+include "Help";
+
+using Format;
+
+Original = "veni Vidi VICI!";
+
+ShowTextCase(TextCases c) = Paragraph(null, [1.75"]) {
+  Span {
+    TextFace: Mono;
+    "TextCase."
+    c.Name;
+  };
+  Tab;
+  Span {
+    TextCase: c;
+    Original;
+  };
+};
+
+Example = Block {
+  Paragraph(0.25) {
+    "Text: \"{0}\""(Original);
+  };
+  ShowTextCase(each TextCases);
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextCase));
+
+//============================================================
+

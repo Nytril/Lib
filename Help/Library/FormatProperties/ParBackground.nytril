@@ -1,0 +1,14 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  "Normal";
+  Paragraph {
+    ParBackground: Colors.Gray;
+    TextColor: Colors.White;
+    "Title Bar";
+  };
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.ParBackground));

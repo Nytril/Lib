@@ -1,0 +1,89 @@
+using Format, Units;
+//======================================================================
+
+namespace Chapters.Language.Sections.Dates;
+
+readonly TutorialLesson Lesson = new(#33f9059e-8fc5-45c2-8a61-a320658c39ef#, "Dates");
+//======================================================================
+
+const DayOfBirth  = #2016-1-31#; // YYYY-MM-DD
+
+readonly LessonExample Content.ShowDate = new(#8f5ea5fb-677a-4d8d-b6fe-b32f46979acb#) {
+  Text: "A {0} is specified using #YYYY-M-D:H:M:S# in source code."(NytrilStyle.Class(attribute DateTime));
+  Code: [attribute DayOfBirth];
+};
+
+//======================================================================
+
+const TimeOfBirth = #2016-01-31 03:10:37.513#;
+
+readonly LessonExample Content.ShowBirthTime = new(#e1742dc7-41ec-49f4-9501-16370d001aaa#) {
+  Text: "A constant date can be specified directly in source code. A date value carries with it an indicator of the precision of its specification";
+  Code: [attribute TimeOfBirth];
+};
+
+//======================================================================
+
+FormatDate = Paragraph {
+  DateTime.Now;
+  TextFormat: "dddd, MMMM dd, yyyy";
+};
+
+readonly LessonExample Content.DateFormat = new(#268a75fa-dd3e-4d89-8541-770fc73e1158#) {
+  Text: "Dates can be formatted with the field {0}"(NytrilStyle.PropName(attribute FormatProperties.TextFormat));
+  Code: [attribute FormatDate];
+};
+
+//======================================================================
+
+TwinBirth = TimeOfBirth + 1 minute + 41 seconds;
+
+readonly LessonExample Content.AddTime = new(#6f08326d-72ce-4def-944c-b220d6194c27#) {
+  Text: "Dates can be operated on with time units";
+  Code: [attribute TwinBirth];
+};
+
+//======================================================================
+
+TimeInHospital = new TimeSpan(2, 4);
+
+readonly LessonExample Content.ShowTimeSpan = new(#57c9fc43-aa07-4538-856e-7ec645014b22#) {
+  Text: "A time span is specified with {0}"(NytrilStyle.Class(attribute TimeSpan));
+  Code: [attribute TimeInHospital];
+};
+
+//======================================================================
+
+FirstDayHome = TwinBirth + TimeInHospital;
+
+readonly LessonExample Content.After = new(#0162c821-a22e-493e-b286-dd5c5546d80f#) {
+  Text: "Time spans can be added to dates";
+  Code: [attribute FirstDayHome];
+};
+
+//======================================================================
+
+TimeDifference = #2016-1-31 6:10:37.5# - #2012-1-31#;
+
+readonly LessonExample Content.TimeDifferences = new(#1caa171d-b8ad-4e75-85f6-6fc393ab630d#) {
+  Text: "Subtracting two dates gives a TimeSpanClass";
+  Code: [attribute TimeDifference];
+};
+
+//======================================================================
+
+Difference = Block {
+  "{0} Years"(TimeDifference.Years);
+  "{0} Days"(TimeDifference.Days);
+  "{0} Hours"(TimeDifference.Hours);
+  "{0} Minutes"(TimeDifference.Minutes);
+  "{0} Seconds"(TimeDifference.Seconds);
+};
+
+readonly LessonExample Content.TimeDifferenceSeconds = new(#6405e37d-379b-4e7b-b8d3-30d1859416d3#) {
+  Text: "TimeSpanClass members can be used to extract real numeric values for various units of time";
+  Code: [attribute Difference];
+};
+
+//======================================================================
+

@@ -1,0 +1,542 @@
+using Format;
+
+include "DesignPaletteSamples";
+
+DesignPalette[] AllPalettes {
+  var a = DesignPalettes.ToArray;
+  return a;
+}
+
+class DesignPalette {
+  readonly var string Name;
+           var Color  Dark1;
+           var Color  Light1;
+           var Color  Dark2;
+           var Color  Light2;
+           var Color  Accent1;
+           var Color  Accent2;
+           var Color  Accent3;
+           var Color  Accent4;
+           var Color  Accent5;
+           var Color  Accent6;
+           var Color  Hyperlink          = #0563C1#;
+           var Color  FollowedHyperlink  = #954F72#;
+
+  Constructor(name) {
+    Name = name;
+  }
+
+  override GetLayoutTip = Block {
+    SamplesVBox;
+  };
+
+  private ColorSampleBox(string name, Color color) = VBox {
+    HAlign: Left;
+    Margin: PadR(20);
+    name;
+    Shape(color, 0.5) {
+      PolygonPath(new(0, 20), 4, -45 degrees);
+    };
+  };
+
+  virtual SamplesVBox = VBox {
+    TextCase:FirstUpper;
+    TextHeight: 9;
+    GetColorSampleBoxes;
+  };
+
+  virtual SamplesHBox = HBox(ExtentWidth) {
+    TextCase:FirstUpper;
+    TextHeight: 9;
+    VAlign: Center;
+    GetColorSampleBoxes;
+  };
+
+  private GetColorSampleBoxes = {
+    ColorSampleBox(nameof(Dark1),   Dark1  );
+    ColorSampleBox(nameof(Light1),  Light1 );
+    ColorSampleBox(nameof(Dark2),   Dark2  );
+    ColorSampleBox(nameof(Light2),  Light2 );
+    ColorSampleBox(nameof(Accent1), Accent1);
+    ColorSampleBox(nameof(Accent2), Accent2);
+    ColorSampleBox(nameof(Accent3), Accent3);
+    ColorSampleBox(nameof(Accent4), Accent4);
+    ColorSampleBox(nameof(Accent5), Accent5);
+    ColorSampleBox(nameof(Accent6), Accent6);
+    ColorSampleBox(nameof(Hyperlink), Hyperlink);
+    ColorSampleBox(nameof(FollowedHyperlink), FollowedHyperlink);
+  };
+
+  static Color Lighten(Color c, double percent) {
+    var lightness = c.L + (1.0 - c.L) * (percent / 100.0);
+    if (lightness > 1.0)
+      lightness = 1.0;
+
+    return Color.FromHSLA(c.H, c.S, lightness);
+  }
+
+  static Color Darken(Color c, double percent) {
+    var lightness = c.L * (1.0 - (percent / 100.0));
+    if (lightness < 0.0)
+      lightness = 0.0;
+
+    return Color.FromHSLA(c.H, c.S, lightness);
+  }
+}
+
+// ==================================
+//  COLOR THEMES  - Alphabetized
+// ==================================
+readonly namespace<DesignPalette> DesignPalettes {
+
+  Apex = new("Apex") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #69676D#;
+    Light2             : #C9C2D1#;
+    Accent1            : #CEB966#;
+    Accent2            : #9CB084#;
+    Accent3            : #6BB1C9#;
+    Accent4            : #6585CF#;
+    Accent5            : #7E6BC9#;
+    Accent6            : #A379BB#;
+    Hyperlink          : #410082#;
+    FollowedHyperlink  : #932968#;
+  };
+
+  Aspect = new("Aspect") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #323232#;
+    Light2             : #E3DED1#;
+    Accent1            : #F07F09#;
+    Accent2            : #9F2936#;
+    Accent3            : #1B587C#;
+    Accent4            : #4E8542#;
+    Accent5            : #604878#;
+    Accent6            : #C19859#;
+    Hyperlink          : #6B9F25#;
+    FollowedHyperlink  : #B26B02#;
+  };
+
+  AustinTheme = new("Austin Theme") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #3E3D2D#;
+    Light2             : #CAF278#;
+    Accent1            : #94C600#;
+    Accent2            : #71685A#;
+    Accent3            : #FF6700#;
+    Accent4            : #909465#;
+    Accent5            : #956B43#;
+    Accent6            : #FEA022#;
+  };
+
+  Blue = new("Blue") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #17406D#;
+    Light2             : #DBEFF9#;
+    Accent1            : #0F6FC6#;
+    Accent2            : #009DD9#;
+    Accent3            : #0BD0D9#;
+    Accent4            : #10CF9B#;
+    Accent5            : #7CCA62#;
+    Accent6            : #A5C249#;
+    Hyperlink          : #F49100#;
+    FollowedHyperlink  : #85DFD0#;
+  };
+
+  Blue_Green = new("Blue Green") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #373545#;
+    Light2             : #CEDBE6#;
+    Accent1            : #3494BA#;
+    Accent2            : #58B6C0#;
+    Accent3            : #75BDA7#;
+    Accent4            : #7A8C8E#;
+    Accent5            : #84ACB6#;
+    Accent6            : #2683C6#;
+    Hyperlink          : #6B9F25#;
+    FollowedHyperlink  : #9F6715#;
+  };
+
+  Blue_II = new("Blue II") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #335B74#;
+    Light2             : #DFE3E5#;
+    Accent1            : #1CADE4#;
+    Accent2            : #2683C6#;
+    Accent3            : #27CED7#;
+    Accent4            : #42BA97#;
+    Accent5            : #3E8853#;
+    Accent6            : #62A39F#;
+    Hyperlink          : #6EAC1C#;
+    FollowedHyperlink  : #B26B02#;
+  };
+
+  Blue_Warm = new("Blue Warm") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #242852#;
+    Light2             : #ACCBF9#;
+    Accent1            : #4A66AC#;
+    Accent2            : #629DD1#;
+    Accent3            : #297FD5#;
+    Accent4            : #7F8FA9#;
+    Accent5            : #5AA2AE#;
+    Accent6            : #9D90A0#;
+    Hyperlink          : #9454C3#;
+    FollowedHyperlink  : #3EBBF0#;
+  };
+
+  Clarity = new("Clarity") {
+    Dark1              : #292934#;
+    Light1             : #FFFFFF#;
+    Dark2              : #D2533C#;
+    Light2             : #F3F2DC#;
+    Accent1            : #93A299#;
+    Accent2            : #AD8F67#;
+    Accent3            : #726056#;
+    Accent4            : #4C5A6A#;
+    Accent5            : #808DA0#;
+    Accent6            : #79463D#;
+  };
+
+  Flow = new("Flow") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #04617B#;
+    Light2             : #DBF5F9#;
+    Accent1            : #0F6FC6#;
+    Accent2            : #009DD9#;
+    Accent3            : #0BD0D9#;
+    Accent4            : #10CF9B#;
+    Accent5            : #7CCA62#;
+    Accent6            : #A5C249#;
+  };
+
+  Grayscale = new("Grayscale") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #000000#;
+    Light2             : #F8F8F8#;
+    Accent1            : #DDDDDD#;
+    Accent2            : #B2B2B2#;
+    Accent3            : #969696#;
+    Accent4            : #808080#;
+    Accent5            : #5F5F5F#;
+    Accent6            : #4D4D4D#;
+    Hyperlink          : #5F5F5F#;
+    FollowedHyperlink  : #919191#;
+  };
+
+  Green = new("Green") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #455F51#;
+    Light2             : #E3DED1#;
+    Accent1            : #549E39#;
+    Accent2            : #8AB833#;
+    Accent3            : #C0CF3A#;
+    Accent4            : #029676#;
+    Accent5            : #4AB5C4#;
+    Accent6            : #0989B1#;
+    Hyperlink          : #6B9F25#;
+    FollowedHyperlink  : #BA6906#;
+  };
+
+  Green_Yellow = new("Green Yellow") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #455F51#;
+    Light2             : #E2DFCC#;
+    Accent1            : #99CB38#;
+    Accent2            : #63A537#;
+    Accent3            : #37A76F#;
+    Accent4            : #44C1A3#;
+    Accent5            : #4EB3CF#;
+    Accent6            : #51C3F9#;
+    Hyperlink          : #EE7B08#;
+    FollowedHyperlink  : #977B2D#;
+  };
+
+  Hardcover = new("Hardcover") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #895D1D#;
+    Light2             : #ECE9C6#;
+    Accent1            : #873624#;
+    Accent2            : #D6862D#;
+    Accent3            : #D0BE40#;
+    Accent4            : #877F6C#;
+    Accent5            : #972109#;
+    Accent6            : #AEB795#;
+  };
+
+  Marquee = new("Marquee") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #5E5E5E#;
+    Light2             : #DDDDDD#;
+    Accent1            : #418AB3#;
+    Accent2            : #A6B727#;
+    Accent3            : #F69200#;
+    Accent4            : #838383#;
+    Accent5            : #FEC306#;
+    Accent6            : #DF5327#;
+    Hyperlink          : #F59E00#;
+    FollowedHyperlink  : #B2B2B2#;
+  };
+
+  Median = new("Median") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #775F55#;
+    Light2             : #EBDDC3#;
+    Accent1            : #94B6D2#;
+    Accent2            : #DD8047#;
+    Accent3            : #A5AB81#;
+    Accent4            : #D8B25C#;
+    Accent5            : #7BA79D#;
+    Accent6            : #968C8C#;
+    Hyperlink          : #F7B615#;
+    FollowedHyperlink  : #704404#;
+  };
+
+  Metro = new("Metro") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #4E5B6F#;
+    Light2             : #D6ECFF#;
+    Accent1            : #7FD13B#;
+    Accent2            : #EA157A#;
+    Accent3            : #FEB80A#;
+    Accent4            : #00ADDC#;
+    Accent5            : #738AC8#;
+    Accent6            : #1AB39F#;
+  };
+
+  Office_20072010 = new("Office 2007 2010") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #1F497D#;
+    Light2             : #EEECE1#;
+    Accent1            : #4F81BD#;
+    Accent2            : #C0504D#;
+    Accent3            : #9BBB59#;
+    Accent4            : #8064A2#;
+    Accent5            : #4BACC6#;
+    Accent6            : #F79646#;
+    Hyperlink          : #0000FF#;
+    FollowedHyperlink  : #800080#;
+  };
+
+  Office_2013_2022 = new("Office 2013 2022") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #44546A#;
+    Light2             : #E7E6E6#;
+    Accent1            : #4472C4#;
+    Accent2            : #ED7D31#;
+    Accent3            : #A5A5A5#;
+    Accent4            : #FFC000#;
+    Accent5            : #5B9BD5#;
+    Accent6            : #70AD47#;
+    Hyperlink          : #0563C1#;
+    FollowedHyperlink  : #954F72#;
+  };
+
+  Orange = new("Orange") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #637052#;
+    Light2             : #CCDDEA#;
+    Accent1            : #E48312#;
+    Accent2            : #BD582C#;
+    Accent3            : #865640#;
+    Accent4            : #9B8357#;
+    Accent5            : #C2BC80#;
+    Accent6            : #94A088#;
+    Hyperlink          : #2998E3#;
+    FollowedHyperlink  : #8C8C8C#;
+  };
+
+  Orange_Red = new("Orange Red") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #696464#;
+    Light2             : #E9E5DC#;
+    Accent1            : #D34817#;
+    Accent2            : #9B2D1F#;
+    Accent3            : #A28E6A#;
+    Accent4            : #956251#;
+    Accent5            : #918485#;
+    Accent6            : #855D5D#;
+    Hyperlink          : #CC9900#;
+    FollowedHyperlink  : #96A9A9#;
+  };
+
+  Paper = new("Paper") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #444D26#;
+    Light2             : #FEFAC9#;
+    Accent1            : #A5B592#;
+    Accent2            : #F3A447#;
+    Accent3            : #E7BC29#;
+    Accent4            : #D092A7#;
+    Accent5            : #9C85C0#;
+    Accent6            : #809EC2#;
+    Hyperlink          : #8E58B6#;
+    FollowedHyperlink  : #7F6F6F#;
+  };
+
+  Red = new("Red") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #323232#;
+    Light2             : #E5C243#;
+    Accent1            : #A5300F#;
+    Accent2            : #D55816#;
+    Accent3            : #E19825#;
+    Accent4            : #B19C7D#;
+    Accent5            : #7F5F52#;
+    Accent6            : #B27D49#;
+    Hyperlink          : #6B9F25#;
+    FollowedHyperlink  : #B26B02#;
+  };
+
+  Red_Orange = new("Red Orange") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #505046#;
+    Light2             : #EEECE1#;
+    Accent1            : #E84C22#;
+    Accent2            : #FFBD47#;
+    Accent3            : #B64926#;
+    Accent4            : #FF8427#;
+    Accent5            : #CC9900#;
+    Accent6            : #B22600#;
+    Hyperlink          : #CC9900#;
+    FollowedHyperlink  : #666699#;
+  };
+
+  Red_Violet = new("Red Violet") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #454551#;
+    Light2             : #D8D9DC#;
+    Accent1            : #E32D91#;
+    Accent2            : #C830CC#;
+    Accent3            : #4EA6DC#;
+    Accent4            : #4775E7#;
+    Accent5            : #8971E1#;
+    Accent6            : #D54773#;
+    Hyperlink          : #6B9F25#;
+    FollowedHyperlink  : #8C8C8C#;
+  };
+
+  Slipstream = new("Slipstream") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #212745#;
+    Light2             : #B4DCFA#;
+    Accent1            : #4E67C8#;
+    Accent2            : #5ECCF3#;
+    Accent3            : #A7EA52#;
+    Accent4            : #5DCEAF#;
+    Accent5            : #FF8021#;
+    Accent6            : #F14124#;
+    Hyperlink          : #56C7AA#;
+    FollowedHyperlink  : #59A8D1#;
+  };
+
+  Trek = new("Trek") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #4E3B30#;
+    Light2             : #FBEEC9#;
+    Accent1            : #F0A22E#;
+    Accent2            : #A5644E#;
+    Accent3            : #B58B80#;
+    Accent4            : #C3986D#;
+    Accent5            : #A19574#;
+    Accent6            : #C17529#;
+  };
+
+  Verve = new("Verve") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #666666#;
+    Light2             : #D2D2D2#;
+    Accent1            : #FF388C#;
+    Accent2            : #E40059#;
+    Accent3            : #9C007F#;
+    Accent4            : #68007F#;
+    Accent5            : #005BD3#;
+    Accent6            : #00349E#;
+  };
+
+  Violet = new("Violet") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #373545#;
+    Light2             : #DCD8DC#;
+    Accent1            : #AD84C6#;
+    Accent2            : #8784C7#;
+    Accent3            : #5D739A#;
+    Accent4            : #6997AF#;
+    Accent5            : #84ACB6#;
+    Accent6            : #6F8183#;
+    Hyperlink          : #69A020#;
+    FollowedHyperlink  : #8C8C8C#;
+  };
+
+  Violet_II = new("Violet II") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #632E62#;
+    Light2             : #EAE5EB#;
+    Accent1            : #92278F#;
+    Accent2            : #9B57D3#;
+    Accent3            : #755DD9#;
+    Accent4            : #665EB8#;
+    Accent5            : #45A5ED#;
+    Accent6            : #5982DB#;
+    Hyperlink          : #0066FF#;
+    FollowedHyperlink  : #666699#;
+  };
+
+  Yellow = new("Yellow") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #39302A#;
+    Light2             : #E5DEDB#;
+    Accent1            : #FFCA08#;
+    Accent2            : #F8931D#;
+    Accent3            : #CE8D3E#;
+    Accent4            : #EC7016#;
+    Accent5            : #E64823#;
+    Accent6            : #9C6A6A#;
+    Hyperlink          : #2998E3#;
+    FollowedHyperlink  : #7F723D#;
+  };
+
+  Yellow_Orange = new("Yellow Orange") {
+    Dark1              : #000000#;
+    Light1             : #FFFFFF#;
+    Dark2              : #4E3B30#;
+    Light2             : #FBEEC9#;
+    Accent1            : #F0A22E#;
+    Accent2            : #A5644E#;
+    Accent3            : #B58B80#;
+    Accent4            : #C3986D#;
+    Accent5            : #A19574#;
+    Accent6            : #C17529#;
+    Hyperlink          : #AD1F1F#;
+    FollowedHyperlink  : #FFC42F#;
+  };
+}

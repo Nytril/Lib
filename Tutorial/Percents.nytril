@@ -1,0 +1,50 @@
+using Format;
+
+namespace Chapters.Language.Sections.Percents;
+
+readonly TutorialLesson Lesson = new(#0a6e969a-0c69-4336-a0cd-cbd45b804831#, "Percentages");
+
+//======================================================================
+
+BaseRate = 10%;
+
+readonly LessonExample Content.Native = new(#513aa842-54bc-4176-9e2f-70775fd490bb#) {
+  Text: "Percentages are specified {0}"(NytrilStyle.OpAttribute(attribute %));
+  Code: [attribute BaseRate];
+};
+
+//======================================================================
+
+BonusRate = 4%;
+TotalRate = BaseRate + BonusRate;
+
+readonly LessonExample Content.Addition = new(#0e25f285-9177-4aed-ad86-26b5cf49a6be#) {
+  Text: "Percentages can be added together like normal numbers";
+  Code: [attribute BonusRate, attribute TotalRate];
+};
+
+//======================================================================
+
+Sales   = $1000;
+Payment = TotalRate * Sales;
+
+readonly LessonExample Content.Multiplication = new(#0f1545f1-2bcc-466a-b5e6-df9e34040a8c#) {
+  Text: "Percent values can be multiplied to yield a plain numeric value";
+  Code: [attribute Sales, attribute Payment];
+};
+
+//======================================================================
+
+BigText = Span {
+  TextHeight: 200%;  // Percentage of existing TextHeight
+  TextColor: 50%;    // Gray scale
+  "Big Text";
+};
+
+readonly LessonExample Content.BigTextEx = new(#e4578cb4-4b29-498d-8dc0-a341598da553#) {
+  Text: "Some properties behave differently when a percent value is used. ";
+  Code: [attribute BigText];
+};
+
+//======================================================================
+

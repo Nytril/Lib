@@ -1,0 +1,228 @@
+using Format, Measures, LinkTypes;
+
+include "CookingUnits";
+include "Styles";
+
+//====================================================================
+
+class Portion {
+  var             Amount;
+  var AmountClass Unit;
+
+  Constructor (amount, AmountClass unit) {
+    Amount = amount;
+    Unit   = unit;
+  }
+}
+
+//====================================================================
+
+class PortionUse {
+  var Portion   Portion;
+  var Food Food;
+  var           Text;
+
+  Constructor(Portion portion, Food food, extra=null) {
+    Portion = portion;
+    Food    = food;
+    Text    = extra;
+  }
+}
+
+//====================================================================
+
+PortionNone = {
+  Amount: 0;
+};
+
+PortionUse Ingredient(amount, AmountClass unit, text, tag) = new(new(amount, unit), tag, text);
+
+Instruction(text, food=null) = {
+  Food: food;
+  Text: text
+};
+
+//====================================================================
+
+Half      = 1 over 2;
+Third     = 1 over 3;
+TwoThirds = 2 over 3;
+Quarter   = 1 over 4;
+
+readonly namespace<Food> Foods {
+  CorianderSeeds  = new("Coriander seeds");
+  GroundCoriander = new("Ground coriander");
+  CuminSeeds      = new("Cumin seeds");
+  Amchoor         = new("Amchoor");
+  AnardanaPowder  = new("Anardana powder");
+  Ajwain          = new("Ajwain");
+  Chutney         = new("Chutney");
+  OrangeJuice     = new("Orange Juice");
+  Orange          = new("Orange");
+  Lime            = new("Lime");
+  CharredLime     = new("Charred Lime halves");
+  GarlicCloves    = new("Garlic cloves");
+  SoySauce        = new("Soy Sauce");
+  Kimchi          = new("Kimchi");
+  Scallions       = new("Scallions");
+  Anchovy         = new("Anchovies");
+  Parmesan        = new("Parmesan");
+  Lemon           = new("Lemon");
+  Bread           = new("Bread");
+}
+//====================================================================
+
+readonly Organization Companies.BonAppetit = new(#c687bc12-23fb-4d3e-9fd6-50ec8cc7c88d#, "Bon Appetit");
+
+readonly Person Authors.ChrisMorocco = new(#2f4f1313-8f31-486a-8ff0-fc43c0d9c215#, "Chris", null, "Morocco") {
+  Link to Companies.BonAppetit;
+};
+
+readonly namespace MyRecipes.AmmasSomosas {
+  Id      = #c9f8b74c-3389-4768-a2bc-086f6db24acd#;
+  Title   = "Ammas Somosas";
+  Picture = new Image(res "Ammas-Samosas.jpg");
+  Diets   = [DietTags.Vegetarian];
+
+  namespace Steps.Filling {
+    Title = "Filling";
+
+    PortionUse[] Ingredients = [
+      Ingredient(4, None, "medium russet potatoes (about 9 oz. each)", Foods.Potato),
+      Ingredient(2, tsp, "kosher salt, plus more", Foods.Salt),
+      Ingredient(2, Tbsp, null, Foods.GroundCoriander),
+      Ingredient(2, tsp, null, Foods.Amchoor),
+      Ingredient(1, tsp, null, Foods.AnardanaPowder),
+      Ingredient(3, Tbsp, "neutral oil (such as grapeseed or vegetable)", Foods.Oil),
+      Ingredient(1, tsp, null, Foods.CuminSeeds),
+    ];
+
+    Instructions =  [
+      Instruction("Combine potatoes with enough generously salted water to cover by at least 1\" in a medium saucepan. Bring to a boil over medium-high heat. Reduce heat to medium-low and simmer until potatoes are tender, about 30 minutes. Drain potatoes and set aside until cool enough to handle. Peel potatoes, then coarsely mash with a potato masher or fork."),
+      Instruction("Crush coriander seeds with the bottom of a measuring cup or the side of a chef’s knife until coarsely ground. Transfer to a small bowl. Add ground coriander, amchoor, anardana powder, and remaining {0} and stir to combine.", [new PortionUse(new Portion(2, tsp), Foods.Salt)]),
+      Instruction("Heat oil in a large skilover medium. Cook cumin seeds, stirring frequently, until fragrant, about 1 minute. Add spice mixture and continue to cook, stirring so spices don’t burn, until just heated through, about 30 seconds. Remove from heat and add potatoes to skillet, folding and smashing into spice mixture to incorporate. Let cool."),
+    ];
+  }
+
+ namespace Steps.Shells {
+   Title = "Shells and Assembly";
+    PortionUse[] Ingredients = [
+      Ingredient(6+Quarter, Cups, "neutral oil (such as grapeseed or vegetable), divided", Foods.Oil),
+      Ingredient(1, tsp, "kosher salt", Foods.Salt),
+      Ingredient(Half, tsp, null, Foods.Ajwain),
+      Ingredient(2, Cups, "all-purpose flour, plus more for surface", Foods.AllPurposeFlour),
+      Ingredient(0, None, "Cilantro Chutney and Sweet Tamarind Chutney (for serving; optional)", Foods.Chutney),
+    ];
+
+    Instructions = [
+      Instruction("Stir {0} in a small bowl to combine." , [new PortionUse(new Portion(Quarter, Cups), Foods.Oil), new PortionUse(new Portion(TwoThirds, Cups), Foods.Water)]),
+      Instruction("Mix salt, ajwain, and {0} flour in a large bowl to combine. Stir in two-thirds of oil-water mixture until combined, then gradually add more, stirring constantly, until incorporated and dough comes together in a ball.",
+      [new PortionUse(new Portion(2, Cups), Foods.AllPurposeFlour)]),
+      Instruction("Turn out dough onto a lightly floured surface and knead until smooth, about 1 minute. Form dough into a ball and tightly wrap. Let rest at room temperature to dough hydrate, 30 minutes."),
+      Instruction("Using your hands, roll dough on a floured surface to a 16\"-long log. Cut crosswise into 8 pieces. Roll each piece into a ball, then flatten to a disk. Roll out each disk to a 6\"-diameter round, dusting often with flour. Cut each round in half."),
+      Instruction("Working with one semicircle at a time and keeping a bowl of water handy, dip your fingertip into water and moisten straight side of dough. Pull up corners of straight side and overlap the edges slightly to form a cone, leaving rounded side open; press down on the small hole that forms at the bottom of the cone with your finger to seal. Press overlapping sides of cone together to seal (be thorough; you don’t want the samosa to fall apart while frying). Fill with potato mixture, gently pushing into cone with the back of a spoon to compact, until about ½\" from the top. Press top edges of cone together to enclose filling and seal."),
+      Instruction("Lay samosa on a clean work surface. Press down on newly sealed edge of cone with the side of your hand, cupping your palm around the filling. Using your other hand, bend samosa upright so pointed end is facing up. Transfer to a baking dish or shallow bowl. Repeat with remaining dough and filling. Let samosas sit upright on their own about 10 minutes (this step relaxes the gluten and ensures the samosas won’t burst while frying)."),
+      Instruction("Pour remaining {0} into a 4–6-qt. Dutch oven or large heavy pot fitted with a deep-fry thermometer. Heat over medium-high until thermometer registers 375°. Working in batches of 3–5, fry samosas until deep golden brown, about 5 minutes. Using a slotted spoon, transfer samosas to a paper-towel-lined wire rack set inside a baking sheet and drain.",
+      [new PortionUse(new Portion(6, Cups), Foods.Oil)]),
+      Instruction("Transfer samosas to a platter. Serve with tamarind and cilantro chutney alongside (if using)."),
+    ];
+  }
+}
+
+readonly namespace MyRecipes.LimeChickenPeanut {
+  Id      = #170c6030-77bb-4781-9b66-99cb3f484691#;
+  Title   = "Chicken Braised in Lime and Peanut Sauce";
+  Picture = new Image(res "Chicken-Lime.jpg");
+
+  namespace Steps.Step1 {
+    PortionUse[] Ingredients = [
+      Ingredient(2, tsp, null, Foods.CuminSeeds),
+      Ingredient(2, tsp, null, Foods.CorianderSeeds),
+      Ingredient(4, None, "medium red tomatoes, cored", Foods.Tomato),
+      Ingredient(6, None, null, Foods.GarlicCloves),
+      Ingredient(0, None, "Zest of 1 orange", Foods.Orange),
+      Ingredient(1, Cups, "fresh orange juice, divided", Foods.Orange),
+      Ingredient(Half, Cups, "salted dry-roasted peanuts, plus more crushed for serving", Foods.Peanut),
+      Ingredient(4, None, "limes, halved, divided", Foods.Lime),
+      Ingredient(1, Tbsp, null, Foods.VegetableOil),
+      Ingredient(3, Lbs, "chicken thighs and drumsticks", Foods.Chicken),
+      Ingredient(1, None, "large onion, thinly sliced", Foods.Onion),
+      Ingredient(0, None, "Kosher salt", Foods.Salt),
+      Ingredient(0, None, "Freshly ground pepper", Foods.Pepper),
+      Ingredient(0, None, "Chopped dill and cilantro and chili oil (for serving)", Foods.Dill),
+    ];
+
+    Instructions = [
+      Instruction("Toast cumin seeds and coriander seeds in a dry small skillet, preferably cast iron, over medium heat, tossing occasionally, until very fragrant and just beinning to darken, about 5 minutes. Transfer to a plate; cool. Reserve skillet."),
+      Instruction("Finely grind seeds in spice mill or with mortar and pestle. Transfer ground cumin and coriander to a blender and add tomatoes, garlic, orange zest, {0}. Puree until sauce is smooth.", [new PortionUse(new Portion(Half, Cups), Foods.OrangeJuice), new PortionUse(new Portion(Half, Cups), Foods.Peanut), new PortionUse(new Portion(1, Cups), Foods.Water)]),
+      Instruction("Arrange {0} halves, cut side down, in reserved skiland cook, undisturbed, over medium-high heat until charred, 5-8 minutes. Transfer to a large plate", [new PortionUse(new Portion(6, None), Foods.Lime)]),
+      Instruction("Heat oil in a large Dutch oven over medium-high. Working in 2 batches, cook chicken, skin side down, until golden brown and crisp, 6-8 minutes per batch. Transfer to a plate. Add onion and cook, stirring often, until softened and browned, about 5 minutes. Return chicken to pot and pour sauce over."),
+      Instruction("Add onion and cook, stirring often, until softened and browned, about 5 minutes. Return chicken to pot and pour sauce over. Add {0}; reserve remaining charred limes for serving. Bring sauce to a simmer. Season with salt and pepper; cover, leaving lid slightly askew. Cook until chicken is very tender, about 1 hour", [new PortionUse(new Portion(4, None), Foods.CharredLime)]),
+      Instruction("Transfer chicken to a platter, leaving sauce behind. Squeeze juice from uncharred lime into sauce. Add remaining {0} and season with more salt and pepper if needed. Spoon sauce over chicken. Top with herbs and more peanuts; drizzle with chili oil. Serve with reserved charred limes.", [new PortionUse(new Portion(Half, Cups), Foods.OrangeJuice)]),
+    ];
+  }
+}
+
+readonly namespace MyRecipes.CrispyTofu {
+  Id      = #4b048bc6-785b-4643-8271-2748e7e5ae14#;
+  Title   = "Crispy Tofu with Maple-Soy Glaze";
+  Picture = new Image(res "crispytofu.jpg");
+  Author  = Authors.ChrisMorocco;
+
+  Blurb  = "Think of tofu as a big sponge you have to press all the water out of on your way to CrispyTown";
+
+  namespace Steps.Step1 {
+    PortionUse[] Ingredients = [
+      Ingredient(12, Oz, "block firm or extra-firm tofu", Foods.Tofu),
+      Ingredient(Half, Inch, "piece ginger, peeled, very thinly sliced", Foods.Ginger),
+      Ingredient(Quarter, Cups, "low-sodium soy sauce", Foods.SoySauce),
+      Ingredient(3, Tbsp, "pure maple syrup", Foods.MapleSyrup),
+      Ingredient(3, Tbsp, "unseasoned rice vinegar", Foods.RiceVinegar),
+      Ingredient(Half, tsp, "crushed red pepper flakes", Foods.RedPepperFlakes),
+      Ingredient(Half, Cups, "Grapeseed or vegetable oil", Foods.VegetableOil),
+      Ingredient(0, None, "Cooked Rice", Foods.Rice),
+      Ingredient(0, None, "Kimchi", Foods.Kimchi),
+      Ingredient(0, None, "Toasted Sesame seeds", Foods.SesameSeeds),
+      Ingredient(0, None, "Sliced Scallions", Foods.Scallions),
+    ];
+
+    Instructions = [
+      Instruction("Drain tofu, then press gently between several layers of clean kitchen towels to remove excess liquid. Cut into 9 equal pieces."),
+      Instruction("Whisk ginger, soy sauce, maple syrup, viegar, and red pepper flakes in a small bowl."),
+      Instruction("Heat oil in a large nonstick skilover medium-high. When oil is rippling across the surface, carefully add tofu to avoid splashing any hot oil. Cook, undisturbed, until very crisp and dark brown underneath, about 4 minutes. Carefully turn with chopsticks or tongs and cook until browned on second side, about 4 minutes. Holding tofu back with a spatula or slotted spoon, pour out oil into a small bowl. Return skillt to medium heat and add soy sauce mixture. Cook, basting tofu occasionally, until glaze is thick enough to coat a spoon (if it gets too thick, just thin it with a bit of water), about 4 minutes."),
+      Instruction("Divide rice among shallow bowls or plates and top with tofu and kimchi. Drizzle with glaze, then sprinkle with sesame seeds and scallions."),
+    ];
+  }
+}
+
+readonly namespace MyRecipes.BigBroccoli {
+  Id      = #487b5788-6a1a-4574-b921-c0e6ded51065#;
+  Title   = "Big Flavor Broccoli";
+  Picture = new Image(res "bigbroccoli.jpg");
+  Author  = Authors.ChrisMorocco;
+
+  namespace Steps.Step1 {
+    PortionUse[] Ingredients = [
+      Ingredient(1, Lbs, "broccoli(about 1 large or 2 medium heads)", Foods.Broccoli),
+      Ingredient(5, Tbsp, "extra-virgin olive oil, divided", Foods.OliveOil),
+      Ingredient(0, None, "Kosher salt", Foods.Salt),
+      Ingredient(1, None, "small red onion, sliced lengthwise 1/2\" thick", Foods.RedOnion),
+      Ingredient(4, None, "garlic cloves, thinly sliced", Foods.Garlic),
+      Ingredient(6, None, "oil-packed anchovy fillets", Foods.Anchovy),
+      Ingredient(1, Oz, "Parmesan, finely grated", Foods.Parmesan),
+      Ingredient(0, None, "Lemon Wedges (for serving)", Foods.Lemon),
+    ];
+
+    Instructions = [
+      Instruction("Preheat oven to 400 degrees. Trim bottom, woody part from broccoli stem. Peel tough outer layer from stem. Starting at stem end, slice broccoli at an angle 3/4\" thick until you reach the florets. Break florets apart with your hands into bite-size pieces (this will help you avoid getting bitsy trimmings all over the place)."),
+      Instruction("Heat {0} in a large ovenproof skilover medium-high until shimmering. Add broccoli; season with salt. Cook, tossing occasionally, until broccoli is bright green and lightly charred, about 3 minutes. Transfer to a plate. Wipe out skillet.", [new PortionUse(new Portion(3, Tbsp), Foods.OliveOil)]),
+      Instruction("Heat remaining {0} in same skilover medium. Cook onion and garlic, stirring often, until onion is {ning to soften, about 3 minutes. Add anchovies and cook, breaking apart with a spoon, until dissolved into onion mixture and garlic is sizzling to turn golden around the edges, about 2 minutes.", [new PortionUse(new Portion(2, Tbsp), Foods.OliveOil)]),
+      Instruction("Return broccoli to skiland tos to coat with oil. Transfer pan to oven and roast broccoli, tossing once, until browned and tender, 20-25 minutes."),
+      Instruction("Scatter Parmesan over broccoli; divide among plates. Serve with lemon wedges for squeezing over."),
+    ];
+  }
+}
+//====================================================================
+
+
+

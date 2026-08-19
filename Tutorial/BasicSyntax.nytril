@@ -1,0 +1,81 @@
+using Format, Units;
+//======================================================================
+
+namespace Chapters.Language.Sections.BasicSyntax;
+
+readonly TutorialLesson Lesson = new(#38541446-6343-46a1-bda6-60e6e5d21e96#, "Basic Syntax");
+
+//======================================================================
+
+HelloWorld = Span {
+  "Hello World";
+  "Line\nFeed";
+  "\tTab";
+  " Quotes \"\" are escaped";
+};
+
+readonly LessonExample Content.HelloWorldEx = new(#a5661a04-cc6e-417c-b323-a848dfb7de39#) {
+  Text: Paragraph {
+    "Nytril syntax is broadly similar to 'C' style languages like C#, Java and TypeScript. ";
+    "Literal strings are delimited by double quotation marks and have a standard syntax for escape characters. ";
+  };
+  Code: [attribute HelloWorld];
+};
+
+//======================================================================
+
+Spacing = Span {
+  "White space";  /* and comments */  " between ";
+  "expressions has no effect. ";    // Neither do single-line comments
+};
+
+readonly LessonExample Content.SpacingEx = new(#03ca8a6c-739f-4c76-8eb7-021fd9c81e23#) {
+  Text: Paragraph {
+    "Outside of quoted text, white space, including newlines and indentation, has no effect on the code. ";
+    "This tutorial and the included examples use a modified K&R bracing style, but this is a matter of personal taste. ";
+  };
+  Code: [attribute Spacing];
+};
+
+//======================================================================
+
+Variable2 = Variable1;
+
+Variable1 = "A string";
+
+readonly LessonExample Content.TwoPassesEx = new(#34083f73-c068-4d7f-8819-0812eb6b1e18#) {
+  Text: Paragraph {
+    "Nytril is a two-pass compiler. The first pass gathers up namespace, class and function definitions. ";
+    "The second pass compiles the bodies of functions. ";
+    "This means that you can reference a function or variable in a namspace or class before it is defined. ";
+    "This makes it simple to move and reorganize code. ";
+  };
+  Code: [attribute Variable2, attribute Variable1];
+};
+
+//======================================================================
+
+Affinity = Block {
+  Paragraph {"Line"; Bold};  // + affinity between format objects and revisions
+  "1" 2;                     // + affinity between strings and other objects
+  "123" "abc";               // + affinity
+   3 meters;                 // There is a * affinity between numbers and units
+};
+
+readonly LessonExample Content.AffinityEx = new(#08731c4f-2196-4e4b-b8c8-d3825d0bc208#) {
+  Text: Paragraph {
+    "To create complex formatted text in an easy way, Nytril introduces the affinity operator. ";
+    "In most programming languages, two operands must be seperated by a binary operator or else there is a syntax error. ";
+    "In Nytril, if the compiler encounters two operands without a binary operator between them, it inserts an invisible binary 'affinity' operator and continues without error. ";
+    "At runtime, the type of the two operands is assessed and if an affinity exists between the two types, the operation is executed. ";
+    "If there is no affinity between the types, there is a runtime error. ";
+
+//    "In order to simplify common expressions, Nytril recognizes an 'affinity' between compatible types. ";
+//    "Although there is not a '+' or '*' operator between the operands in the example below, Nytril will add an invisible, binary 'affinity' operator between them. ";
+//    "This operator will examine the type of the left and right operands at runtime, and determine the correct operation. ";
+    "The affinity action should be intuitive, but you can use an explicit binary operator if you find that it makes the code clearer. ";
+  };
+  Code: [attribute Affinity];
+};
+
+//======================================================================

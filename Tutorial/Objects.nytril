@@ -1,0 +1,142 @@
+using Format;
+//======================================================================
+
+namespace Chapters.Language.Sections.Objects;
+
+readonly TutorialLesson Lesson = new(#c8ed1d3a-6f8f-42e7-8f12-ba0af622d814#, "Classes and Objects");
+
+//======================================================================
+
+class LocationClass {
+  var X, Y;
+
+  Constructor(x, y) {
+    X = x;
+    Y = y;
+  }
+
+  override GetLayoutSpan = Span {
+    X; CommaSpace; Y;
+  };
+}
+
+ShowObjects = Block {
+  var p1 = new LocationClass(1, 2);  // Constructor called here
+  var p2 = new LocationClass(1, 2);  // ..
+  p1;  // LocationClass.GetLayoutSpan called here
+  p2;  // ..
+};
+
+readonly LessonExample Content.ClassDefinitionsEx = new(#1e480b9b-89a5-4a32-bb67-6d5693d24e29#) {
+  Text: Paragraph {
+    "Class definitions can be used for a more formal approach to design. ";
+    "A class may have 1 special function called \"Constructor\" which initializes the members. ";
+  };
+  Code: [attribute LocationClass, attribute ShowObjects];
+};
+
+//======================================================================
+
+class CircleClass: LocationClass {
+  var Radius;
+
+  Constructor(x, y, r) {
+    super.Constructor(x, y);
+    Radius = r;
+  }
+
+  override GetLayoutSpan = Span {
+    "("; super.GetLayoutSpan; ")["; Radius; "]";
+  };
+}
+
+SomeObjects = [new LocationClass(1, 2), new CircleClass(4, 5, 8)];
+
+ShowObjectArray = Block {
+  SomeObjects;
+};
+
+readonly LessonExample Content.ClassInhericanceEx = new(#0bc43862-9733-4739-9cab-2baf1fcf5ccd#) {
+  Text: Paragraph {
+    "A class may inherit one other class and add members and methods. ";
+  };
+  Code: [attribute CircleClass, attribute ShowObjectArray];
+};
+
+//======================================================================
+
+class BaseClass {
+  var Name;
+
+  Constructor(name) {
+    Name = name;
+  }
+
+  static operator Affinity(BaseClass b, int number) {
+    return new CompoundClass(b, number);
+  }
+
+  static operator Affinity(int number, BaseClass b) {
+    return new GroupClass(new CompoundClass(b), number);
+  }
+
+  override GetLayoutSpan = Name;
+}
+
+class CompoundClass {
+  var BaseClass Base;
+  var int       Number;
+
+  Constructor(BaseClass b, int n=0) {
+    Base   = b;
+    Number = n;
+  }
+
+  static operator Affinity(int number, CompoundClass c) {
+    return new GroupClass(c, number);
+  }
+
+  override GetLayoutSpan = Number > 0 ? Base sub Number : Base;
+}
+
+class GroupClass {
+  var CompoundClass Compound;
+  var int           Number;
+
+  Constructor(CompoundClass c, int n=0) {
+    Compound = c;
+    Number   = n;
+  }
+
+  override GetLayoutSpan {
+    if (Number > 0) {
+      return Nary {
+        PreUpper: Number;
+        Operator: Span {"("; Compound; ")"};
+      };
+    }
+    return Compound;
+  }
+}
+
+CompoundTypes = Block {
+  var b = new BaseClass("B");  // Make a base
+  var c = b 2;                 // Make a compound from the base
+  var g = 3 c;                 // Make a group from the compound
+  Table(null, null, [1", 1"]) {
+    Row {"Base"; b};
+    Row {"Compound"; c};
+    Row {"Group"; g};
+  };
+};
+
+readonly LessonExample Content.OverrideAffinityEx = new(#8db1c499-ccb2-4190-82ce-0108c3829e3d#) {
+  Text: Paragraph {
+    "You can add custom left and right affinity between objects of different types to make the creation of compound data types more intuitive. ";
+  };
+
+  Code: [attribute BaseClass, attribute CompoundTypes];
+};
+
+//======================================================================
+

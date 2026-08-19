@@ -1,0 +1,64 @@
+using Format, Syms, Styles, Tex;
+
+namespace HomeworkSets.ProblemSet4 {
+  namespace Problem1 {
+    Title = "Subgraphs A";
+    Problem = ProblemPar {
+      "Exhibit a specific injection to show one of the following subgraphs is isomorphic to a subgraph of the other"
+    };
+  }
+
+  namespace Problem2 {
+    Title = "Subgraphs B";
+    Problem = ProblemPar {
+      "Prove or Disprove: If G is a subgraph of H and G is connected, then H is connected"
+    };
+  }
+
+  namespace Problem3 {
+    Title = "Cardinality A";
+    Problem = ProblemPar {
+      "Give an example of a set with each of the following properties: Finite, Infinite but Countable, Uncountable"
+    };
+    Answer = AnswerPar {
+      "The english alphabet is a finite set, the natural numbers are infinite but countable, and the irrational numbers are uncountable.";
+    };
+  }
+
+  namespace Problem4 {
+    Title = "Cardinality B";
+    Problem = Span {
+      "Give a bijection between";
+      SetN;
+      " and ";
+      SetN times SetN
+    };
+  }
+
+  namespace Problem5 {
+    Title = "Equivalence Relations A";
+    Problem = ProblemPar {
+      "Show the following is an equivalence relation. The set ";
+      SetN;
+      " with the relation";
+      Inline {a Tex.sim b};
+      " if ";
+      Inline {
+        a Equals b Tex.cdot 2 sup k
+      };
+      " for some   ";
+      Inline {k Tex.In SetZ}
+    };
+  }
+
+  namespace Problem6 {
+    Title = "Equivalence Relations B";
+    Problem = ProblemPar {
+      "Show that the set of equivalence classes";
+      Inline {SquareBrackets{n};
+      Tex.In SetN Divide Tex.sim};
+      " has well defined multiplication but not addition"
+    };
+  }
+}
+

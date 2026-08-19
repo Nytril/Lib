@@ -1,0 +1,37 @@
+include "Help";
+
+using Format;
+
+const Number = 1234.56;
+readonly Date = DateTime.Now;
+
+ShowData(CultureInfo culture) = Block {
+  Paragraph {
+    Bold;
+    culture.Name;
+  };
+
+  Paragraph {
+    LeftIndent: 8pt;
+    TextCulture: culture;
+    TextDigits: 2;
+    TextGroup: true;
+    Number;
+  };
+
+  Paragraph {
+    LeftIndent: 8pt;
+    TextCulture: culture;
+    TextFormat: "dddd, MMMM dd yyyy";
+    Date;
+  };
+};
+
+Example = Block {
+  ShowData(CultureInfo.FindCulture("en-US"));
+  ShowData(CultureInfo.FindCulture("de-DE"));
+  ShowData(CultureInfo.FindCulture("fr-FR"));
+  ShowData(CultureInfo.CurrentCulture);
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextCulture));

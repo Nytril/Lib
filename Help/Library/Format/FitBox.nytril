@@ -1,0 +1,26 @@
+include "Help";
+
+using Format;
+
+//======================================================================
+
+readonly Image Picture1 = new(res "../Tutorial/Zombie.png");
+
+Show(title) = VBox(1", 1") {
+  HAlign: Center;
+  VAlign: Top;
+  title;
+};
+
+Example = Paragraph {
+  Show("Fit to Width")     { FitBox(Picture1, 0.5cm) };
+  Show("Fit to Height")    { FitBox(Picture1, null, 14.7mm) };
+  Show("Fit to Rectangle") { FitBox(Picture1, 0.125", 1.9cm) };
+  Show("Force Dimensions") { FitBox(Picture1, 0.5", 0.7cm, null, true) };
+};
+
+//======================================================================
+
+Main.Help = new HelpExample(attribute FitBox, 1);
+
+//======================================================================

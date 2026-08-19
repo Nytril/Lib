@@ -1,0 +1,120 @@
+using Format;
+
+namespace Chapters.Mathematics.Sections.Matrices;
+
+readonly TutorialLesson Lesson = new(#64b64e73-d1ec-4e8c-99ec-e2ab505b0883#, "Matrices");
+
+//======================================================================
+
+x = Symbol("x");
+y = Symbol("y");
+z = Symbol("z");
+a = Symbol("a");
+b = Symbol("b");
+c = Symbol("c");
+d = Symbol("d");
+e = Symbol("e");
+f = Symbol("f");
+g = Symbol("g");
+h = Symbol("h");
+
+N1 = Matrix.Convert([[1.0, 4.0], [3.0, 1.0]]);
+N2 = Matrix.Convert([[7.0, 5.0], [8.0, 9.0]]);
+V1 = Matrix.Convert([[a, b], [c, d]]);
+V2 = Matrix.Convert([[e, f], [g, h]]);
+
+readonly LessonExample Content.VectorDefinedEx = new(#5275e741-857e-453e-b5e5-ce7df5cf25d2#, "Matrices") {
+  Text: "Matrix objects represent a 2 dimensional array of numbers or symbols of a fixed size.";
+  Code: [attribute x, attribute V2];
+  Show: [N1, N2, V1, V2];
+};
+
+//======================================================================
+
+I52 = new Matrix(4, 4, 0.0, 1.0);
+
+readonly LessonExample Content.VectorInitEx = new(#a337727b-cc56-4ee2-98fa-49e3e206b0db#) {
+  Text: "Matrices can be initialized with uniform contents and an optional diagonal element for square matrices";
+  Code: [attribute I52];
+};
+
+//======================================================================
+
+VAdd = V1 + V2;
+NAdd = N1 + N2;
+
+readonly LessonExample Content.MatrixSumEx = new(#75a3b09c-2372-430e-b8f3-aa2af9aa7b0d#, "Matrix math") {
+  Text: "Matrices of the same size can be added together {0}"(NytrilStyle.OpAttribute(attribute +));
+  Code: [attribute VAdd, attribute NAdd];
+  Show: [VAdd, NAdd];
+};
+
+//======================================================================
+
+VSub = V1 - V2;
+NSub = N1 - N2;
+
+readonly LessonExample Content.MatricsDifferenceEx = new(#7339abd6-bfcf-4a31-b544-27d810b45be6#) {
+  Text: "Matrices of the same size can be subtracted {0}"(NytrilStyle.OpAttribute(attribute -));
+  Code: [attribute VSub, attribute NSub];
+  Show: [VSub, NSub];
+};
+
+//======================================================================
+
+VDet = V1.Determinant;
+NDet = N1.Determinant;
+
+readonly LessonExample Content.MatrixDeterminantEx = new(#e453eade-2e46-4f2c-b893-e6d2ba041880#) {
+  Form: NytrilStyle.Function(attribute Matrix.Determinant, "The determinant of a matrix is calculated");
+  Code: [attribute VDet, attribute NDet];
+  Show: [VDet, NDet];
+};
+
+//======================================================================
+
+VInv = V1.Inverse;
+NInv = N1.Inverse;
+
+readonly LessonExample Content.MatrixInverseEx = new(#5879a628-9363-4f89-8965-525e4461d77d#) {
+  Form: NytrilStyle.Function(attribute Matrix.Inverse, "The inverse of a matrix is calculated");
+  Code: [attribute VInv, attribute NInv];
+  Show: [VInv, NInv];
+};
+
+//======================================================================
+
+VTran = V1.Transpose;
+NTran = N1.Transpose;
+
+readonly LessonExample Content.MatrixTransposeEx = new(#789fb0c1-9002-417a-96cd-b1ddbe555356#) {
+  Form: NytrilStyle.Function(attribute Matrix.Transpose, "The transposition of a matrix is calculated");
+  Code: [attribute VTran, attribute NTran];
+  Show: [VTran, NTran];
+};
+
+//======================================================================
+
+VNormalize = V1.Normalize;
+NNormalize = N1.Normalize;
+
+readonly LessonExample Content.ShowNormalizeEx = new(#6cf72b42-24b7-4b51-85cb-88a225b715d9#) {
+  Form: NytrilStyle.Function(attribute Matrix.Normalize, "The normalize form of a matrix is calculated");
+  Code: [attribute VNormalize, attribute NNormalize];
+  Show: [VNormalize, NNormalize];
+};
+
+//======================================================================
+
+VCofactor = V1.CofactorMatrix;
+NCofactor = N1.CofactorMatrix;
+TCofactor = Matrix.Convert([[1, 2, 3], [0, 4, 5], [1, 0, 6]]).CofactorMatrix;
+
+readonly LessonExample Content.ShowCofactorEx = new(#a7b88a28-785a-479c-b3d2-6971835ec77a#) {
+  Form: NytrilStyle.Function(attribute Matrix.CofactorMatrix, "The cofactor matrix of a given square matrix is calculated");
+  Code: [attribute VCofactor, attribute NCofactor, attribute TCofactor];
+  Show: [VCofactor, NCofactor, TCofactor];
+};
+
+//======================================================================
+

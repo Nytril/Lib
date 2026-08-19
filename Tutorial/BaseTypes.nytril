@@ -1,0 +1,210 @@
+using Format;
+//======================================================================
+
+Stain1 = {TextColor: Colors.White; TextBackground: Colors.Red};
+Stain2 = {TextColor: Colors.White; TextBackground: Colors.Green};
+//======================================================================
+
+namespace Chapters.Genetics.Sections.Bases;
+
+readonly TutorialLesson Lesson = new(#d874f09c-8b57-460a-8c6a-56024294bf91#, "Bases");
+
+//======================================================================
+
+Base1 = Dna.Cytosine + Dna.Guanine;
+
+readonly LessonExample Content.BasesEx = new(#b9c262c2-e352-434b-9088-8754a1167ded#) {
+  Text: "Bases can be specified by using built-in symbols joined together with a + sign to form a sequence";
+  Code: [attribute Base1];
+};
+
+///======================================================================
+
+Set1 = Dna.Thymine | Dna.Guanine;
+
+readonly LessonExample Content.SetsEx = new(#1dae84c0-79b2-49c3-a6f6-8743ab35f97c#) {
+  Text: "Bases can be combined into a base set using {0} "(NytrilStyle.Operator("the binary or operator", "|"));
+  Code: [attribute Set1];
+};
+
+//======================================================================
+
+DNA1      = dna"ACTG";
+RNA1      = rna"UGAC";
+Codons1   = codon"<MDI><AIHHPWIRR>";
+Protein1  = protein"MDIAIHHPWIRR";
+
+readonly LessonExample Content.DirectSequenceEx = new(#cc46f653-d7ef-4a50-8ef2-17c6c7194f13#) {
+  Text: "Longer sequences can be input by using the correct string prefix";
+  Code: [attribute DNA1, attribute RNA1, attribute Codons1, attribute Protein1];
+  Show: [DNA1, RNA1, Codons1, Protein1];
+};
+
+//======================================================================
+
+DNAFunc = dna"AC{0}TG";
+Call    = DNAFunc(Dna.N);
+Iterate = DNAFunc(each [dna"-AA-", dna"-CC-", dna"-TT-", dna"-GG-"]);
+
+readonly LessonExample Content.FunctionSequenceEx = new(#839288ac-cbf0-4827-b594-e5f66f932a26#) {
+  Text: "Use string functions to generate several variations of a sequence";
+  Code: [attribute DNAFunc, attribute Call, attribute Iterate];
+  Show: [Call, Iterate];
+};
+
+//======================================================================
+
+Promoter = dna"TATAAA";
+Repeats  = Promoter + Dna.Gap*4 + dna"-ACTG-" * 5 + 10;
+
+readonly LessonExample Content.RepeatedSequencesEx = new(#e5af83b6-5e77-49d8-9b19-7b9ca982f861#) {
+  Text: "Sequences can be repeated by using {0} with an integer"(NytrilStyle.OpAttribute(attribute *));
+  Code: [attribute Promoter, attribute Repeats];
+};
+
+//======================================================================
+
+Gene2 = Promoter 30 dna"CCTCCCAGG";
+
+readonly LessonExample Content.PlusOperatorEx = new(#fda6e1a0-19ef-4257-80eb-74d34f59f0eb#) {
+  Text: "Sequences can also be constructed by placing the components adjacent to each other";
+  Code: [attribute Gene2];
+};
+
+//======================================================================
+
+Highlight = {TextBackground: Colors.LightGray};
+Original  = dna"ATTGGCCTTAACCCCCGATTATCAGGAT";
+
+class VariantClass {
+  var Name,
+      Sequence;
+
+  Constructor(name, sequence) {
+    Name     = name;
+    Sequence = sequence;
+  }
+}
+
+VariantClass[] Variants = [
+  new("Substitution", Original.Substitute(14, Highlight Dna.Thymine)),
+  new("Insertion", Original.Insert(15..17, Highlight dna Dna.Gap)),
+  new("Deletion", Original.Remove(15..17)),
+  new("Inversion", Original.Substitute(9..16, Highlight Original[9..16].Reverse)),
+  new("Copy Number", Original.Remove(3..9).Insert(3..16, Highlight Original[3..9] * 2)),
+];
+
+VarTable = Table(new Edge(2, 0, Colors.LightGray), PadLR(3), [1.5", 3"]) {
+  TextHeight: 10pt;
+  NytrilStyle.HeaderRow {"Type"; "Variant"};
+  foreach (var v in Variants) {
+    Row {
+      v.Name;
+      Original;
+    };
+    Row(BorderB(new(1pt, 0, Colors.LightGray))) {
+      Paragraph {
+        ParAlignment: Right;
+        RightIndent: 5pt;
+        Tex.Rightarrow;
+      };
+      v.Sequence;
+    };
+  }
+};
+
+readonly LessonExample Content.VariantsEx = new(#f12874a8-3210-4652-804e-56cc28ca1591#) {
+  Text: "Common variants can be constucted without repeating or losing information";
+  Code: [attribute Highlight, attribute VarTable];
+};
+
+//======================================================================
+
+readonly GeneFile  = IO.ReadDocument(res "Sequences.fasta");
+
+readonly WholeGene = GeneFile.BTBSCRYR;
+readonly GeneSlice = WholeGene[10..99];
+
+ShowGene = Block {
+  Paragraph {
+    Underline;
+    WholeGene.Comment;
+  };
+  GeneSlice;
+};
+
+readonly LessonExample Content.FileInputEx = new(#99e192cf-ccc3-4790-aa37-9057ac8e448c#) {
+  Form:  NytrilStyle.Function(attribute IO.ReadDocument, "Sequences can also be read from files");
+  Code:  [attribute GeneFile, attribute ShowGene];
+};
+
+//======================================================================
+
+GeneFormatted = Span {
+  TextColumns: 30;
+  TextDivision: 5;
+  GeneSlice;
+};
+
+readonly LessonExample Content.FormattingEx = new(#8e48dee4-ce11-4fa7-9b46-82828a8746b7#) {
+  Text: "Revisions are used to control sequence formatting";
+  Code: [attribute GeneFormatted];
+};
+
+//======================================================================
+
+GeneStained1 = GeneSlice.Revise([3..11, 72..74], Stain1);
+GeneStained  = GeneStained1.Revise(18..20, Stain2);
+
+readonly LessonExample Content.StainingEx = new(#3bd076b2-3551-446a-9f57-6f07025e7faf#) {
+  Form: NytrilStyle.Function(attribute Array.Revise, "Sections of a sequence can be formatted");
+  Code: [attribute GeneStained1, attribute GeneStained];
+};
+
+//======================================================================
+
+RNASequence = rna"ACUG" + Rna.Uracil + Rna.Adenine;
+
+readonly LessonExample Content.ManualRNAEx = new(#44713b77-924b-48a3-893c-14152bfa789e#) {
+  Text: "RNA sequences are constructed in the same way {0}"(NytrilStyle.OpText("rna"));
+  Code: [attribute RNASequence];
+};
+
+//======================================================================
+
+ComputedRNA = rna GeneStained;
+
+readonly LessonExample Content.ComputeRNAEx = new(#6b14152b-984b-4673-9b6f-d213ef5ceb05#) {
+  Text: "DNA can be transcribed into RNA {0}"(NytrilStyle.OpText("rna"));
+  Code: [attribute ComputedRNA];
+};
+
+//======================================================================
+
+ComputedCodons = codon ComputedRNA;
+
+readonly LessonExample Content.ComputeCodonsEx = new(#be629b7b-784f-41e9-8348-66ab3e8f6c69#) {
+  Text: "RNA can be converted into codons {0}"(NytrilStyle.OpText("codon"));
+  Code: [attribute ComputedCodons];
+};
+
+//======================================================================
+
+ComputedProtein = protein ComputedRNA;
+
+readonly LessonExample Content.ComputeProteinEx = new(#2a6f2f6c-4eb9-4601-a469-a8b755f29eac#) {
+  Text: "RNA or codons can be translated into a protein {0}"(NytrilStyle.OpText("protein"));
+  Code: [attribute ComputedProtein];
+};
+
+//======================================================================
+
+PossibleRNA = rna ComputedProtein;
+
+readonly LessonExample Content.ProteinToRNAEx = new(#7780d444-32d9-46d5-a4b8-94d7dd087a7f#) {
+  Text: "Proteins can be transcribed back into RNA, creating an array of RNA sequences that could yield the protein";
+  CodeArray: [attribute PossibleRNA];
+};
+
+//======================================================================
+

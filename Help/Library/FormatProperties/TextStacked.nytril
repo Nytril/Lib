@@ -1,0 +1,37 @@
+include "Help";
+
+using Format;
+
+
+Work = Span {
+  "W"; Tex.Equals; Nary {
+    Operator: Tex.PathIntegral1;
+    Upper: "P" sub 0;
+    Lower: "P" sub 1;
+    "Force";
+  };
+};
+
+Example = Block {
+  var tabs = [1"];
+  Paragraph(null, tabs) {
+    SpaceAfter: 10pt;
+    TextStacked: true;
+    "Stacked:";
+    Tab;
+    Work;
+  };
+
+  Paragraph(null, tabs) {
+    "Not stacked:";
+    Tab;
+    Work;
+  }
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextStacked));
+
+//============================================================
+

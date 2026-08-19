@@ -1,0 +1,23 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "The QRBox shows a QR code inside a square box. Error levels from [0..3] indicate L|M|Q|H level error correction. ";
+    "The size includes the 'quite zone' around the QR code. ";
+  };
+};
+
+Example = Span {
+  for (int level = 0; level < 4; ++level) {
+    VBox(null, null, 0.25) {
+      HAlign: Center;
+      Span {"Error="; level};
+      QRBox("code text", 1", level);
+    };
+    Space;
+  }
+};
+
+Main.Help = new HelpExample(attribute Format.QRBox, 1);

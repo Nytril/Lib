@@ -1,0 +1,25 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "The VBox aligns its children from top to bottom in order of occurance. ";
+    "If there is an HAlign (or HAlignment for a child) and the VBox has a specified Width then the children will be aligned as directed. ";
+  };
+};
+
+Example = VBox(null, null, new Edge(10, 0, 90%)) {
+  "Text";
+  Canvas(20, 10, 1);
+  Canvas(10, 20, 2);
+};
+
+Example2 = VBox(80, null, new Edge(3, 0, 90%)) {
+  HAlign: Center;
+  Span {TextHeight: 20pt; "Text"};
+  Canvas(20, 10, 1);
+  Canvas(10, 20, 2);
+};
+
+Main.Help = new HelpExample(attribute Format.VBox, 2);

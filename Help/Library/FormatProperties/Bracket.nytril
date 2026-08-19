@@ -1,0 +1,41 @@
+include "Help";
+
+using Format;
+
+Example = HBox {
+  Separator: CommaSpace;
+  Bracket: Brackets.Square;
+  1 over 2; 2 over 3; 3 over 4;
+};
+
+
+ExampleBlock2 = Block {
+  Table(null, null, [1.5", 1", 1"]) {
+    Row {
+      Background: NytrilPalette.TableTitleBack;
+      TextColor: NytrilPalette.TableTitleFore;
+      "Type";
+      "Left-Right";
+      "Top Bottom";
+    };
+
+    foreach (var bracket in attribute Brackets) {
+      Row {
+        VAlign: Center;
+        if (each0 mod 2 == 1)
+          Background: NytrilPalette.ListOdd;
+        bracket.Name;
+        HBox {
+          Bracket: bracket.Value.LeftRight;
+          "Text";
+        };
+        VBox {
+          Bracket: bracket.Value.TopBottom;
+          "Long Text";
+        };
+      }
+    }
+  }
+};
+
+Main.Help = new HelpExample(attribute FormatProperties.Bracket, 2);

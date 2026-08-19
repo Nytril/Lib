@@ -1,0 +1,42 @@
+include "Help";
+
+using Format;
+
+TitlePar = Paragraph {
+  Bold;
+  SpaceBefore: 10pt;
+};
+
+Example = Block {
+  TitlePar {"No Direction (Items use X and Y coordinates)"};
+  Canvas(null, null, 1) {
+    Direction: Directions.None;
+    Span {
+      X: 10;
+      Y: 10;
+      "10, 10";
+    };
+    Span {
+      X: 30;
+      Y: 30;
+      "30, 30";
+    };
+  };
+
+  TitlePar {"Horizontal Direction"};
+  Canvas(null, null, 1) {
+    Direction: Directions.Horizontal;
+    1..5 step 1;
+  };
+
+  TitlePar {"Vertical Direction"};
+  Canvas(null, null, 1) {
+    Direction: Directions.Vertical;
+    1..5 step 1;
+  };
+};
+
+Main.Help = new HelpExample(attribute(Directions));
+
+
+

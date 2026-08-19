@@ -1,0 +1,150 @@
+using Format, HelpConcepts;
+
+class RepoAndSourceControl: AuthoredContent {
+  Constructor {
+    super.Constructor("Nytril Repository");
+
+    Watermark = "DRAFT";
+
+    AddAuthor(People.ColbertAuthor);
+    AddAuthor(People.McCreightAuthor);
+
+    AddContent(RepoAndSourcePurpose);
+    AddContent(RepoAndSourceAbout);
+    AddContent(RepoAndSourceCreate);
+    AddContent(RepoResources);
+  }
+}
+
+//=========================================================================
+
+readonly RepoAndSourcePurposeSection RepoAndSourcePurpose = new;
+class RepoAndSourcePurposeSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Purpose";
+    };
+
+    design.NormalParagraph {
+      "This document discusses Nytril repositories including setting up new repositories and connecting source control.";
+    };
+  };
+}
+
+//=========================================================================
+
+readonly RepoAndSourceAboutSection RepoAndSourceAbout = new;
+class RepoAndSourceAboutSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Nytril Repository";
+    };
+
+    design.SpacedParagraph {
+        "A repository in Nytril is a required structural component for all documents. ";
+        "Nytril maintains a default repository for projects created without selecting or creating another repository. ";
+        "The current repository appears under "; B{"Repo"}; " in the main menu bar. ";
+        "Nytril creates new projects in the selected repository.";
+      };
+
+    design.SpacedParagraph {
+      "A repository corresponds to a folder on the hard drive. ";
+      "This folder contains project files and shared resources. ";
+      "Language files reside in the repository root, making them available to all projects, which eliminates recreating the same text, including translations, across projects. ";
+    };
+
+    design.SpacedParagraph {
+      "A source control system, such as Git, should target the repository root. ";
+    };
+  };
+}
+
+//=========================================================================
+
+readonly RepoAndSourceCreateSection RepoAndSourceCreate = new;
+class RepoAndSourceCreateSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Creating a Repository";
+    };
+
+    design.SpacedParagraph {
+      "Consider whether the project requires a new repository or benefits from an existing repository with established configurations such as language, units, or paper size. ";
+      "Existing repositories may already include source control and shared resources, making them a better starting point. ";
+    };
+
+    Table(null, null, [new Column(54%), new Column(20), Column.Expand] ) {
+      Row {
+        Cell {
+          design.SpacedParagraph {
+            "Repository creation can initialize ";
+            design.InLineLink { ConfigsConcept };
+            ", allowing Nytril to scaffold the configuration system. ";
+            "A single language configuration enables advanced language features that otherwise remain unavailable. ";
+            "Repository setup supports skipping language options and adding them later. ";
+          };
+        };
+        Cell;
+        Cell {
+          design.AddFigure(RepoLangFig, Here);
+        };
+      };
+    };
+
+    design.SpacedParagraph {
+      "During repository creation, Nytril prompts for a new project. ";
+      "Enter a project name, the path defaults to the repository. ";
+      "Nytril creates the repository, creates the project within it, and generates any required configuration files in the repository root. ";
+      "Nytril includes generated configuration files in the project code. ";
+    };
+  };
+}
+
+//=========================================================================
+
+readonly RepoAndSourceResourcesSection RepoResources = new;
+class RepoAndSourceResourcesSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Resources";
+    };
+
+    design.HyperlinkParagraph {
+      var action = new ActionObj(Actions.ToLink, "Repository Introduction Video", "https://youtu.be/eydMErOaSMo");
+      design.ActionSpan(action);
+    };
+
+    design.HyperlinkParagraph {
+      ConfigsConcept;
+    };
+  };
+}
+
+// ============================================================================
+
+readonly RepoLangFigure  RepoLangFig = new;
+class  RepoLangFigure: Content {
+  Constructor() {
+    super.Constructor("Repository Language Options");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = FitBox(new Image(res "RepoImg.png"), null, 170, 2);
+}

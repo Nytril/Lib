@@ -1,0 +1,275 @@
+using Format;
+
+readonly MyDocument Main.Documents.MainDocument = new;
+
+class MyDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#55a95ad4-b7a7-44e1-a168-92237985c23a#, "Formatters");
+  }
+
+  override GetDocument = Document {
+    foreach (var e in attribute(Examples).Children) {
+      Paragraph {
+        ParAlignment:Center;
+        SpaceBefore: 20pt;
+        KeepWithNext: true;
+        Bold;
+        e.FindChild("Title").Value;
+      };
+      e.FindChild("Value").Value;
+    }
+  };
+}
+
+//================================================================================
+
+namespace Examples {
+  namespace Span1 {
+    Title = "Text and value";
+    Value = Span {
+      "The answer is "; 5 + 2;
+    };
+  }
+
+  namespace Span2 {
+    Title = "Formatted text";
+    Value = Span {
+      TextFamily: TextFamilies.TimesNewRoman;
+      Italic;
+      Bold;
+      "Bold Italic Text";
+    };
+  }
+
+  namespace Mixed {
+    Title = "Nested spans";
+    Value = Span {
+      "This text is normal and ";
+      Span {Bold; Underline; "this text"};
+      " is bold and underlined";
+    };
+  }
+
+  namespace Number {
+    Title = "Number Formatting";
+    Value = Span {
+      Symbolic.PI;
+      " rounded off is ";
+      Span {
+        TextDigits: 3;
+        Math.PI;
+      }
+    };
+  }
+
+  namespace UnitConversion {
+    Title = "Unit Conversion";
+    Value = Span {
+      var l = 25.4cm;
+      l; " is the same as "; l tounit Units.inches;
+    };
+  }
+
+  namespace ParagraphLeft {
+    Title = "Left-aligned paragraph";
+    Value = Paragraph {
+      "Left";
+    };
+  }
+
+  namespace ParagraphCenter {
+    Title = "Center-aligned paragraph";
+    Value = Paragraph {
+      ParAlignment: Center;
+      "Center";
+    };
+  }
+
+  namespace ParagraphRight {
+    Title = "Right-aligned paragraph";
+    Value = Paragraph {
+      ParAlignment: Right;
+      "Right";
+    };
+  }
+
+  namespace ParagraphJustified {
+    Title = "Justified Paragraph";
+    Value = Paragraph {
+      ParAlignment: Justify;
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ";
+      "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ";
+    };
+  }
+
+  namespace Borders1 {
+    Title = "Paragraph box";
+    Value = Paragraph(1) {
+      "Text";
+    };
+  }
+
+  namespace Borders2 {
+    Title = "Left-right border";
+    Value = Paragraph(new(2, 0, 2, 0)) {
+      "Text";
+    };
+  }
+
+  namespace Background {
+    Title = "Paragraph background";
+    Value = Paragraph {
+      ParBackground: Colors.DarkBlue;
+      TextColor: Colors.White;
+      "Text";
+    };
+  }
+
+  namespace TabStops {
+    Title = "Tab Stops";
+    Value = Paragraph(null, [new(1"), new(3", Center), new(5", Right, TabLeaders.Dot)]) {
+      "Start"; Tab; "Left"; Tab; "Center"; Tab; "Right";
+    };
+  }
+
+  namespace FormatChart {
+    Title = "Chart";
+    Value = Chart(5.5", 140) {
+      ChartType: Column;
+      ValueLabel: HBox {
+        "Rain (in)";
+        Transform: Transform.Rotate(90 degrees);
+        TransformFit: true;
+      };
+      XLabel: "Month";
+      ValueAxis: ChartAxis {
+        TextHeight: 80%;
+      };
+      XAxis: ChartAxis {
+        TextHeight: 80%;
+        (each CalendarMonth.MonthsOfTheYear).ShortName;
+      };
+      Legend: ChartLegend {
+        Direction: Vertical;
+        Placement: Right;
+      };
+
+      var seattle  = [5.4, 3.9, 4.0, 3.1, 2.1, 1.6, 0.8, 1.0, 1.7, 3.8, 6.1, 5.8];
+      var paradise = [1.1, 1.2, 1.1, 0.3, 0.2, 0.1, 0.9, 1.2, 0.7, 0.6, 0.6,  0.9];
+      ChartSeries {
+        Label: "Seattle, WA ({0} in)"(Math.Round(Math.Sum(seattle)));
+        seattle;
+      };
+      ChartSeries {
+        Label: "Paradise Valley, AZ ({0} in)"(Math.Round(Math.Sum(paradise)));
+        paradise;
+      };
+    };
+  }
+
+  namespace FormattedTable {
+    Title = "Table";
+    Value = Table(0.5, PadLR(3), [1", 1.5"]){
+      Row {"Make"; "Model"; Background: Colors.Blue; TextColor: Colors.White};
+      Row {"Chevy"; "Camaro"};
+      Row {"Ford"; "Mustang"};
+      Row {"Dodge"; "Viper"};
+    };
+  }
+
+  namespace FormatCanvas1 {
+    Title = "Canvas with a line segment";
+    Value = Canvas(100, 50, 0.5) {
+      Shape(null, new(3, Colors.Red, Dotted)) {
+        OpenPath(5, 5) {
+          LineTo(10, 20);
+          LineTo(60, 40);
+          LineTo(90, 5);
+        };
+      };
+    };
+  }
+
+  namespace FormatCanvas2 {
+    Title = "Canvas with points";
+    Value = Canvas(200, 50, 1) {
+      for (int i = 0; i < 10; ++i) {
+        Canvas(3, 3) {
+          BorderRadius: 1;
+          Background: Colors.Red;
+          X: i * 20+5;
+          Y: Math.Random(0.0..0.9) * 50;
+        };
+      }
+    };
+  }
+
+  namespace FormatIf {
+    Title = "if-else statements";
+    Value = Paragraph {
+      var i = Math.Random(0..5);
+      if (i == 0)
+        "Zero";
+      else
+        "Not zero";
+    };
+  }
+
+  namespace FormatSwitch {
+    Title = "switch statments";
+    Value = Paragraph {
+      var i = Math.Random(0..5);
+      switch (i) {
+        case 0:
+          "Zero";
+          break;
+
+        case 1:
+          "One";
+          break;
+
+        default:
+          "Other";
+          break;
+      }
+    };
+  }
+
+  namespace FormatFor {
+    Title = "for loops";
+    Value = Paragraph {
+      Separator: CommaSpace;
+      for (int i = 0; i < 10; ++i)
+        i;
+    };
+  }
+
+  namespace FormatForEach {
+    Title = "foreach loops";
+    Value = Paragraph {
+      var values = ["a", "b", "c"];
+      Separator: CommaSpace;
+      foreach (var v in values)
+        v;
+    };
+  }
+
+  namespace FormatEachStatment {
+    Title = "each operator";
+    Value = Paragraph {
+      Separator: CommaSpace;
+      var symbols = Symbol(each ["x", "y", "x"]);
+      symbols;
+      (each symbols)^2;
+    };
+  }
+
+  namespace QR {
+    Title = "QR Code";
+    Value = Paragraph {
+      QRBox("www.nytril.com", 1");
+    };
+  }
+}
+
+//================================================================================

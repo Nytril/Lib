@@ -1,0 +1,21 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  var past = #2021-03-18 12:30:14#;
+  var span = DateTime.Now - past;
+  Paragraph {
+    "The elapsed time between ";
+    past;
+    " and now is : ";
+    span.Day; " days, ";
+    span.Hour; " hours, ";
+    span.Minute; " minutes and ";
+    span.Second; " seconds ";
+  };
+  "This is a total of " span.TotalSeconds " seconds.";  
+};
+
+Main.Help = new HelpExample(attribute TimeSpan);
+

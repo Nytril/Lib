@@ -1,0 +1,36 @@
+include "Help";
+
+using Format;
+
+Range = -1..1;
+
+Description = DescriptionBlock {
+  Lang.NumberBetween(-1, 1);
+
+  Chart(100%, 2") {
+    ChartType: ChartTypes.Line;
+    XAxis: ChartAxis {
+      Range step 0.25;
+    };
+    ValueAxis: ChartAxis;
+
+    ChartSeries {
+      foreach (var x in Range step 0.01)
+        new DataPoint(x, Math.Acos(x));
+    };
+  };
+};
+
+ShowAcos(x) = Span {
+  "The arc cosine of {0} is {1}."(x, Math.Acos(x));
+};
+
+Example = Block {
+  ShowAcos(1);
+  ShowAcos(0);
+  ShowAcos(-1);
+};
+
+Main.Help = new HelpExample(attribute(Math.Acos));
+
+

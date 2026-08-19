@@ -1,0 +1,13 @@
+include "Help";
+
+using Format;
+
+Example = ListBlock {
+  Paragraph { "Min value "; long.MinValue};
+  Paragraph { "Max value "; long.MaxValue};
+};
+
+Main.Help = new HelpExample(attribute long);
+
+
+

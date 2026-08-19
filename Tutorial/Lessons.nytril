@@ -1,0 +1,17 @@
+include "TextFormatting";
+include "FormatNumbers";
+include "MathFormatting";
+include "Paragraphs";
+include "Images";
+include "Hyperlinks";
+include "Boxes";
+
+readonly Attribute[] VideoLessons = [
+  attribute Chapters.Formatting.Sections.TextFormatting,
+  attribute Chapters.Formatting.Sections.FormatNumbers,
+  attribute Chapters.Formatting.Sections.MathFormatting,
+  attribute Chapters.Formatting.Sections.Paragraphs,
+  attribute Chapters.Formatting.Sections.ImageFormatting,
+  attribute Chapters.Formatting.Sections.Hyperlinks,
+  attribute Chapters.Formatting.Sections.Boxes,
+];

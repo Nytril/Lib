@@ -1,0 +1,388 @@
+using Format;
+
+//======================================================================
+
+readonly namespace NytrilData {
+  WebSite      = "www.nytril.com";
+  RedditSite   = new URL("www.reddit.com/r/nytril");
+  YouTubeSite  = new URL("www.youtube.com/@Nytril");
+  SupportEMail = new Email("support@nytril.com");
+}
+
+readonly namespace NytrilPalette {
+  Color          Hyperlink      = #7D2AE8#;
+  Color          EmailLink      = #0000C8#;
+  Color          Logo1          = #4A6D9D#; // powder blue
+  Color          Charcoal       = #505050#;
+  Color          Logo2          = Logo1.Scale(75%);
+  Color          LogoVideo      = Logo1;
+  Color          LogoVideo2     = Logo2.Scale(80%);
+  Color          Title          = Logo1.Scale(75%);
+  Color          TagLine        = #C0A3B0#;
+  Color          IconText       = TagLine;
+  Color          Icon           = Logo1;
+  Color          Arrow          = Title;
+  Color          Bullet         = Title;
+  Color          ChapterBack    = Color.GrayScale(90%);
+  Color          ChapterFore    = Title;
+  Color          SectionBack    = Logo1.Scale(70%);
+  Color          TableTitleBack = Logo1;
+  Color          TableTitleFore = Colors.White;
+  Color          SourceBack     = Color.GrayScale(97%);
+  Color          ListOdd        = Color.GrayScale(96%);
+  Color          IconLine       = #DCC7AA#;
+  RadialGradient IconBack       = SphericalFill(Logo1);
+  RadialGradient IconFore       = LightFill(Logo1);
+
+  RadialGradient TitlePageBack = new(0.5, 0.5, 0.5, 0.5, 1.2, 1.2, [
+    new(0.2, Logo1),
+    new(1, Logo1.Scale(2))
+  ]);
+
+  RadialGradient LogoGradient = new(0.36, 0.54, 0.36, 0.54, 0.7, 0.7, [
+    new(0.0, Logo1.Scale(2)),
+    new(0.3, Logo1),
+    new(1, Logo2)
+  ]);
+
+  RadialGradient SphericalFill(Color c) = new(0.25, 0.25, 0.25, 0.25, 0.75, 0.75,
+    [new(0.2, c.Scale(1.1)), new(0.9, c.Scale(0.8))]
+  );
+
+  RadialGradient LightFill(Color c) = new(0.1, 0.1, 0.1, 0.1, 0.75, 0.75,
+    [new(0.3, c.Scale(1.1)), new(0.9, c.Scale(0.9))]
+  );
+
+  VideoBack(in Size size) {
+    if (size.Width > size.Height)
+      return new RadialGradient(0.4, 0.7, 0.5, 0.5, 1, 1, [new(0.5, NytrilPalette.Logo2), new(1, #051229#)]);
+    else
+      return new LinearGradient(0.5, 0.0, 0.5, 1, [new(0.6, NytrilPalette.Logo2), new(1, #051229#)]);
+  }
+}
+
+//======================================================================
+
+readonly namespace NytrilStyle {
+  PropLine(Attribute prop, pre, text) = Block {
+    Paragraph {
+      ParAlignment: Justify;
+      SpaceAfter: 8pt;
+      pre;
+      Space;
+      text;
+    };
+    Paragraph {
+      TextHeight: 80%;
+      Span {
+        TipAction: new Action(Actions.ToDocument, prop);
+        prop.Prototype(true);
+      }
+    };
+    Paragraph {
+      SpaceBefore: 10pt;
+      "For example:";
+    };
+  };
+
+  PropText(Attribute prop, text) = Span {
+    Span {
+      TipAction: new Action(Actions.ToDocument, prop);
+      text;
+    };
+    Space;
+    prop.Prototype(true);
+   };
+
+  Formatter(Attribute prop) = Span {
+    TextColor: #74531F#;
+    TipAction: new Action(Actions.ToDocument, prop);
+    prop.Name;
+  };
+
+  PropName(Attribute prop) = Span {
+    TextColor: #5384BD#;
+    TipAction: new Action(Actions.ToDocument, prop);
+    prop.OperatorText ?? prop.Name;
+  };
+
+  Menu(name) = Span {
+    name;
+    TextColor: Colors.Green;
+  };
+
+  Function(Attribute prop, text)   = PropLine(prop, text, "using the function:");
+
+  ObjectType(Attribute prop, text) = PropLine(prop, text, "using:");
+
+  Operator(text, x)      = Span {text; Space; Span {TextColor: Colors.Blue; x}};
+  Class(Attribute x)     = Span {x.Name; TipAction: x; TextColor: #2b91af#};
+  NameSpace(Attribute s) = "{0} namespace "(s.Prototype);
+
+  OpAttribute(Attribute prop) = Span {
+    "using the operator ";
+    PropName(prop);
+  };
+
+  KW(Attribute prop) = Span {
+    TipAction: prop;
+    TextColor: Colors.Blue;
+    prop.Name;
+  };
+
+  Keyword(Attribute prop) = Span {
+    " using the keyword ";
+    KW(prop);
+  };
+
+  OpText(x)  = Operator("using the operator", x);
+
+  ArrayIndex = Operator("square brackets", "[]");
+
+  StandardLogo = Shape(NytrilPalette.LogoGradient) {
+    AppIcons.NytrilLogo;
+  };
+
+  LogoTight(size) = Canvas(null, size * 0.89) {
+    Baseline: 93%;
+    Shape(NytrilPalette.LogoGradient) {
+      Y: -size*0.2;
+      TextHeight: size;
+      AppIcons.NytrilLogo;
+    }
+  };
+
+  BugTight(size) = Canvas(null, size) {
+    Shape(NytrilPalette.Logo1) {
+      Y: -size*0.27;
+      TextHeight: size;
+      AppIcons.NytrilBug;
+    }
+  };
+
+  SiteIcon(Icon icon) = Canvas {
+    Baseline: 75%;
+    Shape(NytrilPalette.IconFore, new(0.5, NytrilPalette.IconLine)) {
+      icon;
+    };
+  };
+
+  LogoText(text, size) = Canvas {
+    HAlign: Center;
+    TextColor: NytrilPalette.Logo2;
+    Paragraph {
+      Y: -size*0.2;
+      TextHeight: size;
+      NytrilStyle.StandardLogo;
+    };
+    if (text is valid) {
+      Paragraph {
+        Y: size*0.8;
+        TextColor: NytrilPalette.IconText;
+        TextHeight: size * 0.4;
+        text;
+      };
+    }
+  };
+
+  EquationPar = Paragraph {
+    SpaceBefore: 4pt;
+    TextEquation: true;
+    TextStacked: true;
+  };
+
+  HeaderRow = Row {
+    Background: Colors.DarkBlue;
+    TextColor: Colors.White;
+  };
+
+  ShowArraySpan(a) = Span {
+    Begin: "[";
+    End: "]";
+    Separator: CommaSpace;
+    a;
+  };
+
+  ShowArray(a) = HBox {
+    Bracket: Brackets.Square;
+    TextStacked: true;
+    TextEquation: true;
+    Separator: CommaSpace;
+    a;
+  };
+
+  ListRow(i) = Row {
+    if ((i mod 2) == 1)
+      Background: NytrilPalette.ListOdd;
+  };
+
+  ShowMarker(marker) = HBox(null, null, BorderT(new(0, 5pt))) {marker};
+
+  LinkSpan = Span {
+    TextColor: NytrilPalette.Hyperlink;
+  };
+
+  TextLink(text, link) = LinkSpan {
+    Action: new URL(link);
+    Underline;
+    text;
+  };
+
+  EmailLink(text, Email link) = LinkSpan {
+    Action: link;
+    Underline;
+    text;
+  };
+
+  FormatBullet = ListBlock {
+    ParAlignment: Justify;
+    LeftIndent: 14pt;
+    FirstIndent: -12pt;
+    SpaceAfter: 4pt;
+  };
+
+  SubHeader = Paragraph {
+    SpaceBefore:12pt;
+    Bold;
+    TextHeight: 120%;
+  };
+
+  CodeExample = TextBlock {
+    FileFormat: IO.FileFormats.Nytril;
+    ParBackground: NytrilPalette.SourceBack;
+  };
+
+  BlockBody = Paragraph {
+    ParAlignment: Justify;
+    FirstIndent: 8pt;
+    SpaceAfter: 8pt;
+  };
+
+  Heading1 = Paragraph {
+    SpaceAfter: 20pt;
+    Bold;
+    TextHeight: 32pt;
+    ParAlignment: Center;
+    ParBackground: NytrilPalette.ChapterBack;
+    TextColor: NytrilPalette.ChapterFore;
+    KeepWithNext: true;
+  };
+
+  Heading2 = Paragraph {
+    TextHeight: 18pt;
+    ParBackground: NytrilPalette.SectionBack;
+    TextColor: NytrilPalette.SectionBack.TextCompliment;
+    SpaceAfter: 8pt;
+    KeepWithNext: true;
+  };
+
+  Heading3 = Paragraph {
+    TextHeight: 14pt;
+    SpaceAfter: 4pt;
+    KeepWithNext: true;
+  };
+
+  CodeSelection(code, SourceSelectOptions options=null) {
+    var selection;
+    foreach (var c in code) {
+      var s = SourceSelection(c, options);
+      if (selection is null)
+        selection = s;
+      else
+        selection = selection.Union(s);
+    }
+    return selection;
+  }
+
+  YouTubeArrow(URL url, height) = Canvas(height * 1.4, height) {
+    HAlign: Center;
+    VAlign: Center;
+    BorderRadius: 3;
+    Background: #FF0033#;
+    TextColor: Colors.White;
+    TextHeight: height*0.85;
+    TextOffset: 0.5;
+    Icons.play_arrow;
+    Baseline: 90%;
+    TipAction: url;
+  };
+}
+
+//======================================================================
+
+class CheckMarkClass {
+  var double Scale;
+
+  var int LeftMost   = 20,
+          TopMost    = 8,
+          BaseWidth  = 272,
+          BaseHeight = 203;
+
+ Constructor(double height) {
+   Scale = height / BaseHeight;
+ }
+
+  X(value) = (value - LeftMost) * Scale;
+
+  Y(value) = (value - TopMost) * Scale;
+
+  Fill = new LinearGradient(0.0, 0.0, 1.0, 1.0,
+    [new(0.0,  #B8FF62#),
+     new(0.35, #45E315#),
+     new(0.70, #10A909#),
+     new(1.0,  #047A08#)]
+  );
+
+  Get = Shape(Fill) {
+    ClosedPath(X(20), Y(105)) {
+      // Upper edge of the short arm
+      CurveTo(
+        new(X(30), Y(96)),
+        new(X(46), Y(90)),
+        new(X(58), Y(86))
+      );
+
+      // Curve down into the inside corner
+      CurveTo(
+        new(X(76),  Y(94)),
+        new(X(94),  Y(116)),
+        new(X(108), Y(140))
+      );
+
+      // Upper edge of the long sweeping arm
+      CurveTo(
+        new(X(142), Y(80)),
+        new(X(202), Y(34)),
+        new(X(292), Y(8))
+      );
+
+      // Sharp pointed tip
+      CurveTo(
+        new(X(285), Y(10)),
+        new(X(260), Y(27)),
+        new(X(252), Y(32))
+      );
+
+      // Lower edge of the long arm
+      CurveTo(
+        new(X(185), Y(78)),
+        new(X(150), Y(142)),
+        new(X(108), Y(204))
+      );
+
+      // Rounded bottom point
+      CurveTo(
+        new(X(104), Y(211)),
+        new(X(98),  Y(211)),
+        new(X(93),  Y(204))
+      );
+
+      // Lower edge of the short arm
+      CurveTo(
+        new(X(86), Y(196)),
+        new(X(40), Y(118)),
+        new(X(20), Y(105))
+      );
+    };
+  };
+}

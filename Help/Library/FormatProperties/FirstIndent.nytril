@@ -1,0 +1,36 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "If FirstIndent is negative, there is an implied tab stop at the left indent";
+  };
+};
+
+
+Example = Block {
+  Paragraph {
+    FirstIndent: 16pt;
+    RightIndent: 3";
+    SpaceAfter: 20pt;
+    "The FirstIndent is used to indent the first line of a paragraph which is a typical style used frequently in documents and letters.";
+  };
+
+  "The FirstIndent can also be used in numbered lists.";
+
+  Block {
+    // These attributes apply to all paragraphs in the block
+    LeftIndent : 16pt;
+    FirstIndent : -16pt;
+
+    Paragraph {
+      1; Tab; "One";
+    };
+    Paragraph {
+      2; Tab; "Two";
+    };
+  };
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.FirstIndent));

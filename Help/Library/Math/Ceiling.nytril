@@ -1,0 +1,17 @@
+include "Help";
+
+using Format;
+
+ShowCeiling(x) = "The ceiling of {0} is {1}."(x, Math.Ceiling(x));
+
+Example = Block {
+  ShowCeiling(1.01);
+  ShowCeiling(1.99);
+  ShowCeiling(-1.02);
+  ShowCeiling(-2);
+  ShowCeiling(5);
+};
+
+Main.Help = new HelpExample(attribute(Math.Ceiling));
+
+

@@ -1,0 +1,36 @@
+include "Help";
+
+using Format;
+
+Description = EquationPar {
+  var x = Symbol("x");
+  var i = Symbol("i");
+  var N = Symbol("n");
+
+  Tex.sigma;
+  Tex.Equals;
+  Radical {
+    Fraction {
+      Nary {
+        Upper: N;
+        Lower: i;
+        Operator: Tex.sum;
+        (x sub i - Span {TextOverline: true; x})^2
+      };
+      N;
+    };
+  }
+};
+
+ShowStandardDeviation(values) = ShowValues("standard deviation", values) {
+  Math.StandardDeviation(values);
+};
+
+Example = Block {
+  ShowStandardDeviation([2, 3, 3, 4]);
+  ShowStandardDeviation([2, 5, 6, 12]);
+};
+
+Main.Help = new HelpExample(attribute(Math.StandardDeviation));
+
+

@@ -1,0 +1,761 @@
+using Format, IO;
+
+//==================================================================================
+
+class VideoFrame {
+  delegate DrawFunction(Size size);
+
+  var int          Index;
+  var double       Duration;
+  var bool         Fade;
+  var DrawFunction Draw;
+
+  Constructor(int index, duration, bool fade, DrawFunction draw) {
+    Index    = index;
+    Duration = duration;
+    Fade     = fade;
+    Draw     = draw;
+  }
+}
+
+//==================================================================================
+
+class VideoChapter {
+  var        Name;
+  var double Start;
+
+  Constructor(name, start) {
+    Name  = name;
+    Start = start;
+  }
+}
+
+//==================================================================================
+
+class AudioFile {
+  var        FullPath,
+             RelPath,
+             Text;
+  var int    Index;
+  var double Duration;
+  var bool   Caption,
+             FileFound;
+
+  Constructor(fullpath, relpath, text, duration, bool caption) {
+    FullPath  = fullpath;
+    RelPath   = relpath;
+    Text      = text;
+    Duration  = duration;
+    Caption   = caption;
+    FileFound = FileExists(fullpath);
+  }
+}
+
+//==================================================================================
+
+class AudioFrame {
+  var AudioFile File;
+  var double    StartTime,
+                Pause;
+
+  Constructor(AudioFile file, start, pause) {
+    File      = file;
+    StartTime = start;
+    Pause     = pause;
+  }
+}
+
+//==================================================================================
+
+class VideoBuilder {
+  static readonly ProbeName      = FileName("ffprobe");
+  static readonly ProgName       = FileName("ffmpeg");
+  static readonly VideoVar       = "[vid]";
+  static readonly AudioVar       = "[aud]";
+  static readonly AudioExtension = Extension("wav");
+  static readonly Executable     = Folders.ProgramFiles Folder("ffmpeg") Folder("bin");
+
+  const double Fade  = 0.5;
+
+//  static readonly CaptionFileName  = FileName("caption.ass");
+  static readonly CaptionFileName = FileName("captions.vtt");
+  static readonly DescFileName    = FileName("description.txt");
+  static readonly BatchFileName   = FileName("make.bat");
+  static readonly FilterFileName  = FileName("filter.txt");
+  static readonly OutputFile      = FileName("video.mp4");
+
+  var                    OutputFolder,
+                         SourceFolder;
+  var List<VideoFrame>   Frames;
+  var List<AudioFile>    AudioFiles;
+  var List<AudioFrame>   AudioFrames;
+  var List<VideoChapter> Chapters;
+  var AudioFile          Theme;
+  var int                VideoIndex;
+  var Size               VideoSize;
+  var double             VideoTime,
+                         EndFade,
+                         StartBackground,
+                         EndBackground;
+  var bool               SourceExists;
+
+  Constructor(source, output, in Size size) {
+    SourceFolder  = source;
+    OutputFolder  = source output;
+    SourceExists  = FileExists(source);
+    Frames        = new(32);
+    AudioFiles    = new(32);
+    AudioFrames   = new(32);
+    Chapters      = new(32);
+    VideoSize     = size;
+  }
+
+  TS(TimeSpan t) = Span {
+    TextFormat: "hh\\:mm\\:ss\\.fff";
+    t;
+  };
+
+  CaptionFile = TextBlock {
+    "[Script Info]";
+    "ScriptType: v4.00+";
+    "PlayResX: 384";
+    "PlayResY: 288";
+    "ScaledBorderAndShadow: yes";
+    Empty;
+    "[V4+ Styles]";
+    "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding";
+    "Style: Default,Arial,20,&Hffffff,&Hffffff,&H0,&H0,0,0,0,0,100,100,0,0,1,1,0,2,10,10,10,0";
+    Empty;
+    "[Events]";
+    "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text";
+
+    var time = 0;
+    foreach (var a in AudioFiles) {
+      if (a.Caption) {
+        Paragraph {
+          Separator: Comma;
+          "Dialogue: 0";
+          TS(time);
+          TS(time);
+          "Default";
+          Empty; 0; 0; 0; Empty;
+          a.Text;
+        };
+      }
+      time += a.Duration;
+    }
+  };
+
+  YouTubeCaptionFile = TextBlock {
+    "WEBVTT";
+    "Kind: captions";
+    "Language: en";
+    Empty;
+
+    foreach (var a in AudioFrames) {
+      var af = a.File;
+      if (af.Caption) {
+        Paragraph {
+          TS(a.StartTime);
+          " --> ";
+          TS(a.StartTime + af.Duration);
+        };
+        Paragraph {
+          af.Text as string;
+        };
+        Empty;
+      }
+    }
+  };
+
+  Time3(double d) = Span{TextDigits: 2; d};
+
+  DeleteFile(name) = "del {0}"(name);
+
+  BatchFile = TextBlock {
+    Span {
+      string.ToQuoted(Executable ProgName);
+      " -hide_banner -y ";
+      foreach (var v in Frames)
+        "-loop 1 -t {0} -i i{1}.png "(Time3(v.Duration), each0);
+      foreach (var a in AudioFiles) {
+        if (a.FileFound)
+          "-i \"{0}\" "(a.RelPath);
+      }
+
+      "-/filter_complex {0} -map {1} -map {2} -pix_fmt yuv420p -c:v libx264 -tune stillimage -c:a aac -b:a 256k -ar 48000 {3}"(FilterFileName, VideoVar, AudioVar, OutputFile);
+    };
+
+    OutputFile;
+  };
+
+  FilterFile = TextBlock {
+    double time = 0;
+    foreach (var v in Frames) {
+      Span {
+        time += v.Duration;
+        var f = v.Fade ? Fade * 0.5 : 0.0;
+        "[{0}:v]"(v.Index);
+        "fade=t=out:st={0}:d={1}"(Time3(time - f), f);
+        "[V{0}];"(v.Index);
+      }
+    }
+
+    Paragraph {
+      foreach (var v in Frames)
+        "[V{0}] "(v.Index);
+      "concat=n={0}:v=1:a=0,format=yuv420p"(Frames.Length);
+      VideoVar;
+      ";";
+    };
+
+    Empty;
+
+    time = 0;
+    foreach (var a in AudioFrames) {
+      var p = Math.Round(a.Pause*1000);
+      "[{0}:a]adelay={1}|{2}[A{3}];"(a.File.Index, p, p, each0);
+    }
+
+    Paragraph {
+      foreach (var a in AudioFrames)
+        "[A{0}] "(each0);
+      "concat=n={0}:v=0:a=1"(AudioFrames.Length);
+      "[atot]";
+      ";";
+    };
+
+    var d     = Math.Round(StartBackground * 1000);
+    var backt = EndBackground - StartBackground;
+    var loops = backt / Theme.Duration;
+
+    "[{0}:a]aloop=loop={1}:size=2e+09,volume=0.20,adelay={2}|{3}[back];"(Theme.Index, loops, d, d);
+    "[back]afade=t=out:st={0}:d={1}[fback];"(backt - EndFade, EndFade);
+    "[atot][fback]amix=inputs=2:duration=shortest{0}"(AudioVar);
+  };
+
+/*
+      var file = MainFolder + ProgName;
+      if (System.OperatingSystem == OperatingSystems.Windows)
+        file += Extensions.EXE;
+      var args = "-hide_banner -i input.mov -vf subtitles={0} output.mp4 -y"(CaptionFileName);
+
+      var process = new Process(file, args) {
+//        Visible: true;
+        Directory: MainFolder;
+      };
+      var result = process.Run;
+      if (result.ExitCode == 0)
+        return true;
+      else {
+        System.Assert(false, result.ErrorMessage);
+        System.WriteLine(result.StandardOutput);
+        System.WriteLine(result.StandardError);
+        return true;
+      }
+    }
+    return false;
+*/
+
+  double GetAudioDuration(path) {
+    if (FileExists(path)) {
+      var process = new Process(Executable ProbeName, "-loglevel quiet -output_format csv=p=0 -show_entries format=duration \"{0}\""(path)) {
+        Visible: false;
+      };
+      var result = process.Run;
+      if (result.ExitCode == 0)
+        return result.StandardOutput as double;
+      else
+        System.Assert(false, result.ErrorMessage);
+    }
+    return 0.0;
+  }
+
+  AudioFile AddAudioFile(fullpath, relpath, text, bool caption) {
+    var duration = GetAudioDuration(fullpath);
+    if (duration > 0.0) {
+      var f = new AudioFile(fullpath, relpath, text, duration, caption);
+      AudioFiles.Add(f);
+      return f;
+    }
+    return null;
+  }
+
+  AudioFrame AddAudio(AudioFile file, double pause) {
+    var f = new AudioFrame(file, VideoTime, pause);
+    AudioFrames.Add(f);
+    return f;
+  }
+}
+
+//==================================================================================
+
+class LessonBuilder: VideoBuilder {
+  const double ClickPause   = 1.0;
+  const double SplashPause  = 2.0;
+  const double TitlePause   = 1.0;
+  const double ContentPause = 2.0;
+  const double FollowPause  = 1.0;
+  const double ClickDelta   = 0.2;
+  const double ShortSplash  = 2.0;
+
+  static readonly FollowUsText = Span {
+    "To contact us or see this lesson document online, use the links provided in the description. ";
+    "Thanks for watching!";
+  };
+
+  static readonly VideoDescription = Span {
+    "Nytril is a programming language and markup language combined. ";
+    "Programmers will like its similarity to Java, JavaScript, C++, and C#. ";
+    "Users of LaTeX, Typst, and Markdown will appreciate its advanced formatting and math layout features. ";
+  };
+
+  var VideoLesson         Video;
+  var TutorialLesson      Lesson;
+  var List<LessonExample> Unfinished;
+
+  Constructor(root, source, output, VideoLesson video) {
+    super.Constructor(source, output, video.VideoSize);
+    Video      = video;
+    Lesson     = video.Lesson;
+    Unfinished = new(8);
+
+    var introtext   = "Lesson Intro";
+    bool full       = video.Full;
+    var clickfile   = FileName("Click") AudioExtension;
+    var introfile   = FileName("Intro") AudioExtension;
+    var followfile  = FileName("FollowUs") AudioExtension;
+    var contentfile = FileName(introtext) AudioExtension;
+    var outrofile   = FileName("Outro") AudioExtension;
+    var themefile   = FileName("Theme") AudioExtension;
+    var relaudio    = Folders.Up;
+    var relroot     = Folders.Up Folders.Up;
+    var click       = AddAudioFile(root clickfile, relroot clickfile, "Click", false);
+    var follow      = AddAudioFile(root followfile, relroot followfile, FollowUsText, true);
+    var endpause    = full ? 4.0 : 1.0;
+    var lessonpause = click.Duration + ClickPause + endpause;
+
+    double pause;
+
+    AddChapter("Intro");
+    if (full) {
+      pause = TitlePause;
+      var intro = AddAudioFile(root introfile, relroot introfile, "Intro", false);
+      AddAudio(intro, 0);
+
+      MakeVideoFrame(size => SeriesIntro(size, null), SplashPause, false);
+      MakeVideoFrame(size => SeriesIntro(size, Lesson.Title), intro.Duration - SplashPause + TitlePause, true);
+
+      StartBackground = VideoTime;
+
+      AddChapter("Lesson Contents");
+      var contents = AddAudioFile(source contentfile, relaudio contentfile, Lesson.Description, true);
+      if (contents is valid) {
+        AddAudio(contents, ContentPause);
+        MakeVideoFrame(@LessonIntro, contents.Duration + ContentPause, true);
+      }
+      else
+        Unfinished.Add(new LessonExample(Lesson.FactId, introtext) {Name: introtext; Text: Lesson.Description});
+    }
+    else {
+      pause = ShortSplash;
+      MakeVideoFrame(size => SeriesIntro(size, Lesson.Title), ShortSplash, true);
+    }
+
+    var examples = video.Examples;
+
+    foreach (var e in examples) {
+      System.ProgressPercent(each1, examples.Length);
+      var name  = e.Name;
+      var fname = FileName(name) AudioExtension;
+      var fpath = source fname;
+      var f     = AddAudioFile(fpath, relaudio fname, e.Text, true);
+      if (f is valid) {
+        AddChapter(e.Title);
+        if (full) {
+          AddAudio(f, pause - ClickDelta);
+          AddAudio(click, ClickPause + ClickDelta);
+        }
+        else
+          AddAudio(f, pause);
+
+        if (e.Sel is valid) {
+          var code = Math.Min(f.Duration * 60%, 2.0);
+          if (full) {
+            ShowLesson(e, Code, code);
+            ShowLesson(e, Code Highlight, f.Duration - code + ClickPause);
+            if (e.Tip is valid) {
+              var callpause = endpause * 75%;
+              ShowLesson(e, Code Highlight Result, lessonpause - ClickPause - callpause);
+              ShowLesson(e, Code Highlight Result Callout, callpause, true);
+            }
+            else
+              ShowLesson(e, Code Highlight Result, lessonpause - ClickPause, true);
+          }
+          else
+            ShowLesson(e, Code Highlight Result Callout, f.Duration + endpause, true);
+        }
+        else if (full) {
+          ShowLesson(e, Code, f.Duration + ClickPause);
+          ShowLesson(e, Code Result, lessonpause - ClickPause, true);
+        }
+
+        else
+          ShowLesson(e, Code Result Callout, f.Duration + endpause, true);
+
+        pause = endpause;
+      }
+      else
+        Unfinished.Add(e);
+    }
+
+    if (full) {
+      AddChapter("Thanks for watching");
+      AddAudio(follow, pause);
+      MakeVideoFrame(@FollowUs, follow.Duration + FollowPause, true);
+      EndBackground = VideoTime;
+      EndFade       = follow.Duration;
+
+      var outro = AddAudioFile(root outrofile, relroot outrofile, "Outro", false);
+      AddAudio(outro, FollowPause);
+      MakeVideoFrame(size => SeriesIntro(size, Lesson.Title), 7, true);
+    }
+    else {
+      EndFade       = 6;
+      EndBackground = VideoTime;
+    }
+
+    Theme = AddAudioFile(root themefile, relroot themefile, "Theme", false);
+    var i = VideoIndex;
+    foreach (var a in AudioFiles)
+      a.Index = i++;
+  }
+
+  void AddChapter(title) {
+    Chapters.Add(new(title, VideoTime));
+  }
+
+  static TitleCanvas(in Size size, series, name) = Canvas(size.Width, size.Height) {
+    BorderClip: true;
+    Background: Colors.Black;
+
+    var w  = size.Width * 0.2;
+    var dx = w * 2;
+    var x  = -w * 0.5;
+    while (x < size.Width) {
+      Shape(new LinearGradient(0, 0, 1, 1, [new(0, #0C2032#), new(1, 10%)])) {
+        ClosedPath(x, 50%) {
+          LineTo(x + dx, 100%);
+          LineTo(x + dx + w, 100%);
+          LineTo(x + w, 50%);
+          LineTo(x + dx + w, 0);
+          LineTo(x + dx, 0);
+        };
+        x += w * 2;
+        w *= 0.75;
+      };
+    }
+
+    var h = Math.Min(size.Width, size.Height);
+    VBox {
+      Margin: PadT(Math.Max(0, size.Height * 0.5 - h*0.45));
+      HAlign: Center;
+      HAlignment: Center;
+
+      NytrilStyle.StandardLogo {
+        TextHeight: h*0.4;
+      };
+
+      if (series is valid) {
+        Span {
+          TextHeight: h*7%;
+          TextColor: NytrilPalette.Logo1;
+          TextCase: AllUpper;
+          TextStretch: 120%;
+          series;
+        };
+      }
+
+      if (name is valid) {
+        Span {
+          TextHeight: h*6%;
+          TextColor: Colors.White;
+          name;
+        }
+      }
+    }
+  };
+
+  SeriesIntro(size, name) = TitleCanvas(size, Lang.VideoSeries, name);
+
+  FollowUs(size) = Canvas(size.Width, size.Height) {
+    Background: NytrilPalette.VideoBack(size);
+    var th = Math.Min(size.Width * 0.9, size.Height)*10%;
+
+    TextHeight: th;
+    Canvas {
+      HAlignment: Right;
+      VAlignment: Bottom;
+
+      HBox {
+        VAlign: Baseline;
+        Span {
+          TextHeight: 50%;
+          TextFamily: TextFamilies.CMUSansSerif;
+          TextColor: NytrilPalette.Logo1;
+          "Created using ";
+        };
+        LessonExample.RaisedLogo(th);
+      };
+    };
+
+    VBox(100%, null, PadAll(th * 0.5)) {
+      VAlignment: Center;
+      Separation: 5%;
+      HAlign: Center;
+      TextColor: Colors.White;
+      Span {
+        TextFamily: TextFamilies.Impact;
+        TextHeight: 110%;
+        "Thanks for watching!";
+      };
+
+      Span {
+        "Please like ";
+        Shape(Colors.Yellow) {
+          Icons.thumb_up;
+        };
+      };
+      " and";
+      HBox(null, null, PadLR(1%)) {
+        BorderRadius: th * 10%;
+        Background: Colors.Red;
+        Icons.notifications;
+        Space;
+        "Subscribe";
+      };
+      " for more videos";
+    };
+  };
+
+  LessonIntro(size) = Canvas(size.Width, size.Height) {
+    Background: NytrilPalette.VideoBack(size);
+
+    var titles = Video.Examples / 2;
+    var margin = size.Height * 4%;
+    var h      = size.Height - margin*2;
+    var th     = h * 7%;
+    var eh     = Math.Min(th, (h - th) / titles.Length);
+
+    LessonExample.RaisedLogo(th * 2) {
+      HAlignment: Right;
+      VAlignment: Bottom;
+    };
+
+    VBox(null, null, PadAll(margin)) {
+      TextHeight: eh * 75%;
+      TextColor: NytrilPalette.IconLine;
+      HAlign: Center;
+      HAlignment: Center;
+
+      HBox(100%, null, BorderAll(new Edge(0.25%, 3%, NytrilPalette.IconLine))) {
+        Margin: PadB(2%);
+        BorderRadius: size.Width * 1%;
+        VAlign: Center;
+        HAlign: Center;
+        TextHeight: th;
+        TextColor: Colors.White;
+        Background: NytrilPalette.Logo1;
+        Lesson.Title;
+      };
+
+      var indent = size.Width * 2%;
+
+      Table(null, PadR(5%), [(size.Width - margin*2) * 45%]) {
+        foreach (var ta in titles) {
+          Row {
+            foreach (var t in ta) {
+              Paragraph {
+                LeftIndent: indent;
+                FirstIndent: -indent;
+                Tex.bullet; Tab;
+                t.Title;
+              };
+            }
+          };
+        }
+      };
+    };
+  };
+
+  GetDrawFrame(VideoFrame.DrawFunction draw) = Document(0, false, null, null, null, VideoSize) {
+    Canvas(100%, 100%) {
+      VAlign: Top;
+
+      Frame(100%, 100%) {
+        draw(VideoSize);
+      };
+    }
+  };
+
+  MissingTable = Table(1, PadLR(0.3%), [4%, Column.Fit(25%), Column.Fit(25%), Column.Expand]) {
+    VAlign: Top;
+    NytrilStyle.HeaderRow {
+      Bold;
+      "#";
+      "File";
+      "Title";
+      "Caption";
+    };
+
+    foreach (var e in Unfinished) {
+      NytrilStyle.ListRow(each0) {
+        each1;
+        Span {
+          e.Name;
+          Action: new Action(ToSource, e);
+        };
+        e.Title;
+        e.Text as string;
+      }
+    }
+  };
+
+  AudioTable = Block {
+    Table(1, PadLR(0.3%), [4%, 9%, Column.Fit(50%), Column.Expand]) {
+      VAlign: Top;
+
+      NytrilStyle.HeaderRow {
+        Bold;
+        "#";
+        "Secs";
+        "File";
+        "Caption";
+      };
+
+      foreach (var f in AudioFrames) {
+        var e = f.File;
+        if (e.Caption) {
+          NytrilStyle.ListRow(each0) {
+            each1;
+            Span {
+              TextDigits: 2;
+              e.Duration;
+              if (not e.FileFound)
+                TextColor: Colors.Red;
+            };
+            Span {
+              GetFileNameWithoutExtension(e.RelPath);
+              Action: new Action(ToFile, e.FullPath);
+            };
+            e.Text as string;
+          }
+        }
+      }
+    };
+  };
+
+  Track = "?utm_source=\"youtube\"&utm_content={0}{1}"(Video.Full ? "tl" : "ts", Lesson.Log);
+
+  DescriptionFile = TextBlock {
+    Lesson.Description;
+    Empty;
+    VideoDescription;
+    Empty;
+    "Visit us on the web:";
+    Span {"https://"; NytrilData.WebSite; Track};
+    Empty;
+    "See this lesson online:";
+    Span {"https://"; NytrilData.WebSite; "/"; Lesson.FactId; Track};
+    Empty;
+    "Download Nytril:";
+    Span {"https://"; NytrilData.WebSite; "/"; #804ef104-72aa-43bf-98da-8cc54bbe83f0#; Track};
+    Empty;
+    "Visit us on reddit:";
+    NytrilData.RedditSite;
+    Empty;
+    foreach (var c in Chapters) {
+      Span {
+        Span {
+          TextFormat: "mm\\:ss";
+          Math.Round(c.Start) as TimeSpan;
+        };
+        Space;
+        c.Name;
+      };
+    }
+  };
+
+  FramePic(VideoFrame frame) = Document(0, false, null, null, null, VideoSize) {
+    frame.Draw(VideoSize);
+  };
+
+  bool CreateImages {
+    var thumb = GetDrawFrame(size => SeriesIntro(size, Lesson.Title));
+
+    if (WriteDocument(thumb, OutputFolder FileName("Thumbnail") Extensions.PNG)) {
+      foreach (var frame in Frames) {
+        var good = WriteDocument(FramePic(frame), OutputFolder FileName("i" + frame.Index) Extensions.PNG);
+        System.ProgressPercent(each1, Frames.Length);
+        if (not good)
+          return false;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  bool CreateVideoFiles {
+    CreateFolder(OutputFolder);
+
+    return WriteDocument(DescriptionFile, OutputFolder DescFileName, FileFormats.Text) and
+           WriteDocument(YouTubeCaptionFile, OutputFolder CaptionFileName, FileFormats.Text) and
+           WriteDocument(BatchFile, OutputFolder BatchFileName, FileFormats.Text) and
+           WriteDocument(FilterFile, OutputFolder FilterFileName, FileFormats.Text) and
+           CreateImages;
+  }
+
+  TitlePar(name) = Paragraph {
+    PageBreakBefore: true;
+    TextHeight: 120%;
+    SpaceBefore: 8pt;
+    Bold;
+    name;
+  };
+
+  ControlPanel = Block {
+    TextHeight: 9pt;
+
+    if (Unfinished is valid) {
+      TitlePar("Missing Audio Tracks") {TextColor: Colors.Red};
+      MissingTable;
+    }
+
+    TitlePar("Audio tracks");
+    AudioTable;
+
+    TitlePar("Description file");
+    DescriptionFile;
+
+    TitlePar("Caption file");
+    YouTubeCaptionFile;
+
+    TitlePar("Batch file");
+    BatchFile;
+
+    TitlePar("Filter file");
+    FilterFile;
+    PageBreak;
+  };
+
+  void MakeVideoFrame(VideoFrame.DrawFunction draw, double duration, bool fade=false) {
+    Frames.Add(new(VideoIndex++, duration, fade, draw));
+    VideoTime += duration;
+  }
+
+  void ShowLesson(LessonExample lesson, LessonExample.ShowOptions options, double duration, bool fade=false) {
+    MakeVideoFrame(size => lesson.FormatVideo(size, options), duration, fade);
+  }
+}
+
+//==================================================================================

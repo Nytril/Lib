@@ -1,0 +1,1054 @@
+using Format, LinkTypes;
+
+include "Basic Facts";
+
+//==============================================================================================================
+
+readonly namespace Metrics {
+  CurrentDate    = DateTime.Now;
+  TreeText       = 5.8pt;
+  LevelIndent    = 0.25";
+  IconColor      = Colors.Black;
+  IconIndirect   = Colors.DarkGray;
+  LineColor      = new Color(62, 94, 136);
+  BoxLine        = LineColor;
+  BoxBack        = 95%;
+  LocketColor    = (94%)..(80%);
+  PortraitColor  = Colors.Gold..Colors.Brown;
+  DateIndent     = 1.35";
+  PortraitHeight = 1.4";
+  PortraitAngle  = 5 degrees;
+
+  Thickness MainMargin = new(0.75", 0.75", 0.75", 0.75");
+  Thickness TreeMargin = new(0.5", 0.125", 0.5", 0.5");
+  Size Tip             = new(5", 6");
+  Size PersonPicture   = new(1.5");
+}
+
+//=====================================================================
+
+readonly LinkType ParentsLink  = new(Couple, Person, "Parents", "Child");
+readonly LinkType BornLink     = new(Person, null, "Born");
+readonly LinkType MarriedLink  = new(Couple, null, "Married");
+readonly LinkType FormerlyLink = new(Person, FamilyName, "Formerly");
+readonly LinkType NicknameLink = new(Person, NickName, "Nickname");
+
+readonly FamilyMember[] PeopleList  = Information.People.ToArray;
+readonly Couple[]       CoupleList  = Information.Couples.ToArray;
+readonly Story[]        StoryList   = Information.Stories.ToArray;
+
+int SortFunc(Event x, Event y) = x.Date.Compare(y.Date);
+
+readonly Event[] SortedEvents {
+  EventList events = new(128);
+  foreach (var person in PeopleList) {
+    if (person.Born is valid)
+      events.Add(new BornEvent(person, person.Born));
+    if (person.Died is valid)
+      events.Add(new DiedEvent(person, person.Died));
+  }
+  foreach (var parents in CoupleList) {
+    if (parents.Married is valid)
+      events.Add(new WeddingEvent(parents));
+  }
+  foreach (var story in StoryList) {
+    if (story.Date is valid)
+      events.Add(new StoryEvent(story));
+  }
+  return events.ToSortedArray(false, @SortFunc);
+}
+
+//===============================================================================================================
+
+ShowPlace(place) = Span {
+  Separator: CommaSpace;
+  place.Name;
+  var state = place.FindFirstFact(State);
+  if (state is valid)
+    state.Name;
+  else {
+    var country = place.FindFirstFact(Country);
+    if (country is valid)
+      country.Name;
+  }
+};
+
+Hyperlink(Fact fact) = {
+  Tip: fact;
+  Action: new Action(Actions.ToAnchor, fact.FactId);
+};
+
+PortraitFrame(Fact fact, Photograph portrait, height, angle, c1, c2, t, link=false) {
+  var t2    = t*2;
+  var pic   = FitBox(portrait.Photo, ExtentWidth, height - t2);
+  var width = pic.Width + t2;
+  height = pic.Height + t2;
+
+  ColorStop[] stops  = [new(0, c1), new(1, c2)];
+  var color  = new LinearGradient(0, 0, 1, 0, stops);
+  var vcolor = new LinearGradient(0, 0, 0, 1, stops);
+
+  return Canvas(width, height) {
+    if (angle != 0) {
+      Transform: Transform.Rotate(angle) Transform.Skew(angle, angle);
+      TransformFit: true;
+    }
+
+    pic {
+      X: t;
+      Y: t;
+      if (link)
+        Hyperlink(fact);
+    };
+
+    Shape(vcolor) {
+      ClosedPath(0) {
+        LineTo(width, 0);
+        LineTo(width-t, t);
+        LineTo(t, t);
+      }
+    };
+    Shape(vcolor) {
+      ClosedPath(width, height) {
+        LineTo(0, height);
+        LineTo(t, height-t);
+        LineTo(width-t, height-t);
+      }
+    };
+    Shape(color) {
+      ClosedPath(width, 0) {
+        LineTo(width, height);
+        LineTo(width-t, height-t);
+        LineTo(width-t, t);
+      }
+    };
+    Shape(color) {
+      ClosedPath(0) {
+        LineTo(0, height);
+        LineTo(t, height-t);
+        LineTo(t, t);
+      }
+    };
+  };
+}
+
+Divorced(DateTime date) = Divorced: date;
+
+BornAt(DateTime date, place) = {
+  Born: date;
+  if (place is valid)
+    BornLink to place;
+};
+
+MarriedAt(DateTime date, place) = {
+  Married: date;
+  if (place is valid)
+    MarriedLink to place;
+};
+
+Formerly(name) = {
+  FormerlyLink to new FamilyName(name);
+};
+
+Nick(name) = {
+  NicknameLink to new NickName(name);
+};
+
+ListPeople(FamilyMember[] list) = Span {
+  Span {
+    LastSeparator: " and ";
+    Separator: CommaSpace;
+    (each list).ShowLink;
+  };
+};
+
+OvalFrame(Photograph photo, height) = Canvas(null, null, new Edge(3pt, 0, Colors.LightGray)) {
+  BorderRadius: 10pt;
+  BorderClip: true;
+  FitBox(photo.Photo, null, height);
+};
+
+void GatherPicture(List<Couple> list, Couple parents) {
+  if (parents.Partner1.Portrait is valid and parents.Partner2.Portrait is valid)
+    list.Add(parents);
+}
+
+//===============================================================================================================
+
+class FamilyName: Fact {
+  field string Name;
+
+  Constructor(name) {
+    super.Constructor(Guid.FromHash(name));
+    Name = name;
+  }
+
+  override Icon GetIcon = Icons.diversity_3;
+}
+
+//===============================================================================================================
+
+class NickName: Fact {
+  field string Name;
+
+  Constructor(name) {
+    super.Constructor(Guid.FromHash(name));
+    Name = name;
+  }
+
+  override Icon GetIcon = Icons.label;
+}
+
+//===============================================================================================================
+
+abstract class Event {
+  var DateTime Date;
+
+  Constructor(date) {
+    Date = date;
+  }
+}
+
+typedef EventList List<Event>;
+
+//===============================================================================================================
+
+class BornEvent: Event {
+  var FamilyMember Person;
+
+  Constructor(FamilyMember person, date) {
+    super.Constructor(date);
+    Person = person;
+  }
+
+  override GetLayoutSpan = Span {
+    Person.ShowFullLink(false);
+    " was born";
+  };
+
+  override Icon GetIcon = Icons.child_friendly;
+}
+
+//===============================================================================================================
+
+class DiedEvent: BornEvent {
+  Constructor(FamilyMember person, date) {
+    super.Constructor(person, date);
+  }
+
+  override GetLayoutSpan = Span {
+    Person.ShowFullLink(false);
+    " died";
+  };
+
+  override Icon GetIcon = Icons.door_back;
+}
+
+//===============================================================================================================
+
+class WeddingEvent: Event {
+  var Couple Couple;
+
+  Constructor(Couple couple) {
+    super.Constructor(couple.Married);
+    Couple = couple;
+  }
+
+  override GetLayoutSpan = Span {
+    Couple.Partner1.ShowFullLink(true);
+    Space;
+    "married";
+    Space;
+    Couple.Partner2.ShowFullLink(true);
+  };
+
+  override Icon GetIcon = Icons.favorite;
+}
+
+//===============================================================================================================
+
+class Photograph: Fact {
+  field Image Photo;
+
+  Constructor(Guid id, path) {
+    super.Constructor(id);
+    Photo = new(path);
+  }
+
+  override GetLayoutFact = Block {
+    FitBox(Photo, 3", 1");
+  };
+
+  override Icon GetIcon = Icons.photo;
+}
+
+//===============================================================================================================
+
+class FamilyMember: Person {
+  var Photograph Portrait;
+  var DateTime   Born,
+                 Died;
+  var Couple     Parents;
+  var            DeathDateUnknown;
+
+  Constructor(Guid id, first, middle, last, Couple parents, portrait=null) {
+    super.Constructor(id, first, middle, last);
+    Parents = parents;
+    if (portrait is valid) {
+      Portrait = new(id, portrait);
+      Link.Connect(this, Portrait);
+    }
+    if (parents is not null)
+      ParentsLink.Connect(parents, this);
+    Link.Connect(this, new FamilyName(last));
+  }
+
+  FirstName = GetNickname?.Name ?? First;
+
+  ShowLink(text=null) = Span Hyperlink(this) {
+    TextColor: Colors.Blue;
+    text ?? FirstName;
+  };
+
+  ShowFullLink(former) = ShowFullName(former) Hyperlink(this);
+
+  GetFormerly = FindFirstFact(FormerlyLink);
+  GetNickname = FindFirstFact(NicknameLink);
+
+  ShowFullName(former) = Span {
+    Separator: Space;
+    First;
+    Middle;
+    if (former) {
+      var formerly = GetFormerly;
+      if (formerly is valid) {
+        formerly.Name;
+        return;
+      }
+    }
+    Last;
+  };
+
+  ShowListing = Span {
+    GetIcon;
+    Space;
+    ShowFullLink(false);
+    var formerly = GetFormerly;
+    if (formerly is valid)
+      " (neé {0})"(formerly.Name);
+
+    if (Died is valid) {
+      Span {
+        TextColor: Colors.DarkGray;
+        Styles.TextDate(", died ", Died);
+      }
+    }
+  };
+
+  ShowDates = Block {
+    if (Born is valid) {
+      if (DeathDateUnknown is valid) {
+        Paragraph {
+          "Unknown time of death";
+        }
+      }
+      else if (Died is not valid and (Metrics.CurrentDate - Born).Years < 100) {
+        Paragraph {
+          var age   = Metrics.CurrentDate - Born;
+          var years = Math.Floor(age.Years);
+          if (years < 2) {
+            if (years < 0.09)
+              "{0} days old"(Math.Floor(age.Days));
+            else
+              "{0} months old"(Math.Floor(age.Years * 12.0));
+          }
+          else
+            "{0} years old"(years);
+        }
+      }
+
+      Paragraph {
+        Styles.TextDate("Born ", Born);
+        var place = FindFirstFact(BornLink);
+        if (place is valid) {
+          " in ";
+          ShowPlace(place);
+        }
+
+        if (Died is valid) {
+          LineBreak;
+          Span {
+            Styles.TextDate("Died ", Died);
+            Styles.DiedAtAge(this);
+          };
+        }
+      };
+    }
+  };
+
+  ShowPersonalData = Block {
+    var formerly = GetFormerly;
+    if (formerly is valid) {
+      Paragraph {
+        Italic "neé ";
+        ShowFullName(true);
+      }
+    }
+    ShowDates;
+
+    if (Parents is valid) {
+      Paragraph {
+        Bold;
+        "Parents";
+      };
+      Paragraph {
+        LeftIndent: 12pt;
+        Parents.Partner1?.ShowFullLink(false);
+        LineBreak;
+        Parents.Partner2?.ShowFullLink(false);
+      };
+    }
+
+    ShowChildren;
+
+    var stories = FindFacts(Story) as Story[];
+    if (stories is valid) {
+      Span {
+        Bold "Stories"; ColonSpace;
+        Span {
+          Separator: CommaSpace;
+          foreach (var story in stories) {
+            Span {Hyperlink(story) {each1}};
+          }
+        };
+      };
+    }
+  };
+
+  ShowChildren = Block {
+    bool anyunions = false;
+    foreach (var u in CoupleList) {
+      FamilyMember p = null;
+      if (u.Partner1 == this)
+        p = u.Partner2;
+      else if (u.Partner2 == this)
+        p = u.Partner1;
+
+      if (p is valid) {
+        if (!anyunions) {
+          Paragraph {
+            Bold;
+            "Unions";
+          };
+          anyunions = true;
+        }
+
+        Paragraph {
+          LeftIndent: 16pt;
+          FirstIndent: -8pt;
+
+          p.ShowFullLink(false);
+
+          var children = new List<FamilyMember>(16);
+          foreach (var t in PeopleList) {
+            if (t.Parents == u)
+              children.Add(t);
+          }
+
+          if (children.Length > 0) {
+            if (children.Length > 1)
+              " with {0} children: "(children.Length);
+            else
+              " with one child: ";
+            Span {
+              Separator: CommaSpace;
+              LastSeparator: " and ";
+              (each children).ShowFullLink(false);
+            }
+          }
+        }
+      }
+    }
+  };
+
+  ShowName = Paragraph {
+    DocFields.Anchor(FactId);
+    LeftIndent: Metrics.LevelIndent;
+    FirstIndent: -Metrics.LevelIndent;
+    TextHeight: 16pt;
+
+    var icon = GetIcon;
+    if (icon is valid) {
+      icon;
+      Space;
+    }
+
+    ShowFullName(false) {
+      var nick = GetNickname;
+      if (nick is valid) {
+        Span {
+          " - '";
+          nick.Name;
+          "'"
+        };
+      }
+    };
+  };
+
+  ShowFullEvent(width) = Block {
+    ShowName;
+    if (Portrait is valid) {
+      HBox {
+        VAlign: Top;
+        OvalFrame(Portrait, Metrics.PortraitHeight);
+        Space;
+        Frame(width - Metrics.PersonPicture.Width) {
+          ShowPersonalData;
+        }
+      }
+    }
+    else Frame(width) {
+      ShowPersonalData;
+    }
+  };
+
+  override GetLayoutFact = Block {
+    ShowFullEvent(3");
+  };
+
+  override GetLayoutTip = Frame(Metrics.Tip.Width - (Portrait is valid ? 0 : Metrics.PersonPicture.Width)) {
+    ShowFullEvent(Metrics.Tip.Width);
+  };
+
+  override GetLayoutNode {
+    if (Portrait is valid) {
+      return FitBox(Portrait.Photo, 50pt, 50pt, new Edge(0.25pt, 0, Colors.LightGray)) {
+        Tip: this;
+        BorderRadius: 7pt;
+        BorderClip: true;
+      };
+    }
+    return super.GetLayoutNode;
+  }
+}
+
+//===============================================================================================================
+
+class Female: FamilyMember {
+  Constructor(Guid id, first, middle, last, Couple parents=null, imagepath=null) {
+    super.Constructor(id, first, middle, last, parents, imagepath);
+  }
+
+  override Icon GetIcon = Icons.circle;
+}
+
+class Male: FamilyMember {
+  Constructor(Guid id, first, middle, last, Couple parents=null, imagepath=null) {
+    super.Constructor(id, first, middle, last, parents, imagepath);
+  }
+
+  override Icon GetIcon = Icons.square;
+}
+
+//===============================================================================================================
+
+class Couple: Fact {
+  field DateTime   Married;
+  field DateTime   Divorced;
+  var FamilyMember Partner1,
+                   Partner2;
+
+  Constructor(Guid id, FamilyMember partner1, FamilyMember partner2) {
+    super.Constructor(id);
+    System.Assert(partner1 is valid and partner2 is valid, "Expecting both partners");
+    Partner1 = partner1;
+    Partner2 = partner2;
+    Link.Connect(this, partner1);
+    Link.Connect(this, partner2);
+  }
+
+  override Icon GetIcon = Icons.people;
+
+  Title = Span {
+    Partner1.ShowFullName(false);
+    " and ";
+    Partner2.ShowFullName(false);
+  };
+
+  override GetLayoutFact = Title;
+
+  override GetLayoutTip = Title;
+}
+
+//===============================================================================================================
+
+class Story: Fact {
+  field DateTime   Date;
+  var Photograph   Photo;
+  var FamilyMember ToldBy;
+  var              Text,
+                   Title;
+
+  Constructor(Guid id, FamilyMember toldby, title, DateTime date=null, imagepath=null) {
+    super.Constructor(id);
+    Date   = date;
+    ToldBy = toldby;
+    Title  = title;
+    if (imagepath is valid) {
+      Photo = new(id, imagepath);
+      Link.Connect(this, Photo);
+    }
+  }
+
+  override Icon GetIcon = Icons.history_edu;
+
+  override GetLayoutTip = Frame(100%) {
+    ShowFullEvent(Metrics.Tip.Width);
+  };
+
+  ShowFullEvent(width, bool picture=true) = Paragraph {
+    DocFields.Anchor(FactId);
+    Frame(width) {
+      Paragraph(null, [new TabStop(width, TabTypes.Right)]) {
+        SpaceBefore: 16pt;
+        ParBackground: 90%;
+        Span {
+          Bold;
+          TextHeight: 14pt;
+          Title;
+        };
+        if (Date is valid) {
+          " - ";
+          Styles.ShowDate(Date);
+        }
+        if (ToldBy is valid) {
+          Tab;
+          "by ";
+          ToldBy.ShowFullLink(false)
+        }
+      };
+      Paragraph(BorderLR(new(0.5, 12pt))) {
+        ParAlignment: Justify;
+        SpaceBefore: 6pt;
+        SpaceAfter: 6pt;
+        LeftIndent: 24pt;
+        RightIndent: 24pt;
+        Text;
+      };
+      if (picture) {
+        Paragraph {
+          ParAlignment: Center;
+          if (Photo is valid) {
+            var r = Math.Random(85..95);
+            PortraitFrame(this, Photo, 3.55", 0, r%, (r*0.7)%, 8pt, false);
+          }
+        }
+      }
+    }
+  };
+
+  override GetLayoutFact = Block {
+    ShowFullEvent(100%, false);
+  };
+}
+
+//===============================================================================================================
+
+class StoryEvent: Event {
+  var Story Story;
+
+  Constructor(Story story) {
+    super.Constructor(story.Date);
+    Story = story;
+  }
+
+  override GetLayoutSpan = Span {
+    Hyperlink(Story);
+    Story.Title;
+  };
+
+  override Icon GetIcon = Story.GetIcon;
+}
+
+//===============================================================================================================
+
+readonly namespace Styles {
+  Header1(text) = Paragraph {
+    TextHeight: 18pt;
+    SpaceAfter: 12pt;
+    Bold;
+    text
+  };
+
+  Header2(text) = Paragraph(BorderB(0.5)) {
+    TextFamily: TextFamilies.TimesNewRoman;
+    TextHeight: 16pt;
+    SpaceBefore: 12pt;
+    SpaceAfter: 6pt;
+    Bold;
+    text
+  };
+
+  ShowDate(d) = Span {
+    if (d.Precision == DatePrecisions.Year)
+      TextFormat: "yyyy";
+    else if (d.Precision == DatePrecisions.Month)
+      TextFormat: "MMMM yyyy";
+    else
+      TextFormat: "MMMM dd, yyyy";
+    d;
+  };
+
+  TimelineDate(d) = Span {
+    if (d.Precision == DatePrecisions.Year)
+      TextFormat: "yyyy";
+    else if (d.Precision == DatePrecisions.Month)
+      TextFormat: "yyyy, MMMM";
+    else
+      TextFormat: "yyyy, MMMM dd";
+    d;
+  };
+
+  TextDate(text, d) {
+    if (d is valid) {
+      return Span {
+        text;
+        Space;
+        ShowDate(d);
+      };
+    }
+    else
+      return null;
+  }
+
+  DiedAtAge(FamilyMember person) = Span {
+     ", at age {0}"(Math.Floor((person.Died - person.Born).Years))
+  };
+
+  LevelPar(level, border=true) = Paragraph(border ? BorderL(new(3pt, 3pt, 90%)) : null) {
+    LeftIndent: level*Metrics.LevelIndent + 12pt;
+    FirstIndent: -12pt;
+  };
+
+  Story = Paragraph {
+    KeepWithNext: true;
+  };
+}
+//============================================================================================================
+
+FullPar = Paragraph {
+  LeftIndent: Metrics.LevelIndent;
+};
+
+//============================================================================================================
+// Timeline
+//============================================================================================================
+
+readonly namespace Timeline {
+  RowHeight = 9pt;
+  Edge      = 12pt;
+
+  AddEvent(Event event, yearstart, yearend) {
+    var frac = (event.Date.Year - yearstart) / (yearend - yearstart + 1);
+    var x    = (ExtentWidth - Edge*2) * frac;
+    if (frac > 0.5) {
+      return Canvas(x, null) {
+        Y: RowHeight * each0;
+        HAlign: Right;
+        Paragraph {
+          event;
+          Space;
+          Span {event.GetIcon; TextColor: Metrics.IconColor};
+        }
+      };
+    }
+    else {
+      return Canvas {
+        X: x;
+        Y: RowHeight * each0;
+        Paragraph {
+          Span {event.GetIcon; TextColor: Metrics.IconColor};
+          Space;
+          event;
+        }
+      };
+    }
+  }
+
+  ShowBlock(Event[] events) {
+    var yearstart = (Math.Floor(events.FirstElement.Date.Year) div 10) * 10;    // Round down to the nearest 10 years
+    var yearend   = (Math.Floor(events.LastElement.Date.Year + 9) div 10) * 10; // Round up to the nearest 10 years
+
+    return Paragraph {
+      SpaceAfter: 10pt;
+      VBox {
+        VBox {
+          ChartAxis(100%) {
+            Start: yearstart;
+            Stop: yearend;
+          };
+          Canvas(ExtentWidth - Edge*2, null, 0.25pt) {
+            X: Edge;
+            TextHeight: 7pt;
+            AddEvent(each events, yearstart, yearend);
+          }
+        };
+      }
+    };
+  }
+
+  AddRows(Event event) = Paragraph {
+    LeftIndent: Metrics.DateIndent;
+    FirstIndent: -Metrics.DateIndent;
+    Styles.TimelineDate(event.Date);
+    Tab;
+    Tab;
+    event.GetIcon {TextColor: Metrics.IconColor};
+    Space;
+    event;
+  };
+
+  Show = Block {
+    DocSection("Timeline");
+    var rows = Math.Floor(((ExtentHeight - 1") toscale Units.pixels) / (RowHeight toscale Units.pixels));
+
+    ShowBlock(each (SortedEvents / rows));
+//    Styles.Header2("Timeline Details");
+//    AddRows(each SortedEvents);
+  };
+}
+
+//============================================================================================================
+
+HeaderFormat = Paragraph(BorderB(0.25pt)) {
+  TextHeight: 10pt;
+  TextFamily: TextFamilies.TimesNewRoman;
+};
+
+DocSection(title) = SectionNextPage {
+  Header: MarginBlock(0.5") {
+    HeaderFormat {
+      ParAlignment: ParAlignments.Right;
+      title
+    };
+  };
+  Footer: MarginBlock(0.5") {
+    Paragraph {
+      ParAlignment: Center;
+      DocFields.PageNumber;
+    };
+  };
+};
+
+//============================================================================================================
+
+class FamilyDocument: DocumentEntry {
+  var FamilyLineClass[] FamilyLines;
+
+  Constructor(Guid docid, title, FamilyLineClass[] lines) {
+    super.Constructor(docid, title);
+    FamilyLines = lines;
+    Title       = Name;
+    Description = "Collect and display family history events and people";
+  }
+
+  override GetDocument = Document(Metrics.MainMargin) {
+    AlbumTitlePage(Name);
+
+    foreach (var line in FamilyLines) {
+      SectionNextPage(Metrics.TreeMargin);
+      ShowTree(line);
+    }
+
+    Timeline.Show;
+
+    if (StoryList.Length > 0) {
+      DocSection("Stories");
+      Block {
+        Styles.Header2(Name);
+        (each StoryList).ShowFullEvent(ExtentWidth);
+      };
+    }
+
+    ShowFamilyMembers("Family Members");
+  };
+
+  static ShowPortrait(Couple couple) = HBox {
+    var hinge = 14pt;
+    VAlign: Top;
+    PortraitFrame(couple.Partner1, couple.Partner1.Portrait, Metrics.PortraitHeight, -Metrics.PortraitAngle, 94%, 80%, 4pt, true);
+    Canvas(2pt, Metrics.PortraitHeight - hinge*2) {
+      Margin: PadTB(hinge);
+      Background: (90%)..(70%);
+    };
+    PortraitFrame(couple.Partner2, couple.Partner2.Portrait, Metrics.PortraitHeight, Metrics.PortraitAngle, 94%, 80%, 4pt, true);
+  };
+
+  ShowPortraitLine(Couple[] unions) = Paragraph {
+    HBox {
+      Separator: Space*3;
+      ShowPortrait(each unions);
+    }
+  };
+
+  Leaf(branch=1) = new Node(null, branch) {
+    Marker: Markers.Circle;
+  };
+
+  IconTree = new Node(null, 0) {
+    new Node(null, 0) {
+      new Node(null, 4);
+      new Node(null, 2) {
+        new Node(null, 2);
+        new Node(null, 1) {
+          Leaf;
+          Leaf;
+        }
+      }
+    };
+    new Node(null, 3) {
+      new Node(null, 1) {
+        Leaf;
+        Leaf;
+      };
+      Leaf(2);
+    };
+  };
+
+  AlbumTitlePage(title) = Block {
+    ParAlignment: Center;
+    Paragraph {
+      SpaceBefore: 1";
+      TextHeight: 36pt;
+      title;
+    };
+    Paragraph {
+     TreeBox(null, 80pt) {
+        Placement: Placements.Bottom;
+        Default: new Node(null) {
+          Marker: Markers.Square(Colors.Blue);
+          Stroke: new Stroke(2pt, Metrics.LineColor);
+          Curvature: 20%;
+          Bevel: 20%;
+          NodeGap: 20pt;
+        };
+        Root: IconTree;
+      };
+    };
+    Paragraph {
+      SpaceAfter: 24pt;
+      TextHeight: 16pt;
+      Styles.ShowDate(Metrics.CurrentDate);
+    };
+
+    var pictures = new List<Couple>(256);
+    GatherPicture(pictures, each CoupleList);
+    var triplets = pictures.ToSortedArray(false, @SortUnionFunc) / 3;
+    ShowPortraitLine(each triplets);
+  };
+
+  static DateTime PictureDate(Couple couple) {
+    if (couple.Married is valid)
+      return couple.Married;
+    if (couple.Partner1.Born is valid)
+      return couple.Partner1.Born;
+    if (couple.Partner2.Born is valid)
+      return couple.Partner2.Born;
+    return #1700#;
+  }
+
+  static int SortUnionFunc(Couple x, Couple y) = PictureDate(x).Compare(PictureDate(y));
+
+  static TreePerson(Couple parents, FamilyMember person) = Span {
+    Span {
+      TextColor: parents == person.Parents ? Metrics.IconColor : Metrics.IconIndirect;
+      person.GetIcon;
+    };
+    Space;
+    Span Hyperlink(person) {
+      person.FirstName;
+    };
+  };
+
+  static Node MakeTreeNodes(Couple parents, Couple parent) = new {
+    var elr = new Edge(0.3pt, 3pt, Metrics.BoxLine);
+    var etb = new Edge(0.3pt, 0, Metrics.BoxLine);
+    Marker: VBox(null, null, new(elr, etb, elr, etb)) {
+      BorderRadius: 2pt;
+      Background: Metrics.BoxBack;
+      TreePerson(parent, parents.Partner1);
+      TreePerson(parent, parents.Partner2);
+    };
+
+    foreach (var child in PeopleList) {
+      if (child.Parents == parents) {
+        var unions = CoupleList.FindSlice(u => u.Partner1 == child || u.Partner2 == child);
+        if (unions.Length > 0) {
+          foreach (var u in unions)
+            MakeTreeNodes(u, parents);
+        }
+        else {
+          new Node {
+            Name: child.FirstName;
+            Label: TreePerson(parents, child);
+          };
+        }
+      }
+    }
+  };
+
+  ShowTree(FamilyLineClass line) = Block {
+    Styles.Header1("The descendants of " line.Root.Title);
+    TreeBox(ExtentWidth, null) {
+      TextHeight: line.TextHeight;
+
+      Default: new Node(null) {
+        NodeGap: line.NodeGap;
+        Bevel: 5%;
+        Curvature: 5%;
+        Stroke: new Stroke(0.25pt, Metrics.LineColor);
+      };
+
+      Root: MakeTreeNodes(line.Root, null);
+    };
+  };
+
+  static int NameSort(FamilyMember p1, FamilyMember p2) {
+    var last = p1.Last.Compare(p2.Last);
+    if (last == 0)
+      return p1.First.Compare(p2.First);
+    return -last;
+  }
+
+  ShowFamilyMembers(title) = Block {
+    DocSection(title);
+    Styles.Header2(title);
+    var width = ExtentWidth * 0.5;
+
+    Table(null, null, [width]*2) {
+      var groups = PeopleList.ToSortedArray(true, @NameSort) / 2;
+      foreach (var g in groups) {
+        Row(PadT(20pt)) {
+          foreach (var p in g)
+            p.ShowFullEvent(width);
+        }
+      }
+    };
+  };
+}
+//======================================================================
+
+class FamilyLineClass {
+  var Couple Root;
+  var       TextHeight,
+            NodeGap;
+
+  Constructor(Couple root, textheight, gap) {
+    Root       = root;
+    TextHeight = textheight;
+    NodeGap    = gap;
+  }
+}
+//============================================================================================================
+
+

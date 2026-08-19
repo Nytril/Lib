@@ -1,0 +1,30 @@
+include "Help";
+
+using Format;
+
+
+Example = Paragraph {
+  Span {
+    "Smaller";
+    TextHeight: 80%;
+  };
+  Tab;
+  "Regular";
+  Tab;
+  Span {
+    "Bigger";
+    TextHeight: 125%;
+  };
+  Tab;
+  Span {
+    "20 point";
+    TextHeight: 20pt;
+  };
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextHeight));
+
+//============================================================
+

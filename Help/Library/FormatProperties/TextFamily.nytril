@@ -1,0 +1,18 @@
+include "Help";
+
+using Format;
+
+
+Example = Block {
+  TextHeight: 20pt;
+  Paragraph {TextFamily: TextFamilies.TimesNewRoman; "Times New Roman"};
+  Paragraph {TextFamily: TextFamilies.Arial; "Arial"};
+
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextFamily));
+
+//============================================================
+

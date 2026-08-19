@@ -1,0 +1,28 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "Use Baseline to override the default for a graphical object. ";
+    "This will cause the object to align more naturally with text. ";
+  };
+};
+
+Example = Paragraph {
+  var h = 50pt;
+
+  TextHeight: h;
+
+  Canvas(30pt, h, 1) {
+    Baseline: 70%;  // Set baseline to 70% of the height of the object
+
+    // Show a red line where the baseline is
+    Canvas(100%, 2, Colors.Red) {
+      Y: 70% * h;
+    }
+  };
+  "qj";
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.Baseline));

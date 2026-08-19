@@ -1,0 +1,17 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  TextHeight: 20pt;
+
+  Paragraph {TextItalic: false; "Regular Text"};
+  Paragraph {TextItalic: true; "Italic Text"};
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextItalic));
+
+//============================================================
+

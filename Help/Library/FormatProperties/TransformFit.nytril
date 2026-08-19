@@ -1,0 +1,27 @@
+include "Help";
+
+using Format;
+
+readonly Description = DescriptionBlock {
+  Paragraph {
+    "A transformed object can be outside the bounds of it original container, which may be the desired effect. ";
+    "But in many cases, it is better to reposition and resize the bounds of the the object so that it occupies a minimal rectangular footprint. "
+    "This makes it so that the contents will not overflow the border."
+  };
+};
+
+CreateFitBox(fit, text) = Canvas(null, null, 2) {
+  Canvas(null, null, 0.25) {
+    text;
+    Transform: Transform.Rotate(30 degrees);
+    TransformFit: fit;
+  };
+};
+
+Example = Paragraph {
+  CreateFitBox(false, "Normal");
+  Tab*3;
+  CreateFitBox(true, "TransformFit");
+};
+
+Main.Help = new HelpExample(attribute FormatProperties.TransformFit);

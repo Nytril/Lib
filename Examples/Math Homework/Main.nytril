@@ -1,0 +1,45 @@
+using Format;
+
+include "Styles";
+include "Set 1";
+include "Set 2";
+include "Set 3";
+include "Set 4";
+
+Main.Documents = new MainDocumentClass;
+
+class MainDocumentClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#720d371f-3138-427d-ad30-5e889a995c28#, "Problem Sets")
+  }
+
+  override GetDocument = Document {
+    foreach (var set in HomeworkSets) {
+      Paragraph {
+        PageBreakBefore: true;
+        TextHeight: 16;
+        ParAlignment: Center;
+        Bold;
+        "Problem Set "; each1;
+      };
+
+      foreach (var p in set) {
+        Styles.Title {
+          each1;
+          Tab;
+          p.Title;
+        };
+        p.Problem;
+        var answer = p.?Answer;
+        if (answer is valid) {
+          Paragraph {
+            Italic;
+            TextHeight: 14pt;
+            "Answer:";
+          };
+          answer;
+        }
+      }
+    }
+  };
+}

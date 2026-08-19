@@ -1,0 +1,82 @@
+using Format, IO, Syms, Styles, Tex;
+
+namespace HomeworkSets.ProblemSet2 {
+  namespace Problem1 {
+    Title = "Functions A";
+    Problem = ProblemPar {
+      "Give an example of an injective function from ";
+      SetQ;
+      " to ";
+      SetZ;
+    };
+    Answer = null;
+  }
+
+  namespace Problem2 {
+    Title   = "Functions B";
+    Problem = ProblemPar {
+      "Give a proof that if f:";
+      A Tex.To B;
+      ", g: ";
+      B Tex.To C;
+      " and h: ";
+      C Tex.To A;
+      " satisfies h";
+      Parens{"g"; Parens{"f"; Parens{x}}};
+      Equals;
+      x; "then at least one of the three is surjective. ";
+      "Give an example using real valued functions where not all three are surjective."
+    };
+  }
+
+  namespace Problem3 {
+    Title   = "Graph Isomorphisms A";
+    Problem = ProblemPar {
+      "By exhibiting a specific isomorphism, show the following two graphs are isomorphic."
+    };
+  }
+
+  namespace Problem4 {
+    Title   = "Graph Isomorphisms B";
+    Problem = ProblemPar {
+      "Prove the following two graphs are non-isomorphic"
+    };
+  }
+
+  namespace Problem5 {
+    Title   = "Quantifiers A";
+    Problem = ProblemPar {
+      "Prove that ";
+      Inline{Tex.forall x Tex.Exists y " s.t. " x^2 Tex.lt y^2}
+    };
+    Answer = AnswerPar {
+      "Let y "; Equals; Radical{x^2 + 1};
+      ". Then ";
+      y sup 2; Equals; x^2+1;
+      Tex.gt;
+      x^2
+    };
+  }
+
+  namespace Problem6 {
+    Title = "Quantifiers B";
+    Problem = ProblemPar {
+      "State and prove the negation of the statement ";
+      Inline {
+        Tex.forall x Tex.Exists y;
+        Space*2;
+        x Divide y Equals 2}
+    };
+
+    Answer = AnswerPar {
+      "The negation is ";
+      Inline {Tex.Exists x Tex.forall y; Space*2; x Divide y Tex.neq 2};
+      ". Let ";
+      Inline {x Equals 0};
+      ". Then ";
+      Inline {x Divide y};
+      " either is 0 or is undefined, so for all y, ";
+      Inline {x Divide y Tex.neq 2}; "."
+    };
+  }
+}

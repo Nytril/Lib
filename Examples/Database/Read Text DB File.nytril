@@ -1,0 +1,48 @@
+using Format, IO, DB;
+
+Main.Documents = new MainDocumentClass;
+
+//================================================================
+
+class AddresseeClass {
+  var string Name,
+             Address,
+             Address2,
+             City,
+             State,
+             Zip;
+}
+
+//================================================================
+
+class MainDocumentClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#c6ca9e97-b827-47ae-b41b-ebe80e024985#, "Read Tab-Delimited Text File");
+  }
+
+  override GetDocument = Document {
+    var view2 = new List<AddresseeClass>(128);
+    view2.ReadTextFile(res "people.txt");
+    Table(1, null, [1.5 inch, 1.5 inch, 1", 0.5 inch, 0.5 inch]) {
+      VAlign: Top;
+      Row {
+        Background: 90%;
+        "Name"; "Address"; "City"; "State"; "Zip";
+      };
+      foreach (var v in view2) {
+        Row(BorderB(0.25)) {
+          v.Name;
+          Cell {
+            v.Address;
+            v.Address2;
+          };
+          v.City;
+          v.State;
+          v.Zip;
+        }
+      }
+    }
+  };
+}
+
+

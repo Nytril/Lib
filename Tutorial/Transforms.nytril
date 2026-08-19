@@ -1,0 +1,324 @@
+//==
+using Format;
+//======================================================================
+namespace Chapters.Formatting.Sections.Transformations;
+
+readonly TutorialLesson Lesson = new(#bf0e236e-9fcf-412d-aea9-54373089e086#, "Transforms");
+
+//======================================================================
+
+AffineMatrix = MatrixBox {
+  Bracket: Brackets.Square;
+  HAlign: Center;
+  Row {"m11"; "m12"; 0};
+  Row {"m21"; "m22"; 0};
+  Row {"x"; "y"; 0};
+};
+
+readonly LessonExample Content.TransformMatrixEx = new(#fd194765-d073-4a4f-8299-28273568dccf#) {
+  Text: "An affine 2D transform is represented by a sparse 3x3 matrix (3 of the elements are zero)";
+  Other: AffineMatrix;
+};
+
+//======================================================================
+
+SimpleMatrix = "[m11 m12 m21 m22 x y]";
+
+readonly LessonExample Content.TransformFlatEx = new(#a91b114d-02db-48ac-b46c-f75745d7f541#) {
+  Text: "The matrix is commonly represented more compactly as:";
+  Other: SimpleMatrix;
+};
+
+//======================================================================
+
+Letter(transform, fill, Stroke stroke) = Canvas {
+  Shape(fill) {
+    Transform: transform;
+    RectanglePath(new(new(0), new(0.75", 0.25)));
+  };
+
+  Shape(fill) {
+    Transform: transform;
+    RectanglePath(new(new(0), new(0.25, 0.75")))
+  };
+
+  Shape(fill, stroke) {
+    TextHeight: 60pt;
+    TextFamily: TextFamilies.TimesNewRoman;
+    Transform: transform;
+    "n";
+  };
+
+// Try a zombie instead
+//  Chapters.Formatting.Sections.Images.Picture.FitSize(new(40pt)) {
+//    Transform: transform;
+//  };
+};
+
+ShowTransform(dx, dy, name, transform, show=true, margin=20pt) = VBox {
+  HAlign: Center;
+  Margin: PadR(margin);
+  Paragraph {
+    TextHeight: 12pt;
+    name;
+  };
+  if (show) {
+    Paragraph {
+      TextHeight: 6pt;
+      TextFace: Mono;
+      Span {
+        TextDigits: 1;
+        TextMinDigits: true;
+        transform;
+      }
+    }
+  }
+  Canvas(null, null, BorderB(new(0, 10))) {
+    HAlign: Center;
+    Canvas {
+      X: dx;
+      Y: dy + 10;
+      Letter(null, null, new(1, Colors.LightGray));
+      Letter(transform, Colors.Red, null);
+    }
+  };
+};
+
+Demo(Attribute title, matrix) = Block {
+  Paragraph {
+    SpaceBefore: 20pt;
+    KeepWithNext: true;
+    TextHeight: 13pt;
+    ParBackground: 95%;
+    Span {
+      TextFace: Mono;
+      title.Prototype;
+    };
+    " => [";
+    matrix;
+    "]";
+  };
+};
+
+ShowTranslate(x, y) = ShowTransform(0, 35, "Translate({0}, {1})"(x, y), Transform.Translate(x, y));
+ShowScale(x, y)     = ShowTransform(0, 5, "Scale({0}, {1})"(x, y), Transform.Scale(x, y));
+ShowRotate(a)       = ShowTransform(40, 40, "Rotate({0} degrees)"(a), Transform.Rotate(a degrees));
+ShowSkew(x, y)      = ShowTransform(20, 30, "Skew({0}, {1})"(x, y), Transform.Skew(x degrees, y degrees));
+
+//======================================================================
+
+SampleTransforms = TranBlock(230) {
+  ShowTransform(75, 5, "Mirror - X", new Transform(-1, 0, 0, 1, 0, 0));
+  Separation: 1";
+  ShowTransform(5, 95, "Mirror - Y", new Transform(1, 0, 0, -1, 0, 0))
+};
+
+readonly LessonExample Content.TransformFieldEx = new(#9c8364f3-bfa7-4085-bd65-b44444d71288#) {
+  Text: "The following shows mirror transforms about the origin";
+  Other: SampleTransforms;
+};
+
+//======================================================================
+
+RotateCanvas = Canvas(1", 0.5", new Edge(0.5pt)) {
+  Canvas {
+    TextHeight: 14pt;
+    Transform: Transform.Rotate(20 degrees) Transform.Translate(30, 10);
+    "Rotate"
+  }
+};
+
+readonly LessonExample Content.ShowRotatationEx = new(#8645c1c6-d45e-4dd1-a931-cc18e9862212#) {
+  Text: "You can use other functions for common transforms like translation, rotation, scaling and skewing.";
+  Code: [attribute RotateCanvas];
+};
+
+//======================================================================
+
+Angle = 90 degrees;
+
+readonly LessonExample Content.AnglesEx = new(#a20ffa6b-8c91-4471-b7d6-cd186cfff507#) {
+  Text: "All angles are specified in radians. Convert from degrees to radians {0}."(NytrilStyle.OpAttribute(attribute degrees));
+  Code: [attribute Angle];
+};
+
+//======================================================================
+
+TranBlock(height=null) = HBox(null, height, new Edge(0.25, 6pt));
+
+All = Block {
+  Demo(attribute Transform.Translate, "1 0 0 1 x y") {
+    TranBlock(180) {
+      ShowTranslate(10, 10);
+      ShowTranslate(-10, 10);
+      ShowTranslate(10, -20);
+      ShowTranslate(-10, -20);
+    }
+  };
+  Demo(attribute Transform.Scale, "x 0 0 y 0 0") {
+    TranBlock(180) {
+      ShowScale(0.5, 0.75);
+      ShowScale(0.75, 0.5);
+      ShowScale(0.5, 1.5);
+      ShowScale(1.5, 0.5);
+    }
+  };
+  Demo(attribute Transform.Rotate, "cos(angle) size(angle) -sin(angle) cos(angle) 0 0") {
+    TranBlock(180) {
+      ShowRotate(30);
+      ShowRotate(-30);
+    }
+  };
+  Demo(attribute Transform.Skew, "1 tan(x) tan(y) 1 0 0") {
+    TranBlock(180) {
+      ShowSkew(20, 10);
+      ShowSkew(-20, -10);
+    }
+  }
+};
+
+readonly LessonExample Content.CommontransformsEx = new(#609e73e0-0199-4bdd-8083-cbc1f12dfbc3#) {
+  Text: "Below is a list of common transforms and their effects.";
+  Other: All;
+};
+
+//======================================================================
+
+ShowCombo(text, t) = ShowTransform(0, 5, text, t, false, 60pt);
+
+T1 = Transform.Translate(20, -5);
+T2 = Transform.Rotate(30 degrees);
+T3 = Transform.Scale(1.75, 0.8);
+
+Combo = Block {
+  HBox {
+    VAlign: Center;
+    ShowCombo("Start", null);
+    VBox {
+      TranBlock(140) {
+        ShowCombo("Translate", T1);
+        ShowCombo("Rotate", T1 T2);
+        ShowCombo("Scale", T1 T2 T3);
+      };
+      " ";
+      TranBlock(140) {
+        ShowCombo("Scale", T3);
+        ShowCombo("Rotate", T3 T2);
+        ShowCombo("Translate", T3 T2 T1);
+      }
+    }
+  }
+};
+
+readonly LessonExample Content.TransformCombinationsEx = new(#dc23c77a-0b71-42e6-b1da-6b726b151b13#) {
+  Text: "Transforms can be combined by listing them together, but the order is significant. "
+          "Applying the same list of transforms in a different order will yield different results. ";
+  Other: Combo;
+};
+
+//======================================================================
+
+RotateFit(name, fit) = Canvas(1", 0.75", new Edge(0.5pt, 0, 80%)) {
+  Margin: PadR(20pt);
+  Canvas {
+    TextHeight: 14pt;
+    Transform: Transform.Rotate(75 degrees);
+    TransformFit: fit;
+    name;
+  }
+};
+
+ShowFitComparison = Paragraph {
+  HBox {
+    RotateFit("Normal", false);
+    RotateFit("Fit", true);
+  }
+};
+
+readonly LessonExample Content.ShowTransformFitEx = new(#768468ac-9d27-4463-af1c-66207c7bfb58#) {
+  Text: Span {
+    "Set the "; NytrilStyle.PropName(attribute FormatProperties.TransformFit); " field to "; NytrilStyle.KW(attribute true);
+    " to add an additional translation that brings a figure back to the origin of its container. ";
+    "This is handy for chart legends, and picture rotations. It has the same effect as rotating the object about its center, rather than its upper left corner.";
+  };
+  Code: [attribute RotateFit, attribute ShowFitComparison];
+};
+
+//======================================================================
+
+BackwardsCanvas = Canvas {
+  TextHeight: 20pt;
+  Transform: new Transform(-1, 0, 0, 1, 0, 0);
+  TransformFit: true;
+  "Backwards"
+};
+
+readonly LessonExample Content.ShowBackwardsCanvasEx = new(#b15721a2-f8aa-498a-8be1-8d032ff0ba64#) {
+  Text: "Use the {0} field to apply a transform to any element. "(NytrilStyle.PropName(attribute FormatProperties.Transform));
+  Code: [attribute BackwardsCanvas];
+};
+
+//======================================================================
+
+UpsideDownCanvas = Canvas {
+  TextHeight: 20pt;
+  Transform: new Transform(1, 0, 0, -1, 0, 0);
+  TransformFit: true;
+  "Upside Down"
+};
+
+readonly LessonExample Content.ShowUpsideDownCanvasEx = new(#698d1aab-a947-44ed-ab3d-d167af95fe95#) {
+  Text: "Use a different transform to flip the canvas vertically.";
+  Code: [attribute UpsideDownCanvas];
+};
+
+//======================================================================
+
+ClippedText = Canvas {
+  var r = new Rect(new(15pt), new(210pt, 35pt));
+  Canvas {
+    TextHeight: 50pt;
+    "Clipped Text";
+    ClipPath: r;
+  };
+  Shape(null) {
+    RectanglePath(r)
+  };
+};
+
+readonly LessonExample Content.ShowClippedTextEx = new(#29c5b582-93a7-465b-a97f-91498b4e7a76#) {
+  Text: "Use the {0} to set the clipping path of the canvas or frame"(NytrilStyle.PropName(attribute FormatProperties.ClipPath));
+  Code: [attribute ClippedText];
+};
+
+//======================================================================
+
+Zombie = Chapters.Formatting.Sections.ImageFormatting.NytrilBug;
+
+TextFigure(Stroke stroke) = Shape(null, stroke) {
+  TextHeight: 90pt;
+  Bold;
+  "CLIP"
+};
+
+TextArt = Canvas {
+  TextFigure(new(1));
+  Frame(2.2") {
+    ClipPath: TextFigure(null);
+    Paragraph {
+      ParBackground: Colors.Blue..Colors.Orange;
+      TextHeight: 16;
+      TextColor: Colors.White;
+      "Clip "*42;
+    };
+  }
+};
+
+readonly LessonExample Content.ShowTextArtEx = new(#33875d3b-9c5c-4b20-bf5d-61fa8b8fe653#) {
+  Text: "Clipping paths can be set to be figures of arbitrary complexity";
+  Code: [attribute TextArt];
+};
+
+//======================================================================
+
+

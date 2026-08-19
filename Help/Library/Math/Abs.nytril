@@ -1,0 +1,53 @@
+include "Help";
+
+using Format;
+
+x = Symbol("x");
+
+Description = DescriptionBlock {
+  Clause {
+    "For real numbers:";
+  };
+
+  var bbar = Span {
+    HBox {
+      Bracket: Brackets.Bar;
+      x;
+    };
+    Tex.Equals;
+  };
+
+  HBox {
+    VAlign: Center;
+    bbar;
+    HBox {
+      Bracket: Brackets.Curly.Left;
+      AlignBlock {
+        Paragraph {x; Align; " if "; x; Tex.ge; 0};
+        Paragraph {-x; Align; " if "; x; Tex.lt; 0};
+      }
+    };
+  };
+
+  Clause {
+    "For complex numbers:";
+  };
+
+  HBox {
+    VAlign: Center;
+    bbar;
+    Radical {Symbol("r")^2 + Symbol("i")^2};
+  }
+};
+
+ShowAbs(x) = "The absolute value of {0} is {1}."(x, Math.Abs(x));
+
+Example = Block {
+  ShowAbs(-3);
+  ShowAbs(5);
+  ShowAbs(3 + 2 Math.I);
+};
+
+Main.Help = new HelpExample(attribute(Math.Abs));
+
+

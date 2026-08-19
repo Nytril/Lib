@@ -1,0 +1,57 @@
+include "Help";
+
+using Format;
+
+ShowHorizontal(Justifiers justify) = VBox(100%, 20) {
+  HBox {
+    VAlign: Center;
+    HBox(100) {
+      Margin: PadR(3);
+      HAlign: Right;
+      justify;
+    };
+
+    HBox(100%, null, 0.25) {
+      Background: 80%;
+      Justify: justify;
+      Canvas(30%, 20) {Background: Color.ChartColor(0)};
+      Canvas(15%, 20) {Background: Color.ChartColor(1)};
+      Canvas(40%, 20) {Background: Color.ChartColor(2)};
+    };
+  }
+};
+
+Example = VBox(3") {
+  Separation: 2;
+  ShowHorizontal(each Justifiers);
+};
+
+ShowVertical(Justifiers justify) = Canvas(30, 100%) {
+  VBox {
+    HAlign: Center;
+    Canvas(80) {
+      Margin: PadR(3);
+      HAlign: Right;
+      Transform: Transform.Rotate(90 degrees);
+      TransformFit: true;
+      justify;
+    };
+    VBox(null, 100%, 0.25) {
+      Background: 80%;
+      Justify: justify;
+      Canvas(30, 18%) {Background: Color.ChartColor(0)};
+      Canvas(30, 10%) {Background: Color.ChartColor(1)};
+      Canvas(30, 40%) {Background: Color.ChartColor(2)};
+    };
+  };
+};
+
+Example2 = HBox(null, 3") {
+  Separation: 2;
+  ShowVertical(each Justifiers);
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.Justify), 2);
+
+
+

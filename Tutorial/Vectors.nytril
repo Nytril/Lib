@@ -1,0 +1,104 @@
+using Format;
+
+namespace Chapters.Mathematics.Sections.Vectors;
+
+readonly TutorialLesson Lesson = new(#fb8409e7-2b15-41b1-acb2-6ef9038cc367#, "Vectors");
+
+//======================================================================
+
+x = Symbol("x");
+y = Symbol("y");
+z = Symbol("z");
+a = Symbol("a");
+b = Symbol("b");
+c = Symbol("c");
+d = Symbol("d");
+
+N1 = Vector.Convert([4.0, 2.0]);
+N2 = Vector.Convert([1.0, 9.0]);
+V1 = Vector.Convert([a, b]);
+V2 = Vector.Convert([c, d]);
+
+readonly LessonExample Content.VectorDefinedEx = new(#f9525f41-fdc2-45c9-9777-8c5c8edcd340#, "Vectors") {
+  Text: "Vector objects represent a 1 dimensional array of values of a fixed size.";
+  Code: [attribute x, attribute V2];
+  Show: [N1, N2, V1, V2];
+};
+
+//======================================================================
+
+I10 = new Vector(5, a);
+
+readonly LessonExample Content.VectorInitFunctionEx = new(#e28e0c8a-1996-4b3a-ba1c-443d3f835734#) {
+  Text: "Vectors can be initialize with uniform contents {0}"(NytrilStyle.Class(attribute Vector));
+  Code: [attribute I10];
+};
+
+//======================================================================
+
+VAdd = V1 + V2;
+NAdd = N1 + N2;
+
+readonly LessonExample Content.VectorSumEx = new(#89fe088b-693a-4ad8-86d8-a61d09479ff6#) {
+  Text: "Vectors of the same size can be added together {0}"(NytrilStyle.OpAttribute(attribute +));
+  Code: [attribute VAdd, attribute NAdd];
+  Show: [VAdd, NAdd];
+};
+
+//======================================================================
+
+VSub = V1 - V2;
+NSub = N1 - N2;
+
+readonly LessonExample Content.VectorDifferenceEx = new(#601a3f3f-d257-4b35-936c-d387dd0f2de1#) {
+  Text: "Vectors of the same size can be subtracted {0}"(NytrilStyle.OpAttribute(attribute -));
+  Code: [attribute VSub, attribute NSub];
+  Show: [VSub, NSub];
+};
+
+//======================================================================
+
+VDot = V1.Dot(V2);
+NDot = N1.Dot(N2);
+
+readonly LessonExample Content.DotProductEx = new(#4cf079f7-036e-49c0-ba7f-1ec517ac501c#) {
+  Form: NytrilStyle.Function(attribute Vector.Dot, "The dot product of two vectors is calculated");
+  Code: [attribute VDot, attribute NDot];
+  Show: [VDot, NDot];
+};
+
+//======================================================================
+
+VCross = Vector.Convert([a, b, c]).Cross([x, y, z]);
+NCross = Vector.Convert([1.0, 2.0, 3.0]).Cross([4.0, 5.0, 6.0]);
+
+readonly LessonExample Content.CrossProductEx = new(#407bca8b-65ac-4760-a51a-2364589eeac3#, "Vector math") {
+  Form: NytrilStyle.Function(attribute Vector.Cross, "The cross product of two 3-vectors is calculated");
+  Code: [attribute VCross, attribute NCross];
+  Show: [VCross, NCross];
+};
+
+//======================================================================
+
+VNorm = V1.Norm;
+NNorm = N1.Norm;
+
+readonly LessonExample Content.ShowNormEx = new(#970230ef-0f6c-45da-84e1-a8cf95149502#) {
+  Form: NytrilStyle.Function(attribute Vector.Norm, "The norm of a vector is calculated");
+  Code: [attribute VNorm, attribute NNorm];
+  Show: [VNorm, NNorm];
+};
+
+//======================================================================
+
+VNormalize = V1.Normalize;
+NNormalize = N1.Normalize;
+
+readonly LessonExample Content.ShowNormalizeEx = new(#f5c40de1-143c-406d-8563-c8aeefcc1134#) {
+  Form: NytrilStyle.Function(attribute Vector.Normalize, "The normalize form of a vector is calculated");
+  Code: [attribute VNormalize, attribute NNormalize];
+  Show: [VNormalize, NNormalize];
+};
+
+//======================================================================
+

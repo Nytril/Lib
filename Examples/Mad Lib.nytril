@@ -1,0 +1,197 @@
+using Format;
+
+//=======================================================
+
+readonly MadLib[] MadLibs = [
+  new SchoolDay,
+  new PizzaParty,
+];
+
+//=======================================================
+
+class SchoolDay: MadLib {
+  field string Food,
+               Girl,
+               Adj1,
+               Bird,
+               Verb1,
+               Noun1;
+
+  Constructor {
+    super.Constructor(#e8d4f8d3-287a-4d93-8f74-7c9052d68aa8#, "School day");
+    ReadFromStorage;
+
+    Variables = [
+      new(ref Food, "Type of food"),
+      new(ref Girl, "A girl's name"),
+      new(ref Adj1, "Adjective"),
+      new(ref Bird, "Bird"),
+      new(ref Verb1, "Past tense verb"),
+      new(ref Noun1, "Noun2"),
+   ];
+  }
+
+  override StoryText = Span {
+    "It was " The(Food) " day at school, and " The(Girl) " was super " The(Adj1) ". ";
+    "But when she went outside to eat, a " The(Bird) " stole her " The(Food) "! " The(Girl) " chased the " The(Bird) " all over school. ";
+    "She " The(Verb1) " through the playground. ";
+    "Then she tripped on her " The(Noun1) " and the " The(Bird) " escaped! ";
+    "Luckily, " The(Girl) "'s friends were willing to share their " The(Food) " with her.";
+  };
+}
+
+//=======================================================
+
+class PizzaParty: MadLib {
+  field string Things1,
+               Adjective,
+               Song,
+               Celebrity,
+               Feeling,
+               Verb,
+               Place,
+               Food,
+               Things2,
+               Person;
+
+  Constructor {
+    super.Constructor(#56fd60ac-fb41-4077-8d89-86ed692b2678#, "Pizza Party");
+    ReadFromStorage;
+
+    Variables = [
+      new(ref Things1, "Things (plural)"),
+      new(ref Adjective, "Adjective"),
+      new(ref Song, "Song"),
+      new(ref Celebrity, "A Celebrity"),
+      new(ref Feeling, "Feeling"),
+      new(ref Verb, "Verb"),
+      new(ref Place, "A place"),
+      new(ref Food, "Food"),
+      new(ref Things2, "Things (plural)"),
+      new(ref Person, "Person"),
+   ];
+  }
+
+  override StoryText = Span {
+    "I just got back from a " The(Place) " with " The(Person) DotSpace;
+    "Can you believe we got to eat " The(Adjective) Space The(Food) " in " The(Place) "! ";
+    "Everyone got to choose their own toppings. ";
+    "I made '" The(Food) " and " The(Things1) "' pizza, which is my favorite! They even stuffed the crust with " The(Things2) DotSpace;
+    "How " The(Feeling)"! If that wasn't good enough already, " The(Celebrity) " was there singing '" The(Song) ".' ";
+    "I was so inspired by the music, I had to get up out of my seat and " The(Verb) DotSpace;
+  };
+}
+
+//=======================================================
+
+Main.Documents = new InputDocument(each MadLibs);
+
+//=======================================================
+
+class NameVar: PropertyValue {
+  var Title;
+
+  Constructor(ref data, title) {
+    super.Constructor(ref data);
+    Title = title;
+  }
+}
+
+//=======================================================
+
+abstract class MadLib: Fact {
+  var NameVar[] Variables;
+  field bool    Highlight;
+  var           Name;
+
+  Constructor(Guid id, name) {
+    super.Constructor(id);
+    Name = name;
+  }
+
+  abstract StoryText;
+
+  The(value) = Span {
+    if (Highlight)
+      TextBackground: 90%;
+    value;
+  };
+}
+
+//=======================================================
+
+class MadDocument: DocumentEntry {
+  var MadLib Story;
+
+  Constructor(MadLib story) {
+    super.Constructor(Guid.FromHash((story.FactId as string) + "Story"), "Mad Lib");
+    Story = story;
+  }
+
+  override GetDocument = Document {
+    Paragraph {
+      TextHeight: 24pt;
+      ParAlignment: Center;
+      Story.Name;
+    };
+
+    Paragraph {
+      TextHeight: 18pt;
+      LeftIndent: 16pt;
+      Story.StoryText;
+    }
+  };
+}
+
+//=======================================================
+
+class InputDocument: DocumentEntry {
+  var MadLib  Story;
+  var MadDocument Doc;
+
+  Constructor(MadLib story) {
+    super.Constructor(story.FactId, story.Name);
+    Doc   = new(story);
+    Story = story;
+  }
+
+  override GetDocument = Document {
+    TextHeight: 18pt;
+
+    Paragraph {
+      TextHeight: 24pt;
+      ParAlignment: Center;
+      SpaceAfter: 10pt;
+      "Mad Lib - ";
+      Story.Name;
+    };
+
+    foreach (var v in Story.Variables) {
+      Paragraph(null, [new(3", TabTypes.Left, TabLeaders.Dot)]) {
+        SpaceAfter: 6pt;
+        v.Title;
+        Tab;
+        TextControl(v, 3", null, new Edge(0.5, 1)) {BorderRadius: 2};
+      };
+    }
+
+    Paragraph(null, [4"]) {
+      SpaceBefore: 20pt;
+      ButtonControl(40, null, new Edge(1, 8)) {
+        Background: new RadialGradient(10%, 20%, 10%, 20%, 90%, 50%, [new(0, Colors.White), new(100%, Colors.LightGreen)]);
+        BorderRadius: 5;
+        TextColor: Colors.Green;
+        "View Story";
+        Action: new Action(Actions.ToDocument, Doc);
+      };
+      Tab  ;
+      CheckControl(new(ref Story.Highlight)) {
+        Placement: Placements.Right;
+        "Highlight words";
+      };
+    };
+  };
+}
+
+//=======================================================
+

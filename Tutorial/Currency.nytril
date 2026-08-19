@@ -1,0 +1,47 @@
+using Format, Units;
+
+namespace Chapters.Language.Sections.Currency;
+
+readonly TutorialLesson Lesson = new(#d43031dc-1285-47f2-a7ef-2b91d2066fe3#, "Currency");
+
+//======================================================================
+
+PocketChange = 47¢;
+TotalChange  = PocketChange + 3 Cents + $0.05;
+
+readonly LessonExample Content.MoneyEx = new(#09875dd8-617b-4b89-ac27-51d5034c16b8#) {
+  Text: "Monetary quantities are supported natively";
+  Code: [attribute PocketChange, attribute TotalChange];
+};
+
+//======================================================================
+
+WalletCash = $12;
+TotalMoney = (WalletCash + TotalChange) tounit Dollars;
+
+readonly LessonExample Content.AdditionEx = new(#6914100b-09f9-48a6-a581-8d0f5d9a9319#) {
+  Text: "Compatible currency values can be added together";
+  Code: [attribute WalletCash, attribute TotalMoney];
+};
+//======================================================================
+
+Compound(amount, rate, times) {
+  while (times > 0) {
+    amount += amount * rate;
+    --times;
+  }
+  return amount;
+}
+
+Payments = Block {
+  TextGroup: true;
+  Compound($200_000, 4.1%, 5);
+};
+
+readonly LessonExample Content.InterestEx = new(#65368903-b498-43e1-9a41-34a6876e7ab3#) {
+  Text: "Simple accruals can be calculated with a user-defined function";
+  Code: [attribute Compound, attribute Payments];
+};
+
+//======================================================================
+

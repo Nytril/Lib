@@ -1,0 +1,37 @@
+include "Help";
+
+using Format;
+
+Example = Chart(5", 2") {
+  XLabel: "Year";
+  XAxis: ChartAxis {#2021#..#2024# step Units.year};
+  ValueAxis: ChartAxis;
+
+  ValueLabel: HBox {
+    Transform: Transform.Rotate(90 degrees);
+    TransformFit: true;
+    "$ Millions";
+  };
+
+  Legend: ChartLegend {
+    Direction: Directions.Vertical;
+    Placement: Placements.Right;
+  };
+
+  ChartSeries {
+    Label: "MegaCorp";
+    [118.5, 99, 132.5, 309.2];
+  };
+
+  ChartSeries {
+    ChartType: Line;
+    Marker: Markers.Circle(Colors.White, 2);
+    Smoothing: 80%;
+    LabelAlignment: Outside;
+    Label: "GigaCorp";
+    [57.2, 88.5, 185.2, 382.4];
+  };
+};
+
+Main.Help = new HelpExample(attribute(Format.ChartSeries));
+

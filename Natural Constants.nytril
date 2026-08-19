@@ -1,0 +1,10 @@
+
+namespace NaturalConstants {
+  Avagadro    = 6.02214076E23 per mole;
+  LightSpeed  = 299792458 meters per second;
+  G           = 6.674E-11 Newton meters^2 per kilogram^2;
+  EarthRadius = 6371000 meters;
+  EarthMass   = 5.9722E27 grams;
+  g           = 9.80665 meters per second^2;
+}
+

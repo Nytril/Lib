@@ -1,0 +1,471 @@
+using Format;
+
+namespace Chapters.Formatting.Sections.MathFormatting;
+
+readonly TutorialLesson Lesson = new(#ab14edd1-c877-41cd-b93a-abf0dc2d81dd#, "Math Formatting", "MathFormatting", "math", "youtu.be/26eQQWji7tM") {
+  Description: Span {
+    "Create professionally typeset math equations using a small number of formatting primitives. ";
+  };
+};
+
+//======================================================================
+
+x = Symbol("x", "The independent variable 'x'");
+y = Symbol("y", "The independent variable 'y'");
+
+RaisePower(a, b) = Span {
+  a; " raised to the power of "; b; " is "; a ^ b;
+};
+
+Powers = Block {
+  RaisePower(2, 5);  // Perform calculation with numbers
+  RaisePower(x, y);  // Create formula
+};
+
+readonly LessonExample Content.SymbolsEx = new(#9c4c2f11-77cf-4178-8c55-338d5845f9e1#, "Symbols") {
+  Text: Span {
+          "Use the "; NytrilStyle.Formatter(attribute Symbol); " function to create objects that behave like algebraic symbols. ";
+          "The second argument is the tip that pops up when the mouse is hovered over the symbol. ";
+        };
+  Code: [attribute x, attribute Powers];
+  Sel: new(0, 16, 30);
+  Tip: [LessonTip(10.5, 2.3, y.Description, 25 degrees, 3)];
+};
+
+//======================================================================
+
+FormatFraction = Fraction {
+  x;
+  y+1;
+};
+
+readonly LessonExample Content.FractionsEx = new(#c03f5a39-c2f5-47d9-8c6f-e13be1abf6e0#, "Fractions") {
+  Text:  "Create several different types of common fractions with the {0} formatter."(NytrilStyle.Formatter(attribute Fraction));
+  Code: [attribute FormatFraction];
+  Sel: new(0, 17, 8);
+};
+
+//======================================================================
+
+SlantedFraction = Fraction(true) {
+  x;
+  y ^ 2;
+};
+
+readonly LessonExample Content.DiagonalFractionEx = new(#2c547ec5-8ce7-47d2-9883-66f77186711b#, "Slanted Fractions") {
+  Text: "Format the fraction with a diagonal slash by setting the diagonal argument to true. ";
+  Code: [attribute SlantedFraction];
+  Sel: new(0, 27, 4);
+  Options: NoShort;
+};
+
+//======================================================================
+
+ThreeQuarters = Fraction(false, true) {3; 4};
+
+CompactFraction = Span {
+  "Add "; ThreeQuarters; " of a cup of flour. ";
+};
+
+readonly LessonExample Content.CompactFractionEx = new(#f4cd0917-9c85-4689-893e-cfe7bbf42344#, "Compact Fractions") {
+  Text: "Create a more compact fraction layout by setting the compact argument to true. ";
+  Code: [attribute ThreeQuarters, attribute CompactFraction];
+  Sel: new(0, 32, 4);
+  Options: NoShort;
+};
+
+//======================================================================
+
+OneHalf = 1 over 2;
+
+CompactShortcut = Span {
+  "Add "; OneHalf; " teaspoon of sugar and stir. ";
+};
+
+readonly LessonExample Content.RationalNumberEx = new(#4c1ad5c1-fe7f-46c2-826a-0501a12fefae#, "Compact Fraction Shortcut") {
+  Text: "For numeric fractions, get a more concise expression by using a rational number. ";
+  Code: [attribute OneHalf, attribute CompactShortcut];
+  Sel: new(0, 12, 4);
+  Options: NoShort;
+};
+
+//======================================================================
+
+CompactSlanted = Span {
+  TextDiagonal: true;
+  "Mix in ";
+  4 over 3;
+  " tablespoons of warm water if the dough is too firm. ";
+};
+
+readonly LessonExample Content.TextDiagonalEx = new(#134e1e64-4653-4f19-aaf7-011d90902533#, "TextDiagonal Property") {
+  Text: Span {"Change the default rational number display to a diagonal bar by settting the "; NytrilStyle.PropName(attribute FormatProperties.TextDiagonal); " property to true. "};
+  Code: [attribute CompactSlanted];
+  Sel: new(1, 2, 18);
+  Options: NoShort;
+};
+
+//======================================================================
+
+X1 = x sub 1;
+
+readonly LessonExample Content.SubscriptEx = new(#3817fb78-f350-49bd-b682-0b40ed11bc35#, "Subscripts") {
+  Text: "Add a subscript to a symbol by using the {0} operator. "(NytrilStyle.PropName(attribute sub));
+  Code: [attribute X1];
+  Sel: new(0, 7, 3);
+};
+
+//======================================================================
+
+E = Symbol("E", "Energy");
+m = Symbol("m", "Mass");
+c = Symbol("c", "The speed of light");
+
+MassEnergy = Span {E; Tex.Equals; m; c sup 2};
+
+readonly LessonExample Content.SuperscriptEx = new(#e5192064-5b05-4252-8bf2-12bb0ce7ad93#, "Superscripts") {
+  Text: "Use the {0} operator in the same way to make superscripts. "(NytrilStyle.PropName(attribute sup));
+  Code: [attribute E, attribute MassEnergy];
+  Sel: new(4, 39, 3);
+  Tip: [LessonTip(3.5, 1.1, c.Description, 25 degrees, 3)];
+};
+
+//======================================================================
+
+Solution = Paragraph {
+  "The solution is: ";
+  Tex.pm;
+  Radical {
+    x;
+    Tex.Plus;
+    2;
+  };
+};
+
+readonly LessonExample Content.RadicalsEx = new(#9b481eb2-6979-4cfa-a881-47a5a627ed6b#, "Radicals") {
+  Text: "Square-root symbols can be created with the {0} formatter. "(NytrilStyle.Formatter(attribute Radical));
+  Code: [attribute Solution];
+  Sel: new(3, 2, 7);
+};
+
+//======================================================================
+
+V = Symbol("V", "Volume");
+
+Cube = Paragraph {
+  "The edge of a cube of volume ";
+  V;
+  " is given by ";
+  Radical {
+    V;
+    Degree: 3;
+  };
+};
+
+readonly LessonExample Content.RadicalDegreeEx = new(#447930c2-eb38-4cc7-9b69-49b8e2fe54fc#, "Radical degree") {
+  Text: "Change the degree of the radical by setting the {0} property"(NytrilStyle.PropName(attribute FormatProperties.Degree));
+  Code: [attribute V, attribute Cube];
+  Sel: new(8, 4, 9);
+  Options: NoShort;
+};
+
+//======================================================================
+
+NaryComponents = Nary {
+  Operator: "Operator";
+  PreUpper: "pre-upper";
+  PreLower: "pre-lower";
+  Upper: "upper";
+  Lower: "lower";
+  "[Body Elements]";
+};
+
+readonly LessonExample Content.NaryEx = new(#5ca43db0-bd4f-4228-b2a5-1e2ca216a61b#, "Nary formatter") {
+  Text: "The {0} is the most complex formatter covering a wide variety of math expressions. "(NytrilStyle.Formatter(attribute Nary));
+  Code: [attribute NaryComponents];
+  Sel: new(0, 17, 4);
+  Options: NoShort;
+};
+
+//======================================================================
+
+s = Symbol("s", "Zeta argument (complex number)");
+n = Symbol("n", "Integer");
+
+ZetaSum = Nary {
+  Operator: Tex.sum;
+  TextStacked: true;
+  Fraction {1; n^s};
+};
+
+readonly LessonExample Content.NaryOperatorEx = new(#02684926-6d31-455d-af4a-59a6ca2d26e7#, "Nary Operator property") {
+  Text: "Set the {0} property to one of the built-in symbols appropriate for your expression. "(NytrilStyle.PropName(attribute FormatProperties.Operator));
+  Code: [attribute s, attribute ZetaSum];
+  Sel: new(4, 2, 17);
+  Options: NoShort;
+};
+
+//======================================================================
+
+InverseSquareIntegral = Paragraph {
+  TextEquation: true;
+  Symbol("f"); "("; x; ")";
+  Tex.Equals;
+  Nary {
+    Operator: Tex.Integral1;
+    Upper: Tex.infty;
+    Lower: x Tex.Equals 1;
+  };
+  Fraction {
+    1;
+    x^2;
+  };
+  Tex.nbsp;
+  Tex.derivative;
+  x;
+};
+
+readonly LessonExample Content.NaryUpperEx = new(#3fc5b983-4763-4037-8965-7bf111523b15#, "Nary Upper Property") {
+  Text: "Use the {0} and {1} properties to set the superscript and subscript of the Operator. "(NytrilStyle.PropName(attribute FormatProperties.Upper), NytrilStyle.PropName(attribute FormatProperties.Lower));
+  Code: [attribute InverseSquareIntegral];
+  Sel: new(6, 4, 43);
+};
+
+//======================================================================
+
+StackedNary = InverseSquareIntegral {
+  TextStacked: true;
+};
+
+readonly LessonExample Content.TextStackedEx = new(#dd0e28f7-c221-48b2-a265-f2f6f2b56459#, "TextStacked property") {
+  Text: "Place the superscripts and subscripts above and below the Operator by setting the {0} property to true. "(NytrilStyle.PropName(attribute FormatProperties.TextStacked));
+  Code: [attribute StackedNary];
+  Sel: new(1, 2, 17);
+  Options: NoShort;
+};
+
+//======================================================================
+
+Isotope(weight, element, name) = Nary {
+  PreUpper: weight;
+  PreLower: element;
+  Operator: HBox {Margin: PadL(0.1%); TextHeight: 150%; name};
+};
+
+Thorium232 = Isotope(232, 90, "Th");
+
+readonly LessonExample Content.NaryPrefixEx = new(#17ec53a8-8997-46be-b0b3-c5ed148657a7#, "Nary PreUpper and PreLower") {
+  Text: "Use {0} and {1} to specify the operator prefixes. "(NytrilStyle.PropName(attribute FormatProperties.PreUpper), NytrilStyle.PropName(attribute FormatProperties.PreLower));
+  Code: [attribute Isotope, attribute Thorium232];
+  Sel: new(1, 2, 37);
+  Options: NoShort;
+};
+
+//======================================================================
+
+p = Symbol("p", "Prime number");
+
+ZetaProduct = Nary {
+  TextStacked: true;
+  Operator: Tex.prod;
+  Fraction {
+    p^s;
+    p^s - 1;
+  };
+};
+
+readonly LessonExample Content.NaryElementsEx = new(#6bb22767-2d75-4c70-bb3b-cf8bc36299a2#, "Nary Elements") {
+  Text: "The child elements of an Nary formatter are shown to the right of the Operator. ";
+  Code: [attribute p, attribute ZetaProduct];
+  Sel: new(5, 2, 37);
+  Options: NoShort;
+};
+
+//======================================================================
+
+LineEquation = Paragraph {
+  TextEquation: true;
+  TextStacked: true;
+};
+
+ZetaEquivalence = LineEquation {
+  Tex.zeta; "("; s; ")";
+  Tex.Equals;
+  ZetaSum;
+  Tex.Equals;
+  ZetaProduct;
+};
+
+readonly LessonExample Content.TextEquationEx = new(#78904697-0838-4e1c-991c-37a6cc2f4b1d#, "TextEquation property") {
+  Text: "If you set the {0} property to true, the math font is used for all of the symbols, and the expression will stay together across line breaks. "(NytrilStyle.PropName(attribute FormatProperties.TextEquation));
+  Code: [attribute LineEquation, attribute ZetaEquivalence];
+  Sel: new(1, 2, 18);
+  Options: NoShort;
+};
+
+//======================================================================
+
+Polynomial(int degree) = LineEquation {
+  for (var i = degree; i >= 0; --i) {
+    Symbol('a' + (degree - i));
+    if (i > 0) {
+      x^i;
+      Tex.Plus;
+    }
+  }
+};
+
+FifthDegree = Polynomial(5);
+
+readonly LessonExample Content.PolynomialEx = new(#c03f5a39-c2f5-47d9-8c6f-e13be1abf6e0#, "Polynomial Equations") {
+  Text: "Here is an example of a loop inside a revision, to generate a combination of polynomial terms. ";
+  Code: [attribute Polynomial, attribute FifthDegree];
+  Sel: new(1, 2, 33);
+  Options: NoShort;
+};
+
+//======================================================================
+
+Term(index) = Fraction {x^index; index; Tex.factorial};
+
+Series = HBox {
+  Bracket: Brackets.Round;
+  Separator: Tex.Plus;
+  LastSeparator: Tex.Plus Tex.cdots Tex.Plus;
+  1;
+  Term(each [1, 2, 3, n]); // A term for each item in the array
+};
+
+EulerNumber = LineEquation {
+  Symbolic.E^x;
+  Tex.Equals;
+  Nary {
+    Operator: Tex.lim;
+    Lower: n Tex.rightarrow Tex.infty;
+  };
+  Series;
+};
+
+readonly LessonExample Content.BracketEx = new(#200b6c59-f417-431a-9e88-a9f6b6e99bab#, "Bracket Property") {
+  Text: "Use the {0} property to wrap an expression in scaled brackets. "(NytrilStyle.PropName(attribute FormatProperties.Bracket));
+  Code: [attribute Term, attribute EulerNumber];
+  Sel: new(3, 2, 23);
+  Options: NoShort;
+};
+
+//======================================================================
+
+VerticalBrackets = HBox {
+  Separation: 20;
+  VBox {Bracket: Brackets.RightArrow.Over; "Over"};
+  VBox {Bracket: Brackets.RightArrow.Under; "Under"};
+  VBox {Bracket: Brackets.Bar.Top; "bar above"};
+  VBox {Bracket: Brackets.FlatCurly.Bottom; "flat curly below"};
+  VBox {Bracket: Brackets.Round.Top; "round above"};
+};
+
+readonly LessonExample Content.BracketStylesEx = new(#7d3a99fa-afeb-41df-b746-57cc0a495f26#, "Bracket Styles") {
+  Text: "Choose from a wide variety of arrow and bracket styles. ";
+  Code: [attribute VerticalBrackets];
+  Sel: new(2, 17, 24);
+  Options: NoShort;
+};
+
+//======================================================================
+
+BracketEnclosure = HBox {
+  Bracket: Brackets.FlatRound.TopBottom;
+  Separation: 24pt;
+  VAlign: Center;
+
+  HBox {Bracket: Brackets.Round; "parenthesis"};
+  HBox {Bracket: Brackets.Square; "square brackets"};
+  VBox {
+    Bracket: Brackets.FlatCurly.Left;
+    "Topic {0}"(each 1..3);
+  };
+};
+
+readonly LessonExample Content.BracketEnclosureEx = new(#5604e1d9-e04d-44dc-90f3-0fb17f634fa1#, "Large expressions in Brackets") {
+  Text: "Enclose large expressions in horizontal or vertical brackets. ";
+  Code: [attribute BracketEnclosure];
+  Sel: new(1, 2, 37);
+  Options: NoShort;
+};
+
+//======================================================================
+
+TestAllBrackets = Paragraph {
+  Separator: Space*4;
+  foreach (var b in attribute Brackets) {
+    HBox {
+      Bracket: new BracketGroup(b.Value, null, b.Value, null);
+      VBox {
+        Bracket: new BracketGroup(null, b.Value, null, b.Value);
+        NytrilStyle.PropName(b);
+      };
+    };
+  }
+};
+
+readonly LessonExample Content.AllBracketsEx = new(#7bb3ee66-4be5-49f2-9428-1a84e65d8316#, "All Bracket Types") {
+  Text: "Here is a complete list of the bracket types. ";
+  Code: [attribute TestAllBrackets];
+  Sel: new(4, 19, 12);
+  Options: NoShort;
+};
+
+//======================================================================
+
+Decay(type) = VBox(null, null, PadLR(6pt)) {
+  Bracket: Brackets.RightArrow.Under;
+  Margin: PadLR(4pt);
+  VAlignment: Top;
+  HAlign: Center;
+  Span {Space*2; type; Space*2};
+};
+
+ThoriumDecay = HBox {
+  VAlign: Center;
+  Thorium232;
+  Decay(Tex.alpha);
+  Isotope(228, 88, "Ra");
+  Decay(Tex.beta sup Tex.Minus);
+  Isotope(228, 89, "Ac");
+};
+
+readonly LessonExample Content.DirectionalBracketEx = new(#cf8edfbe-9fe5-4917-82c6-e4649b39b63d#, "Directional Bracket Placement") {
+  Text: "Use the directional member of a bracket to place arrows in specific locations. ";
+  Code: [attribute Decay, attribute ThoriumDecay];
+  Sel: new(1, 2, 34);
+};
+
+//======================================================================
+
+PlainMatrix = MatrixBox {
+  VAlign: Center;
+  HAlign: Center;
+  ColumnGap: 6pt;
+  Row {1; Fraction {Tex.pi; 2}; 3};
+  Row {4; 1; Symbolic.Sqrt(x+2)};
+  Row {y + 5; 8; 1}
+};
+
+WithBraces = HBox {
+  Separation: 16pt;
+  PlainMatrix;
+  PlainMatrix {Bracket: Brackets.FlatRound};
+  PlainMatrix {Bracket: Brackets.Square};
+};
+
+readonly LessonExample Content.MatrixEx = new(#088e4acd-cd64-48e6-b6d8-0d73fd70d40c#, "Matrices") {
+  Text: Span {
+    "Matrices are created with the {0} formatter. "(NytrilStyle.Formatter(attribute MatrixBox));
+    "They contain a list of rows and cells automatically sized to fit the contents.";
+  };
+  Code: [attribute PlainMatrix, attribute WithBraces];
+  Sel: new(0, 14, 9);
+};
+
+//======================================================================
+

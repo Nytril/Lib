@@ -1,0 +1,2545 @@
+using Format, LinkTypes;
+
+readonly namespace DocLang {
+  Appendices        = "Appendices";
+  Abstract          = "Abstract";
+  Appendix          = "Appendix";
+  Attribution       = "Attribution";
+  Chapter           = "Chapter";
+  Section           = "Section";
+  Figure            = "Figure";
+  Table             = "Table";
+  EMail             = "email";
+  Keywords          = "Keywords";
+  References        = "References";
+  TableOfContents   = "Contents";
+  TableOfFigures    = "Figures";
+  TableOfTables     = "Tables";
+  Volume            = "Volume";
+  Index             = "Index";
+  Bibliography      = "Bibliography";
+  Anonymous         = "Anonymous submission";
+  CompiledOn        = "This manuscript was compiled on ";
+  AddCorrespondance = "To whom correspondence should be addressed";
+}
+
+//======================================================================
+
+readonly LinkType DefinitionLink = new(Equation, EquationSymbol, "Definition");
+readonly LinkType EquationLink   = new(Equation, EquationSymbol, "Referenced");
+readonly LinkType ReviewAssigned = new(ReviewComment, Person, "Assigned");
+readonly LinkType OrcidLink      = new(Person, UIN, "Orcid");
+
+readonly Citep    = Cite(None);
+readonly Citepall = Cite(AllAuthors);
+readonly Citet    = Cite(Textual DateBrackets);
+readonly Citetall = Cite(Textual AllAuthors);
+
+CitationName(DocReference reference) = Span {
+  Space;
+  reference.GetTitle;
+  Citep{reference};
+};
+
+readonly EqSpan = Span {
+  TextEquation: true;
+  TextLiteral: true;
+};
+
+readonly LitSpan = Span {
+  TextLiteral: true;
+};
+
+//======================================================================
+
+class EquationSymbol: Fact {
+  field Name;
+  field Description;
+  var   Variable;
+
+  Constructor(id, symbol, name, description=null) {
+    super.Constructor(id);
+
+    Variable    = EqSpan {symbol};
+    Name        = name;
+    Description = description;
+  }
+
+  override Icon GetIcon = Icons.subscript;
+
+  override int Compare(d) = Name.Compare(d.Name);
+
+  override GetLayoutSpan = Span {
+    TextEquation: true;
+    TipAction: this;
+    Link to this;
+    Variable;
+  };
+
+  override GetLayoutNode = HBox(null, null, new Edge(0.25pt, 3, 80%)) {
+    BorderRadius: 3;
+    Background: 95%;
+    Span {
+      TextEquation: true;
+      TextHeight: 16pt;
+      Variable;
+    }
+  };
+
+  override GetLayoutFact = GetLayoutTip;
+
+  override GetLayoutTip = Block {
+    Paragraph {
+      TextHeight: 20pt;
+      TextEquation: true;
+      Variable;
+    };
+    Paragraph {
+      TextHeight: 16pt;
+      Bold;
+      Name;
+    };
+    if (Description is valid) {
+      Paragraph {
+        TextHeight: 14pt;
+        Description;
+      };
+    }
+  };
+
+  Appendix = Block {
+    Paragraph {
+      TextHeight: 16pt;
+      GetLayoutSpan;
+      Tab;
+      Name;
+    };
+    if (Description is valid) {
+      Paragraph {
+        LeftIndent: 0.5";
+        SpaceAfter: 6pt;
+        Description;
+      };
+    }
+  };
+}
+
+//======================================================================
+
+class Equation: Fact {
+  field Name;
+  var   Formula;
+
+  Constructor(id, name) {
+    super.Constructor(id);
+    Name = name;
+  }
+
+  override Icon GetIcon = Icons.functions;
+
+  override GetLayoutSpan = Span {
+    TextEquation: true;
+    TextLiteral: true;
+    Formula;
+  };
+
+  override GetLayoutBlock = Paragraph {
+    TextEquation: true;
+    TextStacked: true;
+    Formula;
+    Link to this;
+  };
+
+  override GetLayoutNode = HBox(null, null, new Edge(0.25pt, 3, 80%)) {
+    BorderRadius: 4;
+    Background: 98%;
+    Span {
+      TextEquation: true;
+      TextHeight: 6pt;
+      Formula;
+    }
+  };
+
+  override GetLayoutFact = GetLayoutTip;
+
+  override GetLayoutTip = Block {
+    Paragraph {
+      SpaceAfter: 10pt;
+      Bold;
+      Name;
+    };
+    Block {
+      LeftIndent: 8pt;
+      Paragraph {
+        TextStacked: true;
+        TextEquation: true;
+        Formula;
+      };
+      ShowVariables;
+    }
+  };
+
+  Explain = Block {
+    Paragraph {
+      KeepWithNext: true;
+      SpaceBefore: 16pt;
+      Bold;
+      TextHeight: 110%;
+      Name;
+    };
+    Block {
+      LeftIndent: 8pt;
+      Paragraph {
+        SpaceBefore: 8pt;
+        TextStacked: true;
+        TextEquation: true;
+        Formula;
+      };
+      ShowVariables;
+    };
+  };
+
+  ShowVariables = Block {
+    var variables = FindFacts(EquationLink) as EquationSymbol[];
+    if (variables is valid and variables.FindCount(v => v.Name is valid) > 0) {
+      Paragraph {
+        KeepWithNext: true;
+        SpaceBefore: 8pt;
+        Italic "where ";
+      };
+
+      Table(null, null, [Column.Fit(1"), Column.Fit(1"), Column.Expand]) {
+        foreach (var v in variables) {
+          if (v.Name is valid) {
+            Row {
+              v;
+              Tex.Equals;
+              v.Name;
+            };
+          }
+        }
+      }
+    }
+  };
+}
+
+//======================================================================
+
+class AuthorNote {
+  var Person Author;
+  var        Mark,
+             Text;
+
+  Constructor(Person author, mark, text) {
+    Author = author;
+    Mark   = mark;
+    Text   = text;
+  }
+}
+
+//=========================================================================
+
+class Content: Anchor {
+  var int           SectionLevel;
+  var List<Content> Children;
+
+  Constructor(title, name=null) {
+    super.Constructor(title, name);
+    Children = new(8);
+  }
+
+  void AddContent(Content content) {
+    Children.Add(content);
+  }
+
+  void AssignSectionNumber(int level, int index, prefix, delim) {
+    AnchorText   = prefix + (index+1);
+    SectionLevel = level;
+    foreach (var c in Children)
+      c.AssignSectionNumber(level+1, each0, AnchorText + delim, delim);
+  }
+
+  AnchorName = Name;
+
+  virtual GetCaption(ContentStyle style) = null;
+
+  virtual GetBody(ContentStyle style) = null;
+
+  override Icon GetIcon = Icons.text_format;
+
+  override GetLayoutTip = ContentStyle.TipStyle.GetContentTip(this);
+}
+
+//======================================================================
+
+class ContentAction: Action {
+  readonly var Content      Content;
+  readonly var ContentStyle Style;
+
+  Constructor(Content content, ContentStyle style) {
+    super.Constructor(ToAnchor, content.AnchorName, Guid.FromHash("Section " + content.AnchorName));
+    Content = content;
+    Style   = style;
+  }
+
+  override GetLayoutTip = Style.GetContentTip(Content);
+}
+
+//======================================================================
+
+class AuthoredContent: Content {
+  var Person[]         Authors;
+  var Person           Correspondant;
+  var List<AuthorNote> AuthorNotes;
+  var Content          Appendix,
+                       SignificanceStatement,
+                       Acknowledgements,
+                       Funding,
+                       Abstract;
+  var Content[]        ExtraSections;
+  var DateTime         Created;
+  var string[]         Keywords;
+  var                  Description,
+                       Watermark;
+  var ReviewComment[]  Comments;
+  var DocReference     Reference;
+
+  Constructor(name, DocReference r) {
+    super.Constructor(name);
+
+    if (r is null) {
+      r = new DocReference(Guid.NewGuid, Article) {
+        Title: Name;
+        Date: DateTime.Now;
+        DOI: "XXXXXXXXXXX";
+      };
+    }
+
+    Appendix    = new(DocLang.Appendices);
+    AuthorNotes = new(8);
+    Created     = DateTime.Now;
+    Reference   = r;
+    Description = r.Subtitle;
+    Title       = r.Title;
+    Authors     = r.FindFacts(AuthorLink) as Person[];
+  }
+
+  void SetCorrespondant(Person author) {
+    Correspondant = author;
+    AuthorNotes.Add(new(author, '*', "Corresponding author"));
+  }
+
+  override Icon GetIcon = Icons.article;
+
+  DocumentURL {
+    var doi = Reference.DOI;
+    if (doi is valid)
+      return "https://doi.org/" + doi;
+    return null;
+  }
+}
+
+//======================================================================
+
+class ReviewComment: Fact {
+  static var int CommentNumber = 1000;
+
+  field int    Number;
+  field bool   NoAction,
+               HasAnchor;
+  var          Text,
+               Response;
+  var Person   Reviewer;
+
+  Constructor(Guid id, Person reviewer, Person assigned=null) {
+    super.Constructor(id);
+    Reviewer = reviewer;
+    var name = GetVariableName;
+    if (name is valid)
+      Number = name[1..] as int;
+    Number ??= CommentNumber++;
+    ReviewAssigned.Connect(this, assigned);
+  }
+
+  static int CompareOrder(ReviewComment c1, ReviewComment c2) = c1.Number.Compare(c2.Number);
+
+  override Icon GetIcon = Icons.comment;
+
+  override GetLayoutTip = Block {
+    TextHeight: 14pt;
+    Paragraph {
+      ParBackground: 95%;
+      "Comment ";
+      Number;
+      Tab;
+      Reviewer.First;
+    };
+    ShowText;
+  };
+
+  GetAnchor = "RevComment" + Number;
+
+  ShowResponse = Block {
+    ParAlignment: Justify;
+    LeftIndent: 16pt;
+    FirstIndent: 24pt;
+    SpaceAfter: 8pt;
+    Response;
+  };
+
+  ShowText = Block {
+    Block {
+      ParAlignment: Justify;
+      if (NoAction)
+        TextColor: Colors.DarkGray;
+      Text;
+      if (NoAction) Paragraph {
+        "No Action Needed";
+      };
+    };
+
+    var region = FindFirstFact(DocumentEntry);
+    if (region is valid)
+      region;
+
+    if (Response is valid) Block {
+      Paragraph {
+        SpaceBefore: 4pt;
+        KeepWithNext: true;
+        Bold "Response";
+      };
+      ShowResponse;
+    };
+  };
+
+  ShowRevised(ContentStyle style) = Block {
+    TextFace: TextFaces.SansSerif;
+
+    style.HeadingSection{
+      DocFields.Anchor(GetAnchor);
+      ParBackground: Colors.LightGray;
+      Number; ")"; Tab;
+      Reviewer.First;
+    };
+    Paragraph {
+      KeepWithNext: true;
+      Bold "Comment";
+    };
+
+    Block {
+      ParAlignment: Justify;
+      TextHeight: 10pt;
+      LeftIndent: 16pt;
+      Text;
+    };
+
+    var region = FindFirstFact(DocumentEntry);
+    if (region is valid)
+      region;
+
+    if (Response is valid) {
+      Block {
+        Paragraph {
+          SpaceBefore: 4pt;
+          KeepWithNext: true;
+          Bold "Response";
+
+          if (HasAnchor) {
+            switch (style.ReviewMode) {
+              case ContentStyle.ReviewModes.MarkupAll:
+              case ContentStyle.ReviewModes.MarkupRevised:
+              case ContentStyle.ReviewModes.MarkupOriginal:
+                Paragraph {
+                  Tab;
+                  Span {
+                    TextColor: Colors.Blue;
+                    "View changes";
+                    Action: new Action(Actions.ToAnchor, FactId);
+                  };
+                };
+                break;
+            }
+          }
+        };
+        ShowResponse;
+      };
+    }
+  };
+}
+
+//=========================================================================
+
+class ContentStyle: ReferenceStyle {
+  public enum ReviewModes {
+    Revised,
+    Original,
+    MarkupAll,
+    MarkupRevised,
+    MarkupOriginal,
+  }
+
+  flags TemplateOptions {
+    None,
+    LineNumbers,
+    TwoColumn,
+    SectionNumbers,
+    InlineHeaders,
+    Anonymous,
+  }
+
+  static readonly ContentStyle TipStyle = new(ReferenceStyles.IEEE, "Tip", 0.5");
+
+  const NoteIndexIndent      = 6pt;
+  const string EtAl          = "et al.";
+  const char[] ParenBrackets = ['(', ')'];
+
+  static readonly SQuote       = Span {Begin: "‘"; End: "’"};
+  static readonly SQuoteEnd    = Span {Begin: "‘"; End: ".’ "};
+  static readonly SQuoteComma  = Span {Begin: "‘"; End: ",’ "};
+  static readonly DQuote       = Span {Begin: "“"; End: "”"};
+  static readonly DQuoteEnd    = Span {Begin: "“"; End: ".” "};
+  static readonly FigureFolder = IO.Folder("Figures");
+
+  static readonly AuthorLinks = [
+    AuthorLink,
+    ConductorLink,
+    DirectorLink,
+    InventorLink,
+    ArtistLink,
+  ];
+
+  var Thickness       Margins;
+  var TemplateOptions DocOptions;
+  var string[]        DateFormat,
+                      PubDateFormat,
+                      PagePrefixes,
+                      CitePagePrefixes;
+  var string          SectionCode,
+                      SectionDelimeter,
+                      TexTemplate,
+                      TexFont;
+  var char[]          InlineBrackets;
+  var ReviewModes     ReviewMode;
+  var bool            TitleQuote,
+                      TexOutput,
+                      DateParen,
+                      DelimNeeded,
+                      BibTable,
+                      IsAnonymous,
+                      AuthorPartial,
+                      NameListAfter,
+                      SectionFirstPar;
+  var Content         SectionContent;
+  var int             PartialAuthors,
+                      EndAuthors,
+                      InlineAuthors,
+                      Columns,
+                      ReferenceColumns;
+  var                 InlineSectionTitle,
+                      ColGap,
+                      FullWidth,
+                      HalfWidth,
+                      ParIndent,
+                      SansSerif,
+                      DefDelim,
+                      NextDelim,
+                      DateAlternate,
+                      PersonAnd,
+                      RefTitleStyle,
+                      SubtitleSep,
+                      InlineFormat,
+                      InlineBegin,
+                      InlineEnd,
+                      LineHeight;
+   var EnumDelegate   AuthorEnumerator;
+   var List<string>   TexOptions,
+                      TexPackages;
+
+  Constructor(ReferenceStyles type, name, Thickness margins, TemplateOptions options=TemplateOptions.None) {
+    super.Constructor(type, name);
+    DefDelim         = CommaSpace;
+    PersonAnd        = " & ";
+    SectionDelimeter = Dot;
+    DateFormat       = ["yyyy", "MMMM yyyy", "dd MMMM, yyyy"];
+    PubDateFormat    = ["yyyy", "MMM yyyy", "dd MMM, yyyy"];
+    SectionCode      = "section";
+    PagePrefixes     = ["p. ", "pp. "];
+    SubtitleSep      = ColonSpace;
+    AuthorEnumerator = @Enumerators.Number;
+    CitePagePrefixes = PagePrefixes;
+    InlineBrackets   = ParenBrackets;
+    EndAuthors       = 6;
+    InlineAuthors    = 1;
+    ReferenceColumns = 2;
+    DocOptions       = options;
+    BibTable         = true;
+    DateParen        = true;
+    NameListAfter    = true;
+    InlineOptions    = CiteOptions.ShowAuthors | CiteOptions.ShowDate | CiteOptions.ShowBrackets | CiteOptions.ShowPages;
+    InlineFormat     = {TextColor: Colors.Blue};
+    SansSerif        = TextFamily: TextFamilies.LibertinusSans;
+    IsAnonymous      = options.HasFlag(Anonymous);
+    Columns          = options.HasFlag(TwoColumn) ? 2 : 1;
+    ColGap           = 16pt;
+    Margins          = margins;
+    FullWidth        = ExtentPage.Width - Margins.Right - Margins.Left;
+    HalfWidth        = (FullWidth - ColGap) / Columns;
+    TexPackages      = new(8);
+    TexOptions       = new(8);
+    ReviewMode       = ReviewModes.Revised;
+  }
+
+  virtual SetTextStyle = {
+    TextFamily: TextFamilies.LibertinusSerif;
+    TextHeight: 10pt;
+  };
+
+  virtual SetDocumentOptions(AuthoredContent content) = {
+    LineHeight: LineHeight;
+    Watermark: content.Watermark;
+    SetTextStyle;
+  };
+
+  virtual GetFooter(AuthoredContent content) = MarginBlock(0.5") {
+    SansSerif;
+    TextHeight: 8pt;
+
+    Paragraph {
+      ParAlignment: Center;
+      DocFields.PageNumber; " of "; DocFields.PageCount;
+    };
+
+    First: Block;
+  };
+
+  virtual GetHeader(AuthoredContent content) = null;
+
+  virtual AuthorListSeparator = null;
+
+  OpenAccessLicense = Paragraph {
+    "This is an Open Access article distributed under the terms of the ";
+    Span {
+      "Creative Commons Attribution License";
+      TextColor: Colors.Blue;
+      TipAction: new URL("https://creativecommons.org/licenses/by/4.0/");
+    };
+    ", which permits unrestricted reuse, distribution, and reproduction in any medium, provided the original work is properly cited. ";
+  };
+
+
+  ShowPublishDate(DocReference r) = Span {
+    "Published ";
+    TextFormat: "dd MMMM, yyyy";
+    r.Date;
+  };
+
+  AddComments(AuthoredContent content) = Block {
+    if (ReviewMode != ReviewModes.Revised and content.Comments is valid) {
+      SectionNextPage;
+      TitlePar {
+        "Comments and Responses";
+      };
+
+      foreach (var c in content.Comments) {
+        if (!c.NoAction)
+          c.ShowRevised(this);
+      }
+    }
+  };
+
+  virtual PaperEndnotes(DocumentEntry document, AuthoredContent content) = Block {
+    AddReadings(document);
+    AddReferences;
+    AddTableOfFigures;
+    AddTableOfTables;
+    AddAppendix(content.Appendix);
+    AddComments(content);
+  };
+
+  virtual GetContentDocument(DocumentEntry document, AuthoredContent content) = Document(Margins, false) {
+    SetDocumentOptions(content);
+    Footer: GetFooter(content);
+
+    AddTitle(content);
+    if (content.Authors is valid)
+      ShowTitleAuthors(content);
+
+    if (content.Abstract is not null)
+      ShowAbstract(content.Abstract);
+    ShowSections(content);
+    PaperEndnotes(document, content);
+  };
+
+  virtual ShowAbstract(Content content) = Block {
+    SansSerif;
+    TextHeight: 9pt;
+    Bold;
+    AddBody(content);
+  };
+
+  GetContentTip(Content content) {
+    if (content.Children is valid) {
+      return Frame {
+        Paragraph {
+          TextHeight: 14pt;
+          Span {
+            DocLang.Section;
+            Space;
+            content.AnchorText;
+          };
+          ColonSpace;
+          Span {
+            Bold;
+            content.Title;
+          };
+        };
+        Block {
+          LeftIndent: 32pt;
+          FirstIndent: -24pt;
+
+          foreach (var c in content.Children) {
+            Paragraph {
+              c.AnchorText;
+              Tab;
+              c.Title;
+            }
+          }
+        };
+      };
+    }
+    else {
+      return Frame {
+        Paragraph {
+          TextHeight: 14pt;
+          content.Title;
+        };
+        var caption = content.GetCaption(this);
+        if (caption is valid) {
+          caption;
+          Paragraph;
+        }
+        AddBody(content);
+      };
+    }
+  }
+
+  virtual WriteEndName(Person person) = GetLastFirstInitial(person);
+
+  virtual AlignEquations = AlignBlock(@Enumerators.NumberParens, null, [Tex.Equals]) {
+    ParAlignment: Center;
+    SectionFirstPar = true;
+  };
+
+  virtual LineEquation(Equation equation) = Paragraph {
+    ParLineNumbers: DocOptions.HasFlag(LineNumbers);
+    ParAlignment: Center;
+    TextEquation: true;
+    TextStacked: true;
+    SpaceBefore: 10pt;
+    SpaceAfter: 8pt;
+    equation;
+    Link to equation;
+    SectionFirstPar = true;
+  };
+
+  AlignEquation(Equation equation) = AlignEquations {
+    LineEquation(equation);
+  };
+
+  virtual EndnoteNumber(index) = Span {
+    index;
+    Dot;
+  };
+
+  SpanList = ListSpan(@Enumerators.RomanParens);
+
+  virtual TOC1 = Paragraph {
+    KeepWithNext: true;
+    TextHeight: 14pt;
+    SpaceBefore: 8pt;
+    Bold;
+  };
+
+  virtual TOC2(Content content) = Paragraph(null, [new(ExtentWidth, TabTypes.Right, TabLeaders.Dot)]) {
+    var anchor = content.AnchorName;
+    TextHeight: 12pt;
+    LeftIndent: 0.25";
+    Span {
+      Action: new Action(Actions.ToAnchor, anchor);
+      content.Title;
+    };
+    Tab;
+    DocFields.PageReference(anchor);
+  };
+
+  AddBody(Content content, title=null) = Block {
+    SectionContent     = content;
+    SectionFirstPar    = true;
+    if (DocOptions.HasFlag(InlineHeaders) and content.SectionLevel > 0)
+      InlineSectionTitle = title;
+    var b = content.GetBody(this);
+    InlineSectionTitle = null;
+    SectionFirstPar    = false;
+    return b;
+  };
+
+  virtual TitlePar = Paragraph {
+    SansSerif;
+    TextHeight: 16pt;
+    Bold;
+    KeepWithNext: true;
+    SpaceBefore: 18pt;
+    SpaceAfter: 6pt;
+  };
+
+  virtual DefaultPar = Paragraph {
+    ParAlignment: Justify;
+    ParLineNumbers: DocOptions.HasFlag(LineNumbers);
+    SpaceAfter: 4pt;
+  };
+
+  virtual HeadingPar(int level) = Paragraph {
+    SansSerif;
+    Bold;
+    KeepWithNext: true;
+
+    switch (level) {
+      case 0:
+        TextHeight: 14pt;
+        SpaceBefore: 12pt;
+        SpaceAfter: 2pt;
+        break;
+
+      case 1:
+        TextHeight: 13pt;
+        SpaceBefore: 6pt;
+        break;
+
+      default:
+        SpaceBefore: 6pt;
+        break;
+    }
+  };
+
+  HeadingSection = HeadingPar(0);
+
+  CenterFigure = DefaultPar {
+    ParAlignment: ParAlignments.Center;
+    SectionFirstPar = true;
+  };
+
+  AppendixCaption = DefaultPar {
+    TextHeight: 11pt;
+  };
+
+  SinglePar {
+    SectionFirstPar = true;
+    return Par;
+  }
+
+  virtual Par = DefaultPar {
+    if (SectionFirstPar) {
+      if (SectionContent is valid)
+        DocFields.Anchor(SectionContent.AnchorName);
+      if (InlineSectionTitle is valid) {
+        Span {
+          Bold;
+          if (SectionContent is valid and DocOptions.HasFlag(SectionNumbers)) {
+            SectionContent.AnchorText;
+            SectionDelimeter;
+            Space;
+          }
+          InlineSectionTitle;
+          DotSpace;
+        };
+        InlineSectionTitle = null;
+      }
+      SectionFirstPar = false;
+    }
+    else
+      FirstIndent: 24pt;
+  };
+
+  ReviewMark(ReviewComment c) {
+    switch (ReviewMode) {
+      case ReviewModes.MarkupAll:
+      case ReviewModes.MarkupOriginal:
+      case ReviewModes.MarkupRevised:
+        return {DocFields.Anchor(c.FactId); Span {
+          TextColor: Colors.Blue;
+          Icons.comment;
+          c.Number;
+          Space;
+          Tip: c;
+          Action: new Action(ToAnchor, c.GetAnchor);
+        }
+      };
+    }
+    return null;
+  }
+
+  ReviewOld {
+    switch (ReviewMode) {
+      case ReviewModes.Original:
+        return {};
+
+      case ReviewModes.Revised:
+        return null;
+
+      case ReviewModes.MarkupAll:
+      case ReviewModes.MarkupOriginal:
+        return Span {TextColor: Colors.Red; TextStrike: TextStrikes.Single};
+    }
+    return null;
+  }
+
+  ReviewNew {
+    switch (ReviewMode) {
+      case ReviewModes.Revised:
+        return {};
+
+      case ReviewModes.MarkupAll:
+      case ReviewModes.MarkupRevised:
+        return Span {TextColor: Colors.Blue};
+    }
+    return null;
+  }
+
+  ReviewNewBlock {
+    switch (ReviewMode) {
+      case ReviewModes.Revised:
+        return {};
+
+      case ReviewModes.MarkupAll:
+      case ReviewModes.MarkupRevised:
+        return Block {ParBackground: #F2F4FF#};
+    }
+    return null;
+  }
+
+  BodyTable(Column[] columns) = Table(null, null, columns) {
+    SpaceBefore: 10pt;
+    SpaceAfter: 10pt;
+    LeftIndent: 0.5";
+    SectionFirstPar = true;
+  };
+
+  virtual QuoteBlock = Paragraph(BorderLR(new (1, 16pt))) {
+    ParAlignment: Justify;
+    LeftIndent: 48pt;
+    RightIndent: 48pt;
+  };
+
+  virtual AddTitle(AuthoredContent content) = Block {
+    SansSerif;
+    if (content.Title is valid) {
+      Paragraph {
+        TextHeight: 22pt;
+        SpaceAfter: 10pt;
+        Bold;
+        content.Title;
+      };
+    }
+    var st = content.Reference.Subtitle;
+    if (st is valid) {
+      Paragraph {
+        LeftIndent: 24pt;
+        TextHeight: 12pt;
+        SpaceAfter: 10pt;
+        st;
+      };
+    }
+  };
+
+  virtual ShowTitleAuthors(AuthoredContent content) = Block {
+    if (IsAnonymous) {
+      Paragraph {
+        SpaceAfter: 8pt;
+        Bold;
+        DocLang.Anonymous;
+      };
+    }
+    else
+      ShowAuthorList(content, false);
+  };
+
+  TextList = Span {
+    Separator: CommaSpace;
+    PairSeparator: " and ";
+    LastSeparator: ", and ";   // Oxford comma
+  };
+
+  virtual NumberedList = ListBlock(@Enumerators.NumberDot) {
+    ParLineNumbers: DocOptions.HasFlag(LineNumbers);
+    ParAlignment: Justify;
+  };
+
+  virtual BulletList = ListBlock;
+
+  Initials(string name) {
+    if (name is valid)
+      return Span {name[0]; Dot};
+    return null;
+  }
+
+  ShowInitials(Person person) = Span {
+    Link to person;
+    TipAction: person;
+
+    Initials(person.First);
+    Initials(person.Middle);
+    Initials(person.Last);
+  };
+
+  ShowPerson(Person person) = GetFullName(person) {
+    TipAction: person;
+  };
+
+  ShowPersonFull(Person person) = Block {
+    LeftIndent: 0.25";
+
+    Paragraph {
+      FirstIndent: -0.25";
+      GetFullName(person);
+    };
+
+    GetLocation(person, true);
+
+    var email = person.FindFirstFact(WorkEmailLink);
+    if (email is valid) {
+      Paragraph {
+        DocLang.EMail;
+        ColonSpace;
+        email;
+      };
+    }
+
+    var site = person.FindFirstFact(WebsiteLink);
+    if (site is valid) {
+      Paragraph {
+        site;
+      };
+    }
+
+    Paragraph;
+  };
+
+  UIN GetOrcid(Person author) {
+    return author.FindFirstFact(OrcidLink) as UIN;
+  }
+
+  OrchidIcon(UIN id, size) = Canvas(size, size) {
+    Baseline: 84%;
+    BorderRadius: 50%;
+    Background: #72BE44#;
+    TipAction: new URL("www.orcid.org/" + id.Value);
+
+    Shape(Colors.White) {
+      EllipsePath(new(new(22%, 17%), 9%));
+      RectanglePath(new(new(23.5%, 32%), new(6%, 43%)));
+      ClosedPath(40%, 32%) {
+        LineTo(58%, 32%);
+        CurveTo(new(90%, 32%), new(90%, 75%), new(58%, 75%));
+        LineTo(40%, 75%);
+      };
+      ClosedPath(46%, 38%) {
+        LineTo(58%, 38%);
+        CurveTo(new(82%, 38%), new(82%, 69%), new(58%, 69%));
+        LineTo(46%, 69%);
+      };
+    };
+  };
+
+  virtual ShowAuthor(AuthoredContent content, Person author) = Span {
+    TextEquation: true;
+    TextLiteral: true;
+
+    GetFullName(author) {
+      Bold;
+      TipAction: author.FindFirstFact(WebsiteLink) ?? author.FindFirstFact(WorkEmailLink);
+    };
+
+    var orcid = GetOrcid(author);
+    if (orcid is valid) {
+      Span {
+        Tex.nbsp;
+        OrchidIcon(orcid, 10pt);
+        Tex.thinspace;
+      };
+    }
+
+    Span {
+      TextAlignment: TextAlignments.Superscript;
+      Separator: Comma;
+      AuthorEnumerator(each1);
+      foreach (var n in content.AuthorNotes) {
+        if (n.Author == author)
+          n.Mark;
+      }
+    };
+  };
+
+  virtual ShowDepartment(Organization department) = Span {
+    department.Name;
+
+    var org = department.FindFirstFact(DepartmentLink, true) as Organization ?? department;
+    if (org is valid) {
+      InitReference;
+      if (org != department and org.Name is valid) {
+        CommaSpace;
+        LitSpan {org.Name};
+      }
+      DelimNeeded = true;
+      GetLocation(org, true);
+    }
+  };
+
+  virtual ShowDepartments(Organization[] departments) = TextList {
+    foreach (var department in departments)
+      ShowDepartment(department);
+  };
+
+  virtual ShowAuthorList(AuthoredContent content, bool lines) = Block {
+    var authors = content.Authors;
+
+    Paragraph {
+      SpaceAfter: 8pt;
+      TextList {
+        Bold;
+        ShowAuthor(content, each authors);
+      };
+    };
+
+    AuthorListSeparator;
+
+    if (lines) {
+      foreach (var author in authors) {
+        var departments = author.FindFacts(DepartmentLink) as Organization[];
+        if (departments is valid) {
+          Paragraph {
+            LeftIndent: NoteIndexIndent;
+            FirstIndent: -NoteIndexIndent;
+            Span {
+              TextAlignment: TextAlignments.Superscript;
+              AuthorEnumerator(each1);
+            };
+            Tab;
+            ShowDepartments(departments);
+          };
+        }
+      }
+    }
+    else {
+      Paragraph {
+        foreach (var author in authors) {
+          var departments = author.FindFacts(DepartmentLink) as Organization[];
+          if (departments is valid) {
+            Span {
+              TextAlignment: TextAlignments.Superscript;
+              AuthorEnumerator(each1);
+            };
+            ShowDepartments(departments);
+            "; ";
+          }
+        }
+      }
+    }
+  };
+
+  int ByAuthorName(Citation c1, Citation c2) {
+    var r1 = c1.Reference;
+    var r2 = c2.Reference;
+    if (r1 is not null and r2 is not null) {
+      var n1 = RefSortingText(r1);
+      var n2 = RefSortingText(r2);
+      return n1.Compare(n2);
+    }
+    else if (r1 is not null)
+      return -1;
+    else if (r2 is not null)
+      return 1;
+    return c2.Order - c1.Order;
+  }
+
+  override GetLayoutEndnotes(Citation[] citations) {
+    if (!BibTable)
+      citations = citations.ToSortedArray(false, @ByAuthorName);
+    return GetNotes(citations, BibTable, true, 3pt);
+  }
+
+  void LineBreaks(TexSource tex, int lines) {
+    while (lines-- > 0)
+      tex.LineBreak;
+  }
+
+  void Code(TexSource tex, text, int lines=0) {
+    tex.Code(text);
+    LineBreaks(tex, lines);
+  }
+
+  void CloseScope(TexSource tex, int lines=0) {
+    tex.CloseScope;
+    LineBreaks(tex, lines);
+  }
+
+  void Marker(TexSource tex, name, value, int lines=1) {
+    tex.Keyword(name);
+    if (value is valid) {
+      tex.OpenScope;
+      Code(tex, value);
+      CloseScope(tex, lines);
+    }
+    else
+      LineBreaks(tex, lines);
+  }
+
+  void Statement(TexSource tex, name, value) {
+    tex.Keyword(name);
+    tex.OpenScope;
+    if (value is valid)
+      Code(tex, value);
+    CloseScope(tex, 1);
+  }
+
+  void Command(TexSource tex, command, name, value, arg=null) {
+    tex.Keyword(command);
+    tex.OpenScope;
+    tex.Keyword(name);
+    CloseScope(tex);
+    if (arg)
+      tex.Code("[1]");
+    tex.OpenScope;
+    Code(tex, value);
+    CloseScope(tex, 1);
+  }
+
+  void RenewCommand(TexSource tex, name, value) {
+    Command(tex, "renewcommand", name, value);
+  }
+
+  void NewCommand(TexSource tex, name, value, args=null) {
+    Command(tex, "newcommand", name, value, args);
+  }
+
+  FigureReference(Content content) = Span {
+    DocLang.Figure;
+    Tex.nbsp;
+    DocFields.FigureReference(content);
+    TipAction: new ContentAction(content, this);
+  };
+
+  FigureNumber(Content content) = Span {
+    DocFields.FigureReference(content);
+    TipAction: new ContentAction(content, this);
+  };
+
+  TableReference(Content content) = Span {
+    DocLang.Table;
+    Tex.nbsp;
+    DocFields.TableReference(content);
+    TipAction: new ContentAction(content, this);
+  };
+
+  TableNumber(Content content) = Span {
+    DocFields.TableReference(content);
+    TipAction: new ContentAction(content, this);
+  };
+
+  SectionReference(Content content) = Span {
+    DocLang.Section;
+    Tex.nbsp;
+    DocFields.SectionReference(content);
+    TipAction: new ContentAction(content, this);
+  };
+
+  SectionNumber(Content content) = Span {
+    DocFields.SectionReference(content);
+    TipAction: new ContentAction(content, this);
+  };
+
+  AddFigure(Content content, FigureOptions options, percentage=100%) = Figure(options.HasFlag(Full) ? FullWidth : HalfWidth, 100%, content, options) {
+    var caption = content.GetCaption(this) ?? content.Title;
+    var table   = options.HasFlag(FigureOptions.Table);
+    if (caption is valid) {
+      Caption: Frame {
+        Paragraph {
+          SansSerif;
+          ParAlignment: Justify;
+          if (!TexOutput) {
+            Span {
+              Bold;
+              table ? "Table" : "Fig";
+              Tex.nbsp;
+              if (table)
+                DocFields.TableSequence(content);
+              else
+                DocFields.FigureSequence(content);
+              DotSpace;
+            };
+          }
+          caption;
+        };
+      };
+    }
+
+    var width = ExtentWidth * percentage;
+    PushExtentSize(new(width, ExtentHeight));
+    Paragraph {
+      DocFields.Anchor(content.AnchorName);
+      ParAlignment: Center;
+      Frame(width) {
+        AddBody(content);
+      };
+    };
+    PopExtent;
+  };
+
+  AddTable(Content content, FigureOptions options, percentage=100%) = AddFigure(content, options | Table | CaptionAbove, percentage);
+
+  virtual ShowChild(Content content, bool shownumber) = Block {
+    var title = content.Title;
+    if (DocOptions.NotFlag(InlineHeaders) or content.SectionLevel == 0) {
+      if (title is valid) {
+        HeadingPar(content.SectionLevel) {
+          DocFields.Anchor(content.AnchorName);
+          if (shownumber) {
+            content.AnchorText;
+            SectionDelimeter;
+            Space;
+          }
+          title;
+        };
+      }
+    }
+    AddBody(content, title);
+
+    foreach (var c in content.Children)
+      ShowChild(c, shownumber);
+  };
+
+  virtual ShowSections(AuthoredContent content) = Block {
+    foreach (var c in content.Children)
+      c.AssignSectionNumber(0, each0, Empty, SectionDelimeter);
+
+    foreach (var c in content.Children)
+      ShowChild(c, DocOptions.HasFlag(SectionNumbers));
+
+    if (not IsAnonymous) {
+      foreach (var section in content.ExtraSections) {
+        if (section is valid)
+          ShowChild(section, false);
+      }
+    }
+  };
+
+  void ShowChildTex(TexSource tex, int index, int level, Content content) {
+    if ((level > 0 or index > 0) and content.Title is valid) {
+      tex.Keyword("sub" * level + SectionCode);
+      tex.OpenScope;
+      tex.Text(content.Title);
+      CloseScope(tex, 1);
+      tex.Keyword("label");
+      tex.OpenScope;
+      tex.Code(content.AnchorName);
+      CloseScope(tex, 1);
+    }
+
+    var body = AddBody(content);
+    if (body is valid) {
+      tex.Text(body {SetTextStyle});
+      tex.LineBreak;
+      tex.LineBreak;
+    }
+    foreach (var c in content.Children)
+      ShowChildTex(tex, each0, level + 1, c);
+  }
+
+  AddReadings(DocumentEntry document) = Block {
+    if (document.ReadingCount > 0) {
+      HeadingSection {
+        DocLang.Bibliography;
+      };
+      DocumentEndnotes(EndnoteOptions.Readings);
+    }
+  };
+
+  AddReferences = DocumentEndnotes(HeadingSection {DocLang.References}, EndnoteOptions.References);
+
+  AddTableOfFigures = Block {
+    DocumentFigures(HeadingSection {DocLang.TableOfFigures});
+  };
+
+  AddTableOfTables = Block {
+    DocumentTables(HeadingSection {DocLang.TableOfTables});
+  };
+
+  AddIndex = Block {
+    DocumentIndex(HeadingSection {DocLang.Index}, 1, [TabLeaders.Dot, TabLeaders.None]);
+  };
+
+  AddAppendix(Content appendix) = Block {
+    foreach (var content in appendix.Children) {
+      HeadingSection {
+        PageBreakBefore: true;
+        DocLang.Appendix;
+        Space;
+        each1;
+        ColonSpace;
+        content.Title;
+      };
+
+      var caption = content.GetCaption(this);
+      if (caption is valid) {
+        AppendixCaption {
+          caption;
+        };
+      }
+      AddBody(content);
+    }
+  };
+
+  void InitReference {
+    DelimNeeded = false;
+    NextDelim   = null;
+  }
+
+  protected AddDelim {
+    if (DelimNeeded)
+      return NextDelim ?? DefDelim;
+
+    NextDelim   = null;
+    DelimNeeded = true;
+    return null;
+  }
+
+  protected PushParen = Span {
+    "(";
+    DelimNeeded = false;
+  };
+
+  protected PopParen(delim = null) = Span {
+    ")";
+    DelimNeeded = true;
+    NextDelim   = delim;
+  };
+
+  static GetLastFirst(Person person) = Span {
+    Link to person;
+
+    Span {
+      Delimiter: CommaSpace;
+      person.Last;
+    };
+    Span {
+      Delimiter: Space;
+      person.First;
+    };
+    if (person.Middle is valid) {
+      Span {
+        Delimiter: CommaSpace;
+        person.Middle[0];
+        Dot;
+      };
+    }
+    person.Suffix;
+  };
+
+  static FirstInitials(Person person) = Span {
+    bool space = false;
+    if (person.First is valid) {
+      person.First[0];
+      Dot;
+      space = true;
+    }
+    if (person.Middle is valid) {
+      if (space)
+        Space;
+      person.Middle[0];
+      Dot;
+    }
+  };
+
+  static GetSuffix(Person person) = Span {
+    if (person.Suffix is valid) {
+      CommaSpace;
+      person.Suffix;
+      Dot;
+    }
+  };
+
+  static GetLastFirstInitial(Person person)  = Span {
+    Link to person;
+    TipAction: person;
+
+    Span {
+      Delimiter: CommaSpace;
+      person.Last;
+    };
+    FirstInitials(person);
+    GetSuffix(person);
+  };
+
+  static GetFirstInitialLast(Person person)  = Span {
+    Link to person;
+    TipAction: person;
+
+    FirstInitials(person);
+    if (person.Last is valid) {
+      Space;
+      person.Last;
+    }
+    GetSuffix(person);
+  };
+
+  static GetFullName(Person person) = LitSpan {
+    Link to person;
+
+    Span {
+      Delimiter: Space;
+      person.First;
+    };
+    if (person.Middle is valid) {
+      Span {
+        Delimiter: Space;
+        person.Middle[0];
+        Dot;
+      };
+    }
+    Span {
+      Delimiter: CommaSpace;
+      person.Last;
+    };
+    person.Suffix;
+  };
+
+  GetLocation(value, international=false) = LitSpan {
+    PostalAddress address = value.FindFirstFact(PostalAddress);
+    City          city;
+    State         state;
+    var           postal;
+
+    if (address is valid) {
+      if (address.Address is valid) {
+        AddDelim;
+        address.Address;
+      }
+
+      postal = address.PostalCode;
+      city   = address.FindFirstFact(City) as City;
+    }
+    else
+      city = value.FindFirstFact(City);
+
+    if (city is valid)
+      state = city.FindFirstFact(State) as State;
+    else
+      state = value.FindFirstFact(State);
+
+    if (city is valid) {
+      AddDelim;
+      city.Name;
+    }
+
+    if (state is valid) {
+      AddDelim;
+      state.Abbreviation;
+    }
+
+    if (postal is valid) {
+      Space;
+      postal;
+    }
+
+    if (international) {
+      Fact c;
+      if (state is valid)
+        c = state.FindFirstFact(Country);
+      else
+        c = value.FindFirstFact(Country) ?? city?.FindFirstFact(Country);
+      if (c is Country country) {
+        AddDelim;
+        country.Abbreviation;
+      }
+    }
+  };
+
+  ShowYear(DocReference reference) = Span {
+    TextFormat: "yyyy";
+    reference.Date;
+  };
+
+  protected GetPublisherDate(DocReference reference) = Span {
+    Organization[] schools = reference.FindFacts(SchoolLink) as Organization[];
+    if (schools is valid) {
+      AddDelim;
+
+      Span {
+        Separator: CommaSpace;
+        (each schools).Name;
+      };
+    }
+
+    Organization[] sponsors = reference.FindFacts(SponsorLink) as Organization[];
+    if (sponsors is valid) {
+      AddDelim;
+
+      Span {
+        Separator: CommaSpace;
+        (each sponsors).Name;
+      };
+    }
+
+    var publisher = reference.FindFirstFact(PublisherLink) as Organization;
+    var date      = reference.Date;
+    if (date is valid or publisher is valid or reference.HowPublished is valid) {
+      if (DateParen) {
+        AddDelim;
+        PushParen;
+      }
+
+      if (publisher is valid) {
+        AddDelim;
+        publisher.Name;
+
+        DelimNeeded = true;
+        NextDelim   = CommaSpace;
+        GetLocation(publisher);
+      }
+
+      if (date is valid) {
+        AddDelim;
+        Span {
+          TextFormat: PubDateFormat[Math.Min(2, date.Precision)];
+          date;
+        };
+      }
+
+      if (reference.HowPublished is valid) {
+        AddDelim;
+        reference.HowPublished;
+      }
+
+      if (DateParen)
+        PopParen;
+    }
+  };
+
+   WriteEndNames(Person[] people) = Span {
+    if (people is valid) {
+      if (people.Length < EndAuthors) {
+        Span {
+          Separator: CommaSpace;
+          LastSeparator: PersonAnd;
+          WriteEndName(each people);
+        }
+      }
+      else if (PartialAuthors > 0) {
+        Span {
+          Separator: CommaSpace;
+          WriteEndName(each people[..PartialAuthors]);
+        };
+        "... ";
+        WriteEndName(people.LastElement);
+      }
+      else {
+        WriteEndName(people.FirstElement);
+        Space;
+        EtAl;
+      }
+      DelimNeeded = true;
+    }
+  };
+
+  GetNameList(DocReference reference, linktype, plural, single=null, paren=false) {
+    Person[] people = reference.FindFacts(linktype) as Person[];
+    if (people is valid) {
+      return Span {
+        AddDelim;
+        if (paren)
+          PushParen;
+
+        var fix = people.Length == 1 and single is valid ? single : plural;
+        if (!NameListAfter)
+          fix;
+        WriteEndNames(people);
+        if (NameListAfter)
+          fix;
+        if (paren)
+          PopParen;
+        else if (NameListAfter and fix is not null and fix.Last == DefDelim.First)
+          DelimNeeded = false;
+      };
+    }
+    return null;
+  }
+
+  virtual FootnoteBody(Citation citation, DocReference reference, index) = Block;
+
+  static Person[] GetAuthorList(DocReference reference) {
+    foreach (var t in AuthorLinks) {
+      var authors = reference.FindFacts(t) as Person[];
+      if (authors is valid)
+        return authors;
+    }
+    return [];
+  }
+
+  virtual GetOnline(DocReference reference) = ShowWebsite(reference, null, null, "Retrieved ", " from ");
+
+  GetNotePublish(DocReference reference) = Span {
+    if (reference.Note is valid) {
+      AddDelim;
+      reference.Note;
+    }
+    GetNumber(reference);
+  };
+
+  private GetLayoutIbid(Citation citation, bool ibid, bool endnotes) {
+    var r = citation.Reference;
+    if (r is not null) {
+      if (endnotes)
+        DocFields.Anchor(r.FactId);
+
+      InitReference;
+      var pages = citation.Pages ?? r.Pages;
+      if (ibid) {
+        return Paragraph {
+          "ibid. ";
+          DelimNeeded = false;
+          GetPageRange(PagePrefixes, pages);
+        };
+      }
+      else if (citation.Content is valid) {
+        return Block {
+          citation.Content;
+          GetEndNotes(r);
+        };
+      }
+      else
+        return GetEndNotes(r);
+    }
+    else
+      return citation.Content;
+  }
+
+  GetEndNotes(DocReference reference) = Paragraph {
+    Link to reference;
+    ParAlignment: Justify;
+    if (ParIndent is valid) {
+      LeftIndent: ParIndent;
+      FirstIndent: -ParIndent;
+    }
+
+    EndnoteSpan(reference);
+  };
+
+  virtual EndnoteSpan(DocReference reference) = Span {
+    WriteEndNames(GetAuthorList(reference));
+    GetTitle(reference);
+    GetInterview(reference, true, null, ", Interviewer");
+
+    GetNameList(reference, TranslatorLink, ", Trans.", null, true);
+    GetNameList(reference, EditorLink, " (Eds.)", " (Ed.)");
+    GetNameList(reference, PerformerLink, ", Perfs.", ", Perf.");
+    GetNameList(reference, DirectorLink, ", Dirs.", ", Dir.");
+    GetNameList(reference, ComposerLink, ", Comps.", ", Comp.");
+
+    GetOnline(reference);
+    GetReferenceNumbers(reference);
+    GetPublisherDate(reference);
+    GetChapterPages(reference);
+    GetNotePublish(reference);
+  };
+
+  private OutRange(bool comma, Citation first, Citation last) = Span {
+    TextDigits: 0;
+    if (comma)
+      Comma;
+
+    var lo = first ?? last;
+    lo.Order;
+    if (last is not null and lo.Order != last.Order) {
+      if (lo.Order+1 == last.Order)
+        Comma;
+      else
+        "-";
+      last.Order;
+    }
+  };
+
+  static int OrderComp(Citation c1, Citation c2) {
+    return c1.Order - c2.Order;
+  }
+
+  GetOrder(Citation[] citations) = Span {
+    var sorted = citations.ToSortedArray(false, @OrderComp);
+
+    InlineBegin;
+    Span {
+      InlineFormat;
+
+      Citation first = null;
+      Citation last  = null;
+      bool     comma = false;
+
+      foreach (var c in sorted) {
+        if (first is null) {
+          first = c;
+          last  = c;
+        }
+        else {
+          if (c.Order > last.Order + 1) {
+            OutRange(comma, first, last);
+            first = c;
+            comma = true;
+          }
+          last = c;
+        }
+      }
+      OutRange(comma, first, last);
+    };
+    InlineEnd;
+
+    NextDelim   = Space;
+    DelimNeeded = true;
+  };
+
+  override GetLayoutInline(Citation[] citations, CiteOptions options) = Span {
+    var brackets = InlineBrackets;
+    if (options.HasFlag(AddSuffix))
+      brackets = ParenBrackets;
+
+    bool br = options.HasFlagMask(ShowBrackets Textual, ShowBrackets);
+
+    if (options.HasFlag(ShowBrackets)) {
+      Space;
+      DelimNeeded = false;
+    }
+
+    if (br)
+      brackets[0];
+
+    if (options.HasFlag(ShowOrder)) {
+      options &= ~CiteOptions.ShowPages;
+      GetOrder(citations);
+    }
+
+    if (options.HasFlag(ShowAuthors ShowDate ShowPages)) {
+      foreach (var citation in citations) {
+        if (DelimNeeded) {
+          "; ";
+          DelimNeeded = false;
+        }
+
+        var reference = citation.Reference;
+        if (options.HasFlag(ShowAuthors)) {
+          var authors = GetAuthorList(reference);
+          if (authors is valid) {
+            var alist  = authors;
+            var acount = alist.Length;
+            var etal   = acount != 2 && options.NotFlag(AllAuthors) and acount > InlineAuthors;
+            if (etal)
+              alist = alist[0..<InlineAuthors];
+
+            AddDelim;
+            TextList {
+              (each alist).Last;
+            };
+            if (etal) {
+              Space;
+              EtAl;
+              NextDelim = CommaSpace;
+            }
+          }
+          else {
+            reference.Key ?? reference.Name;
+            NextDelim = CommaSpace;
+          }
+        }
+
+        if (options.HasFlag(ShowDate) and reference.Date is valid) {
+          if (options.HasFlag(DateBrackets)) {
+            " (";
+            ShowYear(reference);
+            ")";
+          }
+          else {
+            Space;
+            ShowYear(reference);
+          }
+          NextDelim   = CommaSpace;
+          DelimNeeded = true;
+        }
+
+        if (options.HasFlag(ShowPages))
+          GetPageRange(CitePagePrefixes, citation.Pages);
+      }
+    }
+
+    if (br)
+      brackets[1];
+  };
+
+
+  override GetLayoutNote(Citation citation) = GetLayoutIbid(citation, false, false);
+
+  override GetLayoutFootnotes(Citation[] citations) = Block {
+    Paragraph(BorderB(1)) {
+      RightIndent: 70%;
+    };
+
+    GetNotes(citations, not InlineOptions.HasFlag(CiteOptions.ShowAuthors), true, 0);
+  };
+
+  override GetLayoutTipNotes(Citation[] citations) = GetNotes(citations.ToSortedArray(false, @OrderComp), true, true, 0);
+
+  string RefSortingText(DocReference reference) {
+    var authors = GetAuthorList(reference);
+    if (authors is valid)
+      return GetLastFirst(authors[0]) as string;
+    else
+      return reference.Key ?? reference.GetTitle ?? reference.BookTitle ?? reference.Note;
+  }
+
+  AddNotes(Citation[] citations, bool table, bool endnotes, rowpad) = {
+    DocReference last = null;
+    foreach (var citation in citations) {
+      var reference = citation.Reference;
+      var content;
+      if (reference is valid)
+        content = GetLayoutIbid(citation, last == reference, endnotes);
+      else
+        content = citation.Content;
+
+      if (content is valid) {
+        var num = EndnoteNumber(citation.Order);
+        if (table) {
+          Row(PadB(rowpad)) {
+            Cell(PadR(6pt)) {
+              ParAlignment: Right;
+              VAlign: Top;
+              num;
+            };
+            content;
+          };
+        }
+        else if (endnotes and reference is not null)
+          content;
+        else {
+          Paragraph {
+            num;
+            Tab;
+            content
+          };
+        }
+
+        last = reference;
+      }
+    }
+  };
+
+  protected GetNotes(Citation[] citations, bool table, bool endnotes, rowpad) = Block {
+    if (table) {
+      Table(0, null, [Column.Fit(48pt), Column.Expand]) {
+        AddNotes(citations, true, endnotes, rowpad);
+      };
+    }
+    else {
+      Block {
+        LeftIndent: 16pt;
+        FirstIndent: -16pt;
+        AddNotes(citations, false, endnotes, rowpad);
+      };
+    }
+  };
+
+  ShowWebsite(DocReference reference, left, right, predate, after=null) = Span {
+    var url = reference.FindFirstFact(URL);
+    if (url is valid) {
+      AddDelim;
+      left;
+
+      if (after is not valid) {
+        Span {
+          Underline;
+          url;
+        };
+      }
+      right;
+      if (reference.Accessed is valid) {
+        DelimNeeded = false;
+        predate;
+        FormatDate(reference.Accessed);
+        after;
+      }
+      if (after is valid) {
+        Span {
+          Underline;
+          url;
+        };
+      }
+    }
+  };
+
+  GetNumber(DocReference reference) = Span {
+    string t = null;
+    if (reference.Number is valid) {
+      switch (reference.Type) {
+        case ReferenceTypes.Patent:
+          t = "Patent No. ";
+          break;
+
+        case ReferenceTypes.TechReport:
+          t = "Tech Rep. ";
+          break;
+      }
+    }
+
+    if (t is valid) {
+      AddDelim;
+      Span {
+        Italic;
+        t;
+        reference.Number;
+      }
+    }
+  };
+
+  GetPageRange(string[] prefix, pages) = Span {
+    if (pages is valid) {
+      AddDelim;
+      var pr = pages as Range;
+      if (pr is valid) {
+        var lo = pr.Start;
+        var hi = pr.End;
+        if (lo == hi) {
+          prefix[0];
+          lo;
+        }
+        else {
+          prefix[1];
+          lo;
+          lo+1 == hi ? "," : "-";
+          hi;
+        }
+      }
+      else {
+        prefix[1];
+        pages;
+      }
+    }
+  };
+
+  GetEdition(DocReference reference) = Span {
+    if (reference.Edition is valid) {
+      AddDelim;
+
+      reference.Edition;
+      " ed";
+      NextDelim = DotSpace;
+    }
+  };
+
+  ShowId(name, id) {
+    if (id is valid) {
+      return Span {
+        AddDelim;
+        name;
+        ColonSpace;
+        id;
+      };
+    }
+    return null;
+  }
+
+  GetReferenceNumbers(DocReference reference) = Span {
+    ShowId("doi", reference.DOI);
+    ShowId("issn", reference.ISSN);
+    ShowId("isbn", reference.ISBN);
+    ShowId("lccn", reference.LCCN);
+    ShowId("eid", reference.EID);
+  };
+
+  GetChapterPages(DocReference reference) = Span {
+    if (reference.Series is valid) {
+      AddDelim;
+      "ser. ";
+      reference.Series;
+    }
+    if (reference.Chapter is valid) {
+      AddDelim;
+      "ch. ";
+      reference.Chapter;
+    }
+
+    GetPageRange(PagePrefixes, reference.Pages);
+  };
+
+  GetPublisher(DocReference reference) = Span {
+    var publishers = reference.FindFacts(PublisherLink) as Organization[];
+    if (publishers is valid) {
+      AddDelim;
+
+      Span {
+        Separator: CommaSpace;
+        (each publishers).Name;
+      };
+    }
+  };
+
+  FormatDate(date) = Span {
+    if (date is valid) {
+      AddDelim;
+
+      Span {
+        TextFormat: DateFormat[Math.Min(2, date.Precision)];
+        date;
+      };
+    }
+    else if (DateAlternate is valid) {
+      AddDelim;
+      DateAlternate;
+    }
+  };
+
+  GetVolume(DocReference reference) {
+    if (reference.Volume is valid) {
+      if (reference.Number is valid)
+        return Span {reference.Volume; "("; reference.Number; ")"};
+      else
+        return Span {DocLang.Volume; Space; reference.Volume};
+    }
+    else if (reference.Number is valid)
+      Span {"("; reference.Number; ")"};
+    return null;
+  }
+
+  GetTitle(DocReference reference) = Span {
+    var title    = reference.GetTitle;
+    var subtitle = reference.Subtitle;
+    var bt       = reference.BookTitle;
+    var journal  = reference.FindFirstFact(JournalLink) as Organization;
+
+    if (reference.Key is valid)
+      title = "{0}{1}{2}"(reference.Key, Tex.EmDash, title);
+
+    if (title is valid or bt is valid or journal is valid) {
+      if (title is valid) {
+        AddDelim;
+        Span {
+          if (TitleQuote) {
+            Quote;
+            title;
+            if (subtitle is valid) {
+              SubtitleSep;
+              subtitle;
+            }
+            DefDelim;
+            Quote;
+            NextDelim = Space;
+          }
+          else {
+            Span {
+              RefTitleStyle;
+              title;
+              if (subtitle is valid) {
+                SubtitleSep;
+                subtitle;
+              }
+            };
+          }
+        };
+
+        switch (reference.Type) {
+          case ReferenceTypes.PHDThesis:
+            ", Ph.D. Dissertation";
+            break;
+
+          case ReferenceTypes.MastersThesis:
+            ", Master's Thesis";
+            break;
+        }
+      }
+
+      if (journal is valid) {
+        AddDelim;
+        Span {
+          Separator: CommaSpace;
+          Span {
+            Italic;
+            journal.Name;
+          };
+          GetVolume(reference);
+        }
+      }
+      else if (bt is valid) {
+        AddDelim;
+        "In ";
+        Span {
+          Separator: CommaSpace;
+          Span {
+            Italic;
+            bt;
+          };
+          GetVolume(reference);
+          var authors = reference.FindFacts(BookAuthorLink) as Person[];
+          if (authors is valid) {
+            "by ";
+            WriteEndNames(authors);
+          }
+        };
+      }
+    }
+  };
+
+  GetInterview(DocReference reference, bool paren, start, end=null) = Span {
+    if (reference.Type == ReferenceTypes.Interview) {
+      var interviewers = reference.FindFacts(InterviewerLink) as Person[];
+      if (interviewers is valid) {
+        if (paren)
+          PushParen;
+        start;
+        WriteEndNames(interviewers);
+        end;
+        if (paren)
+          PopParen;
+      }
+    }
+  };
+
+  virtual void StandardCommands(TexSource tex, AuthoredContent content) {
+    var set = new HashSet<string>(TexPackages.Length);
+    foreach (var p in TexPackages) {
+      if (set.Add(p))
+        Marker(tex, "usepackage", p);
+    }
+
+    if (TexFont is valid)
+      Marker(tex, "setmainfont", TexFont);
+
+//    tex.Keyword("hbadness");  // Supress pointless warning
+//    Code(tex, 6000, 2);
+  }
+
+  void AddDocumentStatement(TexSource tex) {
+    tex.Keyword("documentclass");
+    var props = Span {
+      Separator: ",";
+      each TexOptions;
+    };
+    tex.Code("[{0}]"(props));
+    if (TexTemplate is valid) {
+      tex.OpenScope;
+      tex.Text(TexTemplate);
+      CloseScope(tex);
+    }
+    tex.LineBreak;
+  }
+
+  virtual void GetTexContent(TexSource tex, AuthoredContent content) {
+    TexOutput = true;
+
+    AddDocumentStatement(tex);
+    Statement(tex, "templatetype", "pnasresearcharticle");
+
+    RenewCommand(tex, "topfraction", 1);
+    RenewCommand(tex, "bottomfraction", 0.95);
+    RenewCommand(tex, "textfraction", 0);
+    RenewCommand(tex, "floatpagefraction", 0.95);
+
+    bool orcid = false;
+    foreach (var author in content.Authors) {
+      if (GetOrcid(author) is not valid) {
+        orcid = true;
+        break;
+      }
+    }
+
+    if (orcid)
+     TexPackages.Add("academicons");
+
+    StandardCommands(tex, content);
+    if (orcid)
+      NewCommand(tex, "orcid", "\\href{orcid.org/#1}{\\textcolor[HTML]{A6CE39}{\\aiOrcid}}}", true);
+
+    AddHeader(tex, content);
+
+    var sig = content.SignificanceStatement;
+    if (sig is not null) {
+      Marker(tex, "vspace", "-10 pt");
+      tex.Keyword("significancestatement");
+      tex.OpenScope;
+      tex.Text(AddBody(sig));
+      CloseScope(tex, 2);
+    }
+
+    if (content.Keywords is valid) {
+      tex.Keyword("keywords");
+      tex.OpenScope;
+      foreach (var k in content.Keywords) {
+        if (each0 > 0)
+          tex.Code(" $|$ ");
+        tex.Text(k);
+      }
+      CloseScope(tex, 2);
+    }
+
+    var ab = content.Abstract;
+    if (ab is valid) {
+      var body = AddBody(ab);
+      if (body is valid) {
+        Marker(tex, "begin", "abstract");
+        tex.Text(body);
+        tex.LineBreak;
+        Marker(tex, "end", "abstract");
+        tex.LineBreak;
+      }
+    }
+
+    tex.Keyword("dates");
+    tex.OpenScope;
+    tex.Text(DocLang.CompiledOn);
+    tex.Keyword("today");
+    CloseScope(tex, 1);
+
+    var url = content.DocumentURL;
+    if (url is valid) {
+      tex.Keyword("doi");
+      tex.OpenScope;
+      tex.Keyword("url");
+      tex.OpenScope;
+      tex.Text(url);
+      CloseScope(tex);
+      CloseScope(tex, 2);
+    }
+
+    Marker(tex, "begin", "document", 2);
+
+    tex.Keyword("maketitle");
+    tex.LineBreak;
+    Marker(tex, "thispagestyle", "firststyle");
+    if (Columns > 1) {
+      tex.Code("\\ifthenelse{\\boolean{shortarticle}}{\\ifthenelse{\\boolean{singlecolumn}}{\\abscontentformatted}{\\abscontent}}{}");
+      tex.LineBreak;
+    }
+    tex.LineBreak;
+
+    PushExtentSize(new(HalfWidth, ExtentHeight));
+    foreach (var c in content.Children)
+      ShowChildTex(tex, each0, 0, c);
+    PopExtent();
+    tex.LineBreak;
+    ShowSpecial(tex, content.Acknowledgements, "acknow");
+    ShowSpecial(tex, content.Funding, "funding");
+
+    Marker(tex, "bibliography", "main.bib");
+    tex.LineBreak;
+    Marker(tex, "end", "document");
+    TexOutput = false;
+  }
+
+  ShowSpecial(TexSource tex, Content section, name) = Block {
+    if (section is not null) {
+      var body = AddBody(section);
+      if (body is not null) {
+        tex.Keyword(name);
+        tex.OpenScope;
+        tex.Text(body);
+        CloseScope(tex, 1);
+        Statement(tex, "show"+name, null);
+      }
+    }
+  };
+
+  void AddHeader(TexSource tex, AuthoredContent content) {
+    tex.Keyword("title");
+    tex.OpenScope;
+    tex.Text(content.Title);
+    CloseScope(tex, 1);
+
+    if (IsAnonymous) {
+      tex.Keyword("author");
+      tex.OpenScope;
+      tex.Text(DocLang.Anonymous);
+      CloseScope(tex, 1);
+    }
+    else
+      TexAuthors(tex, content);
+  }
+
+  virtual void TexAuthors(TexSource tex, AuthoredContent content) {
+    var authors = content.Authors;
+    if (authors is valid) {
+      var corr = content.Correspondant;
+      var email;
+
+      foreach (var author in authors) {
+        tex.Keyword("author");
+        tex.Code("[{0}"('a' + each0));
+        if (author == corr) {
+          email = corr.FindFirstFact(WorkEmailLink);
+          if (email is valid)
+            tex.Code(",1");
+        }
+        tex.Code("]");
+        tex.OpenScope;
+        tex.Text(author);
+        var orcid = GetOrcid(author);
+        if (orcid is valid) {
+          tex.Text(Space);
+          tex.Keyword("orcid");
+          tex.OpenScope;
+          tex.Text(orcid.Value);
+          CloseScope(tex);
+        }
+        CloseScope(tex, 1);
+      }
+
+      tex.LineBreak;
+      foreach (var author in authors) {
+        var departments = author.FindFacts(DepartmentLink) as Organization[];
+        if (departments is valid) {
+          tex.Keyword("affil");
+          tex.Code("[{0}]"('a' + each0));
+          tex.OpenScope;
+          tex.Text(ShowDepartments(departments));
+          CloseScope(tex, 1);
+        }
+      }
+      tex.LineBreak;
+
+      Marker(tex, "leadauthor", corr.Last);
+      tex.LineBreak;
+
+      var sig = content.SignificanceStatement;
+      if (sig is not null) {
+        Marker(tex, "vspace", "-10 pt");
+        tex.Keyword("significancestatement");
+        tex.OpenScope;
+        tex.Text(AddBody(sig));
+        CloseScope(tex, 2);
+      }
+      if (email is valid) {
+        tex.Keyword("correspondingauthor");
+        tex.OpenScope;
+        tex.Keyword("textsuperscript");
+        tex.OpenScope;
+        tex.Code(1);
+        CloseScope(tex);
+        tex.Text("{0}. E-mail: {1}"(DocLang.AddCorrespondance, email));
+        CloseScope(tex, 2);
+      }
+    }
+  }
+}
+
+//==================================================
+
+class CopyAction: Action {
+  var Text;
+
+  Constructor(text) {
+    super.Constructor(Actions.Execute);
+    Text = text;
+  }
+
+  override EventResponse Execute {
+    System.TextToClipboard(Text);
+    return EventResponses.MessageTip("Text copied");
+  }
+}
+
+//==================================================
+
+class CiteDocument: DocumentEntry {
+  var DocReference Reference;
+  var ContentStyle Style;
+  var              Cover;
+
+  Constructor(in Guid id, name, ContentStyle style, DocReference reference, cover) {
+    super.Constructor(id, name);
+    Reference   = reference;
+    Style       = style;
+    Cover       = cover;
+    Description = "Citation information and links to the original publication";
+  }
+
+  ShowTextPreview(title, text) = Block {
+    Paragraph {
+      SpaceBefore: 10pt;
+      SpaceAfter: 8pt;
+      TextHeight: 120%;
+      title;
+      Space*2;
+      Span {
+        TextColor: Colors.Blue;
+        Icons.copy;
+        Tip: "Copy this text to the clipboard";
+        Action: new CopyAction(text);
+      };
+    };
+    text {
+      ParBackground: 98%;
+      TextHeight: 8pt;
+    };
+  };
+
+  override GetDocument = Document(0.75") {
+    Paragraph {
+      TextHeight: 18pt;
+      Reference.Title;
+    };
+
+    Paragraph {
+      TextHeight: 14pt;
+      SpaceAfter: 20pt;
+      Style.ShowPublishDate(Reference);
+    };
+
+    var url = Reference.FindFirstFact(URL) as URL;
+    Paragraph {
+      if (Cover is valid) {
+        FitBox(Cover, 2.5") {
+          TipAction: url;
+        };
+      }
+      else {
+        if (url is valid) {
+          var publisher = Reference.FindFirstFact(PublisherLink) as Organization;
+          Span {
+            TextHeight: 16pt;
+            TextColor: Colors.Blue;
+            publisher?.Name ?? "View publication";
+            TipAction: url;
+          };
+        }
+        else
+          "Awaiting publication";
+      }
+      SpaceAfter: 20pt;
+    };
+
+    Style.OpenAccessLicense;
+
+    Paragraph(BorderB(1)) {
+      Bold;
+      SpaceBefore: 10pt;
+      TextHeight: 150%;
+      "Citation Information";
+    };
+
+    var BibTeX = Span {
+      TextFamily: TextFamilies.CMUSerif;
+      Span {TextCase: SmallCaps;
+        "Bib";
+        Span {TextLetterSpace: -15%; "T"};
+        Span {TextLetterSpace: -15%; TextOffset: 30%; "E"};
+        "X";
+      };
+    };
+    ShowTextPreview(BibTeX, TextBlock {Reference.GetBibTexEntry});
+//    ShowTextPreview("Nytril", Reference.GetNytrilSource);
+  };
+}
+
+//=========================================================================

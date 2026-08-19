@@ -1,0 +1,90 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "A transform can consist of any combination of individual transforms (Affine, Rotate, Translate, Scale, Skew)";
+  };
+};
+
+RotateBox(angle) = Canvas {
+  angle " degrees";
+  Transform: Transform.Rotate(angle degrees);
+  TransformFit: true;
+};
+
+Example = Block {
+  // Rotate
+  Paragraph(new(0, new (1, 0, Colors.Blue), 0, 0)) {
+    Separator: Tab;
+    RotateBox(each [0, 10, 20, 45, 90, 120, 180]);
+  };
+};
+
+TranslateBox(x, y) = Canvas(50, 30, 0.25) {
+  Canvas(null, null, 1) {
+    Span {x; CommaSpace; y};
+    Transform: Transform.Translate(x, y);
+  }
+};
+
+Example2 = Block {
+  // Translate
+  Paragraph(new(0, new (1, 0, Colors.Blue), 0, 0)) {
+    Separator: Tab;
+    TranslateBox(0, 0);
+    TranslateBox(10, 0);
+    TranslateBox(0, 10);
+    TranslateBox(10, 10);
+  };
+};
+
+SkewBox(x, y) = Canvas(50, 50, 1) {
+  Span {x; CommaSpace; y};
+  Transform: Transform.Skew(x degrees, y degrees);
+};
+
+Example3 = Block {
+  // Skew
+  Paragraph(new(0, new (1, 0, Colors.Blue), 0, 0)) {
+    Separator: Tab;
+    SkewBox(0, 0);
+    SkewBox(10, 0);
+    SkewBox(0, 10);
+    SkewBox(20, 20);
+  };
+};
+
+FitBox(x, y) = Canvas(null, null, 0.25) {
+  Span {x; CommaSpace; y};
+  Transform: Transform.Scale(x, y);
+  TransformFit: true;
+};
+
+Example4 = Block {
+  // Scale
+  Paragraph(new(0, new (1, 0, Colors.Blue), 0, 0)) {
+    Separator: Tab;
+    FitBox(50%, 50%);
+    FitBox(150%, 50%);
+    FitBox(50%, 150%);
+    FitBox(%150, %150);
+  };
+};
+
+SkewRotate(a, text) = Canvas(50, 50, 1) {
+  text;
+  Transform: Transform.Skew(a degrees, a degrees) Transform.Rotate(a degrees);
+  TransformFit: true;
+};
+
+Example5 = Block {
+  // Picture frame
+  Paragraph(new(0, new (1, 0, Colors.Blue), 0, 0)) {
+    SkewRotate(-10, "Face");
+    SkewRotate(10, "Page");
+  };
+};
+
+Main.Help = new HelpExample(attribute FormatProperties.Transform, 5);

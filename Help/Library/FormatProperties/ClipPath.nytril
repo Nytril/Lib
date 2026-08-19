@@ -1,0 +1,30 @@
+include "Help";
+
+using Format;
+
+StripedBox(text, clip) = VBox {
+  HAlign: Center;
+  text;
+  Canvas(200, 100, new Edge(5, 0, 80%)) {
+    ClipPath: clip;
+    Canvas(190, 50) {
+      Y: 20;
+      Background: Colors.Blue;
+    }
+  };
+};
+
+Example = Paragraph {
+  StripedBox("No clipping", null);
+  Space;
+  StripedBox("Clipping path",
+    Shape {
+      ClosedPath(100, 0) {
+        LineTo(150, 120);
+        LineTo(50, 120);
+      }
+    }
+  );
+};
+
+Main.Help = new HelpExample(attribute FormatProperties.ClipPath);

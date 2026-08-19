@@ -1,0 +1,17 @@
+include "Help";
+
+using Format;
+
+Example = ListBlock {
+  Paragraph { "Decimal "; 128};
+  Paragraph { "Large decimal "; 1_234_567};
+  Paragraph { "Negative decimal "; -567};
+  Paragraph { "Hexadecimal "; 0xFF};
+  Paragraph { "Min value "; int.MinValue};
+  Paragraph { "Max value "; int.MaxValue};
+};
+
+Main.Help = new HelpExample(attribute int);
+
+
+

@@ -1,0 +1,345 @@
+include "NytrilStyle";
+
+using Format;
+
+//===============================================================
+
+abstract class SiteTile {
+  var Fill   BackColor,
+             LineColor,
+             TitleColor,
+             DetailColor,
+             TextColor,
+             LinkColor;
+  var        BodyPadding,
+             CornerRadius;
+  var Action LinkAction;
+
+
+  Constructor {
+    TitleColor   = NytrilPalette.Title;
+    TextColor    = Colors.Black;
+    LineColor    = #96858F#;
+    LinkColor    = NytrilPalette.Hyperlink;
+    DetailColor  = NytrilPalette.IconLine;
+    BodyPadding  = 10pt;
+    CornerRadius = 3pt;
+  }
+
+  IdLink(Guid id, text) = Span {
+    text;
+    Action: new Action(Actions.ToDocument, id);
+  };
+
+  LinkSpan(DocumentEntry doc, text=null) = IdLink(doc.FactId, text ?? doc.Name);
+
+  DocLink(DocumentEntry doc) = Paragraph {
+    TextColor: LinkColor;
+    LinkSpan(doc, doc.Name);
+  };
+
+  DetailLink(DocumentEntry doc) = Block {
+    DocLink(doc);
+    Paragraph {
+      TextColor: DetailColor;
+      SpaceAfter: 12pt;
+      LinkSpan(doc, doc.Description);
+    }
+  };
+
+  RealmLink(Guid id, realm, name, description) = Block {
+    ParAlignment: Center;
+
+    var action = new Action(Actions.ToDocument, null, id, realm);
+    Paragraph {
+      Span {
+        TextColor: LinkColor;
+        Action: action;
+        name;
+      };
+      Space;
+    };
+    Paragraph {
+      TextColor: DetailColor;
+      SpaceAfter: 12pt;
+      Span {
+        description;
+        Action: action;
+      };
+    }
+  };
+
+  virtual GetTileBox = HBox(100%, null, new Edge(1pt, 5pt, LineColor)) {
+    Background: BackColor;
+    if (LinkAction is valid)
+      Action: LinkAction;
+  };
+
+  virtual GetTitle = null;
+
+  virtual GetBody = null;
+
+  virtual GetTile = GetTileBox {
+    HAlign: Center;
+    VAlign: Center;
+    Frame(100%, null, PadLR(BodyPadding)) {
+      GetTitle;
+      GetBody;
+    };
+  };
+}
+
+//===============================================================
+
+class IconTile: SiteTile {
+  var Size  IconSize;
+  var       IconFill,
+            IconLine,
+            Icon,
+            Name,
+            Description;
+
+  Constructor(name, description, icon) {
+    super.Constructor;
+    Icon        = icon;
+    IconSize    = new(36pt);
+    Name        = name;
+    Description = description;
+    IconFill    = NytrilPalette.IconBack;
+    IconLine    = NytrilPalette.IconLine;
+  }
+
+  override GetTitle = Paragraph {
+    TextColor: TitleColor;
+    TextHeight: 16pt;
+    Name;
+  };
+
+  override GetBody {
+    if (Description is valid) {
+      return  Paragraph {
+        TextColor: TextColor;
+        Description;
+      };
+    }
+    return null;
+  }
+
+  virtual GetTileIcon = Shape(IconFill, new(1, IconLine)) {
+    TextHeight: IconSize.Height;
+    Icon;
+  };
+
+  override GetTile = GetTileBox {
+    BorderRadius: CornerRadius;
+    VAlign: Center;
+    if (Icon is valid) {
+      var left = IconSize.Width + BodyPadding*2;
+      HBox(left) {
+        HAlign: Center;
+        GetTileIcon;
+      };
+      Frame(ExtentWidth - left - BodyPadding, null, PadLR(BodyPadding)) {
+        GetTitle;
+        GetBody;
+      };
+    }
+    else {
+      HAlign: Center;
+      Frame(100%, null, PadLR(BodyPadding)) {
+        GetTitle;
+        GetBody;
+      }
+    }
+  };
+}
+
+//==========================================================================
+
+class LinkTile: IconTile {
+  Constructor(Guid id, name, description, icon=null) {
+    super.Constructor(name, description, icon);
+    LinkAction = new(Actions.ToDocument, id);
+  }
+}
+
+//===============================================================
+
+class DocTile: LinkTile {
+  Constructor(DocumentEntry document, icon=null, title=null) {
+    super.Constructor(document.FactId, title ?? document.Title ?? document.Name, document.Description, icon);
+  }
+}
+
+//===============================================================
+
+abstract class TilePage: DocumentEntry {
+  var RealmSite  Site;
+  var SiteTile[] Tiles;
+  var            TileSeparator;
+  var            MaxColumns,
+                 TileSpacer;
+
+
+  Constructor(RealmSite site, Guid id, name, description) {
+    super.Constructor(id, name);
+    Site          = site;
+    DocumentType  = DocumentTypes.NavigationDoc;
+    ContentType   = ContentTypes.WebPage;
+    Title         = name;
+    Description   = description;
+    TileSeparator = Paragraph;
+    TileSpacer    = 5pt;
+    MaxColumns    = 2;
+    Tiles         = [];
+  }
+
+  virtual GetFooter = null;
+
+  virtual GetHeader = null;
+
+  virtual ShowPage(padding, int columns) = Document(padding) {
+    GetHeader;
+
+    var width = ExtentWidth;
+
+    if (columns == 2 and Tiles.Length > 1) {
+      var sides = Tiles.Length div 2;
+      var s2    = sides*2;
+      var w     = (width - padding) * 0.5;
+      var index = 0;
+
+      if (Tiles.Length > s2) {
+        Canvas(width, null, PadB(padding)) {
+          HAlign: Center;
+          Frame(w) {
+            Tiles.FirstElement.GetTile;
+          };
+        };
+        ++index;
+      }
+
+      HBox {
+        Separation: padding;
+        VAlign: Top;
+        for (var i = 0; i < 2; ++i) {
+          Frame(w) {
+            Separator: TileSeparator;
+            for (int j = index; j < index+sides; ++j)
+              Tiles[j].GetTile;
+            index += sides;
+          };
+        }
+      };
+    }
+    else {
+      Block {
+        Separator: TileSeparator;
+        (each Tiles).GetTile;
+      };
+    }
+
+    GetFooter;
+    Empty;
+  };
+
+  override GetDocument {
+    var two = Math.Min(MaxColumns, 2);
+
+    switch (DeviceAspect) {
+      case DeviceAspects.Narrow:
+        return ShowPage(2pt, 1);
+
+      case DeviceAspects.Medium:
+        return ShowPage(8pt, 1);
+
+      case DeviceAspects.Wide:
+        return ShowPage(12pt, two);
+
+      default:
+        return ShowPage(0.5", two);
+    }
+  }
+}
+
+//===============================================================
+
+abstract class SitePage: TilePage {
+  var Size  IconSize;
+  var       Icon,
+            IconFill,
+            IconLine,
+            TitleColor;
+
+  Constructor(RealmSite site, Guid id, name, description) {
+    super.Constructor(site, id, name, description);
+    IconFill = NytrilPalette.IconBack;
+    IconLine = NytrilPalette.IconLine;
+    IconSize = new(2", 1");
+  }
+
+  virtual GetPageIcon = Shape(IconFill, new(1, IconLine)) {
+    TextHeight: IconSize.Height;
+    Icon;
+  };
+
+  override GetHeader = Block {
+    ParAlignment: Center;
+    if (Name is valid) {
+      Span {
+        TextHeight: IconSize.Height * 0.5;
+        TextColor: TitleColor;
+        Name;
+      };
+    }
+    GetPageIcon;
+  };
+}
+
+//=====================================================================
+
+class NytrilHomeSite: RealmSite {
+  var Icon Icon;
+  var      LogoText;
+
+  Constructor(name, logotext, Icon icon) {
+    super.Constructor(name);
+    LogoText = logotext;
+    Icon     = icon;
+  }
+
+  Header = Paragraph {
+    ParAlignment: Center;
+    SpaceAfter: 30;
+    NytrilStyle.LogoText(LogoText, 72pt);
+  };
+
+  override GetLayoutIcon = NytrilStyle.SiteIcon(Icon);
+
+  override GetLayoutBug = GetLayoutIcon;
+
+  override GetLayoutLogo = NytrilStyle.LogoText(LogoText, 72pt);
+
+  override GetLayoutSiteLogo = GetLayoutIcon;
+}
+
+//=====================================================================
+
+class NytrilIconSite: RealmSite {
+  var Icon Icon;
+
+  Constructor(name, Icon icon) {
+    super.Constructor(name);
+    Icon = icon;
+  }
+
+  override GetLayoutIcon = NytrilStyle.SiteIcon(Icon);
+
+  override GetLayoutBug = GetLayoutIcon;
+
+  override GetLayoutLogo = NytrilStyle.SiteIcon(Icon) {TextHeight: 72pt};
+
+  override GetLayoutSiteLogo = GetLayoutIcon;
+}
+
+//======================================================================

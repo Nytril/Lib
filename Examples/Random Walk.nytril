@@ -1,0 +1,285 @@
+using Format;
+
+Main.Documents.Main = new WalkDocument;
+
+const MaxLineCount = 1000;
+
+//=======================================================
+
+class UserOptions: Fact {
+  field int    Steps,
+               Box,
+               ShowSteps,
+               Grid;
+  field double StepSize;
+  field bool   Lines,
+               Dots,
+               ShowHeat;
+
+  Constructor {
+    super.Constructor(#70705aa7-b226-4627-9067-80b3ffc04c07#);
+    Steps    = 100;
+    Box      = 1;
+    StepSize = 50;
+    Grid     = 1;
+    Lines    = true;
+    Dots     = true;
+    ReadFromStorage;
+  }
+}
+
+//=======================================================
+
+const    Alpha   = 20%;
+readonly Heatmap = LinearGradient.FromColorArray([Colors.Blue.AddAlpha(Alpha), Colors.Cyan.AddAlpha(Alpha), Colors.Yellow.AddAlpha(Alpha), #8F0000#.AddAlpha(Alpha)]);
+
+typedef IntMatrix Matrix<int>;
+
+class WalkClass {
+  var Point[] Points;
+
+  Constructor(UserOptions options) {
+    var list = new List<Point>(options.Steps);
+    var x    = 0.5;
+    var y    = 0.5;
+    var max  = 0.01 * options.StepSize;
+
+    list.Add(new(x, y));
+
+    while (list.Length < options.Steps) {
+      // Random angle and radius
+      var dr = Math.Random(0.0..max);
+      var da = Math.Random(0.0..Math.PI2);
+
+      // Random step in a random direction
+      var tx = x + Math.Cos(da) * dr;
+      var ty = y + Math.Sin(da) * dr;
+
+      // Reject steps that are out of the box
+      if (tx >= 0.0 && tx < 1.0 && ty >= 0.0 && ty < 1.0) {
+        list.Add(new(tx, ty));
+        x = tx;
+        y = ty;
+      }
+    }
+    Points = list.ToArray;
+  }
+
+  Color HeatColor(int _, int _1, double value) {
+    return Heatmap.InterpolateColor(value);
+  }
+
+  Draw(UserOptions user, Stroke stroke, Stroke grid, double width, double height, int number) = Canvas(width, height, 0.5pt) {
+    BorderRadius: 3;
+    BorderClip: true;
+
+    var     w     = ExtentWidth;
+    var     h     = ExtentHeight;
+    var     ushow = user.ShowSteps;
+    var     allow = user.Steps <= MaxLineCount;
+    Point[] show  = ushow == -1 ? Points : (ushow == 0 ? [] : Points[0..ushow]);
+    var     g     = user.Grid;
+
+    if (g > 1) {
+      if (user.ShowHeat) {
+        var gbox = new IntMatrix(g, g, 0);
+        foreach (var d in show)
+          ++gbox[Math.Floor(d.Y * g) as int, Math.Floor(d.X * g) as int];
+        var max = gbox.FindMax();
+        if (max > 0) {
+          for (int i = 0; i < g; ++i) {
+            for (int j = 0; j < g; ++j)
+              gbox[i, j] /= max;
+          }
+
+          FitBox(gbox.GetImage(@HeatColor), 100%, 100%) {
+            ScalingMode: ScalingModes.Pixelated
+          };
+        }
+      }
+      else {
+        var dx = w / g;
+        var dy = h / g;
+        var x  = dx;
+        var y  = dy;
+        for (int i = 0; i < user.Grid-1; ++i)  {
+          Shape(null, grid) {OpenPath(0, y) {LineTo(w, y)}};
+          Shape(null, grid) {OpenPath(x, 0) {LineTo(x, h)}};
+          x += dx;
+          y += dy;
+        }
+      }
+    }
+
+    if (user.Lines and allow and show.Length > 1) {
+      Shape(null, stroke) {
+        OpenPath(show[0].X * w, show[0].Y * h) {
+          foreach (var d in show[1..])
+            LineTo(w * d.X, h * d.Y);
+        }
+      };
+    }
+
+    Point[] dots = user.Dots and allow ? show : Points[ushow..ushow];
+    var lx = 0.0;
+    var ly = 0.0;
+    foreach (var d in dots) {
+      if (each1 == dots.Length) {
+        var b = 10.0;
+        Shape(Colors.Green) {
+          TextHeight: b*2.0;
+          X: w * d.X - b;
+          Y: w * d.Y - b;
+          Icons.directions_walk;
+
+          if (d.X < lx) {
+            // Mirror direction of walker
+            Transform: new Transform(-1, 0, 0, 1, 0, 0);
+            TransformFit: true;
+          }
+        };
+      }
+      else {
+        Shape(Colors.Red) {
+          var b = 2.0;
+          RectanglePath(new(new(w * d.X - b, w * d.Y - b), b*2), b);
+        };
+      }
+      lx = d.X;
+      ly = d.Y;
+    }
+
+    if (user.Box > 1) {
+      HBox {
+        Y: 2;
+        X: 4;
+        TextHeight: 7pt;
+        number+1;
+      };
+    }
+  };
+}
+
+//=======================================================
+
+class WalkDocument: DocumentEntry {
+  const int MaxBox = 4;
+
+  var UserOptions       User;
+  var Stroke            Grid,
+                        LineStroke;
+  var Vector<WalkClass> Walks;
+  var                   Pad;
+
+  Constructor {
+    super.Constructor(#15da61d1-a756-41d6-9f25-439e6d951817#, "Random Walk");
+    User       = new;
+    LineStroke = new(0.5, 40%, LineStyles.Solid, LineCaps.Round, LineJoins.Round);
+    Grid       = new(0.5, Colors.LightGray);
+    Pad        = 10;
+
+    var walks = User.Box^2;
+    Walks = new(walks, null);
+    for (int i = 0; i < walks; ++i)
+      Walks.SetValue(i, new WalkClass(User));
+  }
+
+  ShowInput = HBox(100%) {
+    Justify: Justifiers.SpaceAround;
+    VAlign: Top;
+    Margin: PadB(10);
+    TextHeight: 14pt;
+
+    var edge = new Edge(0.5, 2);
+    VBox {
+      Separation: 5;
+      HAlign: Right;
+      IntControl(new(ref User.ShowSteps), 0.75", null, edge, -1, User.Steps, 1) {
+        BorderRadius: 3;
+        "Show Steps (-1 = all)";
+        Action: Actions.Refresh;
+      };
+      IntControl(new(ref User.Box), 32pt, null, edge, 1, MaxBox, 1) {
+        BorderRadius: 3;
+        "Board Size";
+        Action: Actions.Rebuild;
+      };
+    };
+
+    VBox {
+      HAlign: Right;
+      Separation: 5;
+      IntControl(new(ref User.Steps), 0.9", null, edge, 1, 1000000, 1) {
+        BorderRadius: 3;
+        "Total Steps";
+        Action: Actions.Rebuild;
+      };
+      DoubleControl(new(ref User.StepSize), 0.6", null, edge, 1, 100, 1) {
+        TextDigits: 0;
+        BorderRadius: 3;
+        "% Per Step";
+        Action: Actions.Rebuild;
+      };
+    };
+
+    VBox {
+      SliderControl(new(ref User.Grid), 0.8", null, null, 1..100 step 1) {
+        Placement: Placements.Right;
+        BorderRadius: 3;
+        "Partitions";
+        Action: Actions.Refresh;
+      };
+      CheckControl(new(ref User.ShowHeat)) {
+        Placement: Placements.Right;
+        "Heat map";
+        Action: Actions.Refresh;
+      };
+      if (User.Steps <= MaxLineCount) {
+        CheckControl(new(ref User.Lines)) {
+          Placement: Placements.Right;
+          "Lines";
+          Action: Actions.Refresh;
+        };
+        CheckControl(new(ref User.Dots)) {
+          Placement: Placements.Right;
+          "Dots";
+          Action: Actions.Refresh;
+        };
+      }
+    };
+  };
+
+  override GetDocument = Document(24pt) {
+    var box    = User.Box;
+    var width  = (ExtentWidth - (box - 1) * Pad) / box;
+    var height = (ExtentHeight - 120 - (box - 1) * Pad) / box;
+
+    width  = Math.Min(width, height);
+    height = width;
+
+    Paragraph {
+      ParAlignment: Center;
+      TextColor: Colors.Blue;
+      TextHeight: 20pt;
+      Shape(Colors.LightGreen, new(0.8, Colors.Blue)) {
+        Icons.directions_walk;
+      };
+      "Random Walk";
+    };
+    ShowInput;
+    for (int i = 0; i < box; ++i) {
+      Paragraph {
+        HBox {
+          Separation: Pad;
+          for (int j = 0; j < box; ++j) {
+            var n = i*box+j;
+            Walks[n].Draw(User, LineStroke, Grid, width, height, n);
+          }
+        };
+        SpaceAfter: Pad;
+      }
+    }
+  };
+}
+
+//=======================================================

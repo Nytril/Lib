@@ -1,0 +1,22 @@
+include "Help";
+
+using Format, Units;
+
+Example = Block {
+  var EmpireState = #40.748586774884814, -73.98574486846448#;
+  var Zoo         = new GeoCoordinate(40.76847590569982, -73.97200104609503);
+
+  Paragraph {
+    "The location of the Empire State Building is ";
+    EmpireState;
+  };
+
+  Paragraph {
+    "The distance to the Central Park Zoo is ";
+    TextDigits: 1;
+    (EmpireState.GreatCircleDistance(Zoo) meters) tounit miles;
+  };
+};
+
+Main.Help = new HelpExample(attribute GeoCoordinate);
+

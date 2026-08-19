@@ -1,0 +1,28 @@
+include "Help";
+
+using Format;
+
+DottedList = Span {
+  Separator: Tex.Plus;
+  LastSeparator: Tex.ellipsis;
+};
+
+CountList = Span {
+  Separator: CommaSpace;
+  LastSeparator: " and ";
+};
+
+
+Example = Block {
+  DottedList {
+    'a'..'d' step 1;
+  };
+
+  CountList {
+    [1, 2, 3, 4];
+  };
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.LastSeparator));
+
+

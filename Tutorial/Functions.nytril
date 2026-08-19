@@ -1,0 +1,271 @@
+using Format, Units;
+//======================================================================
+
+namespace Chapters.Language.Sections.Functions;
+
+readonly TutorialLesson Lesson = new(#bf18188e-670f-4286-a675-f4deae6b42ea#, "Functions");
+
+readonly LessonExample Content.IntroductionEx = new(#8b1937e0-5363-404a-95f4-13ba1b25fa0a#) {
+  Other:  Block {
+    NytrilStyle.BlockBody {
+      "There are some important syntactic differences between Nytril and other C-style languages regarding function definitions, consistent with the goal of having a minimum of operators to increase readability. ";
+    };
+    ListBlock {
+      "Nytril allows, but does not require, an empty set of parenthesis () after functions that take no parameters, either on declaration or at the call site. ";
+      "Nytril has an optional inline function declaration syntax that uses an equal (=) sign and a single expression, in lieu of a full {} scope with a return statment. ";
+      ListItem {
+        "A function that returns a value does not need to have a declared return type. ";
+        "If the return type declaration is missing, the return type is assumed to be 'any'. ";
+        "A void return type means that the function returns no value. ";
+      };
+      "Nytril requires an '@' operator whenever a function reference is used as a closure. ";
+      "Nytril allows global functions that do not belong to a class and have no 'this' pointer, although they can be defined inside of a namespace. ";
+    };
+  };
+
+  Options: NoFormat;
+};
+
+//======================================================================
+
+F1(x) = x + 1;      // F1 defined globally
+N1.F2(x) = x + 2;   // F2 defined inside the namespace N1
+namespace N2 {
+  F3(x) = x + 3;    // F3 defined inside the namespace N2
+}
+
+readonly LessonExample Content.NameSpaceEx = new(#5d9a215c-63e5-4ce9-916e-00ce035a85ba#) {
+  Text: Span {
+    "Functions can be declared in the global scope or inside a namespace. ";
+  };
+  CodeSource: [attribute F1, attribute N2];
+};
+
+//======================================================================
+
+ComplexSlowQuery {
+  // Slow process...
+  return 0;
+}
+
+readonly Data = ComplexSlowQuery;           // Run only once
+readonly Cost = Data.Quantity * Data.Price; // Use like a variable
+
+readonly LessonExample Content.ComplexSlowQueryEx = new(#f585cbfc-92c3-4b27-a908-14d85b5d6ae1#) {
+  Text: Span {
+    "If a global function is marked as readonly, then the function is run the first time it is called anywhere in the program, and the return value is cached. If the function is called again anywhere, the cached value from the first run is returned immediately. ";
+    "This is useful when loading large constant values such as images or the results of database queries or REST calls, where the intention is usually to retrieve information once and then use the same copy for many calculations. ";
+  };
+  CodeSource: [attribute ComplexSlowQuery, attribute Cost];
+};
+
+//======================================================================
+
+SquareNumber(x) {
+  return x * x;
+}
+
+ShowSquares = Block {
+  SquareNumber(4);
+  SquareNumber(Symbol("x"));
+};
+
+readonly LessonExample Content.SquareNumberEx = new(#4db8ac19-f179-4480-a5d6-b5ed509aa372#) {
+  Text: Span {
+    "Functions can be declared without a specific (i.e. 'any') return type. ";
+    "This allows the flexible use of an abstract expression to return different types of results. ";
+  };
+  Code: [attribute SquareNumber, attribute ShowSquares];
+};
+
+//======================================================================
+
+ExampleFunction {
+  var s = "Statements are terminated by a semicolon";
+  return s + ";";
+}
+
+readonly LessonExample Content.ExampleFunctionEx = new(#0fd15d9d-ac84-46f8-affa-2a43364eaa4b#) {
+  Text: Span {
+    "Note that each separate expression is terminated by a semicolon (;). ";
+    "If the statement is followed by a closing brace '}' then the ';' is optional. ";
+    "Branch statements (such as ";
+    NytrilStyle.KW(attribute if);
+    CommaSpace;
+    NytrilStyle.KW(attribute else);
+    " and ";
+    NytrilStyle.KW(attribute foreach);
+    "), class definitions and regular function blocks are not terminated by a semicolon.";
+  };
+  Code: [attribute ExampleFunction];
+};
+
+//======================================================================
+
+int TypedFunction {
+  return 7;  // Must match return type of function
+}
+
+readonly LessonExample Content.TypedFunctionEx = new(#9ff47ba7-e2e0-4c14-90fc-9dfbbef9f758#) {
+  Text: Span {
+    "Functions can also be declared with a return type. This allows the compiler to more easily check for common errors. ";
+    "Furthermore, if the returned value is an object, a return type on the function will increase performance and compile-time error checking. ";
+    "This is because the calling expression knows the class of the return value, it can do a compile-time checking/binding of any members referenced on that object. ";
+  };
+  Code: [attribute TypedFunction];
+};
+
+//======================================================================
+
+Power = 3;
+Cube(x) = x^Power;
+OneThousand = Cube(10);
+
+readonly LessonExample Content.FunctionsEx = new(#abe4a52b-aa35-4477-bae9-0236cac589d2#) {
+  Text: Span {
+    "A function can be declared using a direct \"=\" syntax. ";
+    "The code for the function can be on more than one source line, but must be a single expression terminated by a ';'. ";
+    "This type of function does not run faster, but the more compact representation might be easier to understand. ";
+  };
+  Code: [attribute Power, attribute OneThousand];
+};
+
+//======================================================================
+
+RandomNumber = Math.Random(1..100);  // Function taking no parameters
+
+ShowRandom = Paragraph {
+  Separator: CommaSpace;
+  for (int i = 0; i < 10; ++i)
+    RandomNumber; // Called 10 times in a row, generating a new value each time
+};
+
+readonly LessonExample Content.RandomNumberEx = new(#5d0faca7-7de8-4f98-882d-61eb0863a242#) {
+  Text: Span {
+    "Unlike other C-Style languages, a function without parameters does not require an empty set of parens '()' either on declaration or when it is used. ";
+    "This can cause some confusion to programmers used to the other convention. ";
+    "It is important to remember that although a function taking no parameters 'looks' like a simple variable access, ";
+    "it is a function call that is executed each time it is referenced (unless it is marked "; NytrilStyle.KW(attribute const); " or it is a global function marked as "; NytrilStyle.KW(attribute readonly); "). ";
+  };
+  Code: [attribute RandomNumber, attribute ShowRandom];
+};
+
+//======================================================================
+
+readonly Measurement = 8.65 * Math.Sin(Math.Random(0..90) degrees); // Run once
+
+ShowMeasurements = Paragraph {
+  Separator: CommaSpace;
+  for (int i = 0; i < 3; ++i)
+    Measurement; // Function body executed only once, after which the same value is returned
+};
+
+readonly LessonExample Content.ShowMeasurementsEx = new(#949b7acc-9b2e-4d70-beb8-d3e190eb8e25#) {
+  Text: Span {
+    "If a global or static function without parameters is declared"; NytrilStyle.Keyword(attribute readonly);
+    ", the return value is cached when it is evaluated for the first time in the program's execution. ";
+    "After that, the same value is returned without re-evaluation. If the function is called more than once, this will result in speed improvements. ";
+    "Use this option with care, as it can lead to confusion, but there are many scenarios where readonly functions are the right choice. ";
+    "For instance, when loading an image from a file or loading data from a database, you may wish to read the data once, and refer to it many times throughout your code. ";
+    "This feature allows you to accomplish that goal without creating another variable to hold the cached value. ";
+  };
+  Code: [attribute Measurement, attribute ShowMeasurements];
+};
+
+//======================================================================
+
+const g = 9.8m per second^2; // Can be calculated at compile time
+
+ShowGravity = Paragraph {
+  TextAbbreviate: true;
+  g;
+};
+
+readonly LessonExample Content.ShowGravityEx = new(#be6a4d46-38a4-4196-85d2-14104e78417e#) {
+  Text: Span {
+    "Values that are known at compile time can be declared"; NytrilStyle.Keyword(attribute const); DotSpace;
+    "These values are substituted directly into the code during compilation. ";
+    "This speeds up runtime performance and prevents accidental modification of the symbol's value. ";
+  };
+  Code: [attribute g, attribute ShowGravity];
+};
+
+//======================================================================
+
+var Number = 1;
+
+ShowNumbers = Block {
+  "Number = " + Number++;
+  "Number = " + Number;
+};
+
+readonly LessonExample Content.ShowNumbersex = new(#248eb8f8-d375-4510-be5d-fcf28102e610#) {
+  Text: Span {
+    "Global variables can be declared"; NytrilStyle.Keyword(attribute var); DotSpace;
+    "These variables can be changed throughout the execution of the program. ";
+  };
+  Code: [attribute Number, attribute ShowNumbers];
+};
+
+//======================================================================
+
+var double TypedNumber = 2.7;
+
+ShowTypedNumber = Paragraph {
+  "Number = "; TypedNumber;
+};
+
+readonly LessonExample Content.TypedNumberEx = new(#6893d97f-c052-4fea-a311-4096abb9a9a1#) {
+  Text: Span {
+    "Variables can be declared with a type, which can help the compiler catch common errors and possibly improve performance. ";
+  };
+  Code: [attribute TypedNumber, attribute ShowTypedNumber];
+};
+
+//======================================================================
+
+ShowAffinity = Block {
+  Paragraph {
+    "Numbers summed: ";
+    4 + 1000; // Using the '+' operator
+  };
+
+  Paragraph {
+    "Numbers multiplied: ";
+    4 inches; // Using an implied 'affinity' operator
+  };
+};
+
+readonly LessonExample Content.ShowAffinityEx = new(#5e2bc342-0395-4da5-8d99-0df29ef02e67#) {
+  Text: Span {
+    "A feature called 'affinity' allows for more natural and compact expression of common pairs of values. ";
+    "Values placed side-by-side without an operator in-between them are combined using an implied (binary) affinity operator. ";
+    "Each pair of values will be joined based on their actual types at runtime. ";
+    "As shown below, the first line shows a normal expression using the '+' operator. ";
+    "Here, as you would expect, the '4' and '1000' are added together. ";
+
+    "On the next line, the '4' and 'inches' are placed together without an operator between them. ";
+    "At runtime, the compiler determines that an integer and a unit should be multiplied together. ";
+  };
+  Code: [attribute ShowAffinity];
+};
+
+//======================================================================
+
+AffinityExample = Block {
+  "String-" "String";                          // Append
+  "Example " 2;                                // Append
+  3 meters;                                    // Multiply
+  CiteOptions.AddSuffix CiteOptions.ShowDate;  // Binary or
+};
+
+readonly LessonExample Content.AffinityExampleEx = new(#789bc1cc-8770-4365-90e7-60c59993fd6e#) {
+  Text: Span {
+    "Other examples are show below. ";
+  };
+  Code: [attribute AffinityExample];
+};
+
+//======================================================================
+
+

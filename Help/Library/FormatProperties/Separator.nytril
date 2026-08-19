@@ -1,0 +1,24 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  // Separator for each paragraph in the block
+  Separator: Paragraph {
+    "-"*20;
+  };
+
+  Paragraph {
+    // Separator for each span in the paragraph
+    Separator: " - ";
+    1..10 step 1;
+  };
+
+  "One";
+  "Two";
+  "Three";
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.Separator));
+
+

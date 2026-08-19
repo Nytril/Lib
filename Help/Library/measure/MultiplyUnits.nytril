@@ -1,0 +1,17 @@
+include "Help";
+
+using Format, Units;
+
+Example = Block {
+  TextDigits: 0;
+
+  // How fast are you traveling after falling for 1/2 minute
+  (9.8 meters per second^2).MultiplyUnits(0.5 minute);
+
+  // How far will your car travel in 5 seconds
+  (60 miles per hour).MultiplyUnits(5 seconds) tounit feet;
+};
+
+Main.Help = new HelpExample(attribute(Measure.MultiplyUnits));
+
+

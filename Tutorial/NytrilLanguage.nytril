@@ -1,0 +1,135 @@
+using Format, NytrilStyle;
+//======================================================================
+
+namespace Chapters.Language.Sections.Introduction;
+
+readonly TutorialLesson Lesson = new(#8a4d16f9-eee8-434f-8c08-7923d3fd7bf7#, "The Nytril Language");
+
+//======================================================================
+
+readonly LessonExample Content.NytrilLanguageEx = new(#50ae4409-38b0-4177-9679-9264bec1d4ff#) {
+  Other: Block {
+    BlockBody {
+      "Nytril is a high-level, general purpose programming language. ";
+      "The standard output of a Nytril program is one or more typeset documents that can be published. ";
+      "This Tutorial document is written entirely in Nytril. ";
+    };
+
+    BlockBody {
+      "Nytril has a 'C' style, with insignificant white space, strings in double-quotes, expressions separated by a semi-colon (;), and scope enclosed by curly braces {}. ";
+      "It uses all but one of the standard C operators and flow statements ('mod' is used for integer modulus instead of %). "
+      "It supports both dynamic and static typing or a mix of the two. ";
+      "Namespaces can be created and used to organize symbols. ";
+      "It is an object oriented language with classes, single-inheritance, virtual functions and templates. ";
+      "Memory is managed, with automatic garbage collection. ";
+    };
+
+    BlockBody {
+      "Nytril contains built-in support for creating complex typeset documents, including alignments, tables, charts, drawings, and complex math layout, in the spirit of ";
+      Span {
+        TextLetterSpace: -6%;
+        TextFamily: TextFamilies.LibertinusSerif;
+        "LaT";
+        Span {TextOffset: 14%; "E"};
+        "X";
+      };
+      DotSpace;
+      "Nytril is not a markup language like HTML or Markdown, but the grammar has a unique property called 'affinity' that allows the fluid mixing of calculations and text with a minimum of operators and escapes. ";
+      "Because it is a conventional programming language, Nytril allows for arbitrarily complex calculations to be performed with the usual mix of classes and methods, and then inserted inline with the text with minimal punctuation. ";
+    };
+
+    SubHeader {"Design Philosophy"};
+    BlockBody {
+      "A guiding principle of Nytril development is the DRY principle in programming (i.e. Don't Repeat Yourself). ";
+      "To make a large number of similar documents, without repeating information, the data and text must be separated from the style and the organization of the documents themselves. ";
+      "In this pattern, the documents are only a temporary representation of the text and data, and they can be discarded and rebuilt from source automatically, in the same way that an executable program can be rebuilt from source. ";
+      "When this source changes, the entire corpus of documents is rebuilt from scratch, which guarantees that every document is always up to date. ";
+    };
+    BlockBody {
+      "By combining the best aspects of programming, markup and data storage languages, Nytril allows technical document authors, engineers and scientists to build documents that contain embedded data and calculations quickly and easily. This can be as simple as a quick \"what-if\" calculation that fits on a sheet of paper or it can be much more advanced, like technical one-sheets for every item in an inventory of products, from a set of product facts and narrative. ";
+    };
+
+    BlockBody {
+      "Nytril source files are UTF-8 text files compatible with Git, and several authors can collaborate on different parts of the corpus of documents, in the same way that they would collaborate on different parts of a large software project. ";
+      "Raw information can be stored in Nytril source files in a structured way, minimizing the need for data to be stored in different formats like JSON and XML. ";
+      "All changes to data and style are tracked by source control in the same way. ";
+    };
+
+    SubHeader {"Portability"};
+    BlockBody {
+      "Nytril is portable across operating systems and CPU architectures. ";
+      "Currently Nytril runs on computers running Windows 10-11 and MacOS 13 and later (x64 and M-series). ";
+      "The compiler, runtime library and math functions are identical on all platforms. ";
+      "Typesetting layout may differ marginally on different platforms due to the use of different underlying graphics frameworks. ";
+    };
+
+    SubHeader {"The compiler"};
+    BlockBody {
+      "Nytril is a compiled language and the code for an entire nytril program is compiled before any of the statements are executed. The program is compiled at project load and in the background as the programmer types. ";
+      "The compiled program resides in memory and is discarded and rebuilt in the background each time the program is opened or changed. ";
+      "The compile time for a program is usually less than one second. ";
+    };
+    BlockBody {
+      "Nytril has a 2-pass compiler. ";
+      "Pass 1 gathers any included files and libraries and then builds namespaces and class definitions. ";
+      "Pass 2 compiles global and class functions. ";
+      "Two passes allow the programmer to reference classes and variables before they are declared in code, as in modern C++ variants like C# and Typescript. ";
+      "Classes and member functions are defined together in one scope, in a single source file. ";
+    };
+    BlockBody {
+      "There are no 'Project Files' in Nytril. Instead, a project's functionality is determined entirely by its main source file. ";
+      "The compiler simply follows the chain of included files starting with the main file, with redundant include files being ignored. ";
+      "All symbols are visible to every included file, unless they are marked private. ";
+    };
+    BlockBody {
+      "There is not a single entry point for a Nytril program (i.e. no "; Span {TextFace: Mono; "main()"}; " function). ";
+      "Once compiled, various parts of the program can run when called. ";
+      "This is usually in the form of producing typeset output. ";
+      "For instance, an object can override methods to show itself in a document or a popup tip. ";
+    };
+    BlockBody {
+      "Each program should include a Main.Documents collection that lists one or more document objects. ";
+      "These are the documents that are available for the program to view on-screen or publish. ";
+    };
+    BlockBody {
+      "A program may also include a Main.Configurations collection. ";
+      "This is a list of variations of the whole program that the programmer wishes to build for publication. ";
+      "Only one of these is active at a time, and the programmer may selectively define a namespace for certain configuration properties. ";
+    };
+
+    CodeExample {
+      "readonly namespace Lang if (Language == Languages.English) {";
+         "  Hello = \"Hello\";";
+      "}";
+      "readonly namespace Lang if (Language == Languages.Spanish) {";
+         "  Hello = \"Hola\";";
+      "}";
+      "readonly Greeting = Lang.Hello;";
+    };
+
+    BlockBody {
+      "Nytril supports compiling and publishing alternate configurations for different languages, measurment units and paper sizes. ";
+      "This provides a way to create a set of documents for every reader, without repeating text or data. ";
+    };
+
+    SubHeader {"Configurations"};
+    BlockBody {
+      "You can conditionally build your program with the the Configuration feature. ";
+      "Use Configurations to create several versions of the same documents that have different global properties such as style, paper size, measurement units. language and culture. ";
+      "This works directly with the publishing feature, to present each viewer with a document that is customized for their preferences. ";
+    };
+
+    SubHeader {"Publishing"};
+    BlockBody {
+      "Once you have created a set of documents, you can publish all documents, in all configurations in a variety of output formats in one step. ";
+      "The community edition supports limited publishing to a local drive. ";
+      "The professional edition supports publishing locally and online in one step. ";
+      "When viewed online, the viewer is presented with a unique 'sliding-pane' interface that allows them to move easily between documents, make bookmarks, and share content with others. ";
+      "The presentation feature allows the user to present a document as an online slideshow. ";
+    };
+  };
+
+  Options: NoFormat;
+};
+
+//======================================================================

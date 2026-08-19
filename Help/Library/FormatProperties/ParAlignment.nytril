@@ -1,0 +1,18 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  "Normal"; // ParAlignments.Left
+  Paragraph {ParAlignment: Center; "Center"};
+  Paragraph {ParAlignment: Right;  "Right"};
+
+  "Justified";
+  Paragraph {
+    RightIndent: 1";
+    ParAlignment: Justify;
+    LoremIpsum(50);
+  };
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.ParAlignment));

@@ -1,0 +1,294 @@
+using Format;
+
+//======================================================================
+
+Main.Documents = new MainDocumentClass;
+
+class MainDocumentClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#a17e1ffd-5faa-4681-9b55-a0f06c64fbd9#, "Table Edges")
+  }
+
+  override GetDocument = Document {
+    foreach (var t in Tables) {
+      t;
+      Paragraph;
+    }
+  };
+}
+
+//======================================================================
+
+C(col=1, row=1, text=null) = Cell(new Border(new(0.25, 2), new(null, 2), new(null, 2), new(0.25, 2)), col, row) {
+  if (text is valid)
+    text;
+  else
+    Span {row; "-"; col};
+};
+
+
+Tables.TableInTable = Table(null, BorderR(1), [150]*4) {
+  Row {
+    Cell(null, 2) {
+      Table(null/*, BorderR(new(0.5, null, Colors.Red)), [50, Column.Expand]*/) {
+        Row {
+          "One";
+          "Two "*5;
+        }
+      };
+    };
+
+    Cell {
+      "The quick brown fox";
+    };
+    Cell {
+      "The quick brown fox 20%";
+    };
+    Cell {
+      "The quick brown fox 300%";
+    };
+
+  }
+};
+
+Tables.Expand = Table(1, 0.25, [10%, Column.Expand]) {
+  Row {
+    "text-text-text-text";
+    1;2;3;
+  }
+};
+
+
+Tables.AllExpand = Table(1, 0.25, [new(Column.Expand, null, null, HAligns.Right)]) {
+  Row {
+    "text "*10;
+    1;2;3;
+  }
+};
+
+Tables.AllFit = Table(1, 0.25, [new(Column.Fit(2"), null, null, HAligns.Right)]) {
+  Row {
+    "text "*5;
+    1;2;3;
+  }
+};
+
+Tables.SomeFit = Table(1, 0.25, [new(Column.Fit(1.5"), null, null, HAligns.Center), 1"]) {
+  Row {
+    "text "*15;
+    1;2;3;
+  }
+};
+
+Tables.Table1 = Table(1, null, [25%]) {
+  Row {
+    C(2, 2, "4\n5\n6") {
+      Background: 95%;
+    };
+    C(2);
+  };
+
+  Row {
+    C(2);
+  };
+  Row {
+    C(1, 1, each 10..13);
+  };
+  Row {
+    C(1, 1, each 1..4);
+  };
+};
+
+Tables.Table2 = Table(1, null, [1"]) {
+  Row {
+    C(2);
+  };
+
+  Row {
+    C(2);
+  };
+
+  Row {
+    C;
+    C;
+  };
+};
+
+Tables.Table3 = Table(1, null, [1"]) {
+  Row {
+    C;
+  };
+};
+
+Tables.Table4 = Table(BorderTB(1), null, [1"]) {
+  Row {
+    C(1, 2);
+    C;
+  };
+
+  Row {
+    C;
+  };
+};
+
+CellBlock = Canvas(10, 10) {Background: 50%};
+
+Tables.Table5 = Table(new(new(20, 5, Colors.Red), new(20, 5, Colors.Yellow), new(20, 5, Colors.Orange), new(20, 5, Colors.Green)),
+  new(new(null, 2), new(1, 2), new(1, 2), new(null, 2)), [50, Column.Fit(200)]) {
+  Row(PadAll(10)) {
+    Cell {
+      CellBlock;
+    };
+    Cell(new(10, new(0, 20), 20, new(0, 20))) {
+      LeftIndent: 10;
+      ParAlignment: Center;
+
+      CellBlock;
+      Paragraph(BorderLR(new (10, 5))) {
+        LoremIpsum(10);
+      };
+      Paragraph(BorderLR(5)) {
+        "More text";
+      }
+    }
+  };
+  Row {
+    Cell {
+      CellBlock;
+    };
+    Cell(PadTB(20)) {
+      CellBlock;
+    }
+  };
+};
+
+Tables.Table20 = Table(null, null, [1"]*3) {
+  Row {
+    [Cell {
+      "No Edges";
+    }]*3;
+  };
+  Row {
+    [Cell {
+      Paragraph {
+        TextEquation: true;
+        Symbol("x") "+" Symbol("y");
+      }
+    }]*3;
+  };
+};
+
+Tables.Table21 = Table(null, null, [1"]*3) {
+  Row {
+    [Cell(BorderL(1pt)) {
+      "Has Left Border";
+    }]*3;
+  };
+};
+
+Tables.Table22 = Table(null, null, [new Column(1", BorderR(1pt))]*3) {
+  Row {
+    [Cell {
+      "Has Right Border";
+    }]*3;
+  };
+};
+
+Tables.Table23 = Table(null, null, [1"]*3) {
+  Row {
+    [Cell(BorderT(1pt)) {
+      "Has Top Border";
+    }]*3;
+  };
+};
+
+Tables.Table24 = Table(null, null, [1"]*3) {
+  [Row {
+    Background: Colors.Red;
+    [Cell(BorderB(1pt)) {
+      "Has Bottom Border";
+    }]*3;
+  }]*3;
+};
+
+Tables.Table25 = Table(BorderTB(1pt), null, [1"]*3) {
+  Row {
+    [Cell {
+      "Table Border TB";
+    }]*3;
+  };
+};
+
+Tables.Table26 = Table(BorderLR(1pt), null, [1"]*3) {
+  Row {
+    [Cell {
+      "Table Border LR";
+    }]*3;
+  };
+};
+
+Tables.Table27 = Table(1pt, null, [new Column(1", BorderAll(1pt))]*3) {
+  [Row(new(new(1pt), new(1pt, 4pt), new(1pt), new(1pt, 4pt))) {
+    [Cell {
+      "Has All Edges";
+    }]*3;
+  }]*3;
+};
+
+Tables.Table28 = Table(new Border(1pt, 1pt, null, null), null, [new Column(0.5", BorderR(1pt))] * 5) {
+  Row(BorderB(1pt)) {
+    [Cell { "hi" }]*5
+  };
+  Row(BorderB(1pt)) {
+    Cell(null, 2) {
+      "2 cols";
+    };
+    Cell(null, 1, 3) {
+      "3 rows";
+    };
+    Cell(null, 2, 2) {
+      "2 rows";
+      "2 cols";
+    };
+  };
+  Row(BorderB(1pt)) {
+    [Cell { "hi" }]*3;
+  };
+  Row(BorderB(1pt)) {
+    [Cell { "hi" }]*4
+  };
+};
+
+Tables.Table29 = Table(1pt, BorderRB(1pt), [0.5"] * 3) {
+  Row {
+    1; 2; 3;
+  };
+  Row(null, null, 70, LineRules.Exact) {
+    VAlign: Top;
+    4;
+    5;
+    Block {
+      6; 7;
+    };
+  };
+  Row(null, null, 100) {
+    14;
+    15;
+    16;
+  };
+  Row(null, null, 25) {
+    VAlign: Top;
+    4;
+    5;
+    Block {
+      6..10 step 1;
+    };
+  };
+  Row {
+    10; 20; 30;
+  };
+};
+
+
+//======================================================================
+

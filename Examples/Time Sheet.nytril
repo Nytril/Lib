@@ -1,0 +1,144 @@
+using Format, IO;
+
+include "NytrilStyle";
+
+readonly namespace Lang {
+  Title        = "Weekly Employee Timesheet";
+  RegHours     = "Regular\nHours";
+  OverHours    = "Overtime\nHours";
+  INOUT        = ["In", "Out"];
+  Titles       = ["Morning", "Afternoon", "Overtime", "For Office Use Only"];
+  DayTitle     = "Day of Week";
+  WeekEnding   = "For Week Ending";
+  NameEmp      = "Name of Employee";
+  Department   = "Department";
+  Exemptions   = "Exemptions";
+  TotalHours   = "Total Hours";
+  Days         = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  OvertimeAuth = "Authorization of Overtime";
+  EmpSig       = "Employee Signature";
+}
+
+readonly Employees = [
+  "Jacob Jones",
+  "Sally Smith"
+];
+
+namespace Metrics {
+  const NumColumns     = 9;
+  const PaddingTB      = 10pt;
+  const LeftPadding    = 5pt;
+  const TextSize       = 13pt;
+  const TextSizeHeader = 30pt;
+  const TextSizeTitle  = 20pt;
+  const EdgeWeight     = 1pt;
+}
+
+readonly TimeSheetDocumentClass Main.Documents.TimeSheets = new;
+
+//================================================================================
+
+class TimeSheetDocumentClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#a876d41e-0dd7-4871-9454-0feeb13004c9#, "Time Sheet");
+    Description = "Printable time sheets for employees";
+  }
+
+  override GetDocument = Document(0.5", true) {  
+    EmployeeTimesheet(each Employees);
+  };
+
+  AddINOUT = Row {
+    VAlign: Center;
+    HAlign: Center;
+    Cell(BorderL(Metrics.EdgeWeight));
+    NormalCell(each Lang.INOUT)*3;
+    NormalCell(Lang.RegHours);
+    NormalCell(Lang.OverHours)
+  };
+
+  TitleRow = Row(PadTB(Metrics.PaddingTB)) {
+    VAlign: Center;
+    HAlign: Center;
+    NormalCell(Lang.DayTitle);
+    TitleCell(each Lang.Titles)
+  };
+
+  NormalCell(content, colspan=1) = Cell(new(new(Metrics.EdgeWeight, 2), new(Metrics.EdgeWeight), null, null), colspan) {
+    content;
+  };
+
+  BorderCell(content, Thickness padding=null) = Cell(
+    new(new(Metrics.EdgeWeight, padding.Left), new(Metrics.EdgeWeight, padding.Top), new(0, padding.Right), new(0, padding.Bottom))) {
+    content;
+  };
+
+  TitleCell(title) = NormalCell(title, 2) {
+    Background: 90%;
+  };
+
+  AddDay(day) = Row {
+    DayCell(day);
+    [NormalCell(Empty)]*(Metrics.NumColumns-1);
+  };
+
+  DayCell(day) = BorderCell(day, new(Metrics.LeftPadding, Metrics.PaddingTB, null, Metrics.PaddingTB));
+
+  TopTable(person) = Table(new Border(new(Metrics.EdgeWeight, 3), null, new(Metrics.EdgeWeight, 3), new(Metrics.EdgeWeight, Metrics.PaddingTB)), null, [67%, 33%]) {
+    Row {
+      Cell(BorderT(Metrics.EdgeWeight)) {
+        Paragraph {
+          Span {
+            Lang.NameEmp;
+            ":  ";
+          };
+          Span {
+            Bold;
+            TextHeight: 14pt;
+            person
+          };
+        };
+      };
+      NormalCell(Lang.WeekEnding)
+    };
+    Row {
+      NormalCell(Lang.Department);
+      NormalCell(Lang.Exemptions)
+    };
+  };
+
+  MainTable = Table(new Border(null, null, Metrics.EdgeWeight, Metrics.EdgeWeight), null, [ExtentWidth/8]) {
+    TextHeight: Metrics.TextSize;
+    TitleRow;
+    AddINOUT;
+    AddDay(each Lang.Days);
+    Row {
+      DayCell(Lang.TotalHours);
+      [NormalCell(Empty)]*(Metrics.NumColumns-1);
+    };
+  };
+
+  EmployeeTimesheet(name) = Block {
+    Paragraph {
+      PageBreakBefore: true;
+      ParAlignment: Center;
+      TextHeight: 30pt;
+//      TextHeight: Metrics.TextSizeTitle;
+      SpaceAfter: 0.1";
+      NytrilStyle.StandardLogo;
+      Space * 5;
+      Lang.Title;
+    };
+    TopTable(name);
+    MainTable;
+    Paragraph(null, [new(50%, TabTypes.Left, TabLeaders.Underscore), new(100%, TabTypes.Left, TabLeaders.Underscore)]) {
+      SpaceBefore: 30pt;
+      Lang.OvertimeAuth;
+      Tab;
+      Lang.EmpSig;
+      Tab;
+    };
+  };
+}
+
+//================================================================================

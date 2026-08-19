@@ -1,0 +1,8 @@
+using Format, HelpConcepts;
+
+class HeadersAndFootersConcept: AuthoredContent {
+  Constructor {
+    super.Constructor("Headres and Footers");
+  }
+}
+

@@ -1,0 +1,45 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "A table contains "; HelpLink(attribute Row); " elements. Each "; HelpLink(attribute Cell);
+    " in the row is sized according to the "; HelpLink(attribute Column); " array. ";
+    "A table converts each of its child elements into a row, if it is not already a row. ";
+    "The rows of a table inherit the table's text and paragraph formatting, but can override individual properties. ";
+    "A table can appear anywhere a paragraph can appear,  however if you want place a table inside a ";
+    HelpLink(attribute Span); " or "; HelpLink(attribute Paragraph); ", use a "; HelpLink(attribute Frame);
+    " to enclose the table. ";
+  };
+};
+
+Example = Block {
+  "WWII Generals";
+  Table(1, null, [1.5", 1.25", 1"]) {
+    Row(BorderB(1)) {
+      Background: Colors.Blue;
+      TextColor: Colors.White;
+      "Name"; "Rank"; "Lived";
+    };
+    Row {"Douglas MacArthur"; "General"; #1893#..#1981#};
+    Row {"Omar Bradley"; "General"; #1880#..#1964#};
+  };
+};
+
+Example2 = Block {
+  Paragraph {"Muscle Cars"};
+  Table(1, null, [new(20pt, BorderR(1), null, HAligns.Center, null, 90%), 1.5"]) {
+    LeftIndent: 16pt;
+    Row(BorderB(1)) {
+      Background: 90%;
+      Empty; "Make"; "Model"
+    };
+    Row {1; "Chevrolet"; "Camero"};
+    Row {2; "Ford";     "Mustang"};
+    Row {3; "Dodge";    "Viper"};
+  }
+};
+
+Main.Help = new HelpExample(attribute(Format.Table), 2);
+

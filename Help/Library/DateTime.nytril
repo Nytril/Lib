@@ -1,0 +1,56 @@
+include "Help";
+
+using Format;
+
+readonly now = DateTime.Now;
+
+Example = Paragraph {
+  "The current date is ";
+  TextFormat: "MMMM d, yyyy";
+  now;
+};
+
+Example2 = Paragraph {
+  var start = #2020-01-01#;
+  "There are "; (now - start).Day;" days between "; start; " and now.";
+};
+
+Example3 = Block {
+  var now = DateTime.Now;
+  var formats = [
+    // General formatters
+    "G", "d", "D", "f", "F", "g", "m", "r", "s", "t", "T", "u", "U", "Y", "o",
+
+    // Compound formats
+    "yyyy-MM-ddTHH:mm:ss.fffffffzzz",
+    "yyyy-MM-ddTHH:mm:sszzz",
+    "MM/yyyy",
+    "MM/dd/yyyy HH:mm", // Notice the escaped \\
+    "yyyyMMdd",
+  ];
+
+  NytrilStyle.Heading3 {
+    "Format Examples";
+  };
+  Table(0.5, PadLR(3), [Column.Fit(2"), 3"]) {
+    Row {
+      Background: NytrilPalette.TableTitleBack;
+      TextColor: NytrilPalette.TableTitleFore;
+      "Formatter"; "Output";
+    };
+    foreach (var format in formats) {
+      NytrilStyle.ListRow(each0) {
+        format;
+        Span {
+          TextFormat: format;
+          now;
+        };
+      }
+    }
+  }
+};
+
+Main.Help = new HelpExample(attribute DateTime, 3);
+
+
+

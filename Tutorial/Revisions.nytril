@@ -1,0 +1,311 @@
+using Format;
+//======================================================================
+
+namespace Chapters.Language.Sections.Revisions;
+
+readonly TutorialLesson Lesson = new(#60c0d3db-f7fd-44ef-b7f6-72c510978dc9#, "Revision = {Properties + Elements}");
+
+//======================================================================
+
+readonly LessonExample Content.IntroductionEx = new(#811cede7-8eda-4aee-a7b5-776a4677c581#) {
+  Options: NoFormat;
+  Other: Paragraph {
+    "Revisions are the backbone of coding in Nytril. ";
+    "A revision is a collecion of properties and elements inside curly braces {} that are separated by semi-colons (;}. ";
+  };
+};
+
+//======================================================================
+
+BigText = TextHeight: 16pt;  // A single property
+
+readonly LessonExample Content.PropertyEx = new(#4e94b8cf-fd4d-4aed-b9c9-650a442c5a9e#) {
+  Text: Span {
+    "A property is the combination of a field name, a colon (:) and a compatible value. ";
+  };
+  Code: [attribute BigText];
+  Show: Span;
+};
+
+//======================================================================
+
+RevisionWithElements = {1; 1+2; Math.Sqrt(4+1)};
+RevisedBlock         = Block RevisionWithElements; // Format and Revision joined by affinity
+
+readonly LessonExample Content.RevisionWithElementsEx = new(#0b51ea0b-2264-40c5-8ba6-53733f1b42b9#) {
+  Text: Paragraph {
+    "An element is any other expression, including variables and values returned from function calls, separated by a ';'. ";
+    "The properties and elements of a revision are computed at runtime, so a revision \"executes\" just like a scope in a function. ";
+  };
+  Code: [attribute RevisionWithElements, attribute RevisedBlock];
+};
+
+//======================================================================
+
+Revision = {
+  "Text";                 // Element
+  TextColor: Colors.Red;  // Property
+  4 * (1 + 2);            // Element
+};
+
+readonly LessonExample Content.RevistionEx = new(#1486770d-6c3d-4e14-b5eb-00841cc974b8#) {
+  Text: Paragraph {
+    "You 'apply' a revision to a formatting object to give it content and properties. ";
+    Italic "Elements"; " are placed in a revision in the order that they are encountered in code. ";
+    Italic "Properties"; ", on the other hand, can appear anywhere inside a revision and have the same effect. ";
+    "In other words, placing the property before or after any element (or another property) makes no difference. ";
+    "In the code below, the TextColor property is placed after the 'Text' element, but it still affects the entire revision. ";
+  };
+  Code: [attribute Revision];
+};
+
+//======================================================================
+
+FirstSum = Span {         // Inline revision defined over the next 10 lines of code
+  var x;                  // Variable declaration (not added)
+  x = 9;                  // Variable assignment (not added)
+  ++x;                    // Increment variable (not added)
+  x += 2;                 // Increment/assignment (not added)
+                          // White space (not added)
+  null;                   // null (not added)
+  x + 5;                  // Expression (added)
+  " is the sum of 5 + ";  // Constant (added)
+  x;                      // Variable (added)
+} // End of revision
+; // End of expression
+
+readonly LessonExample Content.SyntaxEx = new(#eacf9787-ee46-438d-a1f1-28387d5932b5#) {
+  Text: Paragraph {
+    "A revision acts on the format object to its left, without modifying it. ";
+    "In the code below, a Span is revised by an inline revision - the lines of code between curly braces {}. ";
+    "It is critical to understand that although this example revision comprises several lines of code, it is a single revision object. ";
+    "This revision object is then applied to the Span to add content. ";
+  };
+
+  Other: Block {
+    Paragraph {
+      SpaceBefore: 12pt;
+      "Each single expression (separated by ';') inside the curly braces '{}' is evaluated, and then added to the revision. ";
+      "But there are two important exceptions. ";
+      "The following types of expressions (determined at runtime) are NOT added to a revision: ";
+    };
+    ListBlock {
+      Span {"The value "; NytrilStyle.KW(attribute null); ", whether literal or as a return value from a function. "};
+      Span {
+        "A variable declaration / assignment expression. ";
+      };
+    };
+    Paragraph {
+      "The latter comes in handy when you need to create 'helper' variables inside a revision to do calculations or make the code easier to understand. ";
+    };
+  };
+  Code: [attribute FirstSum];
+};
+
+//======================================================================
+
+NextSum = FirstSum {   // Add old revision to new revision in {}
+  ", and then some. "; // New element
+};
+
+readonly LessonExample Content.StackedRevisionsEx = new(#fa34dda3-8d3a-4fa4-9d1d-097f23c8d42c#) {
+  Text: Paragraph {
+     "Revisions can be added together to create a new revision that combines the elements and properties of both (in left-right order). ";
+     "It is important to remember that adding revisions has no effect on the revisions being added. ";
+     "In the code below the previous revised span gets some text added at the end. ";
+  };
+  Code: [attribute NextSum];
+};
+
+//======================================================================
+
+FormattedSpan = NextSum {
+  BigText;  // References to property variables work the same as inline properties
+  TextColor: Colors.Red;
+};
+
+readonly LessonExample Content.RevisionPropertiesEx = new(#fc3754c1-015f-46b6-afed-fb1e8d3bf782#) {
+  Text: Paragraph {
+     "A revision can contain properties as well as elements. ";
+     "Here the previous span is revised to change its formatting properties. ";
+  };
+  Code: [attribute FormattedSpan];
+};
+
+//======================================================================
+
+ChangedSpan = FormattedSpan {
+  TextColor: Colors.Blue;         // Change the TextColor property that was added above
+  TextWeight: TextWeights.Bold;   // Add a new property
+};
+
+readonly LessonExample Content.ChangedSpanEx = new(#53acc701-0cd9-4734-a3f3-709278262f57#) {
+  Text: Paragraph {
+     "A revision can also revise existing properties. ";
+     "Again, this has no effect on the original, but instead creates a new revision that substitutes the properties of the right-hand revision for those of the left. ";
+  };
+  Code: [attribute ChangedSpan];
+};
+
+//======================================================================
+
+ScoreText(score) = Span {
+  "A score of {0} will recieve the grade "(score);
+  if (score >= 90) {
+    TextColor: Colors.Green;
+    "A";
+  }
+  else if (score >= 80) {
+    TextColor: Colors.Blue;
+    "B";
+  }
+  else if (score >= 70) {
+    TextColor: Colors.Yellow;
+    "C";
+  }
+  else if (score >= 60) {
+    TextColor: Colors.Orange;
+    "D";
+  }
+  else {
+    TextColor: Colors.Red;
+    "F";
+  }
+  ".";
+};
+
+TheScores = Block {
+  // Call the function above
+  ScoreText(95);
+  ScoreText(83);
+  ScoreText(55);
+};
+
+readonly LessonExample Content.ConditionalPropertiesEx = new(#52d4b649-c8f5-43b1-bd78-f688e0e93a79#) {
+  Text: Paragraph {
+     "A revision can contain conditional statements that optionally add elements or properties. ";
+  };
+  Code: [attribute ScoreText, attribute TheScores];
+};
+
+//======================================================================
+
+ShowSet(count) = Span {
+  "The set has {0} members ["(count);
+
+  // Repeat 'count' times
+  for (var i = 1; i <= count; ++i) {
+    if (i > 1)
+      ", "; // Add this element
+    i; // Add this element
+  }
+  "].";
+};
+
+TheSets = Block {
+  ShowSet(2);
+  ShowSet(5);
+  ShowSet(10);
+};
+
+readonly LessonExample Content.RevisionLoopsEx = new(#df7269c1-1037-4cd3-8758-b067ea0ea900#)  {
+  Text: Paragraph {
+     "A revision can contain a "; NytrilStyle.KW(attribute for); ", "; NytrilStyle.KW(attribute foreach); ", "; NytrilStyle.KW(attribute do); " or "; NytrilStyle.KW(attribute while); " loop. ";
+     "In this situation, the expressions inside the loop acts the same way as expressions inside a revision, except they are repeated each time the loop repeats. ";
+     "This allows revisions to contain a programmable number of elements. ";
+  };
+  Code: [attribute ShowSet, attribute TheSets];
+};
+
+//======================================================================
+
+CommaList = Span {
+  Begin: "[";               // Add this element at the beginning
+  End: "].";                // Add this element at the end
+  Separator: ", ";          // Add this element between each element
+  PairSeparator: " and ";   // Use as a separator only if there are 2 items
+  LastSeparator: ", and ";  // Use this as the last separator
+};
+
+ShowArray(count) = CommaList {
+  for (var i = 1; i <= count; ++i)
+    i; // Add this element
+};
+
+AllArrays = Block {
+  ShowArray(1);
+  ShowArray(2);
+  ShowArray(4);
+};
+
+readonly LessonExample Content.RevisionSeparatorsEx = new(#b4eea14e-e995-4a5f-aa15-68d0c4cfb440#) {
+  Text: Paragraph {
+     "Certain properties can add implicit elements to a revision. ";
+     "The properties "; NytrilStyle.PropName(attribute FormatProperties.Begin); CommaSpace;
+     NytrilStyle.PropName(attribute FormatProperties.End); CommaSpace;
+     NytrilStyle.PropName(attribute FormatProperties.Separator); CommaSpace;
+     NytrilStyle.PropName(attribute FormatProperties.PairSeparator); ", and ";
+     NytrilStyle.PropName(attribute FormatProperties.LastSeparator); " act after the revision gets all of its explicit elements. ";
+     "This allows you to create formatting styles that insert elements in certain places. ";
+  };
+  Code: [attribute CommaList, attribute AllArrays];
+};
+
+//======================================================================
+
+ArrayElements = Span {
+  "Elements are ";
+  Span {
+    Separator: CommaSpace;
+    [1, 2, 3];    // Add 3 elements instead of 1 array
+    4..10 step 1; // This expression is the same as [4, 5, 6, 7, 8, 9, 10]
+  };
+};
+
+readonly LessonExample Content.ArrayElementsEx = new(#11138745-b121-44b9-bb27-82c471252678#) {
+  Text: Paragraph {
+     Bold "Important: "; "If an array is an element of a revision then all of the elements of the array are added, as if they were placed directly in the revision. ";
+     "This may seem counter-intuitive at first, but this convention makes it easy to add iterated content. ";
+  };
+  Code: [attribute ArrayElements];
+};
+
+//======================================================================
+
+BaseStyle = Paragraph {
+  TextFamily: TextFamilies.Calibri;
+  TextHeight: 11pt;
+};
+
+BodyStyle = BaseStyle {
+  FirstIndent: 16pt;
+};
+
+HeaderStyle = BaseStyle {
+  TextFamily: TextFamilies.TimesNewRoman;
+  TextHeight: 120%;
+  Bold;
+  Underline;
+  SpaceAfter: 8pt;
+};
+
+Document = Block {
+  HeaderStyle {
+    "Introduction";
+  };
+
+  BodyStyle {
+    "The rain in Spain lies mainly on the plane.";
+  };
+};
+
+readonly LessonExample Content.StyleExamplesEx = new(#429d3b91-0279-4b37-adbe-e4bfefc1f424#) {
+  Text: Paragraph {
+    "You can use the rules of revisions to construct layers of related formatting styles. ";
+    "By stacking and combining revisions, heirarchical style dictionaries can be created easily in a manner that is similar to CSS or to the way word processors allow styles to inherit from each other and override properties. ";
+  };
+  Code: [attribute BaseStyle, attribute Document];
+};
+
+//======================================================================
+

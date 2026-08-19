@@ -1,0 +1,72 @@
+using Format;
+//======================================================================
+
+namespace Chapters.Language.Sections.EachOperator;
+
+readonly TutorialLesson Lesson = new(#4afa1d2e-6f51-45e2-b003-f1ee4abb6534#, "The 'each' operator");
+
+//======================================================================
+
+Square(x) = x * x;
+
+SquareNumbers = Paragraph {
+  Separator: CommaSpace;
+  Square(each [1, 2, 3, 4]);
+};
+
+readonly LessonExample Content.SquareNumbersEx = new(#c322434a-4ebf-46d1-bce8-0bc360ca5188#) {
+  Text: Paragraph {
+    "The "; NytrilStyle.KW(attribute each); " operator is used to call a function with a parameter, once for every item in an array. The resulting expression is an array of function return values. ";
+  };
+  Code: [attribute Square, attribute SquareNumbers];
+};
+
+//======================================================================
+
+Power(x, power) = x ^ power;
+PowerNumbers = Block {
+  var result = Power(each [2, 3, 4], each [1, 2, 3]);  // Returns 2-d array
+  foreach (var r in result) {
+    Paragraph {
+      Separator: CommaSpace;
+      r;
+    }
+  }
+};
+
+readonly LessonExample Content.PowerNumbersEx = new(#e3fe2049-17ea-4104-af5d-1098f1bbf1bd#) {
+  Text: Paragraph {
+    "If a function has more than 1 parameter, the "; NytrilStyle.KW(attribute each); " operator can be used on more than 1 argument. ";
+    "This raises the dimension of the output array. ";
+  };
+
+  Code: [attribute Power, attribute PowerNumbers];
+};
+
+//======================================================================
+
+PowerVector = Vector.Convert(2 ^ (each 1..8));
+
+readonly LessonExample Content.PowerVectorEx = new(#b99eab6f-37c1-4d02-9d00-b57381198031#) {
+  Text: Paragraph {
+    "Most unary and binary operators can also be used in conjunction with the "; NytrilStyle.KW(attribute each); " operator to provide a very compact expression. ";
+    "The code below shows the number 2 being raised to the power of an array of numbers using the "; NytrilStyle.KW(attribute ^); " power operator. ";
+  };
+
+  Code: [attribute PowerVector];
+};
+
+//======================================================================
+
+PowerMatrix = Matrix.Convert((each [2, 3, 4]) ^ (each [2, 3, 4]));
+
+readonly LessonExample Content.PowerMatrixEx = new(#f24872b0-80e1-450f-9dd7-f9f05be10b50#) {
+  Text: Paragraph {
+    "If you use an "; NytrilStyle.KW(attribute each); " expression on both sides of a binary operator, you get a 2-dimensional array result. "
+    "The code below shows an array of numbers being raised to the power of another array of numbers using the "; NytrilStyle.KW(attribute ^); " power operator and the results are converted to a matrix. ";
+  };
+
+  Code: [attribute PowerMatrix];
+};
+
+//======================================================================

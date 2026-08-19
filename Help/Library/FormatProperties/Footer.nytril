@@ -1,0 +1,32 @@
+include "Help";
+
+using Format;
+
+SampleCode = Document {
+  // Add this code in a document or a sectiom to create a footer at the bottom of the page
+  Footer: MarginBlock(0.25") {
+    Paragraph {
+      ParAlignment: Center;
+      "Page "; DocFields.PageNumber;
+    };
+  };
+};
+
+Example = Block {
+  VBox(4", null, 1) {
+    HAlign: Center;
+    HBox(100%, 1", BorderTB(0.1)) {
+      Background: 95%;
+      HAlign: Center;
+      VAlign: Center;
+      "...";
+    };
+    HBox(100%, 0.5") {
+      Justify: SpaceAround;
+      VAlign: Center;
+      "Page 1";
+    };
+  }
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.Footer), 0);

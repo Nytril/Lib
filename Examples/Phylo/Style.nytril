@@ -1,0 +1,157 @@
+using Format, Math, IO;
+//================================================================
+
+readonly namespace PhyloStyle {
+  Header1(title) = Paragraph(BorderB(new(3pt, 0, Colors.Red))) {
+    TextHeight: 16;
+    SpaceAfter: 8pt;
+    title
+  };
+
+  LevelMarkers = [
+    Empty,
+    Empty,
+    Empty,
+    Empty,
+    Markers.Circle + Tab,
+    Markers.Square + Tab,
+    Markers.Square(null, 1) + Tab,
+    Markers.Dot + Tab,
+  ];
+
+  TabStop = 0.125";
+
+  HeaderHeight = 10pt;
+
+  XOffset(c, time) = (c.Start - time) / (c.Start - c.Stop);
+
+  ShowAgeRange(start, stop) = Block {
+    var width = ExtentWidth;
+    foreach (var segment in SortedGeoTimes) {
+      if (start < segment.Start and start > segment.Stop) {
+        var x1 = XOffset(segment, start);
+        var x2 = XOffset(segment, stop);
+        var x  = Max(0, x1);
+        var w  = Min(x2, 1) - x;
+
+        Canvas(width) {
+          Background: segment.BackColor;
+          Canvas(w * width, 2pt) {
+            HAlign: Left;
+            Background: Colors.Red;
+            Y: 11pt;
+            X: x * width;
+          };
+          HBox(100%) {
+            VAlign: Center;
+            Justify: SpaceBetween;
+            Span {segment.Start; TextHeight: 70%};
+            segment.Name;
+            if (segment.Stop > 0)
+              Span {segment.Stop; TextHeight: 70%};
+            else
+              Empty;
+          }
+        }
+      }
+    }
+  };
+}
+
+//================================================================
+
+class GeoTimelineClass {
+  var Height,
+      BoxWidth,
+      Start,
+      Stop,
+      Time;
+
+  Constructor(height, boxwidth) {
+    Height   = height;
+    BoxWidth = boxwidth;
+  }
+
+  YOffset(start, stop, time) = (1 - ((start - time) / (start - stop))) * Height;
+
+  GeoBox(start, stop, TimeFrame segment) {
+    var sy = YOffset(start, stop, segment.Stop);
+    var bh = ((segment.Start - segment.Stop) / (start - stop)) * Height;
+    var by = Max(0, sy);
+    var fh = Min(BoxWidth * 0.2, bh * 0.85);
+    var th = Min(fh, (8 - segment.Name.Length * 0.2) Units.pts);
+
+    return Canvas(BoxWidth, Min(Height - by, bh), 0.1pt) {
+      Y: by;
+      HAlign: Center;
+      VAlign: Center;
+      Background: segment.BackColor;
+      Canvas {
+        TextHeight: th;
+        if (Time is valid and Time < segment.Start and Time >= segment.Stop)
+          Background: Colors.White;
+        Span {
+          Tip: segment;
+          segment.Name;
+        }
+      }
+    };
+  }
+
+  TimeFrame[] InTime(segment, start, stop, max=null) = GeoList.FindSlice(t => t.Segment == segment and start > t.Stop and stop <= t.Start, max);
+
+  GeoTimeBar(start, stop, TimeFrame.SegmentTypes segment) = VBox {
+    X: each0 * BoxWidth;
+    Canvas(BoxWidth) {
+      TextHeight: 8pt;
+      HAlign: Center;
+      VAlign: Center;
+      segment;
+    };
+    Canvas {
+      Y: PhyloStyle.HeaderHeight;
+
+      GeoBox(start, stop, each InTime(segment, start, stop));
+    }
+  };
+
+  ShowTime(time) = Span {
+    TextDigits: time > 0 and time < 1 ? 3 : 0;
+    time;
+  };
+
+  GeoTimeline(start, stop, TimeFrame.SegmentTypes segment0, TimeFrame.SegmentTypes segment1) = HBox {
+    VAlign: Top;
+    Canvas(5pt, Height);
+    ChartAxis(null, Height, PadR(1pt)) {
+      Direction: Directions.Vertical;
+      TextHeight: 7pt;
+      Y: PhyloStyle.HeaderHeight;
+      Start: start;
+      Stop: stop;
+    };
+    GeoTimeBar(start, stop, each segment0..segment1);
+  };
+
+  EarlyGeoTimelines = Paragraph {
+    HBox {
+      VAlign: Top;
+      GeoTimeline(TimeFrames.Precambrian.Start, 0, Supereon, Period);
+      GeoTimeline(TimeFrames.Phanerozoic.Start, 0, Eon, Epoch);
+      GeoTimeline(TimeFrames.Paleozoic.Start, TimeFrames.Paleozoic.Stop, Era, Age);
+    }
+  };
+
+  LateGeoTimelines = Paragraph {
+    HBox {
+      Separation: 10pt;
+      VAlign: Top;
+      GeoTimeline(TimeFrames.Mesozoic.Start, TimeFrames.Mesozoic.Stop, Era, Age);
+      GeoTimeline(TimeFrames.Cenozoic.Start, 0, Period, Age);
+      GeoTimeline(TimeFrames.Quaternary.Start, 0, Epoch, Age);
+      GeoTimeline(TimeFrames.Holocene.Start, 0, Epoch, Age);
+    }
+  };
+}
+
+//================================================================

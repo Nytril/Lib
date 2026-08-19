@@ -1,0 +1,32 @@
+include "Help";
+
+using Format;
+
+Example = Paragraph {
+  Shape(Colors.Blue, new Stroke(3, Colors.Red, Dotted)) {
+    ClosedPath(50, 0) {
+      LineTo(150, 60);
+      LineTo(50, 60);
+    }
+  }
+};
+
+Example2 = Paragraph {
+  Canvas {
+    Shape(null, new Stroke(10, Colors.Red, Solid, Round, Bevel)) {
+      OpenPath(100, 0) {
+        LineTo(120, 60);
+        LineTo(160, 80);
+        QuadTo(new(200, -20), new(240, 40));
+      }
+    }
+  }
+};
+
+Example3 = Paragraph {
+  Shape(Colors.Yellow, 3) {
+    PolygonPath(new(0, 50), 4, -90 degrees);
+  };
+};
+
+Main.Help = new HelpExample(attribute Format.Shape, 3);

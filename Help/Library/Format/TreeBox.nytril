@@ -1,0 +1,68 @@
+include "Help";
+
+using Format;
+
+Structure = new Node("A") {
+  new Node("B", 10);
+  new Node("C", 5) {
+    new Node("D", 10);
+    new Node("E", 5);
+  }
+};
+
+BaseTree = TreeBox(100, 100, new Edge(0.25, 5)) {
+  Root: Structure;
+  Default: new Node(null) {
+    NodeGap: 5pt;
+    Bevel: 20%;
+    Curvature: 20%;
+  };
+};
+
+Example = Block {
+  BaseTree;
+};
+
+ShowTree(c, b) = VBox {
+  HAlign: Center;
+  Paragraph {
+    SpaceBefore: 10;
+    c; CommaSpace; b
+  };
+  BaseTree {
+    Default: new Node(null) {
+      Curvature: c;
+      Bevel: b;
+    };
+  };
+};
+
+Percents = [0, 25%, 50%, 75%, 100%];
+
+ShowTreeList(c) = Paragraph {
+  Separator: Space;
+  ShowTree(c, each Percents);
+};
+
+
+Example2 = Block {
+  ShowTreeList(each Percents);
+};
+
+Example3 = Block {
+  BaseTree {
+    AlignTips: true;
+  }
+};
+
+Example4 = Block {
+  HBox {
+    Separation: 30;
+    BaseTree {Placement: Placements.Left};
+    BaseTree {Placement: Placements.Right};
+    BaseTree {Placement: Placements.Top};
+    BaseTree {Placement: Placements.Bottom};
+  }
+};
+
+Main.Help = new HelpExample(attribute TreeBox, 4);

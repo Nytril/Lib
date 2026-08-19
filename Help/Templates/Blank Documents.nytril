@@ -1,0 +1,32 @@
+using Format;
+
+readonly namespace Main.Documents {
+  Type1Document Phase1 = new;
+  Type2Document Phase2 = new;
+}
+
+//=========================================================
+
+class Type1Document: DocumentEntry {
+  Constructor {
+    super.Constructor(#00000000-1111-2222-3333-444444444444#, "Document 1");
+  }
+
+  override GetDocument = Document {
+    "Two documents in one project";
+  };
+}
+
+//=========================================================
+
+class Type2Document: DocumentEntry {
+  Constructor {
+    super.Constructor(#10000000-1111-2222-3333-444444444444#, "Document 2");
+  }
+
+  override GetDocument = Document {
+    "The second document";
+  };
+}
+
+//=========================================================

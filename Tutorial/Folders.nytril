@@ -1,0 +1,71 @@
+using Units, Format, IO;
+//======================================================================
+
+namespace Chapters.Platform.Sections.FileSystem;
+
+readonly TutorialLesson Lesson = new(#2d99e6ca-8a5e-4a87-be8e-f73e82f5adc1#, "File System");
+
+RootFolderPath = Folders.Source Folders.Up Folder("Examples");
+
+FileListing = Table(0.5, PadLR(3), [3 inch, 1", new(1", null, null, HAligns.Right)]) {
+  TextHeight: 11pt;
+  var list = EnumerateFiles(RootFolderPath, "*.nytril");
+  Row {
+    Background: NytrilPalette.TableTitleBack;
+    TextColor: NytrilPalette.TableTitleFore;
+    "File Name";
+    "Created";
+    "Size";
+  };
+  foreach (var e in list) {
+    Row {
+      if (each0 mod 2 == 0)
+        Background: 95%;
+
+      e.FileName;
+      Cell {
+        TextFormat: "MM-dd-yyyy";
+        e.Created;
+      };
+      e.Size;
+    }
+  }
+};
+
+readonly LessonExample Content.GetFileListingEx = new(#140139cd-46b4-4201-912f-2730eb13d665#) {
+  Text: NytrilStyle.Function(attribute EnumerateFiles, "Get a listing of files");
+  Code: [attribute FileListing];
+};
+
+//======================================================================
+
+readonly FolderListing = Table(0.5, PadLR(3), [3 inch, 1"]) {
+  TextHeight: 11pt;
+  var list = EnumerateFolders(RootFolderPath);
+  Row {
+    Background: NytrilPalette.TableTitleBack;
+    TextColor: NytrilPalette.TableTitleFore;
+    "Folder Name";
+    "Created";
+  };
+  foreach (var e in list) {
+    Row {
+      if (each0 mod 2 == 0)
+        Background: 90%;
+
+      e.FileName;
+      Cell {
+        TextFormat: "MM-dd-yyyy";
+        e.Created;
+      };
+    }
+  }
+};
+
+readonly LessonExample Content.GetFolderListingEx = new(#c869902a-b12d-402d-9931-d6048223d4e4#) {
+  Text: NytrilStyle.Function(attribute EnumerateFolders, "Get a listing of folders");
+  Code: [attribute FolderListing];
+};
+
+//======================================================================
+

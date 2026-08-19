@@ -1,0 +1,31 @@
+using Format, Units;
+
+readonly MyDocument Main.Documents.MainDocument = new;
+
+var BoxLength = 5';
+var BoxWidth  = 4";
+
+class MyDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#00000000-1111-2222-3333-444444444444#, "Rectangle Area");
+  }
+
+  Out(name, value) = Row {
+    Bold name;
+    value;
+  };
+
+  override GetDocument = Document {
+    Paragraph {
+      TextHeight: 14pt;
+      "Calculate the area of a box";
+    };
+    Table(null, PadR(10), [Column.Fit(2")]) {
+      LeftIndent: 8pt;
+      Out("Length", BoxLength);
+      Out("Width", BoxWidth);
+      Out("Area", (BoxLength * BoxWidth) tounit feet^2);
+    }
+  };
+}
+

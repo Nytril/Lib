@@ -1,0 +1,25 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  var number = 12.300;
+
+  Paragraph {
+    TextDigits: 3;
+    TextMinDigits: false;
+    number;
+  };
+  Paragraph {
+    TextDigits: 3;
+    TextMinDigits: true;
+    number;
+  };
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextMinDigits));
+
+//============================================================
+

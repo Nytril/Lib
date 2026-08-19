@@ -1,0 +1,116 @@
+using Format, IO;
+
+class AmountClass {
+  Constructor {
+  }
+
+  virtual Show(amount) = amount;
+}
+
+//=====================================================================================
+
+class PluralAmountClass: AmountClass {
+  var Singular,
+      Plural;
+
+  Constructor(singular, plural) {
+    super.Constructor;
+
+    Singular = singular;
+    Plural   = plural;
+  }
+
+  override Show(amount) = Span {
+    amount;
+    Space;
+    amount > 1 ? Plural : Singular;
+  };
+}
+
+//=====================================================================================
+
+class InchAmountClass: AmountClass {
+  override Show(amount) = Span {
+    amount;
+    Space;
+    if (amount >= 0 and amount <= 1)
+      "inch";
+    else
+      "inches";
+  };
+}
+
+//=====================================================================================
+
+class CupsAmountClass: PluralAmountClass {
+  Constructor {
+    super.Constructor("cup", "cups");
+  }
+}
+
+//=====================================================================================
+
+class TbspAmountClass: CupsAmountClass {
+  override Show(amount) = Span {
+    if (amount >= 4)
+      super.Show(amount over 16);
+    else
+      amount * Units.tablespoon;
+  };
+}
+
+//=====================================================================================
+
+class tspAmountClass: TbspAmountClass {
+  override Show(amount) = Span {
+    if (amount >= 3)
+      super.Show(amount over 3);
+    else
+      amount * Units.teaspoon;
+  };
+}
+
+//=====================================================================================
+
+class mLAmountClass: TbspAmountClass {
+  override Show(amount) = Span {
+    amount * Units.milliliter;
+  };
+}
+
+//=====================================================================================
+
+class LAmountClass: mLAmountClass {
+  override Show(amount) = Span {
+    if (amount < 0.1)
+      super.Show(amount * 1000.0);
+    else
+      amount Units.liters;
+  };
+}
+
+//=====================================================================================
+
+class OzClass: AmountClass {
+  override Show(amount) = Span {
+    amount;
+    Units.ounces;
+  };
+}
+
+//=====================================================================================
+
+readonly namespace Measures {
+  AmountClass       None    = new;
+  InchAmountClass   Inch    = new;
+  CupsAmountClass   Cups    = new;
+  TbspAmountClass   Tbsp    = new;
+  tspAmountClass    tsp     = new;
+  PluralAmountClass Gals    = new("gallon", "gallons");
+  PluralAmountClass Lbs     = new("pound", "pounds");
+  PluralAmountClass Grams   = new("gram", "grams");
+  mLAmountClass     mL      = new;
+  LAmountClass      L       = new;
+  PluralAmountClass FluidOz = new("fluid ounce", "fluid ounces");
+  OzClass           Oz      = new;
+}

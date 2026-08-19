@@ -1,0 +1,75 @@
+using Format;
+
+//=======================================================
+
+Main.Documents = new ColorDocumentClass;
+
+//=======================================================
+
+class UserOptions: Fact {
+  field int Red,
+            Green,
+            Blue;
+
+  Constructor {
+    super.Constructor(#1f1899a9-afed-45c8-b71e-cdc73c110d79#);
+    ReadFromStorage;
+  }
+}
+
+//=======================================================
+
+class ColorDocumentClass: DocumentEntry {
+  var UserOptions Options;
+
+  Constructor {
+    super.Constructor(#3786995f-0786-4486-ad5f-bdbfca1e9c21#, "Color Picker");
+    Options = new;
+  }
+
+  Edit(name, ref prop) = HBox {
+    IntControl(new(ref prop), 45pt, null, new Edge(1, 3), 0, 255, 1) {
+      name;
+      BorderRadius: 5;
+      Action: Actions.Refresh;
+    };
+    SliderControl(new(ref prop), 1", null, PadAll(3), 0..255 step 1) {
+      BorderRadius: 5;
+      Action: Actions.Refresh;
+    };
+  };
+
+  override GetDocument = Document {
+    TextHeight: 16pt;
+
+    VBox {
+      HAlign: Center;
+
+      HBox {
+        TextHeight: 24pt;
+        Name;
+      };
+
+      var color = new Color(Options.Red, Options.Green, Options.Blue, 255);
+      HBox(6", 150) {
+        Separation: 20;
+        VAlign: Center;
+        VBox(null, 100%) {
+          HAlign: Right;
+          Justify: Justifiers.SpaceBetween;
+          Edit("Red", ref Options.Red);
+          Edit("Green", ref Options.Green);
+          Edit("Blue", ref Options.Blue);
+        };
+        Canvas(130, 130) {
+          Background: color;
+        };
+        Span {
+          color as string;
+        };
+      };
+    };
+  };
+}
+
+//=======================================================

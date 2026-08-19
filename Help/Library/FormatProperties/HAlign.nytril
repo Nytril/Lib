@@ -1,0 +1,25 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  "Sets the default horizontal alignment for all children. The container must have its width specified.";
+};
+
+Container(HAligns halign) = VBox(2", null, 0.25) {
+  HAlign: halign;
+  attribute(halign).Name;
+  "X";
+  "XXXXXX";
+};
+
+Example = VBox(4", null) {
+  Separation: 10;
+  Container(HAligns.Left);
+  Container(HAligns.Center);
+  Container(HAligns.Right);
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.HAlign));
+
+

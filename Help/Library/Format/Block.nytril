@@ -1,0 +1,36 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "A block converts each of its child element into paragraphs (if they are not already paragraphs or tables). ";
+    "The children of a block inherit the block's text and paragraph formatting, but can override individual properties. ";
+  };
+};
+
+Example = Block {
+  LeftIndent: 16pt;
+
+  Paragraph {
+    LeftIndent: 0;
+    "Blocks:";
+  };
+  "Contain tables";
+  Table(1, null, [1.5"]) {
+    LeftIndent: 16pt;
+    Row(BorderB(1)) {
+      Background: 90%;
+      "Header"
+    };
+    Row {"Row 1"};
+  };
+
+  Paragraph {
+    "Contain paragraphs";
+  };
+
+  "Convert all other values into a paragraph";
+};
+
+Main.Help = new HelpExample(attribute(Format.Block));

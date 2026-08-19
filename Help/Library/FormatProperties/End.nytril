@@ -1,0 +1,28 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "The end item will show up as the last item regardless of the numbr of items already in the list.";
+  };
+};
+
+Example = Block {
+  var sentence = Span {
+    End: ". ";
+  };
+
+  Paragraph {
+    sentence {
+      "My first sentence";
+    };
+
+    sentence {
+      "Another ";
+      "sentence";
+    };
+  }
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.End));

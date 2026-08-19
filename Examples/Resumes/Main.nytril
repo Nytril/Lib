@@ -1,0 +1,22 @@
+using Format;
+
+include "Michael Jones";
+include "Sally Jones";
+include "Styles";
+//=======================================================================
+
+readonly Main.Documents = new ResumeDocument;
+
+class ResumeDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#2c530a7f-18c1-418b-9b2b-f6d86844873d#, "Resumes");
+  }
+
+  override GetDocument = Document {
+    foreach (var p in People)
+      (each Style).Show(p);
+  };
+}
+//=======================================================================
+
+

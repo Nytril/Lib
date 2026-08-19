@@ -1,0 +1,668 @@
+using Format, HelpConcepts;
+
+// ==================================================================================================================
+
+class TechDocWorkflowContent: AuthoredContent {
+  var int StepNumber;
+  const DocTitle = "Technical Documentation Engineering Workflow";
+
+  Constructor {
+    super.Constructor("Technical Documentation Engineering Workflow");
+
+    Watermark = "DRAFT";
+
+    AddAuthor(People.ColbertAuthor);
+    AddAuthor(People.McCreightAuthor);
+
+    AddContent(QuickRef);
+    AddContent(Purpose);
+    AddContent(Phase1);
+    AddContent(Phase2);
+    AddContent(Phase3);
+  }
+}
+
+// ==================================================================================================================
+
+class StepStyler: Content {
+  var           Body,
+                Description,
+                StepConcepts;
+  var ActionObj PrimaryAction;
+  var bool      PageBreakBefore,
+                PageBreakAfter;
+
+
+  Constructor(string title) {
+    super.Constructor(title);
+    NeedsNumbering  = true;
+    NeedsAnchor     = true;
+    PrimaryAction   = null;
+    PageBreakBefore = false;
+    PageBreakAfter  = false;
+  }
+
+  virtual GetBody(TechDesign design) = design.NormalParagraph { Body };
+
+  virtual GetDescription(TechDesign design) = design.CalloutFrame { design.CalloutParagraph { Description } };
+
+  override GetLayout(TechDesign design) = {
+    if (PageBreakBefore)
+      PageBreak;
+
+    design.IndentedBlock {
+      design.NumberedHeading(SectionLevel, Title, AnchorText) {
+        if (PageBreakBefore)
+          SpaceBefore: 0;
+      };
+
+      GetBody(design);
+
+      if(PrimaryAction is valid) {
+        design.PrimaryActionParagraph {
+            design.ActionSpan(PrimaryAction);
+        };
+      }
+
+      GetDescription(design);
+
+      if (StepConcepts is valid) {
+        design.SpecialHeading1 { "Concepts" };
+        design.SpecialFrame1 {
+          each(StepConcepts);
+        };
+      }
+      else
+        design.SpecialFrame1;
+    };
+
+    if (PageBreakAfter)
+      PageBreak;
+  };
+}
+
+// ==================================================================================================================
+
+readonly QuickRefSection QuickRef = new;
+class QuickRefSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Quick Reference";
+    };
+
+    design.QuickRefTable {
+      design.QuickRefHeaderRow {
+        "PHASE I";
+        "PHASE II";
+        "PHASE III";
+      };
+      Row {
+        design.QuickRefCell {
+          design.QuickRefItem(AudienceEnvironmentStep.AnchorTitle , AudienceEnvironmentStep.AnchorText  );
+          design.QuickRefItem(OutputStrategyStep.AnchorTitle      , OutputStrategyStep.AnchorText       );
+          design.QuickRefItem(IdContentAndDataStep.AnchorTitle    , IdContentAndDataStep.AnchorText     );
+        };
+        design.QuickRefCell {
+          design.QuickRefItem(RepoAndSourceStep.AnchorTitle       , RepoAndSourceStep.AnchorText        );
+          design.QuickRefItem(CreateProjectStep.AnchorTitle       , CreateProjectStep.AnchorText        );
+          design.QuickRefItem(LocalizationStep.AnchorTitle        , LocalizationStep.AnchorText         );
+          design.QuickRefItem(DesignFrameworkStep.AnchorTitle     , DesignFrameworkStep.AnchorText      );
+          design.QuickRefItem(DocumentArchitectureStep.AnchorTitle, DocumentArchitectureStep.AnchorText );
+          design.QuickRefItem(ImplementLayoutStep.AnchorTitle     , ImplementLayoutStep.AnchorText      );
+          design.QuickRefItem(InsertContentStep.AnchorTitle       , InsertContentStep.AnchorText        );
+        };
+        design.QuickRefCell {
+          design.QuickRefItem(TranslationsStep.AnchorTitle        , TranslationsStep.AnchorText         );
+          design.QuickRefItem(ValidateAndReviewStep.AnchorTitle   , ValidateAndReviewStep.AnchorText    );
+          design.QuickRefItem(PublishStep.AnchorTitle             , PublishStep.AnchorText              );
+        };
+      };
+    };
+  };
+}
+
+// =======================================================
+
+readonly PurposeSection Purpose = new;
+class PurposeSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Purpose";
+    };
+
+    design.NormalParagraph {
+      "This document covers creating technical documents in Nytril, from preparation through publishing. ";
+      "The steps guide engineers and professionals who design repeatable technical documentation for any purpose. ";
+      "Technical documents that require ongoing updates, frequent version changes, language translations, or unit conversions fit well with Nytril and this process.";
+    };
+  };
+}
+
+// ==================================================================================================================
+// PHASE I
+// ==================================================================================================================
+readonly Phase1Sec Phase1 = new;
+class Phase1Sec: Content {
+  Constructor {
+    super.Constructor(null);
+
+    AddContent(AudienceEnvironmentStep);
+    AddContent(PageBreakSection);
+    AddContent(OutputStrategyStep);
+    AddContent(IdContentAndDataStep);
+    AddContent(DesignFrameworkStep);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading1 {
+      "Phase I";
+    };
+
+    design.Heading2 {
+      "Strategic Foundation";
+    };
+
+    design.NormalParagraph {
+      "In this phase, you will determine the environmental needs and gather resources before initializing the project. ";
+    };
+  };
+}
+
+// =======================================================
+
+readonly AudienceEnvironment AudienceEnvironmentStep = new;
+class AudienceEnvironment: StepStyler {
+  Constructor() {
+    super.Constructor("Define Audience Environment");
+    StepConcepts = [ ConfigsConcept, Repositories ];
+  }
+
+  override GetBody(TechDesign design) = Block {
+    design.TightParagraph {
+      "Define target languages and unit standards before making structural decisions.";
+    };
+
+    design.TightParagraph {
+      "Documents that require multiple languages, unit systems (imperial and metric), or paper systems require configurations. ";
+      "Nytril can scaffold configurations during repository creation, which is why this decision belongs early in the workflow. ";
+      "You can create or adjust configurations later if this information is not yet available.";
+    };
+
+    design.TightParagraph {
+      "A key factor in this step is deciding whether to use existing configurations or create fresh ones. ";
+      "Using common language files across projects is a substantive advantage for an organization. ";
+      "It reduces the need to continuously restate common terms or phrases and can reduce translation load. ";
+    };
+  };
+
+  override GetDescription(TechDesign design) = design.CalloutFrame {
+    design.CalloutParagraph {
+      "Not every project can benefit from using common configurations, a fresh start may be a better stategy. ";
+      "Nytril allows for full control over how you deploy and use configuration metrics and you can configure them at any time. ";
+    };
+  };
+}
+
+// =======================================================
+
+readonly PageBreakDocSection PageBreakSection = new;
+class PageBreakDocSection: Content {
+  Constructor {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = SectionNextPage {
+    Header: design.HeaderBlock {
+      design.HeaderParagraph {
+        WorkflowContent.Title;
+        Tab;
+        "Page " DocFields.PageNumber;
+      };
+    };
+  };
+}
+
+// =======================================================
+
+readonly OutputStrategy OutputStrategyStep = new;
+class OutputStrategy: StepStyler {
+  Constructor() {
+    super.Constructor("Define Output Strategy");
+    StepConcepts = [ ConfigsConcept, Publishing ];
+  }
+
+  override GetBody(TechDesign design) = Block {
+    design.TightParagraph {
+      "Choose electronic delivery, print publishing, or hybrid output models."
+    };
+
+    design.TightParagraph {
+      "Nytril's built-in output methods include publishing and exporting, two concepts explained in more detail in the Publishing concept. ";
+      "Of course, you can write your own methods to output content. ";
+    };
+
+    design.TightParagraph {
+      "Understanding the intended method of distrubtion helps in scaffolding the project, though one can always configure these options later. ";
+      "For instance, using Nytril's hosting environment for a rich and interactive user experience requires the creation of a "; B{"Site"} " in the code (see the Publishing concept). ";
+      "All other forms of output, other than writing your own output files, require no special setup. ";
+    };
+  };
+
+  override GetDescription(TechDesign design) = design.CalloutFrame {
+    design.CalloutParagraph {
+      "As discussed in step 1, the output may require modification for local considerations, such as the paper-size system and the units of measure. ";
+      "Producing output in these variations, requires modifications to the Configurations in the "; B{"Lang"} " file. ";
+    };
+  };
+}
+
+// =======================================================
+
+readonly IdContentAndData IdContentAndDataStep = new;
+class IdContentAndData: StepStyler {
+  Constructor() {
+    super.Constructor("Identify Content and Data Sources");
+    StepConcepts = [ DataSource ];
+  }
+
+  override GetBody(TechDesign design) = Block {
+    design.TightParagraph {
+      "Determine required databases, APIs, and structured inputs necessary for document construction.";
+    };
+
+    design.TightParagraph {
+      "Your project may require structured data from an external source such as product specifications, configuration tables, or other content. ";
+      "Identify these sources early, define how to access them, and gather connection strings, keys, or credentials for use within Nytril. ";
+    };
+  };
+
+  override GetDescription(TechDesign design) = null;
+}
+
+// =======================================================
+
+readonly DesignFramework DesignFrameworkStep = new;
+class DesignFramework: StepStyler {
+  Constructor() {
+    super.Constructor("Design Document Framework");
+  }
+
+  override GetBody(TechDesign design) = Block {
+    design.TightParagraph {
+      "Define layout, visual hierarchy, and structural components before implementation."
+    };
+
+    design.TightParagraph {
+      "Design the document layout including headers, footers, typography systems, theme, and page structure. ";
+      "A good practice is to establish reusable layout patterns for simplified coding and code maintenance. ";
+    };
+
+    design.TightParagraph {
+      "When conferring with a graphical designer, obtain any required complex graphics, color schemes, font sizes, or other formatting metrics necessary to create the document design. ";
+    };
+  };
+
+  override GetDescription(TechDesign design) = null;
+}
+
+// ==================================================================================================================
+// PHASE II
+// ==================================================================================================================
+readonly Phase2Sec Phase2 = new;
+class Phase2Sec: Content {
+  Constructor {
+    super.Constructor(null);
+
+    AddContent(RepoAndSourceStep);
+    AddContent(CreateProjectStep);
+    AddContent(LocalizationStep);
+    AddContent(DocumentArchitectureStep);
+    AddContent(ImplementLayoutStep);
+    AddContent(InsertContentStep);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    Paragraph;
+    design.Heading4 {                                                                               // Note the change to Heading4
+      "Phase II";
+    };
+
+    design.Heading2 {
+      "Architecture & Implementation";
+    };
+
+    design.SpacedParagraph {
+      "In this phase, you will set up the environment, create the project, design the layout, and insert the content. ";
+      "At the completation of this phase, you will have completed documents ready for review, translations, or distribution. ";
+    };
+  };
+}
+
+// =======================================================
+
+readonly RepoAndSource RepoAndSourceStep = new;
+class RepoAndSource: StepStyler {
+  Constructor() {
+    super.Constructor("Establish a Repository and Source Control");
+    StepConcepts = [ ConfigsConcept, Repositories, SourceControl ];
+  }
+
+  override GetBody(TechDesign design) = Block {
+    design.TightParagraph {
+      "Determine whether to use the default repository, an existing repository, or a new repository. Connect source control.";
+    };
+
+    design.TightParagraph {
+      "If using and existing repository with established source control, "; B{"skip this step"} ". ";
+    };
+
+    design.TightParagraph {
+      "Otherwise, create a new repository and select the required languages to include. ";
+      "If only using one language, it is best to still select that single language since that will cause Nytril to scaffold the Configuration system and enable advanced language features. ";
+    };
+
+    design.TightParagraph {
+      "If you use source control, be sure to connect it to the Nytril code repository. ";
+      "If you use Git, you can connect it to Nytril for use inside the IDE (see Source Control concept).";
+    };
+  };
+
+  override GetDescription(TechDesign design) = design.CalloutFrame {
+    design.CalloutParagraph {
+      "If a new repository is necessary, you can create a new project during that process. ";
+      "In which case, you can skip the next step. ";
+    };
+  };
+}
+
+// =======================================================
+
+readonly CreateProject CreateProjectStep = new;
+class CreateProject: StepStyler {
+  Constructor() {
+    super.Constructor("Create the Project");
+    PrimaryAction = new ActionObj(Actions.ToLink, "New Project Video", "https://youtu.be/HgsddkTq_EI");
+  }
+
+  override GetBody(TechDesign design) = Block {
+    design.TightParagraph {
+      "Create a new project in Nytril under the intended repository.";
+    };
+
+    design.TightParagraph {
+      "If you already created the project in the prior step, "; B{"skip this step"} ". ";
+    };
+
+    design.TightParagraph {
+      "Be sure to select the repository using the "; B{"Repo"} " menu option before creating the project. ";
+      "Doing so ensures Nytril creates the project under the intended repository.";
+    };
+  };
+
+  override GetDescription(TechDesign design) = null;
+}
+
+// =======================================================
+
+readonly Localization LocalizationStep = new;
+class Localization: StepStyler {
+  Constructor() {
+    super.Constructor("Configure Localization");
+    StepConcepts = [ ConfigsConcept, MeasuresConcept ];
+  }
+
+  override GetBody(TechDesign design) = Block {
+    design.TightParagraph {
+      "If you intend to translate the primary language into other languages, or if you intend to produce documents into more than one unit system or paper system, set up the configuration environment to produce the desired variations.";
+    };
+
+    design.TightParagraph {
+      "Key points from the "; I{"Configurations concept"};
+    };
+
+    design.NumberedList {
+      "The Lang file contains the configurations.";
+      "You can modify or create configurations arrangements for your project. ";
+      "The project must include a reference to the Lang file (i.e., \"include \"Lang\"\").";
+    };
+
+    Paragraph;
+    design.TightParagraph {
+      "If your project will produce both Imperial and Metric variations, review the Measures concept to learn how to properly refer to measures throughout your code. ";
+    };
+  };
+
+  override GetDescription(TechDesign design) = design.CalloutFrame {
+    design.CalloutParagraph {
+      "If your project is missing the Lang file, refer to the Configurations concept to learn more about setting up configurations manually.";
+    };
+  };
+}
+
+// =======================================================
+
+readonly DocumentArchitecture DocumentArchitectureStep = new;
+class DocumentArchitecture: StepStyler {
+  Constructor() {
+    super.Constructor("Create Basic Document Architecture");
+    PageBreakBefore = true;
+    StepConcepts = [DocumentsSetup];
+  }
+
+  override GetBody(TechDesign design) = Block {
+    design.TightParagraph {
+      "Set up the document architecture to match production requirements.";
+    };
+
+    design.TightParagraph {
+      "If your purpose is to produce a single document, regalrdless of the variations, then create a Nytril project for a single document. ";
+      "If your goal is multiple documents, then set the project up to produce multiple documents. ";
+    };
+  };
+
+  override GetDescription(TechDesign design) = design.CalloutFrame {
+    design.CalloutParagraph {
+      "A default project created by Nytril during the new Repository process is set up for a single document.";
+    };
+  };
+}
+
+// =======================================================
+
+readonly ImplementLayout ImplementLayoutStep = new;
+class ImplementLayout: StepStyler {
+  Constructor() {
+    super.Constructor("Implement Layout");
+    PrimaryAction = new ActionObj(Actions.ToLink, "Fundamentals Videos", "https://www.youtube.com/playlist?list=PLvme8jGUQBRyHhHE29HcOwQCca_yaRX30");
+    StepConcepts  = [DesignTemplates, HeadersAndFooters];
+  }
+
+  override GetBody(TechDesign design) = Block {
+    design.TightParagraph {
+      "The bulk of your work will take place between this step and the next. ";
+      "Expect to cycle between these two steps until the development is complete.";
+    };
+
+    design.TightParagraph {
+      "If your intent is to use Nytril-provided design templates or to develop your own styling system, refer to the Design Template concept and set up your project accordingly. ";
+    };
+
+    design.TightParagraph {
+      "Set up the document taking note the margins and size, amongst other properties, are set as parameters to the Document formatter. ";
+      "If you use a provided design template, refer to the documentation on how to set up the document for that system.";
+    };
+
+    design.TightParagraph {
+      "Design the Headers and footers. ";
+    };
+
+    design.TightParagraph {
+      "You are now ready to start adding formatted content. ";
+    };
+  };
+
+  override GetDescription(TechDesign design) = null;
+}
+
+// =======================================================
+
+readonly InsertContent InsertContentStep = new;
+class InsertContent: StepStyler {
+  Constructor() {
+    super.Constructor("Insert Content");
+    Body        = "Insert dynamic and structured content into the defined layout framework.";
+
+    Description = "The bulk of the effort is in this step. This is where the content is placed into the document structure."
+                  "Blocks of text that are being pasted in, can be auto inserted using Ctrl-Shift-V, where the text will be automatically placed into the language file, and a variable inserted into code."
+                  "Integrate the necessary structured data, reusable content blocks, and any other necessary information into the document. "
+                  "The conclusion of this step should result in fully functional documentation.";
+  }
+
+  override GetBody(TechDesign design) = Block {
+    design.TightParagraph {
+      "Insert dynamic and structured content into the defined layout framework.";
+    };
+
+    design.TightParagraph {
+      "This is where the document starts coming together. ";
+    };
+
+    design.TightParagraph {
+      "Begin adding content. ";
+      "If using the design system, follow the methods shown in the related documentation. ";
+      "Using Nytril formatters, begin laying out the content into the document. ";
+      "Work iteratively with the prior step, until the process is complete. ";
+    };
+
+    design.TightParagraph {
+      "If adding structured data from a data source, insert it now into an appropriate formatter revision. ";
+      "Press "; B{"F5"} " After changes to see the result in the document. ";
+    };
+  };
+
+  override GetDescription(TechDesign design) = design.CalloutFrame {
+    design.CalloutParagraph {
+      "Later in this document is a disucussion on converting text strings into Lang variables, as is necessary for tranlations. ";
+      "You can insert text directly into Lang variables using the keystroke Ctrl-Shift-V, wherein Nytril places your named variable at the string position and moves the text into the appropriate language file.";
+    };
+  };
+}
+
+// ==================================================================================================================
+// PHASE III
+// ==================================================================================================================
+
+readonly Phase3Sec Phase3 = new;
+class Phase3Sec: Content {
+  Constructor {
+    super.Constructor(null);
+
+    AddContent(TranslationsStep     );
+    AddContent(ValidateAndReviewStep);
+    AddContent(PublishStep          );
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    PageBreak;
+
+    design.Heading4 {
+      "Phase III";
+    };
+
+    design.Heading2 {
+      "Release & Distribution";
+    };
+  };
+}
+
+// =======================================================
+
+readonly Translations TranslationsStep = new;
+class Translations: StepStyler {
+  Constructor() {
+    super.Constructor("Translations - Optional");
+    StepConcepts = [TranslationsConcept];
+  }
+
+  override GetBody(TechDesign design) = Block {
+    design.TightParagraph {
+      "This step is optional, use this process if you intend to translate the entered text into another language. ";
+    };
+
+    design.TightParagraph {
+      "Refer to the Translations concept for more detailed information on translating text. ";
+    };
+
+    design.TightParagraph {
+      "In Summary, the process involves: ";
+    };
+
+    design.NumberedList {
+      Span {"Moving strings into the language file using Ctrl-Shift-V or the "; B{"Text to Lang Symbol"} " feature. " };
+      Span {"Right clicking on that language file and selecting "; design.SpanHighlight{"Advanced => Translate Language Strings"} ". " };
+      "Use the \"revu\" keyword on translated text and follow the dialog to translate the text. ";
+      "Validating the translations and removing the revu keywords ";
+      "Fixing any resulting display issues.";
+    };
+  };
+
+  override GetDescription(TechDesign design) = design.CalloutFrame {
+    design.CalloutParagraph {
+      "After translating text, select the alternate language option in the Document menu, then open the document. ";
+      "If you opted to use the \"revu\" keyword, translated text will be purple until reviewed. ";
+    };
+  };
+}
+
+// =======================================================
+
+readonly ValidateAndReview ValidateAndReviewStep = new;
+class ValidateAndReview: StepStyler {
+  Constructor() {
+    super.Constructor("Validate and Review");
+  }
+
+  override GetBody(TechDesign design) = Block {
+    design.TightParagraph {
+      "Verify formatting, data accuracy, and localization specifics prior to publish.";
+    };
+
+    design.TightParagraph {
+      "Conduct your organizaiton's internal review process to ensure content is ready for publishing. ";
+    };
+  };
+
+  override GetDescription(TechDesign design) = null;
+}
+
+// =======================================================
+
+readonly Publish PublishStep = new;
+class Publish: StepStyler {
+  Constructor() {
+    super.Constructor("Publish Documents");
+    StepConcepts = [Publishing];
+  }
+
+  override GetBody(TechDesign design) = Block {
+    design.TightParagraph {
+      "Generate production outputs.";
+    };
+
+    design.TightParagraph {
+      "Review the Publishing concept for more information, options, and specifics on publishing content. ";
+    };
+  };
+
+  override GetDescription(TechDesign design) = null;
+}
+
+// =======================================================

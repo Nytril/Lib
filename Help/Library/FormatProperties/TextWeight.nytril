@@ -1,0 +1,41 @@
+include "Help";
+
+using Format;
+
+Example = Paragraph {
+  TextHeight: 20pt;
+
+  Span {
+    "Thin ";
+    TextWeight: TextWeights.Thin;
+  };
+  "Normal ";
+  Span {
+    "Bold ";
+    TextWeight: TextWeights.Bold;
+  };
+};
+
+Example2 = Paragraph {
+  TextHeight: 20pt;
+
+  "This is ";
+  // A "Bold" inside a span affects all text in the span
+  Span {
+    Bold;
+    "Bold";
+    " text";
+  };
+};
+
+Example3 = Paragraph {
+  TextHeight: 20pt;
+  "Here is "; Bold "Bold"; " text";
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextWeight), 3);
+
+//============================================================
+

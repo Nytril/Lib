@@ -1,0 +1,13 @@
+include "Help";
+
+using Format;
+
+Example = ListBlock {
+  Paragraph { "Min value "; ulong.MinValue};
+  Paragraph { "Max value "; ulong.MaxValue};
+};
+
+Main.Help = new HelpExample(attribute ulong);
+
+
+

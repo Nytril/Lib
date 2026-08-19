@@ -1,0 +1,23 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  "One third = {0}"(1 over 3);
+
+  "Two and five-sixths = {0}"(new Rational(2, 5, 6));
+
+  var x = 5 over 6 + 1 over 3;
+
+  x;
+
+  Paragraph {
+    TextDiagonal: true;
+    x;
+  }
+};
+
+Main.Help = new HelpExample(attribute Rational, 1);
+
+
+

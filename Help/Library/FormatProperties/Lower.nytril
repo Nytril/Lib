@@ -1,0 +1,14 @@
+include "Help";
+
+using Format;
+
+Example = Paragraph {
+  TextHeight: 32pt;
+  Nary {
+    Operator: "X";
+    Upper: Tex.square;
+    Lower: "Lower";
+  }
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.Lower));

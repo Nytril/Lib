@@ -1,0 +1,17 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  TextHeight: 20pt;
+  Paragraph {TextValue: false; Symbolic.PI};
+  Paragraph {TextValue: true; Symbolic.PI};
+
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextValue));
+
+//============================================================
+

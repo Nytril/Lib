@@ -1,0 +1,111 @@
+using Format, IO, Units;
+
+namespace Metrics {
+  Margin = 0.5";
+}
+
+namespace Styles {
+  Title = Paragraph(BorderB(1pt)) {
+    SpaceAfter: 5pt;
+    SpaceBefore: 10pt;
+    TextHeight: 15pt;
+    Bold;
+  };
+
+  ProblemBlock = Block {
+    LeftIndent: 0.25";
+    SpaceAfter: 10pt;
+    TextHeight: 10pt;
+  };
+
+  ProblemPar = Paragraph {
+    LeftIndent: 0.25";
+    SpaceAfter: 10pt;
+    TextHeight: 10pt;
+  };
+
+  AnswerBlock = Block {
+    LeftIndent: 0.25";
+    TextHeight: 10pt;
+  };
+
+  AnswerPar = Paragraph  {
+    LeftIndent: 0.25";
+    TextHeight: 10pt;
+  };
+
+  Inline = Span {
+    TextEquation: true;
+  };
+
+  InPar = Paragraph {
+    ParAlignment: Center;
+    TextEquation: true;
+    TextStacked: true;
+  };
+
+  Parens = HBox {Bracket: Brackets.Round};
+
+  Braces = HBox {Bracket: Brackets.Curly};
+
+  SquareBrackets = HBox {Bracket: Brackets.Square};
+}
+
+namespace Syms {
+  A     = Symbol("A");
+  a     = Symbol("a");
+  B     = Symbol("B");
+  b     = Symbol("b");
+  C     = Symbol("C");
+  F     = Symbol("F");
+  T     = Symbol("T");
+  x     = Symbol("x");
+  X     = Symbol("X");
+  y     = Symbol("y");
+  Y     = Symbol("Y");
+  z     = Symbol("z");
+  Z     = Symbol("Z");
+  e     = Symbol("e");
+  f     = Symbol("f");
+  k     = Symbol("k");
+  leti  = Symbol("i");
+  n     = Symbol("n");
+  N     = Symbol("N");
+
+  Int = Nary {
+    Operator: Tex.Integral1;
+  };
+
+  Sigma = Nary {
+    Operator: Tex.sum;
+  };
+
+  Bigcup = Nary {
+    Operator: Tex.cup
+  };
+
+  SetN = Span {
+    Tip: new Tip("The set of natural numbers");
+    Tex.Naturals;
+  };
+
+  SetP = Span {
+    Tip: new Tip("The set of irrational numbers");
+    Tex.Irrationals;
+  };
+
+  SetQ = Span {
+    Tip: new Tip("The set of rational numbers");
+    Tex.Rationals;
+  };
+
+  SetR = Span {
+    Tip: new Tip("The set of real numbers");
+    Tex.Reals;
+  };
+
+  SetZ = Span {
+    Tip: new Tip("The set of integers");
+    Tex.Integers;
+  };
+}

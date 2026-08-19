@@ -1,0 +1,118 @@
+using Format, Net;
+
+readonly Main.Documents = new MapDocument;
+
+//==================================================================================
+
+readonly MapLocation[] Locations = [
+  new("Der Bundestag", "Bundestag, Berlin, Germany", "Bundestag, Berlin, Germany"),
+/*
+  new("The Hall Market", "10997 Berlin", "Markthalle Neun Market Pücklerstraße 34, 10997 Berlin"),
+  new("Göttingen", "37073 Göttingen, Germany", "Hotel FREIgeist Göttingen Innenstadt, Berliner Str. 30, 37073 Göttingen, Germany"),
+  new("Sanctuary for Isis", "55116 Mainz, Germany", "Taberna Archaeologica Römerpassage 1 55116 Mainz"),
+  new("Free Walking Tour", "80331 München, Germany", "Marienplatz 25, 80331 München, Germany"),
+  new("Neuschwanstein and Hohenschwangau Castles", "87645 Schwangau, Germany", "Neuschwansteinstraße 20, 87645 Schwangau, Germany"),
+*/
+];
+
+//==================================================================================
+
+class MapLocation {
+  var Name,
+      Center,
+      Marker,
+      Zoom;
+
+  Constructor(name, center, marker) {
+    Name   = name;
+    Center = center;
+    Marker = marker;
+  }
+
+  HttpGet GetRequest(zoom, bool center) {
+    var request = new HttpGet("https://maps.googleapis.com/maps/api/staticmap");
+    request.Accept("application/json");
+    if (request.AddCredential("GoogleMaps", "key", true)) {
+      request.CacheTimeSpan(10 Units.days);
+      request.QueryParameter("zoom", zoom);
+      request.QueryParameter("size", "640x640");
+      request.QueryParameter("maptype", center ? "hybrid" : "roadmap");
+      request.QueryParameter("center", center ? Marker : Center);
+      request.QueryParameter("markers", "color:red|"+Marker);
+    }
+    return request;
+  }
+
+  GetMap(zoom, bool center) {
+    var request  = GetRequest(zoom, center);
+    var response = request.Send;
+    if (response is valid) {
+      if (response.IsSuccessStatusCode) {
+        return Paragraph {
+          FitBox(new Image(response.ContentBlob), 100%, null);
+        };
+      }
+    }
+    return null;
+  }
+}
+
+//==================================================================================
+
+class MapDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#8e70b70e-92bb-4ab7-9e18-18e17c90ab85#, "Map");
+  }
+
+  ShowMaps = Block {
+    foreach (var location in Locations) {
+      if (!System.ProgressPercent(each0, Locations.Length))
+        break;
+
+      Paragraph {
+        ParAlignment: Center;
+        KeepWithNext: true;
+
+        Bold;
+        TextHeight: 16pt;
+        location.Name;
+      };
+      location.GetMap(15, false);
+      Paragraph {
+        KeepWithNext: true;
+        Bold;
+        TextHeight: 12pt;
+        location.Marker;
+      };
+      location.GetMap(17, true);
+    }
+  };
+
+  override GetDocument = Document(0.5") {
+    var maps = ShowMaps;
+    if (maps is valid)
+      maps;
+    else {
+      "This app reads content from the google maps online REST api.";
+      Bold "This API requires an API token.";
+      Empty;
+      TextHeight: 14pt;
+      "To continue:";
+      ListBlock(@Enumerators.NumberDot) {
+        Span {
+          "Go to ";
+          Span {new URL("developers.google.com/maps/documentation/maps-static/start"); TextColor: Colors.Blue};
+          " and sign up for a free api key."
+        };
+        Span {
+          "Add a new user credential to nytril desktop using the menu ";
+          Span {"View..User Credentials"; TextColor: Colors.Blue; Action: DesktopMenus.UserCredentials};
+        };
+        "Use \"GoogleMaps\" as the credential name, and your new maps api key as the password.";
+        "Refresh this script";
+      };
+    }
+  };
+}
+
+//==================================================================================

@@ -1,0 +1,38 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "A cell is an aligned "; HelpLink(attribute Format.Block); " inside of a ";
+    HelpLink(attribute Format.Row); " in a "; HelpLink(attribute Format.Table); ". ";
+    "Cells inherit the row's text and paragraph formatting, but can override individual properties. ";
+  };
+};
+
+Example = Table(0, null, [1"]) {
+  TextHeight: 20pt; // Applies to all rows and cells
+  Row {
+    Cell(1) {
+      HAlign: Left;
+      Background: Colors.Blue;
+      TextColor: Colors.White;
+      "L";
+    };
+    Cell(2) {
+      HAlign: Center;
+      Background: Colors.Green;
+      TextColor: Colors.White;
+      "C";
+    };
+    Cell(3) {
+      HAlign: Right;
+      Background: Colors.Red;
+      TextColor: Colors.White;
+      TextHeight: 10pt;      // Override at the cell level
+      "R";
+    };
+  };
+};
+
+Main.Help = new HelpExample(attribute(Format.Cell));

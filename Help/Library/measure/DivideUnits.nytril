@@ -1,0 +1,18 @@
+include "Help";
+
+using Format, Units;
+
+Range = -3..5;
+
+Example = Block {
+    // How high will the water be in your basement if your jacuzzi springs a leak
+  Span {
+    TextDigits: 1;
+    "Water depth: ";
+    (1200 liters).DivideUnits(100 feet^2);
+  };
+};
+
+Main.Help = new HelpExample(attribute(Measure.DivideUnits));
+
+

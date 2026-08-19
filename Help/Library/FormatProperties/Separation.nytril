@@ -1,0 +1,27 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  "Sets the default horizontal alignment for all children. The container must have its width specified.";
+};
+
+ShowSeparation(separation) = VBox(2", null, 0.25) {
+  HAlign: Center;
+  "Separation {0}"(separation);
+  HBox {
+    Separation: separation;
+    Background: 90%;
+    "1";
+    "2";
+    "3";
+  };
+};
+
+Example = VBox(4", null) {
+  ShowSeparation(each [5, 20, 50]);
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.Separation));
+
+

@@ -1,0 +1,38 @@
+using Format;
+//======================================================================
+
+namespace Chapters.Mathematics.Sections.UserSymbols;
+
+readonly TutorialLesson Lesson = new(#eec5dfb3-0a48-4689-933a-a5fa4dcabede#, "User defined symbols");
+
+//======================================================================
+
+x     = Symbol("x");
+sigma = Symbol("σ");
+
+readonly LessonExample Content.XSymbolEx = new(#cca732b8-f322-4a79-a7f0-0df756fe0429#, "Symbols") {
+  Text: "Symbols are special values that can represent constants or variables";
+  Code: [attribute x];
+};
+
+//======================================================================
+
+readonly LessonExample Content.SigmaEx = new(#d5831045-1a3e-42ca-847c-37bc41b76579#) {
+  Text: "The typeset representation of a symbol can differ from its variable name";
+  Code: [attribute sigma];
+};
+
+//======================================================================
+
+SigmaNaught = sigma sub 0;
+XSquared    = x sup 2;
+SymbolSum   = XSquared + SigmaNaught;
+
+readonly LessonExample Content.SubscriptsEx = new(#6337e3a2-d092-4a3d-a952-05f003f66200#) {
+  Text: "You can create symbols with subscripts and superscripts";
+  Code: [attribute SigmaNaught, attribute XSquared, attribute SymbolSum];
+};
+
+//======================================================================
+
+

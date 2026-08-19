@@ -1,0 +1,13 @@
+include "English";
+
+Configuration Main.Configurations.English = new(#b0d96b5f-6a81-418e-9c65-d550399c7fe9#, "English",
+  Languages.English,
+  PaperSystems.US,
+  UnitSystems.Imperial
+);
+
+Configuration Main.Configurations.EnglishMetric = new(#d6571d45-991e-41d6-ad53-eb6d20ac8c72#, "English-Metric",
+  Languages.English,
+  PaperSystems.US,
+  UnitSystems.Metric
+);

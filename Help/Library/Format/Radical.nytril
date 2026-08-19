@@ -1,0 +1,34 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  TextHeight: 20pt;
+  "Pythagorian Theorem";
+  Paragraph {
+    var a = Symbol("a");
+    var b = Symbol("b");
+    var c = Symbol("c");
+
+    c;
+    Tex.Equals;
+    Radical {
+      a^2 + b^2;
+    };
+  };
+};
+
+Example2 = Block {
+  TextHeight: 20pt;
+  "Cube Root";
+  Paragraph {
+    Radical {
+      Degree: 3;
+      8;
+    };
+    Tex.Equals;
+    2;
+  };
+};
+
+Main.Help = new HelpExample(attribute Format.Radical, 2);

@@ -1,0 +1,33 @@
+using Format;
+
+readonly FizzBuzzClass Main.Documents.MainDocument = new;
+
+class FizzBuzzClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#e450de36-fcd3-4439-bb06-d78516eb6ceb#, "FizzBuzz");
+    Description = "A solution to the infamous interview question";
+  }
+
+  override GetDocument = Document {
+    Paragraph {
+      Bold;
+      Description;
+    };
+
+    for (var i = 1; i < 40; ++i) {
+      Paragraph {
+        var fizz = i mod 3 == 0;
+        var buzz = i mod 5 == 0;
+        if (fizz or buzz) {
+          if (fizz)
+            "Fizz";
+          if (buzz)
+            "Buzz";
+        }
+        else
+          i;
+      }
+    }
+  };
+}
+

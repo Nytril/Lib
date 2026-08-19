@@ -1,0 +1,83 @@
+using Format, Units;
+
+BMIDocument Main.Documents = new;
+
+//================================================================================
+
+class UserOptions: Fact {
+  field Measure Height,
+                Weight;
+
+  Constructor {
+    super.Constructor(#e01bfe1a-e631-4b37-8036-7a23649d73fa#);
+    Height = 5'10";
+    Weight = 180lb;
+    ReadFromStorage;
+  }
+}
+
+//================================================================================
+
+class BMIDocument: DocumentEntry {
+  static readonly Edge        CEdge   = new(1, 3);
+  static readonly             Corner  = {BorderRadius: 3; Action: Actions.Refresh};
+  static readonly UserOptions Options = new;
+
+  Constructor {
+    super.Constructor(#21827a4e-8dd6-49c6-9228-f55cfc3f8269#, "BMI Calculator");
+    Description = "Body Mass Index calculator";
+  }
+
+  Edit(name) = VBox {
+    Bold name;
+  };
+
+  override GetDocument = Document {
+    TextHeight: 14pt;
+    Paragraph {
+      TextHeight: 18pt;
+      ParAlignment: Center;
+      Bold;
+      "Body Mass Index";
+    };
+
+    Paragraph {
+      SpaceAfter: 20pt;
+      ParAlignment: Center;
+
+      HBox {
+        VAlign: Center;
+        Separation: 10;
+        Fraction {
+          Symbol("kg");
+          Symbol("m")^2;
+        };
+      }
+    };
+
+    Paragraph {
+      Edit("Height") {
+        MeasureControl(new(ref Options.Height), 1.5", null, CEdge, 2', 9', meter) {
+          TextDigits: 2;
+          Corner;
+        };
+      };
+      Space;
+      Edit("Weight") {
+        MeasureControl(new(ref Options.Weight), 1.5", null, CEdge, 60lb, 500lb, kilogram) {
+          Corner;
+        };
+      };
+    };
+
+    Paragraph {
+      SpaceBefore: 20pt;
+      TextDigits: 1;
+      "Your BMI is ";
+      (Options.Weight toscale kilograms) / (Options.Height toscale meters)^2;
+    };
+  };
+}
+
+//================================================================================
+

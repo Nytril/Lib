@@ -1,0 +1,220 @@
+using Math, Format, IO;
+//======================================================================
+
+readonly namespace Chapters.Formatting.Sections.Trees;
+
+readonly TutorialLesson Lesson = new(#1adf73a2-5dbf-4396-8dac-d5d07de8ca6f#, "Trees");
+
+//======================================================================
+
+MyTree = new Node("Root", 0.5) {
+  new Node("A", 1) {
+    new Node("A1", 0.3);
+    new Node("A2", 0.4);
+  };
+  new Node("B", 2);
+  new Node("C", 1);
+};
+
+ShowTree = TreeBox(3", null) {
+  Default: new Node(null) {
+    Curvature: 50%;
+    Bevel: 50%;
+    Marker: Markers.Circle(Colors.Red);
+  };
+  Root: MyTree;
+};
+
+readonly LessonExample Content.SmallTreeEx = new(#c68ca540-a997-4821-a208-48fa4ac5869e#, "Trees") {
+  Text: "A tree is a structure comprising nested nodes, each one having its own branch length.";
+  Code: [attribute MyTree, attribute ShowTree];
+};
+
+//======================================================================
+
+Circle(r, fill) = Shape(fill) {
+  EllipsePath(new(new(0), new(r)))
+};
+
+NumberNode(i) = new Node(Radical {i}, Sqrt(i)) {
+  Marker: Circle(i*5, new Color((i*15)%, 0, 0));
+  Stroke: new Stroke(i, new Color(0, 0, (i*15)%), LineStyles.Solid, LineCaps.Round);
+};
+
+CalcTree = new Node {
+  Bevel: 80%;
+  NodeGap: 10pt;
+
+  new Node("A");
+  new Node("B") {
+    NumberNode(each 1..6);
+  };
+  new Node("C");
+};
+
+ShowTree2 = TreeBox(3", 2") {
+  Root: CalcTree;
+};
+
+readonly LessonExample Content.CalculatedTreeEx = new(#d4632388-fa21-4f9e-b739-fc65d0fe1422#) {
+  Text: "Some or all of a tree's contents may be calculated.";
+  Code: [attribute Circle, attribute ShowTree2];
+};
+
+//======================================================================
+
+Attribute[] TreeMarkers = [attribute Markers.Circle, attribute Markers.Square, attribute Markers.TriangleUp, attribute Markers.Diamond];
+TreeColors  = [Colors.Red, Colors.Green, Colors.Purple, Colors.Blue];
+MaxDepth    = TreeMarkers.Length-1;
+
+RecurseNode(depth, number) = new Node("{0}{1}"('A' + depth, number), 1/(depth+1)) {
+  Stroke: new Stroke(MaxDepth-depth+1, depth*25%);
+  NodeGap: 6pt;
+
+  if (depth > 0) {
+    Bevel: depth * 0.25;
+    Curvature: depth * 0.25;
+  }
+  else
+    Bevel: 100%;
+
+  Marker: TreeMarkers[depth].Value(TreeColors[depth]);
+
+  if (depth < MaxDepth)
+    RecurseNode(depth+1, each 0..(depth+1));
+};
+
+ShowTree3 = TreeBox(null, 1.5") {
+  Placement: Placements.Bottom;
+  TextHeight: 10pt;
+  Root: RecurseNode(0, 0);
+};
+
+readonly LessonExample Content.RecursiveTreeEx = new(#a99b0c9f-6441-4026-bd95-c5a148fdd5d6#) {
+  Text: "A tree's contents may be generated recursively.";
+  Code: [attribute TreeMarkers, attribute ShowTree3];
+};
+
+//======================================================================
+
+readonly x        = Symbol("x");
+readonly y        = Symbol("x");
+readonly sigma    = Symbol(Tex.sigma);
+readonly Equation = ((x - y*2) / sigma)^2+5;
+
+ShowEquation = HBox(null, null, new Edge(0.5, 8pt)) {
+  Separation: 16pt;
+  VAlign: Center;
+  Paragraph {
+    HBox {
+      VAlign: Center;
+      "Equation = ";
+      Equation;
+    };
+  };
+  TreeBox(3", null) {
+    Default: new Node(null) {
+      Curvature: 20%;
+      Bevel: 20%;
+      NodeGap: 10pt;
+    };
+    Root: Equation.GetExpressionTree;
+  };
+};
+
+readonly LessonExample Content.ShowExpressionTreeEx = new(#d6154434-6e2a-4401-b9f9-61280cffaacb#) {
+  Form: NytrilStyle.Function(attribute (object.GetExpressionTree), "The structure of a math expression may be shown");
+  Code: [attribute Equation, attribute ShowEquation];
+};
+
+//======================================================================
+
+readonly Curvatures = [0%, 50%, 100%];
+readonly Bevels     = [0, 50%, 100%];
+
+AddTree(root, bevel, curvature) = Cell(PadAll(5pt)) {
+  VAlign: Center;
+  TreeBox(90%, null) {
+    TextHeight: 12pt;
+
+    Default: new Node(null) {
+      Marker: Circle(4pt, Colors.Red);
+      Bevel: bevel;
+      Curvature: curvature;
+    };
+    Root: root;
+  };
+};
+
+AddRow(root, bevel) = Row(BorderB(new(0.5pt, 3pt))) {
+  Cell(BorderR(0.5)) {
+    bevel;
+    HAlign: Center;
+    VAlign: Center;
+  };
+  AddTree(root, bevel, each Curvatures);
+};
+
+ShowNexusTree(root) = Block {
+  Table(new Edge(0.5, 0, 50%), null, [0.5"] + [1.75"]*3) {
+    SpaceAfter: 8pt;
+    Row {
+      Background: 70%;
+      TextColor: Colors.White;
+      Cell(null, Curvatures.Length+1) {
+        ParAlignment: Center;
+        root.Name;
+      };
+    };
+    Row {
+      Empty;
+      Cell(null, Curvatures.Length) {
+        ParAlignment: Center;
+        "Curvature";
+      };
+    };
+    Row(BorderB(0.5)) {
+      HAlign: Center;
+      Cell {
+        "Bevel";
+      };
+      Curvatures;
+    };
+    AddRow(root, each Bevels);
+  };
+};
+
+readonly Nexus TreeFile = ReadNexus(res "./SampleTrees.nex");
+
+ShowTreeName(root) = Table(null, null, [1", 2"]) {
+  VAlign: Center;
+  Row {
+    root.Name;
+    AddTree(root, 25%, 25%);
+  };
+};
+
+ShowTrees = Block {
+  ShowTreeName(each TreeFile.Trees);
+};
+
+readonly LessonExample Content.ShowTreeFileEx = new(#0aebd768-8a4b-452c-b009-cf79082c49b8#) {
+  Text: "Tree structures can be read directly from a data file.";
+  Code: [attribute ShowTrees];
+};
+
+//======================================================================
+
+FormattedTrees = Block {
+  ShowNexusTree(TreeFile.FindTree("tree4"));
+  ShowNexusTree(TreeFile.FindTree("tree5"));
+};
+
+readonly LessonExample Content.ShowFormattedTreesEx = new(#5f3981fb-518c-4e0f-8526-b0123123f197#) {
+  Text: Span {"Tree structures can be formatted in a variety of ways using "; NytrilStyle.PropName(attribute Node.Bevel);
+   " and "; NytrilStyle.PropName(attribute Node.Curvature); " settings"};
+  Code: [attribute FormattedTrees];
+};
+
+//======================================================================
+

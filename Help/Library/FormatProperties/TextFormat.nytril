@@ -1,0 +1,70 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  "This string overrides other formatting settings to create a custom format for a value. Usually used with dates.";
+};
+
+DateFormatExamples = [
+  "d", "D", "f", "F",
+  "g", "G", "m", "r",
+  "s", "t", "T", "u",
+  "U", "y",
+  "dddd, MMMM dd yyyy",
+  "ddd, MMM d \"'\"yy",
+  "dddd, MMMM dd",
+  "M/yy",
+  "dd-MM-yy",
+  "MM/yyyy",
+  "MM\\/dd\\/yyyy HH:mm",
+  "yyyyMMdd"
+];
+
+FormatValue(d, format) = Row {
+  format;
+  Span {d; TextFormat: format};
+};
+
+FormatTable(values) = Table(new Edge(0.25pt, 1pt), null, [1.5", 2.5"]) {
+  Row(BorderB(0.25pt)) {
+    "Format String";
+    "Output";
+  };
+  values;
+};
+
+Example = FormatTable(FormatValue(DateTime.Now, each DateFormatExamples));
+
+//============================================================
+
+IntFormatExamples = [
+  "B",
+  "X",
+  "0000000",
+  "#,###",
+];
+
+Example2 = FormatTable(FormatValue(12345, each IntFormatExamples));
+
+//============================================================
+
+DoubleFormatExamples = [
+  "C",
+  "C"
+  "E",
+  "E2",
+  "e2",
+  "#.###",
+  "#,###",
+  "#,###.##",
+];
+
+Example3 = FormatTable(FormatValue(12345.678, each DoubleFormatExamples));
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextFormat), 3);
+
+//============================================================
+

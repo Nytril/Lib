@@ -1,0 +1,14 @@
+include "Help";
+
+using Format;
+
+Area(r) = Math.PI * r^2;
+
+Example = Block {
+  "The value of pi is {0}"(Math.PI);
+  "The area of the circle of radius 2 is {0}"(Area(2));
+};
+
+Main.Help = new HelpExample(attribute(Math.PI));
+
+

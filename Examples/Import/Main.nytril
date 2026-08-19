@@ -1,0 +1,123 @@
+using Format;
+
+importlib Extra "obj/Release/net9.0/ExtraLib";
+
+readonly Main.Documents = new DocumentTest;
+
+class DocumentTest: DocumentEntry {
+  Constructor {
+    super.Constructor(#c4507f7b-d7e5-49d1-83af-f92608327b82#, "Import Library");
+  }
+
+  override GetDocument = Document {
+    var t = new Extra.BadgeClass("George Foreman", 42, #b5273685-957f-4d06-ab4e-8e0676165575#);
+
+    t.IntArray[3] = 42;
+    Paragraph {
+      Separator: CommaSpace;
+      t.IntArray;
+    };
+    t.IntArray[3] += 2;
+    Paragraph {
+      Separator: CommaSpace;
+      t.IntArray;
+    };
+
+    var da = Extra.UtilityClass.GetDoubleValues(5);
+    da;
+    Extra.UtilityClass.MultiplyValues(da, 10);
+    da;
+
+    Extra.UtilityClass.GetByteValues(5);
+
+    var date = #2025-11-13 15:57:18.105066#;
+    DateTime dref;
+    var d2 = Extra.UtilityClass.GetDateValue(date, ref dref, out var dout);
+    d2;
+    dref;
+    dout;
+    date == d2 and date == dref and date == dout;
+
+    Paragraph {
+      "Name = ";
+      t.Name;
+    };
+    Paragraph {
+      "Number = ";
+      t.Number;
+    };
+    t.Description;
+
+    t.Name += " Grill";
+    t.Name;
+
+    Paragraph {
+      Separator: CommaSpace;
+      t.IntArray;
+    };
+
+    ShowPrimes(10000);
+  };
+
+  ShowPrimes(int max) = Block {
+    var t  = DateTime.Now;
+    var l1 = Extra.UtilityClass.GetPrimeNumbers(max);
+    var t1 = DateTime.Now - t;
+
+    t = DateTime.Now;
+    var l2 = GetPrimeNumbers(max);
+    var t2 = DateTime.Now - t;
+
+    if (l1 == l2)
+      "The two methods give the same results";
+    else
+      Span {TextColor: Colors.Red; "The methods give diffferent results"};
+
+    Paragraph {
+      TextDigits: 0;
+      "Nytril takes ";
+      t2.TotalSeconds / t1.TotalSeconds;
+      " times longer to calculate";
+    };
+
+    Paragraph {
+      SpaceBefore: 10pt;
+      "The number of primes less than "; max;
+    };
+
+    Paragraph {
+      LeftIndent: 8pt;
+      Separator: CommaSpace;
+      l1;
+    };
+  };
+
+  public static int[] GetPrimeNumbers(int max) {
+    var prime = new Vector<bool>(max + 1, true);
+    for (var p = 2; ; ++p) {
+      var p2 = p * p;
+      if (p2 <= max) {
+        if (prime[p]) {
+          for (int i = p2; i <= max; i += p)
+            prime[i] = false;
+        }
+      }
+      else
+        break;
+    }
+
+    int count = 0;
+    for (int i = 2; i <= max; i++) {
+      if (prime[i])
+        ++count;
+    }
+    var r = new Vector<int>(count, 0);
+    count = 0;
+
+    for (int i = 2; i <= max; i++) {
+      if (prime[i])
+        r[count++] = i;
+    }
+    return r.ToArray;
+  }
+}

@@ -1,0 +1,134 @@
+using Format;
+
+include "Lang";
+include "NytrilStyle";
+
+//======================================================================
+
+readonly AnyQuestions = Paragraph {
+  SpaceBefore: 12pt;
+  "If you have trouble with any of these steps, please contact ";
+  Span {"Support"; TextColor: Colors.Blue; TipAction: new Email("support@nytril.com")};
+};
+
+//======================================================================
+
+abstract class DialogView {
+  const BorderSize = 1;
+  const LineSize   = 0.5;
+  const EditHeight = 18pt;
+  const LineColor  = Colors.LightGray;
+  const TitleColor = #D3E3FD#;
+  const FocusColor = #68A3E6#;
+  const MenuColor  = #F4F4F4#;
+
+  var Thickness BodyPad;
+
+  var          Title,
+               Width;
+  var string[] Buttons;
+
+  Constructor(width, title) {
+    Width   = width;
+    Title   = title;
+    BodyPad = new(16pt, 16pt, 16pt, 16pt);
+  }
+
+  abstract Body;
+
+  Button(w, text, bool focus=false) = Canvas(w, EditHeight, new Edge(LineSize, 0, LineColor)) {
+    BorderRadius: 5;
+    HAlign: Center;
+    VAlign: Center;
+    Background: focus ? FocusColor : 97%;
+    if (focus)
+      TextColor: Colors.White;
+    text;
+  };
+
+  EditBox(name, w, text) = VBox {
+    name;
+    Canvas(w, EditHeight, new Edge(LineSize, 4, LineColor)) {
+      Margin: PadB(5);
+      BorderRadius: 5;
+      VAlign: Center;
+      TextColor: Colors.DarkGreen;
+      text;
+    };
+  };
+
+  TabBar(int focus, string[] tabs) = HBox(100%, 20pt) {
+    foreach (var tab in tabs) {
+      Canvas((100/tabs.Length)%, 100%, BorderRB(new(LineSize, 0, LineColor))) {
+        HAlign: Center;
+        VAlign: Center;
+        if (each0 == focus) {
+          Bold; tab;
+          Canvas(100%, 3pt) {
+            Background: FocusColor;
+            VAlignment: Bottom;
+          };
+        }
+        else
+          tab;
+      };
+    }
+  };
+
+  Show = VBox(Width, null, new Edge(BorderSize, 0, LineColor)) {
+    BorderRadius: 5;
+    HBox(100%, 30pt, BorderB(new(LineSize, 5, LineColor)) + PadLR(10)) {
+      BorderRadius: new BorderRadius(5, 5, 0, 0);
+      VAlign: Center;
+      Background: TitleColor;
+      Bold Title;
+      HBox {
+        HAlignment: Right;
+        Icons.close;
+      }
+    };
+
+    Body;
+    if (Buttons is valid) {
+      Canvas(100%, null, PadAll(8pt) + BorderT(new(LineSize, 0, LineColor))) {
+        HAlign: Right;
+        HBox {
+          Separation: 10pt;
+          foreach (var button in Buttons)
+            Button(1.25", button, each0 == 0);
+        };
+      };
+    }
+  };
+}
+
+//======================================================================
+
+class NytrilDesktop: DialogView {
+  Constructor {
+    super.Constructor(6.5", "Nytril Development Environment");
+  }
+
+  override Body = VBox {
+    HBox(100%, 20pt, PadL(10)) {
+      VAlign: Center;
+      Background: MenuColor;
+      Separation: 10pt;
+      "File"; "Edit"; "View"; "Git"; "Build"; "Repo"; "Project";"Documents"; "Data"; "Device"; "Help";
+    };
+    HBox(100%, 2") {
+      Canvas(50%, 100%);
+      Canvas(5, 100%, BorderLR(new(0.5, 0, Colors.LightGray))) {
+        Background: MenuColor;
+      };
+      Canvas(50%, 100%);
+    };
+    HBox(100%, 18pt) {
+      BorderRadius: new BorderRadius(0, 0, 5, 5);
+      Background: #4A6D9D#;
+    };
+  };
+}
+
+//======================================================================
+

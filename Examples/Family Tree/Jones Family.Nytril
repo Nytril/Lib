@@ -1,0 +1,60 @@
+using Information.People, LinkTypes;
+
+readonly namespace Information;
+//======================================================================
+
+// The Grandparents
+Male People.JacobJones = new Male(#b2ffe697-8fff-4e66-b6a7-21def4825532#, "Jacob", "Wilhelm", "Jones", null, res "JacobJones.jpg") {
+  BornAt(#1966-4-18#, Cities.Newark);
+};
+
+Female People.BarbaraJones = new(#33a01c7f-b84b-4c62-ab9c-bc16a08573fe#, "Barbara", "Lee", "Jones", null, res "BarbaraJones.jpg") {
+  Formerly("Johnson");
+  BornAt(#1967-10-27#, Cities.Newark);
+};
+
+Couple Couples.BarbaraJacob = new(#543e6be4-6ae7-4679-af09-cd7f6f94f152#, BarbaraJones, JacobJones) {
+  MarriedAt(#1986-4-29#, Cities.SanFrancisco);
+};
+// Their two children
+
+Female People.DianeJones = new(#29784da9-01ca-4377-a1db-2a26d097aae5#, "Dianne", "Laura", "Jones", Couples.BarbaraJacob, res "DianeJones.jpg") {
+  BornAt(#1994-10-27#, Cities.SanFrancisco);
+};
+
+Male People.MichaelJones = new(#6a03b28e-d491-4c85-b109-efbf854b0900#, "Michael", "Glenn", "Jones", Couples.BarbaraJacob, res "MichaelJones.jpg") {
+  BornAt(#1990-4-18#, Cities.SanFrancisco);
+};
+
+Female People.SallyJones = new(#8cfafe2f-75e1-43c2-b48b-ed9cf8eabc9e#, "Sally", "Elizabeth", "Jones", null, res "SallyJones.jpg") {
+  Formerly("Smith");
+  BornAt(#1991-3-30#, Cities.NewYork);
+};
+
+Couple Couples.SallyAlex = new(#27af5633-9bfb-4528-9499-e214904d2d00#, SallyJones, MichaelJones) {
+  MarriedAt(#2014-4-29#, Cities.SanFrancisco);
+};
+
+//======================================================================
+
+Male People.DylanJones = new(#25bc1323-17a6-438a-9739-2b501cd4ca77#, "Dylan", "Peter", "Jones", Couples.SallyAlex, res "DylanJones.jpg") {
+  BornAt(#2015-4-18#, Cities.SanFrancisco);
+};
+
+Female People.KimberlyJones = new(#e3570cb6-f002-4fd3-8749-91dffbabc6a0#, "Kimberly", "Lee", "Jones", Couples.SallyAlex, res "KimberlyJones.jpg") {
+  BornAt(#2017-10-27#, Cities.Chicago);
+  Nick("Kim");
+};
+
+//=====================================
+
+Story Stories.FamilyReunion = new(#b8efea8e-2976-4891-a24f-a8556401c3ca#, DianeJones, "Family Reunion", #2010-11-07#, res "FamilyReunion.jpg") {
+  var people = [DianeJones, SallyJones, BarbaraJones];
+  Link to people;
+  Text: Styles.Story {
+    "The ladies of the family got together for a photo. "
+    ListPeople(people) " are shown from left to right."
+  };
+};
+//=====================================
+

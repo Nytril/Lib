@@ -1,0 +1,19 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  TextHeight: 20pt;
+  var number = 1_294_163;
+
+  Paragraph {TextScientific: false; number};
+  Paragraph {TextScientific: true; number};
+  Paragraph {TextScientific: true; TextDigits: 2; number};
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextScientific));
+
+//============================================================
+

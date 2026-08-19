@@ -1,0 +1,54 @@
+using Format, IO;
+
+Main.Documents.MyDocument = new MyDocument;
+
+class MyDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#ad080fa6-1765-48f7-862e-dc043ac95a16#, "XML File");
+  }
+
+  ShowAttributes(Property[] attributes) = Span {
+    Separator: CommaSpace;
+    foreach (var a in attributes) {
+      Span {
+        Span {
+          TextColor: Colors.DarkBlue;
+          a.Name;
+        };
+        "=";
+        a.Value;
+      }
+    }
+  };
+
+  Custom = HBox(null, 200, 1) {
+    ColorStop[] stops = [
+      new(0, new Color(0xFF, 0xFF, 0xFF)),
+      new(0.956, new Color(0x2D, 0x29, 0x2A)),
+      new(1, new Color(0, 0, 0)),
+    ];
+
+    Shape(new LinearGradient(0, 0, 100, 0, stops, SpreadMethods.Pad, true), Colors.Blue) {
+      ClosedPath(10) {
+        LineTo(109, 96);
+        LineTo(10, 96);
+      }
+    };
+
+    Shape(new RadialGradient(20%, 70%, 50%, 50%, 50%, stops, SpreadMethods.Pad), Colors.Red) {
+      ClosedPath(10) {
+        LineTo(109, 96);
+        LineTo(10, 96);
+      }
+    }
+  };
+
+  override GetDocument = Document {
+    TextHeight: 9pt;
+    TextFace: Mono;
+    XMLElement.Read(res "simple.xml");
+    Paragraph;
+    XMLElement.Read(res "figure.svg");
+  };
+}
+

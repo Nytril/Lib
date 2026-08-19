@@ -1,0 +1,79 @@
+using Format;
+
+//================================================================
+
+Main.Documents = new MainDocumentClass;
+
+class MainDocumentClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#1a07fc00-88b3-4b95-a23e-0a3344ff2be4#, "Paragraph Examples")
+  }
+
+  override GetDocument = Document {
+    Blapar {
+      LeftIndent: 20pt;
+      FirstIndent: -20pt;
+      each1;
+      ". ";
+      Tab;
+    };
+
+    Blapar {
+      LeftIndent: 0.5";
+      FirstIndent: -0.25";
+      "*"; Tab;
+    };
+
+    Blapar {
+      LeftIndent: 0.25";
+      FirstIndent: -0.25";
+      "1)"; Tab;
+    };
+
+    Blapar {
+      LeftIndent: 1";
+    };
+
+    Blapar {
+      FirstIndent: 1";
+    };
+
+    Blapar {
+      LeftIndent: 1";
+      FirstIndent: -1";
+    };
+
+    Tabpar(89) {
+      LeftIndent: 1";
+      FirstIndent: -1";
+
+      "X"; Tab; "Y"; Tab;
+    };
+
+    Tabpar(48) {
+      LeftIndent: 1";
+      FirstIndent: -1";
+
+      "X"; Tab; "Y"; Tab;
+    };
+
+    Tabpar(48) {
+      LeftIndent: 2";
+      FirstIndent: -2";
+
+      "X"; Tab; "Y"; Tab; "Z"
+    };
+  };
+
+  Blapar = Paragraph {
+    SpaceAfter: 10pt;
+    End: "bla "*40;
+  };
+
+  Tabpar(tab) = Paragraph(null, [tab]) {
+    SpaceAfter: 10pt;
+    End: "bla "*40;
+  };
+}
+
+//================================================================

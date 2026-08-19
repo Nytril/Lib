@@ -1,0 +1,41 @@
+include "Help";
+
+using Format;
+
+Range = 0..Math.PI2;
+
+Description = DescriptionBlock {
+  Chart(100%, 2") {
+    ChartType: ChartTypes.Line;
+    XAxis: ChartAxis {
+      TextDigits: 1;
+      Range step Math.PI/6;
+    };
+
+    ValueAxis: ChartAxis {
+      TextDigits: 0;
+      Start: -20;
+      Stop: 20;
+    };
+
+    ChartSeries {
+      foreach (var x in Range step Math.PI/128)
+        new DataPoint(x, Math.Tan(x));
+    };
+  };
+};
+
+ShowTan(x) = Span {
+  TextDigits: 8;
+  "The tangent of {0} is {1}."(x, Math.Tan(x));
+};
+
+Example = Block {
+  ShowTan(0);
+  ShowTan(Math.PI / 3);
+  ShowTan(Math.PI / 2);
+};
+
+Main.Help = new HelpExample(attribute(Math.Tan));
+
+

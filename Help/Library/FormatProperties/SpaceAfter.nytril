@@ -1,0 +1,15 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  Paragraph {
+    TextHeight: 20pt;
+    Bold;
+    "Space After this paragraph";
+    SpaceAfter: 12pt;
+  };
+  "Body paragraph";
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.SpaceAfter));

@@ -1,0 +1,28 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  "Number can be a Measure or a percentage of the font height";
+};
+
+Example = Block {
+  Paragraph {
+    "TextStretch: 0";
+  };
+  Paragraph {
+    TextStretch: 75%;
+    "TextStretch: 75%";
+  };
+  Paragraph {
+    TextStretch: 150%;
+    "TextStretch: 150%";
+  }
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextStretch));
+
+//============================================================
+

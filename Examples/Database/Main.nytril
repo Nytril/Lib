@@ -1,0 +1,49 @@
+using Format, Math, IO, DB;
+
+Main.Documents.Main = new DBExampleClass;
+
+//====================================================================
+
+class ResumeInfo {
+  var string FullName,
+             Email,
+             Address,
+             City,
+             State,
+             Zip,
+             Statement;
+}
+
+readonly DbConnectionClass PeopleDB = new SQLiteClass(res "people.db");
+
+//====================================================================
+
+class DBExampleClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#463bc664-f3da-4d89-89ac-efaeb3bac857#, "DB Example");
+  }
+
+  override GetDocument = Document {
+    Paragraph {
+      SpaceBefore: 20pt;
+      TextHeight: 20pt;
+      "Database Query";
+    };
+
+    var list = new List<ResumeInfo>(64);
+    list.DBQuery(PeopleDB, "select * from resume_info");
+
+    foreach (var p in list) {
+      p.FullName;
+      p.Email;
+      p.Address;
+      p.City;
+      p.State;
+      p.Zip;
+      p.Statement;
+      Empty;
+    }
+  };
+}
+
+//====================================================================

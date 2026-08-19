@@ -1,0 +1,73 @@
+
+namespace People.SallyJones {
+  Identity  = new Person(#8cfafe2f-75e1-43c2-b48b-ed9cf8eabc9e#, "Sally", "Elizabeth", "Jones");
+  Email     = "sally.jones@gmail.com";
+  Phone     = "(824) 637-8056";
+  Address   = "123 Tangarine Ave.";
+  City      = "Orange";
+  State     = "CA";
+  Zip       = "12345";
+  Statement = "My goal is to move into a permanent sales position";
+
+  Skills = [
+    "Excellent customer skills",
+    "French Fluency",
+    "Social media influencer",
+    "All major business applications",
+  ];
+
+  namespace Experience.Jan {
+    Name       = "Axios Communications";
+    Title      = "Sales agent";
+    Start      = #2020-8#;
+    End        = "Present";
+    Highlights = [
+      "Met monthly sales goals",
+      "Good work ethic",
+      "Got along with the team",
+    ];
+  }
+
+  namespace Experience.GoCloset {
+    Name       = "GoCloset";
+    Title      = "Customer Service Representative";
+    Start      = #2016-8#;
+    End        = #2020-4#;
+    Highlights = [
+      "Very diligent",
+      "Super creative",
+    ];
+  }
+
+  namespace Experience.Company {
+    Name       = "Sytech Inc.";
+    Title      = "Customer support representative";
+    Start      = #2013-2#;
+    End        = #2016-6#;
+    Highlights = [
+      "Team player",
+      "Excellent time management",
+    ];
+  }
+
+  namespace Experience.Corporation {
+    Name       = "HowTo and Co.";
+    Title      = "Clerk";
+    Start      = #2012-1#;
+    End        = #2013-1#;
+    Highlights = [
+      "Great people skills",
+      "Ran the entire office",
+    ];
+  }
+
+  namespace Education.DiffSchool {
+    Name      = "Minnesota School of Marketing";
+    Graduated = #2012#;
+    Degree    = "Marketing";
+    Highlights = [
+      "Degree, Major",
+      "Awards and Accolades",
+    ];
+  }
+}

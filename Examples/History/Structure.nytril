@@ -1,0 +1,365 @@
+using Format, LinkTypes;
+
+//===============================================================
+
+class JOHStyle: OUPStyle {
+  Constructor {
+    super.Constructor(Organizations.JOHistory, LineNumbers | SectionNumbers);
+    TexPackages.AddEach(["fontspec"]);
+    TexFont         = "Libertinus Serif";
+    SansSerif       = TextFamily: TextFamilies.LibertinusSans;
+  }
+
+  override SetTextStyle = {
+    TextHeight: 12pt;
+    TextFamily: TextFamilies.LibertinusSerif;
+  };
+}
+
+readonly JOHStyle PaperStyle   = new;
+
+//=====================================================================
+
+class Event: Fact {
+  field DateTime Date;
+  field          Description;
+
+  Constructor(Guid id, DateTime date, description) {
+    super.Constructor(id);
+    Date        = date;
+    Description = description;
+  }
+
+  override Icon GetIcon = Icons.today;
+
+  ShowComments(ContentStyle style, height) = Block {
+    var comments = FindFacts(Comment) as Comment[];
+    if (comments is valid) {
+      Block {
+        TextHeight: height;
+        Separator: Paragraph;
+        ParAlignment: Justify;
+        foreach (var comment in comments) {
+          style.Par {
+            comment.TextReference;
+          };
+        }
+      }
+    }
+  };
+
+  override GetLayoutFact = GetLayoutTip;
+
+  override GetLayoutTip = Block {
+    Paragraph {
+      GetIcon;
+      Span {Bold; Description};
+    };
+    ShowDate(null, Date);
+    ShowComments(PaperStyle, 12pt);
+  };
+}
+
+//=====================================================================
+
+class OfficeTenure {
+  var Subject      Subject;
+  var PublicOffice Office;
+  var TenurePeriod Tenure;
+
+  Constructor(Subject subject, PublicOffice office) {
+    Subject = subject;
+    Office = office;
+    Tenure = OfficeLink.FindMetaFacts(subject, office)[0] as TenurePeriod;
+  }
+
+  override int Compare(OfficeTenure value) {
+    if (Tenure is valid) {
+      if (value.Tenure is valid)
+        return Tenure.Start.Compare(value.Tenure.Start);
+      return 1;
+    }
+    else
+      return value.Tenure is valid ? -1 : 0;
+  }
+
+  Show = Paragraph {
+    LeftIndent: 20pt;
+    Office.Name;
+    if (Tenure is valid) {
+      ShowDates(" from ", Tenure.Start, " to ", Tenure.End);
+      Dot;
+    }
+  };
+}
+
+//=========================================================================
+
+readonly LinkType OfficeLink   = new(Person, PublicOffice, null, null, TenurePeriod);
+readonly LinkType PortraitLink = new(Person, DocReference, "Portrait");
+readonly LinkType BornLink     = new(Person, Event, "Born");
+readonly LinkType DiedLink     = new(Person, Event, "Died");
+readonly LinkType ParentsLink  = new(Couple, Person, "Parents", "Child");
+readonly LinkType CoupleLink   = new(Couple, Person, Empty);
+
+//=====================================================================
+
+DateTime FindOccurrenceDate(Person person, LinkType linktype) {
+  var query = MatchAll(linktype) {
+    MatchAny(person);
+  };
+
+  var results = System.GetLocalRealm.Query(query);
+  if (results is valid and results[0] is Event e)
+    return e.Date;
+  return null;
+}
+
+//=====================================================================
+
+ShowDate(text, DateTime date) = Span {
+  if (date is valid) {
+    text;
+    switch (date.Precision) {
+      case DatePrecisions.Year:
+        TextFormat: "yyyy";
+        break;
+
+      case DatePrecisions.Month:
+        TextFormat: "MMMM yyyy";
+        break;
+
+      default:
+        TextFormat: "MMMM d, yyyy";
+        break;
+    }
+    date;
+  }
+};
+
+ShowDates(t1, d1, t2, d2) = Span {
+  ShowDate(t1, d1);
+  ShowDate(t2, d2);
+};
+
+//===============================================================================================================
+
+class Subject: Person {
+  var DateTime Born,
+               Died;
+
+  Constructor(Guid id, first, middle, last, DateTime born, DateTime died, Couple parents=null) {
+    super.Constructor(id, first, middle, last);
+
+    Born = born;
+    Died = died;
+    if (born is valid)
+      BornLink.Connect(this, new Event(Guid.FromHash(id BornLink.Relation), born, BornLink.Relation));
+    if (died is valid)
+      DiedLink to new Event(Guid.FromHash(id DiedLink.Relation), died, DiedLink.Relation);
+    if (parents is valid)
+      ParentsLink.Connect(parents, this);
+  }
+
+  ShowFullName = Span {
+    Separator: Space;
+    First;
+    Middle;
+    Last;
+  };
+
+  ShowName = Span {
+    ShowFullName;
+    Link to this;
+    TipAction: new PersonTip(this);
+  };
+
+  override GetLayoutSpan = ShowFullName;
+
+  override GetLayoutNode {
+    var r = FindFirstFact(PortraitLink) as DocReference;
+    if (r is valid) {
+      return FitBox(r.Image, 25pt, 25pt, new Edge(0.25pt, 0, Colors.LightGray)) {
+        Tip: this;
+        BorderRadius: 7pt;
+        BorderClip: true;
+      };
+    }
+    return super.GetLayoutNode;
+  }
+}
+
+//===============================================================================================================
+
+class Couple: Fact {
+  field DateTime Married;
+  field DateTime Divorced;
+  var Person     Partner1,
+                 Partner2;
+
+  Constructor(Guid id, DateTime married, Person partner1, Person partner2) {
+    super.Constructor(id);
+    System.Assert(partner1 is valid and partner2 is valid, "Expecting both partners");
+    Partner1 = partner1;
+    Partner2 = partner2;
+    Married  = married;
+    CoupleLink.Connect(this, partner1);
+    CoupleLink.Connect(this, partner2);
+  }
+
+  Title = Span {
+    Partner1;
+    " and ";
+    Partner2;
+  };
+
+  override GetLayoutFact = Title;
+
+  override GetLayoutTip = Title;
+
+  override Icon GetIcon = Icons.people;
+}
+
+//=====================================================================
+
+class TenurePeriod: Fact {
+  field DateTime Start,
+                 End;
+
+  Constructor(Guid id, DateTime start, DateTime end) {
+    super.Constructor(id);
+    Start = start;
+    End   = end;
+  }
+
+  override Icon GetIcon = Icons.date_range;
+}
+
+//=====================================================================
+
+class PublicOffice: Fact {
+  field      Name;
+  field bool Military;
+
+  Constructor(Guid id, name) {
+    super.Constructor(id);
+    Name = name;
+  }
+
+  override Icon GetIcon = Icons.stars;
+}
+
+//=========================================================================
+
+class PortraitContent: Content {
+  var DocReference Reference;
+
+  Constructor(DocReference reference) {
+    super.Constructor("A portrait of " + GetPersonName(reference), reference.FactId);
+    Reference = reference;
+  }
+
+  static string GetPersonName(DocReference reference) {
+    var person = reference.FindFirstFact(PortraitLink) as Person;
+    if (person is valid)
+      return ContentStyle.GetFullName(person);
+    return Empty;
+  }
+
+  override GetCaption(ContentStyle style) = Paragraph {
+    Title;
+    Cite {Reference};
+  };
+
+  override GetBody(ContentStyle style) = Paragraph {
+    ParAlignment: Center;
+    ShowRoundedImage;
+  };
+
+  ShowRoundedImage = FitBox(Reference.Image, Math.Min(ExtentWidth, 3"), Math.Min(ExtentHeight, 3"), new Edge(2pt, 0, Colors.LightGray)) {
+    BorderRadius: 10pt;
+    BorderClip: true;
+  };
+
+  override GetLayoutTip = Frame(3.25") {
+    ParAlignment: Center;
+    Paragraph {
+      TextHeight: 14pt;
+      Name;
+    };
+    ShowRoundedImage;
+    Reference.FindFacts(DocReference);
+  };
+}
+
+//=====================================================================
+
+class Comment: Fact {
+  flags Properties {
+    None,
+    Introduction,
+    Important,
+  }
+
+  field              Text;
+  field Properties   Props;
+  var   DocReference Reference;
+
+  Constructor(id, Properties props) {
+    super.Constructor(id);
+    Props = props;
+  }
+
+  override GetLayoutTip = Paragraph {
+    ParAlignment: Justify;
+    Text;
+  };
+
+  TextReference = Span {
+    Text;
+    if (Reference is valid)
+      Cite{Reference};
+  };
+
+  override Icon GetIcon = Icons.comment;
+}
+
+//=====================================================================
+
+ShowEventTable(Person person) = Table(0.25pt, PadLR(4pt), [Column.Fit(2"), Column.Expand]) {
+  var list   = new List<TimelineEvent>(16);
+  var events = person.FindFacts(Event) as Event[];
+
+  foreach (var event in events)
+    list.Add(new(event.Date, event.Description));
+
+  var offices = person.FindFacts(PublicOffice) as PublicOffice[];
+  if (offices is valid) {
+    foreach (var office in offices) {
+      var tenure = OfficeLink.FindFirstMetaFact(person, office) as TenurePeriod;
+      if (tenure is not null) {
+        list.Add(new(tenure.Start, office.Name + " (term begins)"));
+        list.Add(new(tenure.End, office.Name + " (term ends)"));
+      }
+    }
+  }
+
+  list.Sort;
+  foreach (var e in list) {
+    Row {
+      Cell(PadR(5pt)) {
+        HAlign: Right;
+        Span {
+          TextFormat: "MMMM d, yyyy";
+          e.Date;
+        };
+      };
+      e.Text;
+    };
+  }
+};
+
+//=====================================================================
+
+
+

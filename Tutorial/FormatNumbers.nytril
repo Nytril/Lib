@@ -1,0 +1,260 @@
+using Format;
+
+namespace Chapters.Formatting.Sections.FormatNumbers;
+
+readonly TutorialLesson Lesson = new(#09a38d79-dde4-4de4-b7cd-ab94c76e050a#, "Number Formatting", "FormatNumbers", "num", "youtu.be/eiBMFdcH5Y0") {
+  Description: Span {
+    "Use a large selection of different number formatting properties to add data to your documents. ";
+  };
+};
+
+//=====================================================================
+
+IntegerLiteral = Span {
+  42;
+};
+
+readonly LessonExample Content.IntegerLiteralEx = new(#9ef4a301-41f6-4524-aeea-6f9e7adf0fd7#, "int Literals") {
+  Text: "To show an integer, simply include the literal number as one of the elements inside a span. ";
+  Code: [attribute IntegerLiteral];
+  Sel: new(1, 2, 2);
+};
+
+//=====================================================================
+
+X(i) = i * i + 3;
+
+IntegerVariable = Span {
+  "The output of X(5) is "; X(5);
+};
+
+readonly LessonExample Content.IntegerVariableEx = new(#199fba86-53d1-455d-a0d5-91d3e6b6546c#, "Functions and Variables with int Values") {
+  Text: "Functions that return integers or variables containing integers, like the function X shown here, will be formatted the same way. ";
+  Code: [attribute X, attribute IntegerVariable];
+  Sel: new(0, 0, 1);
+};
+
+//=====================================================================
+
+IntegerHexadecimal = Span {
+  TextRadix: 16;
+  129579;
+};
+
+readonly LessonExample Content.IntegerHexadecimalEx = new(#3bfc9e3d-b944-468c-a3c1-c29370048e7e#, "Hexadecimal Format") {
+  Text: Span {"To format an integer in hexadecimal, change the "; NytrilStyle.PropName(attribute FormatProperties.TextRadix); " to 16. "};
+  Code: [attribute IntegerHexadecimal];
+  Sel: new(1, 2, 13);
+};
+
+//=====================================================================
+
+IntegerHexadecimalUpper = Span {
+  TextRadix: 16;
+  TextCase: AllUpper;
+  671277;
+};
+
+readonly LessonExample Content.IntegerHexadecimalUpperEx = new(#c08506b6-523c-413b-baa0-7ef624d13b60#, "Uppercase Hex Format") {
+  Text: Span {"To have the hex digits shown in upper-case, change the "; NytrilStyle.PropName(attribute FormatProperties.TextCase); " property to AllUpper. "};
+  Code: [attribute IntegerHexadecimalUpper];
+  Sel: new(2, 2, 13);
+  Options: NoShort;
+};
+
+//=====================================================================
+
+IntegerBinary = Span {
+  TextRadix: 2;
+  127;
+};
+
+readonly LessonExample Content.IntegerBinaryEx = new(#b864e2c4-306d-4104-a87a-51eab691c5a0#, "Binary Format") {
+  Text: Span {"To format a number in binary, use 2 as the "; NytrilStyle.PropName(attribute FormatProperties.TextRadix); DotSpace};
+  Code: [attribute IntegerBinary];
+  Sel: new(1, 2, 12);
+  Options: NoShort;
+};
+
+//=====================================================================
+
+IntegerHexadecimal4 = Block {
+  TextRadix: 16;
+  TextNumPadding: 4;
+  4;
+  27;
+  12245;
+};
+
+readonly LessonExample Content.IntegerHexadecimal4Ex = new(#ca35c357-b2ab-4609-87ad-44d4aa3c2b33#, "Number Zero-Padding") {
+  Text: Span {"Use the "; NytrilStyle.PropName(attribute FormatProperties.TextNumPadding); " property to set the minimum width of a number. This is handy for text sorting and creating tables with aligned numbers. "};
+  Code: [attribute IntegerHexadecimal4];
+  Sel: new(2, 2, 17);
+  Options: NoShort;
+};
+
+//=====================================================================
+
+IntegerGroup = Span {
+  TextGroup: true;
+  1234567.89;
+};
+
+readonly LessonExample Content.IntegerGroupEx = new(#6059027f-54e7-4c72-8d19-3544d4729422#, "Group Separators") {
+  Text: Span {"To format an integer with a group separator, set the "; NytrilStyle.PropName(attribute FormatProperties.TextGroup); " property to true. "};
+  Code: [attribute IntegerGroup];
+  Sel: new(1, 2, 15);
+};
+
+//=====================================================================
+
+IntegerGroupCulture = Span {
+  TextCulture: CultureInfo.FindCulture("de-DE");
+  TextGroup: true;
+  8912345.67;
+};
+
+readonly LessonExample Content.IntegerGroupCultureEx = new(#f25136df-2214-4c31-875f-e3c47a059fd4#, "Culture Settings") {
+  Text: Span {"Use the "; NytrilStyle.PropName(attribute FormatProperties.TextCulture); " property to ensure the formatting is correct for the intended readership. "};
+  Code: [attribute IntegerGroupCulture];
+  Sel: new(1, 2, 11);
+  Options: NoShort;
+};
+
+//=====================================================================
+
+DoubleFormatting = Span {
+  4325.1245;
+};
+
+readonly LessonExample Content.DoubleFormattingEx = new(#28eaccb7-5146-4816-9f1b-980db9595789#, "double Literals") {
+  Text: Span {"As with integers, to a format a number of type "; NytrilStyle.KW(attribute double); ", include it as an element in the revision. "};
+  Code: [attribute DoubleFormatting];
+  Sel: new(1, 2, 9);
+  Options: NoShort;
+};
+
+//=====================================================================
+
+DoubleReturn = Span {
+  Math.Sqrt(1 + 1);
+};
+
+readonly LessonExample Content.DoubleReturnEx = new(#8f0553d7-bc1c-4154-a2d2-544219945394#, "Function Return Values") {
+  Text: "Formatting a return value from a function works the same way. ";
+  Code: [attribute DoubleReturn];
+  Sel: new(1, 2, 16);
+  Options: NoShort;
+};
+
+//=====================================================================
+
+DoubleDigits = Span {
+  TextDigits: 3;
+  Math.PI;
+};
+
+readonly LessonExample Content.DoubleDigitsEx = new(#e1c8498b-51bc-4e18-8b59-8bc454dab842#, "Decimal Digits") {
+  Text: Span {"Use the "; NytrilStyle.PropName(attribute FormatProperties.TextDigits); " property to fix the number of fractional digits in the number. "};
+  Code: [attribute DoubleDigits];
+  Sel: new(1, 2, 13);
+};
+
+//=====================================================================
+
+Percentage = Block {
+  TextPercent: true;
+  0.04;
+  1.5;
+};
+
+readonly LessonExample Content.PercentEx = new(#8ed20b23-e8c0-432c-9331-c55e3d03f773#, "Percentage Format") {
+  Text: Span {"Set the "; NytrilStyle.PropName(attribute FormatProperties.TextPercent); " property to true to show numbers as percentages. "};
+  Code: [attribute Percentage];
+  Sel: new(1, 2, 17);
+};
+
+//=====================================================================
+
+SignificantDigits = Block {
+  TextSignificant: true;
+  TextDigits: 3;          // 3 significant figures
+  4325.1245;
+  5.4193;
+  0.0006427;
+  1.215e10;
+  1.2e-10;
+};
+
+readonly LessonExample Content.SignificantDigitsEx = new(#71cae461-39b6-4fb3-bf62-b44f6893892f#, "Significant Figures") {
+  Text: Span {"Set "; NytrilStyle.PropName(attribute FormatProperties.TextSignificant); " to true, to make TextDigits refer to 'significant' figures, rather than decimal digits. "};
+  Code: [attribute SignificantDigits];
+  Sel: new(1, 0, 40);
+};
+
+//=====================================================================
+
+ScientificNotation = Span {
+  TextScientific: true;
+  TextDigits: 2;
+  175_000;
+};
+
+
+readonly LessonExample Content.ScientificNotationEx = new(#603e0288-df31-4407-bd90-38e8b824a131#, "Scientific Notation") {
+  Text: Span {"Format the number in scientific notation by setting "; NytrilStyle.PropName(attribute FormatProperties.TextScientific); " to true. "};
+  Code: [attribute ScientificNotation];
+  Sel: new(1, 2, 20);
+};
+
+//=====================================================================
+
+ScientificNotationSig = Span {
+  TextScientific: true;
+  TextSignificant: true;
+  TextDigits: 2;
+  8_175_400;
+};
+
+readonly LessonExample Content.ScientificNotationSigEx = new(#d8f0b2f0-997d-4f6d-b4b8-ef20f05b574e#, "Significant Figures in Scientific Notation") {
+  Text: Span {"Notice that the "; NytrilStyle.PropName(attribute FormatProperties.TextSignificant); " property controls the total number of significant figures with scientific notation. "};
+  Code: [attribute ScientificNotationSig];
+  Sel: new(2, 0, 40);
+  Options: NoShort;
+};
+
+//=====================================================================
+
+readonly AlignedPar = Paragraph(null, [new(5%, Decimal)]);
+
+AlignedPars = Block {
+  AlignedPar {Tab; 1.2   };
+  AlignedPar {Tab; 123.99};
+  AlignedPar {Tab; 0.5544};
+};
+
+readonly LessonExample Content.AlignedParagraphEx = new(#a8fe5556-6490-41cd-8a4f-c47a2d521109#, "Decimal Tab Stops") {
+  Text: "You can use a custom tab stop in a paragraph to align numbers on decimal point. ";
+  Code: [attribute AlignedPar, attribute AlignedPars];
+  Sel: new(0, 47, 7);
+  Options: NoShort;
+};
+
+//=====================================================================
+
+Denominator = Block {
+  TextDenominator: 16;
+  0.125;
+  0.5;
+  12.75;
+  1.04125;
+};
+
+readonly LessonExample Content.DenominatorEx = new(#c78f047d-84c4-4a5c-a1d3-e00a6bf4ed41#, "Fractional Expressions") {
+  Text: Span {"Use the "; NytrilStyle.PropName(attribute FormatProperties.TextDenominator); " property to convert a number to a fraction, with a maximum denominator, in lowest terms. "};
+  Code: [attribute Denominator];
+  Sel: new(1, 2, 19);
+};
+
+//=====================================================================
+

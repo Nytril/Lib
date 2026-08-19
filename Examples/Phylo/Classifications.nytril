@@ -1,0 +1,241 @@
+using Format, IO;
+//================================================================
+
+readonly LinkType TaxonChildLink = new(Taxon, Taxon, "Subgroup", "Parent Group");
+
+class Taxon: Fact {
+  enum RankTypes {
+    Life,
+    Kingdom,
+    Phylum,
+    Class,
+    Order,
+    Family,
+    Genus,
+    Species,
+  }
+
+  var Taxon       Parent;
+  var Image       Picture;
+  field string    Name,
+                  Description,
+                  CommonName;
+  field double    Start,
+                  Stop;
+  field RankTypes Rank;
+
+  Constructor(Taxon parent, RankTypes rank, Guid id, name, double start, double stop=0.0, commonname=null, description=null, picture=null) {
+    super.Constructor(id);
+    Parent      = parent;
+    Name        = name;
+    Rank        = rank;
+    Start       = start;
+    Stop        = stop;
+    CommonName  = commonname;
+    Description = description;
+
+    if (picture is valid)
+      Picture = new Image(Folders.Source FileName(picture) Extensions.JPG);
+
+    TaxonChildLink.Connect(parent, this);
+  }
+
+  void Gather(set) {
+    Parent?.Gather(set);
+    set.Add(this);
+  }
+
+  UpperPhylogeny {
+    if (Parent is valid) {
+      return Block {
+        Parent?.UpperPhylogeny;
+        InfoParagraph {
+          Span {
+            Bold;
+            Rank;
+            ":";
+          };
+          Tab;
+          Name;
+        }
+      };
+    }
+    return null;
+  }
+
+  InfoParagraph = Paragraph(null, [0.75"]);
+  TextSize      = (10.0 + 8.0/Math.Floor(Rank+1)) Units.pts;
+  ParLeft       = Math.Floor(Rank) * PhyloStyle.TabStop + TextSize;
+
+  FullName = Span {
+    if (Parent is valid) {
+      Parent.FullName;
+      "-";
+    }
+    Name
+  };
+
+  override GetLayoutFact = Block {
+    Paragraph {
+      Span {
+        Italic;
+        Rank;
+      };
+      Space;
+      Name;
+      if (CommonName is valid) {
+        " (";
+        Span {
+          Bold;
+          CommonName;
+        };
+        ")";
+      }
+    };
+
+    Paragraph {
+      LeftIndent: 8pt;
+      TextColor: Colors.DarkGray;
+      Description;
+    };
+  };
+
+  override GetLayoutTip = Frame(3.25") {
+    Paragraph {
+      ParBackground: 60%;
+      TextColor: Colors.White;
+      ParAlignment: Center;
+      TextHeight: 16pt;
+      if (Rank != Rank.Life) {
+        Rank;
+        Space;
+      }
+      Name;
+    };
+
+    if (CommonName is valid) {
+      Paragraph {
+        ParAlignment: Center;
+        TextHeight: 14pt;
+        Bold;
+        CommonName;
+      };
+    }
+
+    Description;
+
+    Parent?.UpperPhylogeny;
+    if (Start is valid and Start > 0) {
+      InfoParagraph {
+        Bold "Age";
+        ColonSpace;
+        Tab;
+        Start;
+        if (Stop > 0) {
+          " - "
+          Stop;
+          " million years";
+        }
+        else
+          " million years to present";
+      };
+      PhyloStyle.ShowAgeRange(Start, Stop);
+    }
+
+    if (Picture is valid) {
+      Paragraph {
+        SpaceBefore: 5pt;
+        ParAlignment: Center;
+        FitBox(Picture, 3", 3", new Edge(5pt, 0, Colors.LightGray)) {
+          BorderRadius: 2pt;
+          BorderClip: true;
+        }
+      }
+    }
+  };
+
+  ShowList(Taxon[] list) = Block {
+    Paragraph(Rank == RankTypes.Genus ? BorderB(0.33pt) : null) {
+      LeftIndent: ParLeft;
+      FirstIndent: -TextSize;
+      TextHeight: TextSize;
+      SpaceBefore: 8pt;
+
+      if (Rank == RankTypes.Order)
+        ParBackground: 90%;
+
+      PhyloStyle.LevelMarkers[Rank];
+      Span {
+        Tip: this;
+        Name;
+      };
+    };
+
+    if (Description is valid) {
+      Paragraph {
+        LeftIndent: ParLeft;
+        TextHeight: 12pt;
+        TextFamily: TextFamilies.TimesNewRoman;
+        Description;
+      }
+    }
+
+    if (Picture is valid) {
+      Paragraph {
+        LeftIndent: ParLeft;
+        Canvas(null, null, new Edge(2pt, 0, Colors.LightGray)) {
+          BorderRadius: 2pt;
+          BorderClip: true;
+          FitBox(Picture, 3", 1") {
+            Tip: this;
+          };
+        }
+      }
+    }
+
+    foreach (var child in list) {
+      if (child.Parent == this)
+        child.ShowList(list);
+    }
+  };
+
+  Node GetTree(Taxon[] list) = new Node(Name, Rank <= Taxon.RankTypes.Class ? 0.4 : 1.0) {
+    Label: Span {
+      Tip: this;
+      Name;
+    };
+
+    if (Picture is valid) {
+      Marker: Span {
+        Tip: this;
+        FitBox(Picture, 48, 48, new Edge(1pt, 0, Colors.LightGray)) {
+          BorderRadius: 2pt;
+          BorderClip: true;
+        };
+      };
+      LabelGap: 3pt;
+    }
+    else
+      Marker: Markers.Circle(Colors.Red);
+
+    foreach (var child in list) {
+      if (child.Parent == this)
+        child.GetTree(list);
+    }
+  };
+}
+
+//================================================================
+
+class TaxonNode: Node {
+  var Taxon Taxon;
+
+  Constructor(Taxon taxon) {
+    super.Constructor(taxon.Name, taxon.Rank <= Taxon.RankTypes.Class ? 0.4 : 1.0);
+    Taxon = taxon;
+  }
+
+  override GetLayoutTip = Taxon.GetLayoutTip;
+}
+
+//================================================================

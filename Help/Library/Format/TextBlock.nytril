@@ -1,0 +1,25 @@
+include "Help";
+
+using Format;
+
+Scope = TextBlock {
+  Begin: "{";
+  End: "}";
+  IndentSpace: 2;
+};
+
+Example = TextBlock {
+  FileFormat: IO.FileFormats.CPP;
+
+  "class MyClass";
+  Scope {
+    "function()";
+    Scope {
+      "return 42;"
+    };
+  }
+};
+
+Main.Help = new HelpExample(attribute(Format.TextBlock));
+
+

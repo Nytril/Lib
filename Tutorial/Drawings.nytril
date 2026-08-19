@@ -1,0 +1,642 @@
+using Format;
+//======================================================================
+
+namespace Chapters.Formatting.Sections.Drawings;
+
+readonly TutorialLesson Lesson = new(#7d95b214-b935-43d5-861d-b20bef12c39d#, "Shapes");
+
+//======================================================================
+
+ZigZag = Shape(null, new(3pt, Colors.Black, LineStyles.Solid, LineCaps.Round, LineJoins.Round)) {
+  OpenPath(0) {
+    LineTo(20, 20);
+    LineTo(40, 0);
+    LineTo(60, 20);
+  }
+};
+
+readonly LessonExample Content.SimpleLineShapeEx = new(#bd5d2dae-3738-488e-856c-b1262434f7ff#, "Shapes") {
+  Form: NytrilStyle.ObjectType(attribute Shape, "Create a self-contained shape");
+  Code: [attribute ZigZag];
+};
+
+//======================================================================
+
+DrawLineStyle(r) = Canvas(null, 10pt) {
+  VAlign: Center;
+  Shape(null, new(3pt, Colors.Black, r, Flat)) {
+    OpenPath(0, 3) {
+      LineTo(60pt, 3)
+    };
+  };
+};
+
+EnumTable(rows, Attribute draw) = Table(null, null, [1.5", 3"]) {
+  foreach (var r in rows) {
+    Row {
+      r.Name;
+      draw.Value(r);
+    };
+  }
+};
+
+LineStyleTable = EnumTable(LineStyles, attribute DrawLineStyle);
+
+readonly LessonExample Content.LineStylesListEx = new(#c26e89ec-eacc-4ede-b0d4-b836fb67a2f4#) {
+  Text: "Use the stroke parameter to change the outline of the shape to a particular size and pattern.";
+  Code: [attribute LineStyleTable];
+};
+
+//======================================================================
+
+DrawLineJoin(r) = Canvas(null, 20pt) {
+  VAlign: Center;
+  Shape(null, new(8pt, Colors.Black, Solid, Flat, r)) {
+    OpenPath(0) {
+      LineTo(15pt, 10pt);
+      LineTo(30pt, 0)
+    }
+  }
+};
+
+LineJoinTable = EnumTable(LineJoins, attribute DrawLineJoin);
+
+readonly LessonExample Content.LineJoinListEx = new(#496a5865-04d8-4047-8f14-c7b591d8a64e#) {
+  Text: "Use the linejoin parmeter to change the way line segments join together.";
+  Code: [attribute LineJoinTable];
+};
+
+//======================================================================
+
+DrawLineCap(r) = Canvas(null, 10pt) {
+  VAlign: Center;
+  Shape(null, new(8pt, Colors.Black, LineStyles.Solid, r)) {
+    OpenPath(3) {
+      LineTo(35pt, 3);
+    }
+  };
+  Shape(null, new(1pt, Colors.Red, LineStyles.Solid, r)) {
+    OpenPath(3) {
+      LineTo(35pt, 3);
+    }
+  }
+};
+
+LineCapTable = EnumTable(LineCaps, attribute DrawLineCap);
+
+readonly LessonExample Content.LineCapListEx = new(#c64bfe90-faaf-46fa-a2d9-b63759553a93#) {
+  Text: "Use the endcap parameter to change the end-cap of the line.";
+  Code: [attribute LineCapTable];
+};
+
+//======================================================================
+
+DrawMiterJoin(miter) = Canvas(null, 20pt) {
+  VAlign: Center;
+  Shape(null, new(2, Colors.Black, Solid, Flat, Miter, miter)) {
+    OpenPath(0) {
+      LineTo(30, 5);
+      LineTo(0, 10)
+    }
+  }
+};
+
+MiterTable(miters) = Table(null, null, [1", 4"]) {
+  VAlign: Center;
+  Row {Bold; "Miter Limit"; "Effect"};
+  foreach (var m in miters) {
+    Row {
+      m;
+      DrawMiterJoin(m);
+    };
+  }
+};
+
+LineMiterTable = MiterTable([10, 1]);
+
+readonly LessonExample Content.MiterListEx = new(#18d90f7f-7bdf-47ca-aae0-9efb19e70370#) {
+  Text: "Use the miterlimit parameter to limit ratio of the extent of a miter to the stroke size (default: 4.0).";
+  Code: [attribute LineMiterTable];
+};
+
+//======================================================================
+
+ShowClose(color, closed) = VBox {
+  HAlign: Center;
+  Frame {
+    Paragraph {
+      "Closed: "; closed;
+    }
+  };
+  GraphPaper.Show(new Size(30), new Size(5)) {
+    Shape(null, new(1, color)) {
+      TwoLines(closed)
+    }
+  }
+};
+
+TwoLines(closed) = (closed ? ClosedPath(1) : OpenPath(1)) {
+  LineTo(1, 20);
+  LineTo(20, 20);
+};
+
+OpenClose = Paragraph {
+  ShowClose(Colors.Red, false);
+  Tab;
+  ShowClose(Colors.Green, true);
+};
+
+readonly LessonExample Content.OpenClosePathEx = new(#29d4d668-8ed4-4e84-86f1-b119d8393b19#) {
+  Text: NytrilStyle.Function(attribute ClosedPath, "Automatically complete the path with a line segment");
+  Code: [attribute TwoLines, attribute OpenClose];
+};
+
+//======================================================================
+
+Triangle = TwoLines(true);
+
+TriangleFigure = Shape(Colors.Green) {
+  Triangle;
+  EllipsePath(new(new(3, 10), new(6)))
+};
+
+ShowTriangleFigure = GraphPaper.Show(new Size(30), new Size(5)) {
+  TriangleFigure
+};
+
+readonly LessonExample Content.TrianglePathEx = new(#ac17d815-db96-4b45-8555-d5da7a7236f6#) {
+  Text: Span {
+    "Adding a second closed path in the same shape will 'cut a hole' in the first shape. ";
+  };
+  Code: [attribute Triangle, attribute ShowTriangleFigure];
+};
+
+//======================================================================
+
+Smile = OpenPath(0, 2) {
+  LineTo(4, 0);
+  CurveTo(new(12, 20), new(28, 20), new(36, 0));
+  LineTo(40, 2);
+};
+
+SmileShape = Shape(null, new(2pt, Colors.Red, LineStyles.Solid, LineCaps.Round, LineJoins.Round)) {
+  Smile;
+};
+
+ShowSmileShape = GraphPaper.Show(new(50, 20), new(5))  {
+  SmileShape;
+};
+
+readonly LessonExample Content.CombinedFigureEx = new(#2cdbd9f3-d45f-47e5-b748-8dc858b26c51#) {
+  Form: NytrilStyle.Function(attribute CurveTo, "Add a Bezier curve to the shape");
+  Code: [attribute Smile, attribute ShowSmileShape];
+};
+
+//======================================================================
+
+HatColor = new RadialGradient(0.3, 0.2, 0.3, 0.2, 0.5, 0.5, [new(0, Colors.Red), new(100%, Colors.Brown)]);
+
+HatFigure = Shape(HatColor) {
+  ClosedPath(0, 20) {
+    LineTo(10, 20);
+    ArcTo(new(50, 20), new(10), 0, true, true);
+    LineTo(60, 20);
+    LineTo(60, 25);
+    LineTo(0, 25);
+  }
+};
+
+Face = Canvas(null, null, new Edge(0.33, 3, Colors.Brown)) {
+  HatFigure;
+  TriangleFigure {
+    Transform: Transform.Scale(0.5);
+    X: 10; Y: 30;
+  };
+  TriangleFigure {
+    Transform: Transform.Scale(0.5) Transform.Rotate(90 degrees);
+    TransformFit: true;
+    X: 40; Y: 30;
+  };
+  SmileShape {
+    X: 10; Y: 50;
+  };
+  Shape(Colors.Blue) {
+    EllipsePath(new(new(25, 40), new(10)));
+  };
+};
+
+ShowFace = GraphPaper.Show(new(100, 100), new(5))  {
+  Face;
+};
+
+readonly LessonExample Content.CanvasesEx = new(#dbefe4b2-e3bb-4150-af93-80174ad795f5#) {
+  Form: NytrilStyle.ObjectType(attribute Canvas, "Create a drawing with several shapes at arbitrary locations");
+  Code: [attribute ShowFace];
+};
+
+//======================================================================
+
+DrawDot(x, y) = EllipsePath(new(new(x, y), new(8%, 8%)));
+
+DrawWatch(height, color) = Canvas(height, height) {
+  Shape(color) {
+    ClosedPath(40%, 0) {
+      LineTo(60%, 0);
+      LineTo(60%, 6%);
+      LineTo(53%, 6%);
+      LineTo(53%, 12%);
+      ArcTo(new(47%, 12%), new(44%), 0, true, true);
+      LineTo(47%, 6%);
+      LineTo(40%, 6%);
+      LineTo(40%, 0%);
+    };
+    EllipsePath(new(new(11.5%, 17.5%), new(77%)));
+    DrawDot(46%, 23%); // top
+    DrawDot(16%, 53%); // left
+    DrawDot(46%, 83%); // bottom
+    DrawDot(76%, 53%); // right
+
+    ClosedPath(50%, 40%) {
+      LineTo(53%, 57%);
+      LineTo(73%, 77%);
+      LineTo(46%, 57%);
+    };
+  };
+  Shape(color) {
+    DrawDot(68%, 13%); // button
+  };
+};
+
+StopWatches = HBox {
+  VAlign: Center;
+  Separation: 20pt;
+  DrawWatch(1.25", #0000FF#);
+  DrawWatch(20mm, #9F0000#);
+  DrawWatch(24pt, #008000#);
+};
+
+readonly LessonExample Content.StopWatchEx = new(#a794d6c4-e95d-41fa-bffb-3cadb7c51197#) {
+  Text: "You can specify offsets and sizes using percentages of the exclosing size canvas.";
+  Code: [attribute DrawDot, attribute StopWatches];
+};
+
+//======================================================================
+
+Tooth(x, height) = [
+  LineTo(x, height),
+  LineTo(x, height*0.5),
+];
+
+Saw(width, height) = Shape(Colors.Silver) {
+  OpenPath(0) {
+    Tooth(each 0..width step height, height);
+    LineTo(width, 0)
+  }
+};
+
+Sawtooth = Saw(6", 0.25");
+
+readonly LessonExample Content.RepeatedPatternsEx = new(#20b51a63-1ff6-4392-b75e-6feb33c85aaa#, "Programmable shapes") {
+  Text: "Create a drawing with a repeated tiling pattern.";
+  Code: [attribute Tooth, attribute Sawtooth];
+};
+
+//======================================================================
+
+NGon(radius, n) = VBox(radius*2+6) {
+  HAlign: Center;
+
+  Span {
+    TextColor: Colors.Red;
+    n;
+  };
+
+  var bounds = new Rect(0, radius*2);
+  Shape(Colors.Yellow, 3) {
+    PolygonPath(bounds, n, -90 degrees);
+  };
+};
+
+NGons = HBox {
+  VAlign: Top;
+  Separation: 10;
+  NGon(30, each 3..10);
+};
+
+readonly LessonExample Content.PolygonsEx = new(#c0339f84-f0f6-4c5c-a7c7-5894ec76a584#) {
+  Text: "Create a drawing with computed points.";
+  Code: [attribute NGons];
+};
+
+//======================================================================
+
+//Each array holds four points: the two ends of the arc, and the two control points
+Point[][] BezierExamples = [
+  [new(10,  10),  new(20,  20),  new(40,  20),  new(50,  10)],
+  [new(70,  10),  new(70,  20),  new(120, 20),  new(120, 10)],
+  [new(140, 10),  new(130, 20),  new(190, 20),  new(180, 10)],
+  [new(10,  60),  new(20,  80),  new(40,  80),  new(50,  60)],
+  [new(70,  60),  new(70,  80),  new(110, 80),  new(110, 60)],
+  [new(140, 60),  new(130, 80),  new(190, 80),  new(180, 60)],
+  [new(10,  110), new(20,  140), new(40,  140), new(50,  110)],
+  [new(70,  110), new(70,  140), new(110, 140), new(110, 110)],
+  [new(140, 110), new(130, 140), new(190, 140), new(180, 110)],
+];
+
+Dot(Point p) = Shape(Colors.Blue) {
+  EllipsePath(new(p-1, new(2)));
+};
+
+ShowBall(Point[] p) = Canvas {
+  var lc = new Stroke(1, 80%);
+  Shape(null, lc) {
+    OpenPath(p[0]) {
+      p[1]; //Control Point
+    };
+  };
+  Shape(null, lc) {
+    OpenPath(p[2]) {
+      p[3]; //Right End point
+    };
+  };
+  Shape(null, new(1, Colors.Red)) {
+    OpenPath(p[0]) {
+      CurveTo(p[1], p[2], p[3]);
+    }
+  };
+  Dot(each p);
+};
+
+ShowBezier = GraphPaper.Show(new(200, 150), new(10)) {
+  Transform: Transform.Scale(1.5);
+  TransformFit: true;
+  ShowBall(each BezierExamples);
+};
+
+readonly LessonExample Content.ShowBezierFiguresEx = new(#d1d7a367-94e0-4dcb-9ac4-ee4cee63b2dd#) {
+  Text: Paragraph {
+    "Bezier curves use two end points and two control points. ";
+    "The following examples show how the control points bend the curve.";
+    LineBreak;
+    ShowBezier;
+  };
+};
+
+//======================================================================
+
+QuadExamples = [
+  [10,  10,  50,  20,  50,  10],
+  [70,  10,  90,  30,  120, 10],
+  [140, 10,  130, 20,  180, 10],
+  [10,  60,  20,  50,  50,  60],
+  [70,  60,  80,  40,  110, 60],
+  [140, 60,  180, 40,  180, 60],
+];
+
+ShowQAll(Point[] p) = Canvas {
+  Shape(null, new(1, 80%)) {
+    OpenPath(p[0]) {
+      p[1]; //Control Point
+    };
+    OpenPath(p[1]) {
+      p[2]; //Right End Point
+    };
+  };
+  Shape(null, new(1, Colors.Red)) {
+    OpenPath(p[0]) {
+      QuadTo(p[1], p[2]);
+    };
+  };
+  Dot(each p);
+};
+
+ShowQExample(e) = ShowQAll([new(e[0], e[1]), new(e[2], e[3]), new(e[4], e[5])]);
+
+ShowQuads = GraphPaper.Show(new(200, 70), new(10)) {
+  Transform: Transform.Scale(2);
+  TransformFit: true;
+  ShowQExample(each QuadExamples);
+};
+
+readonly LessonExample Content.ShowQuadraticFiguresEx = new(#d6f69534-6e22-4dc7-a169-1c769abb2dce#) {
+  Other: Block {
+    Paragraph {
+      "Quadratic curves have a single control point. ";
+      LineBreak;
+      ShowQuads;
+    }
+  };
+};
+
+//======================================================================
+
+ShowArc(angle, bool large, bool clockwise) {
+  Point[] p = [new(10, 50), new(40, 50), new(70, 60), new(100, 60)];
+  var a      = angle degrees;
+  var radius = new Size(15, 30);
+
+  return VBox {
+    HAlign: Center;
+    Frame {
+      Paragraph {
+        TextHeight: 8pt;
+        SpaceBefore: 8pt;
+        angle;
+        " degrees";
+      };
+    };
+    GraphPaper.Show(new(100, 100), new(10)) {
+      Shape(null, new(1, Colors.Red)) {
+        OpenPath(p[0]) {
+          p[1];
+          ArcTo(p[2], radius, a, large, clockwise);
+          p[3];
+        };
+      };
+      Dot(each p);
+    };
+  };
+}
+
+ValueBox(name, value) = VBox(0.75") {
+  HAlign: Center;
+  Bold name;
+  value;
+};
+
+ShowArcAngles(large, bool clockwise) = HBox {
+  VAlign: Center;
+  ValueBox("clockwise", clockwise);
+  HBox {
+    Separation: 20pt;
+    ShowArc(each [-30, 0, 30], large, clockwise);
+  }
+};
+
+ShowArcs(large) = HBox {
+  VAlign: Center;
+  ValueBox("large", large);
+  VBox(null, null, BorderL(1)) {
+    ShowArcAngles(large, false);
+    ShowArcAngles(large, true);
+  };
+};
+
+readonly LessonExample Content.ShowArcFiguresEx = new(#9eddd719-efe0-4beb-825c-ec1a5b03f915#) {
+  Other: Block {
+    Paragraph {
+      "Elliptic arcs flow between two end points, around an invisible ellipse rotated at the specified angle. ";
+      "The following examples show how the angle effects the curve. ";
+    };
+    ShowArcs(false);
+    ShowArcs(true);
+  };
+};
+
+//======================================================================
+
+ShowSweep(large, clockwise) {
+  Point[] p = [new(40, 40), new(70, 70)];
+  var radius = new Size(30, 30);
+
+  return GraphPaper.Show(new(120, 120), new(10)) {
+    Shape(null, new Stroke(0.5, 60%)) {
+      EllipsePath(new(new Point(70, 40) - radius, radius*2));
+      EllipsePath(new(new Point(40, 70) - radius, radius*2));
+    };
+    Shape(null, new(1, Colors.Red)) {
+      OpenPath(p[0]) {
+        ArcTo(p[1], radius, 0, large, clockwise);
+      };
+    };
+    Dot(each p);
+  };
+}
+
+ShowSweepBlock(large, clockwise) = VBox {
+  HAlign: Center;
+  ValueBox("clockwise", clockwise);
+  ShowSweep(large, clockwise)
+};
+
+ShowSweeps(large) = HBox {
+  VAlign: Center;
+  Separation: 30pt;
+  ValueBox("large", large);
+  ShowSweepBlock(large, false);
+  ShowSweepBlock(large, true);
+};
+
+readonly LessonExample Content.ShowSweepDifferencesEx = new(#8e7ad77c-6274-47c8-a794-dec8d2dc2da7#) {
+  Other: Block {
+    Paragraph {
+      "If you want to create a circular arc (such as for a pie wedge), set the radius(width, height) to the same number. There are four different paths that are determined by the two boolean parameters large and clockwise. ";
+      "Imagine two circles drawn along the major axis. If large is set to true, then the larger of the two possible arcs will be selected. ";
+    };
+    ShowSweeps(false);
+    ShowSweeps(true);
+  };
+};
+
+//======================================================================
+
+Star(FillRules rule) = Shape(Colors.LightGreen, 1, rule) {
+  ClosedPath(50, 0) {
+    LineTo(21, 90);
+    LineTo(98, 35);
+    LineTo(2, 35);
+    LineTo(79, 90);
+  }
+};
+
+ClockWiseBox(FillRules rule) = Shape(Colors.LightGreen, 1, rule) {
+  ClosedPath(0) {
+    LineTo(100, 0);
+    LineTo(100, 100);
+    LineTo(0, 100);
+  };
+};
+
+Box1(FillRules rule) = ClockWiseBox(rule) {
+  // Clockwise inner path
+  ClosedPath(20) {
+    LineTo(80, 20);
+    LineTo(80, 80);
+    LineTo(20, 80);
+  }
+};
+
+Box2(FillRules rule) = ClockWiseBox(rule) {
+  // Counter-clockwise path
+  ClosedPath(20) {
+    LineTo(20, 80);
+    LineTo(80, 80);
+    LineTo(80, 20);
+  }
+};
+
+ShowBox(box, text) = Canvas {
+  HAlign: Center;
+  box;
+  Frame {
+    X: 20;
+    text;
+  }
+};
+
+ShowFigures(FillRules rule) = Paragraph {
+  SpaceBefore: 10pt;
+  ClockWiseBox(rule);
+  Tab;
+  Star(rule);
+  Tab;
+  ShowBox(Box1(rule), Tex.rightarrow);
+  Tab;
+  ShowBox(Box2(rule), Tex.leftarrow)
+};
+
+readonly LessonExample Content.ExplainFillRulesEx = new(#8ddc4d61-31f6-42a2-9281-247dc7c5744b#) {
+  Text: Block {
+    Paragraph {
+      "Use the 'fillrule' parameter to change the way of determining which points are inside the shape. ";
+      "The following values determine the 'insideness' of a point in the shape. This determines which areas will be filled."
+    };
+    Paragraph {
+      SpaceBefore: 10pt;
+      Span {FillRules.EvenOdd; Bold};
+      ": Default"
+    };
+    Paragraph {
+      "Imagine drawing a ray from a point in the shape to infinity in any direction, and then examining the places where a segment of the shape crosses the ray. ";
+      "If this number is even, the point is outside."
+    };
+    ShowFigures(FillRules.EvenOdd);
+    Paragraph {
+      SpaceBefore: 10pt;
+      Span {FillRules.NonZero; Bold};
+    };
+    Paragraph {
+      "Imagine drawing a ray from any point in the shape to infinity in any direction and counting the number of path segments from the given shape that the ray crosses. Starting with a count of zero, add one each time a path segment crosses the ray from left to right and subtract one each time a path segment crosses the ray from right to left. ";
+      "After counting the crossings, if the result is zero then the point is outside."
+    };
+    ShowFigures(FillRules.NonZero);
+  };
+};
+
+//======================================================================
+
+BigMouth = GraphPaper.Show(new(110, 40), new(5)) {
+  Shape(Colors.Red) {
+    EllipsePath(new(new(5), new(100, 30)));
+    EllipsePath(new(new(15, 13), new(80, 10)));
+  };
+};
+
+readonly LessonExample Content.EllipsesEx = new(#7a888b06-b4b8-4e01-9f11-24f142d074d5#, "Complex figures") {
+  Text: "Use two concentric ellipses to create a hollow shape.";
+  Code: [attribute BigMouth];
+};
+
+//======================================================================
+
+

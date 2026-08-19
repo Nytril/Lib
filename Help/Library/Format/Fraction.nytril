@@ -1,0 +1,28 @@
+include "Help";
+
+using Format;
+
+Example = Fraction {
+  1;
+  Symbolic.Sqrt(2);
+};
+
+Example2 = HBox {
+  "Angle";
+  Tex.Equals;
+  Fraction(false, true) {
+    Symbolic.PI;
+    4;
+  }
+};
+
+Example3 = HBox {
+  Tex.nu;
+  Tex.Equals;
+  Fraction(true) {
+    "c";
+    Tex.lambda;
+  };
+};
+
+Main.Help = new HelpExample(attribute Format.Fraction, 3);

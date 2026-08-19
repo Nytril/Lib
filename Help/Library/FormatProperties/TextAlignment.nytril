@@ -1,0 +1,25 @@
+include "Help";
+
+using Format;
+
+
+Example = Paragraph {
+  TextHeight: 20pt;
+
+  "Baseline";
+  Span {
+    "subscript";
+    TextAlignment: TextAlignments.Subscript;
+  };
+  Span {
+    "superscript";
+    TextAlignment: TextAlignments.Superscript;
+  };
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextAlignment));
+
+//============================================================
+

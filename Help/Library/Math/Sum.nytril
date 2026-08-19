@@ -1,0 +1,31 @@
+include "Help";
+
+using Format;
+
+Description = EquationPar {
+  var x = Symbol("x");
+  var i = Symbol("i");
+  var N = Symbol("n");
+
+  "S";
+  Tex.Equals;
+  Nary {
+    Operator: Tex.sum;
+    Lower: i;
+    Upper: N;
+    x sub i;
+  };
+};
+
+ShowSum(values) = ShowValues("sum", values) {
+  Math.Sum(values);
+};
+
+Example = Block {
+  ShowSum([5, 7, 25]);
+  ShowSum(1..10 step 2);
+};
+
+Main.Help = new HelpExample(attribute(Math.Sum));
+
+

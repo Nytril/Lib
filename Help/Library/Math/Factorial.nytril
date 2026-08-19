@@ -1,0 +1,29 @@
+include "Help";
+
+using Format;
+
+ShowFactorial(x) = "The factorial of {0} is {1}."(x, Math.Factorial(x));
+
+Description = DescriptionBlock {
+  EquationPar {
+    Symbol("x");
+    Tex.factorial;
+    Tex.Equals;
+    Nary {
+      Operator: Tex.prod;
+      Upper: Symbol("x");
+      Lower: Symbol("n") Tex.Equals 2;
+      Symbol("n");
+    };
+  };
+};
+
+Example = Block {
+  ShowFactorial(3);
+  ShowFactorial(5);
+  ShowFactorial(7);
+};
+
+Main.Help = new HelpExample(attribute(Math.Factorial));
+
+

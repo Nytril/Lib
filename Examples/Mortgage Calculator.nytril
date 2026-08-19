@@ -1,0 +1,306 @@
+using Format;
+
+include "Site";
+
+readonly namespace Main.Documents {
+  HomePage      Home         = new;
+  ChartDocument PaymentChart = new;
+  TableDocument PaymentTable = new;
+}
+
+readonly NytrilIconSite Main.Site = new("Nytril.Examples.Mortgage", Icons.home);
+
+//===============================================================
+
+class HomePage: SitePage {
+  Constructor {
+    super.Constructor(Main.Site, #ac4daea1-bb04-4b9d-9e48-62fe65f01f1f#, "Mortgage Calculator", "Home finanace");
+
+    Tiles = [
+      new DocTile(Main.Documents.PaymentChart, Icons.multiline_chart),
+      new DocTile(Main.Documents.PaymentTable, Icons.table_view),
+    ];
+  }
+
+  override GetHeader = Block {
+    Paragraph {
+      TextHeight: 40pt;
+      NytrilStyle.SiteIcon(Icons.home);
+      Space;
+      Name;
+    };
+    Paragraph {
+      SpaceAfter: 30;
+      TextHeight: 20pt;
+      Description;
+    };
+  };
+}
+
+//=======================================================
+
+class PaymentData {
+  var DateTime Date;
+  var double   Principle,
+               Interest,
+               Balance;
+
+  Constructor(DateTime date, principle, interest, balance) {
+    Date      = date;
+    Principle = principle;
+    Interest  = interest;
+    Balance   = balance;
+  }
+}
+
+//=======================================================
+
+const Currency = "$";
+
+class MortgageOptions: Fact {
+  field double Principle,
+               Rate;
+  field int    Term;
+
+  Constructor {
+    super.Constructor(#3f47e020-4b5e-42dd-820c-fa6e9c3e46d1#);
+    Term      = 30;
+    Principle = 340_000;
+    Rate      = 5;
+    ReadFromStorage;
+  }
+}
+
+readonly MortgageOptions Options = new;
+readonly MortgageResults Results = new;
+
+//=======================================================
+
+class MortgageResults {
+  static readonly Edge Edge   = new(1, 3);
+  static readonly      Corner = {BorderRadius: 5; Action: Actions.Refresh};
+
+  var List<PaymentData> Payments;
+  var double            TotalInterest,
+                        Payment;
+
+  Constructor {
+    var now    = DateTime.Now;
+    var date   = new DateTime(now.Year, now.Month);
+    var last   = date + Options.Term Units.years;
+    var months = Options.Term * 12;
+
+    Payments      = new(months);
+    TotalInterest = 0;
+
+    double principle = 0.0;
+    double balance   = Options.Principle;
+    double interest  = 0.0;
+    double mrate     = Options.Rate / 1200.0;
+
+    var pr = Math.Pow(1.0+mrate, months);
+    Payment = balance / ((pr-1.0) / (mrate * pr));
+
+    while (date < last) {
+      Payments.Add(new(date, principle, interest, balance));
+      var i    = balance * mrate;
+      var paid = Payment - i;
+
+      date      += 1 Units.month;
+      interest  += i;
+      balance   -= paid;
+      principle += paid;
+
+      TotalInterest += i;
+    }
+  }
+
+  Edit(name) = Paragraph(null, [1"]) {
+    SpaceBefore: 10pt;
+    name;
+    Tab;
+  };
+
+  Amount(name) = VBox {
+    name;
+  };
+
+  ShowControls = Block {
+    if (!System.IsPublishing()) {
+      Edit("Years") {
+        IntControl(new(ref Options.Term), 1", null, Edge, 1, 50, 1) Corner;
+      };
+
+      Edit("Principle") {
+        DoubleControl(new(ref Options.Principle), 1.5", null, Edge, 10_000, 100_000_000, 100_000) {
+          TextGroup: true;
+          TextDigits: 0;
+          Corner;
+          Events: new DollarEvent;
+        };
+      };
+
+      Edit("Rate") {
+        DoubleControl(new(ref Options.Rate), 1", null, Edge, 0.01, 20, 0.1) {
+          TextDigits: 2;
+          Corner;
+          Events: new PercentEvent;
+        }
+      };
+    }
+    Paragraph;
+
+    HBox(100%) {
+      Justify: Justifiers.SpaceBetween;
+
+      var format = Span {Currency; Bold; TextGroup: true; TextDigits: 0};
+
+      Amount("Loan Amount"){ format {Options.Principle}};
+      Amount("Monthly Payment") { format {Results.Payment}};
+      Amount("Interest Paid") { format {Results.TotalInterest}};
+      Amount("Total Cost") { format {Results.TotalInterest + Options.Principle}};
+    };
+
+    Paragraph;
+  };
+
+  MortgageChart(width, height) = VBox(width, height) {
+    HAlign: Center;
+    "Payment Schedule";
+    Chart(100%, height) {
+      TextHeight: 12pt;
+      ChartType: ChartTypes.Line;
+      Legend: ChartLegend {
+        Placement: Placements.Right;
+        Direction: Directions.Vertical;
+      };
+
+      XLabel: "Calendar Year" {TextHeight: 14pt};
+
+      XAxis: ChartAxis {
+        LabelEach: 12;
+        foreach (var p in Payments)
+          Span {TextFormat: "yy"; p.Date};
+      };
+
+      ValueAxis: ChartAxis {
+        TextGroup: true;
+      };
+
+      ChartSeries {
+        Label: "Principle Paid";
+        (each Payments).Principle;
+      };
+      ChartSeries {
+        Label: "Interest Paid";
+        (each Payments).Interest;
+      };
+      ChartSeries {
+        Label: "Balance";
+        (each Payments).Balance;
+      };
+    };
+  };
+
+  MortgageTable = Table(0.5pt, PadLR(3pt), [1.25"]) {
+    TextHeight: 9pt;
+    TextDigits: 2;
+    TextGroup: true;
+
+    Row {
+      HAlign: Right;
+      Background: Colors.Blue;
+      TextColor: Colors.White;
+
+      "Date";
+      "Principle Paid";
+      "Interest Paid";
+      "Balance";
+    };
+
+    foreach (var p in Payments) {
+      Row {
+        HAlign: Right;
+        Background: each0 mod 2 == 0 ? 95% : null;
+        p.Date;
+        p.Principle;
+        p.Interest;
+        p.Balance;
+      }
+    }
+  };
+}
+
+//=======================================================
+
+class DollarEvent: ControlEvent {
+  Constructor {
+    super.Constructor;
+  }
+
+  override string GetDisplayString(data) = Span {
+    Currency;
+    data;
+  };
+}
+
+//=======================================================
+
+class PercentEvent: ControlEvent {
+  Constructor {
+    super.Constructor;
+  }
+
+  override string GetDisplayString(data) = Span {
+    data;
+    "%";
+  };
+}
+
+//=======================================================
+
+class ChartDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#58e1d2e9-39a0-4135-aed5-bc6325e4f2d6#, "Payment Chart");
+    Description = "Chart of payment schedule";
+  }
+
+  override GetDocument = Document(48pt) {
+    TextHeight: 16pt;
+
+    Paragraph {
+      TextHeight: 24pt;
+      ParAlignment: Center;
+      SpaceAfter: 10pt;
+      Name;
+    };
+
+    Results.ShowControls;
+    Results.MortgageChart(100%, 4.5");
+ };
+}
+
+//=======================================================
+
+class TableDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#b8d24987-001d-4101-b1cb-e83c13cdf299#, "Table of Payments");
+    Description = "Detailed monthly payment schedule";
+  }
+
+  override GetDocument = Document(48pt) {
+    TextHeight: 16pt;
+
+    Paragraph {
+      TextHeight: 24pt;
+      ParAlignment: Center;
+      SpaceAfter: 10pt;
+      Name;
+    };
+
+    Results.ShowControls;
+    Results.MortgageTable;
+ };
+}
+
+//=======================================================

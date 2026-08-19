@@ -1,0 +1,82 @@
+include "Help";
+
+using Format;
+
+Range = 0..1000;
+
+Description = DescriptionBlock {
+  "A plot of log" sub 10;
+
+  Chart(100%, 2") {
+    ChartType: ChartTypes.Line;
+    XAxis: ChartAxis {
+      Range step 100;
+    };
+
+    ValueAxis: ChartAxis;
+
+    ChartSeries {
+      foreach (var x in Range step 10)
+        new DataPoint(x, Math.Log(x, 10));
+    };
+  };
+
+  Paragraph {
+    SpaceBefore: 8pt;
+    "Input ranges and output values";
+  };
+
+  Table(0.5pt, null, [1", 1.5", 1"]) {
+    Row {
+      TextHeight: 110%;
+      Background: NytrilPalette.TableTitleBack;
+      TextColor: NytrilPalette.TableTitleFore;
+      Bold;
+      "x"; "base"; "returns";
+    };
+
+    var range = 0>..<1;
+
+    var rows = [
+      {"> 0"; Span {range; Bold " or "; "> 1"}; Span {"log" sub "base"; "(x)"}},
+      {"< 0"; "any"; Math.NaN},
+      {"any"; "< 0"; Math.NaN},
+      {"!= 1"; 0; Math.NaN},
+      {"!= 1"; Math.PositiveInfinity; Math.NaN},
+      {Math.NaN; "any"; Math.NaN},
+      {"any"; Math.NaN; Math.NaN},
+      {"any"; "1"; Math.NaN},
+      {0; 0>..<1; Math.PositiveInfinity},
+      {0; "> 1"; Math.NegativeInfinity},
+      {Math.PositiveInfinity; 0>..<1; Math.NegativeInfinity},
+      {Math.PositiveInfinity; "> 1"; Math.PositiveInfinity},
+      {1; 0; 0},
+      {1; Math.PositiveInfinity; 0},
+    ];
+
+    foreach (var r in rows)
+      NytrilStyle.ListRow(each0) r;
+  }
+};
+
+ShowLn(x) = Span {
+  TextDigits: 8;
+  "ln({0}) = {1}."(x, Math.Log(x));
+};
+
+ShowLog(x) = Span {
+  "log" sub 10 "({0}) = {1}."(x, Math.Log(x, 10));
+};
+
+Example = Block {
+  ShowLn(0);
+  ShowLn(Math.E);
+  ShowLn(Math.E^2);
+
+  ShowLog(10);
+  ShowLog(10_000_000);
+};
+
+Main.Help = new HelpExample(attribute(Math.Log));
+
+

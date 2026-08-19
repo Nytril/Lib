@@ -1,0 +1,36 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  TextHeight: 20pt;
+
+  var x = 234;
+
+  x;
+  Paragraph {
+    "Base 2 = ";
+    TextRadix: 2;
+    x;
+  };
+  Paragraph {
+    "Base 8 = ";
+    Span {TextNumPadding: 8; TextRadix: 8; x};
+  };
+  Paragraph {
+    "Base 10 = ";
+    Span {TextRadix: 10; x};
+  };
+  Paragraph {
+    "Base 16 = ";
+    TextRadix: 16;
+    x;
+  };
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextRadix));
+
+//============================================================
+

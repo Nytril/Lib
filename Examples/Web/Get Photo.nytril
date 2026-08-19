@@ -1,0 +1,20 @@
+using Format, Net;
+
+readonly Main.Documents = new DocumentTestClass;
+
+class DocumentTestClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#b9f12b0a-4ab7-4a4b-876d-e587566fd4f8#, "Get Photo");
+  }
+
+  override GetDocument = Document(0.5") {
+    var request = new HttpGet("https://mtv-drupal-assets.s3.amazonaws.com/files/styles/text_block_250x230/s3/pages/gilbert-stuart-george-6.jpg.webp");
+    request.QueryParameter("VersionId", "ZgDyTDVml09o0OaBL0BBVt_oHfS3nJKs&itok=9pfwbnF9");
+    var response = request.Send;
+    if (response.IsSuccessStatusCode)
+      FitBox(new Image(response.ContentBlob), 100%);
+  };
+}
+
+
+

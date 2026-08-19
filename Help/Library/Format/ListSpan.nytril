@@ -1,0 +1,26 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "ListSpans are collections of items which flow in the current span, that are numbered or bulleted. ";
+    "If present, the enumerator specifies a string OR a delegate taking a 1-based index as a parameter. ";
+  };
+};
+
+readonly Items = ["First in the list; ", "Second in the list; ", "Third in the list."];
+
+Example = ListSpan {
+  Items;
+};
+
+Example2 = ListSpan(Tex.rightarrow) {
+  Items;
+};
+
+Example3 = ListSpan(@Enumerators.RomanParens) {
+  Items;
+};
+
+Main.Help = new HelpExample(attribute(Format.ListSpan), 5);

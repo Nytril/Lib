@@ -1,0 +1,197 @@
+using Format;
+
+namespace Chapters.Formatting.Sections.Hyperlinks;
+
+readonly TutorialLesson Lesson = new(#33766643-430b-4d2d-83d9-31572a89f15f#, "Hyperlinks and Tips", "Hyperlinks", "link", "https://youtu.be/6rrTNDsIkNg") {
+  Description: Span {
+    "Use hyperlinks to create content that is connected to other Nytril documents or content on the Web. ";
+    "Connect user input to different types of custom actions to create dynamiclly generated content. ";
+  };
+};
+//======================================================================
+
+readonly URL WebAddress = new("www.nytril.com");
+
+LinkText = Span {
+  WebAddress;
+};
+
+readonly LessonExample Content.DomainEx = new(#21fc58fa-8ecf-4b3a-87f3-a6d7368efc8c#, "Web links") {
+  Text: "You can create a hyperlink to a web address simply by placing the {0} inside a Span. "(NytrilStyle.Class(attribute URL));
+  Code: [attribute WebAddress, attribute LinkText];
+  Sel: new(0, 9, 14);
+  Tip: [LessonTip(7, 0.75, "Underlined on mouse-over", 3 degrees, 5)];
+};
+
+//======================================================================
+
+Message = Span {
+  Action: WebAddress;
+  TextColor: Colors.Blue;
+  "Visit us on the web";
+};
+
+readonly LessonExample Content.SimpleLinkEx = new(#2bfba3ae-94bd-4ce8-88a9-46d4a59fd309#, "Change the text") {
+  Text: "If you want different text for the link, put the text in a Span and use the {0} property to specify the link."(NytrilStyle.PropName(attribute FormatProperties.Action));
+  Code: [attribute Message];
+  Sel: new(1, 2, 19);
+  Tip: [LessonTip(8, 0.75, "Hidden URL", 3 degrees, 5)];
+};
+
+//======================================================================
+
+TheAnswer = Span {
+  TextColor: Colors.DarkGreen;
+  "The answer is ";
+  Bold 42;
+};
+
+PopupMessage = Span {
+  "The answer";
+  Tip: new Tip(TheAnswer);
+};
+
+readonly LessonExample Content.PopupLinkEx = new(#db093c99-a7bd-4aa5-8f13-3156b316f67a#, "Popup tips") {
+  Text: "Use the {0} property to specify a formatted popup when the mouse hovers over the text in the Span. "(NytrilStyle.PropName(attribute FormatProperties.Tip));
+  Code: [attribute TheAnswer, attribute PopupMessage];
+  Sel: new(8, 2, 24);
+  Tip: [LessonTip(5, 0.75, TheAnswer, 3 degrees, 5)];
+};
+
+//======================================================================
+
+ActionTip = Span {
+  "Here's a tip: ";
+  Span {
+    "Visit us on the web";
+    Underline;
+    TipAction: WebAddress;
+  }
+};
+
+readonly LessonExample Content.SimpleTipLinkEx = new(#981b3f57-ede1-4d8f-b07d-fca2030477c9#, "Tip + Action") {
+  Text: "Use the {0} property to specify a both a tip and an action at the same time."(NytrilStyle.PropName(attribute FormatProperties.TipAction));
+  Code: [attribute ActionTip];
+  Sel: new(5, 4, 22);
+  Tip: [LessonTip(14, 0.75, WebAddress, 4 degrees, 3)];
+};
+
+//======================================================================
+
+HelpAnchor = "HelpCenter";
+
+AnchoredPar = Paragraph {
+  "Paragraph with the \"{0}\" anchor. "(HelpAnchor);
+  DocFields.Anchor(HelpAnchor);
+};
+
+readonly LessonExample Content.LocationsEx = new(#fbe48125-1144-449b-9244-b4c623ff59c1#, "Document Anchors") {
+  Text: Span {
+    "To create links within a single document, you must first give the target Paragraphs a reference name using the {0} function. "(NytrilStyle.Formatter(attribute DocFields.Anchor));
+    "The anchor name of each Paragraph must be unique in the document. ";
+  };
+  Code: [attribute HelpAnchor, attribute AnchoredPar];
+  Sel: new(4, 2, 28);
+};
+
+//======================================================================
+
+HelpLink = Span {
+  Action: new Action(Actions.ToAnchor, HelpAnchor);
+  "Find out more in the help section. ";
+};
+
+readonly LessonExample Content.AnchorLinkEx = new(#82410894-ecd5-4e8e-918a-7620f2606ce3#, "Anchor Links") {
+  Text: "Once the anchor name is assigned to a paragraph, you can create an action that links to that paragaph, no matter where it is placed in the document. ";
+  Code: [attribute HelpLink];
+  Sel: new(1, 23, 14);
+};
+
+//======================================================================
+
+QRSize = Math.Max(ExtentHeight, ExtentWidth) * 0.18;
+
+QRCode = VBox {
+  HAlign: Center;
+  "Follow us online";
+  QRBox(WebAddress, QRSize);
+};
+
+readonly LessonExample Content.QRCodeEx = new(#1d6f9b48-c1a8-49fb-90c1-fb884845991e#, "QR Codes") {
+  Text: Span {
+    "To label products or printed documents, QR codes can be added with the {0} formatter. "(NytrilStyle.Formatter(attribute QRBox));
+    "Notice that there is always a white border around the QR code which is required by the QR readers. ";
+  };
+  Code: [attribute QRCode];
+  Sel: new(3, 2, 5);
+  Tip: [LessonTip(9, 1.5, "\"Quiet zone\"", 4 degrees, 5)];
+};
+
+//======================================================================
+
+QRLink = VBox {
+  HAlign: Center;
+  "Community Edition";
+  QRBox(WebAddress, QRSize, 3) {
+    TipAction: WebAddress;
+  };
+};
+
+readonly LessonExample Content.QRLinkEx = new(#cad1febb-261a-45a2-9803-422a54162f5f#, "QR Codes with Links") {
+  Text: Span {
+    "Change the level of error correction in the QR code by setting the error parameter to a number from 0 to 3. ";
+  };
+  Code: [attribute QRLink];
+  Sel: new(3, 28, 1);
+  Tip: [LessonTip(12, 3.5, "More complex pattern\nincludes more error correction", 4 degrees, 2)];
+  Options: NoShort;
+};
+
+//======================================================================
+
+FileLink = Span {
+  "Open in File System";
+  Tip: "Browse the File";
+  Action: new Action(Actions.ToFile, res "Hyperlinks.nytril");
+};
+
+readonly LessonExample Content.FileLinkEx = new(#2ff1ba3d-78e8-4d7a-aaa1-996ea97932b4#, "Links to Files") {
+  Text: Span {
+    "Create an action to browse to a local file with the {0} action type. "(NytrilStyle.Formatter(attribute Actions.ToFile));
+    "This will bring up File Explorer on Windows (or Finder on the Mac) and point it to the specified path. ";
+  };
+  Code: [attribute FileLink];
+  Sel: new(3, 24, 11);
+  Tip: [LessonTip(9, 0.75, "Browse the File", 4 degrees, 5)];
+};
+
+//======================================================================
+
+class CustomAction: Action {
+  var Text;
+  Constructor(text) {
+    super.Constructor(Actions.Execute);
+    Text = text;
+  }
+
+  override EventResponse Execute {
+    System.TextToClipboard(Text);
+    return EventResponses.MessageTip("Text copied to the clipboard");
+  }
+}
+
+CustomLink = Span {
+  Icons.copy; Space; "Copy Text";
+  TipAction: new CustomAction("Custom Text");
+};
+
+readonly LessonExample Content.CustomLinkEx = new(#e68b399a-4396-49c6-ab78-5608d4ce5084#, "Custom Actions") {
+  Text: "Create a complex custom action by inheriting the {0} class and overriding the Execute function. "(NytrilStyle.Class(attribute Action));
+  Code: [attribute CustomAction, attribute CustomLink];
+  Sel: new(7, 2, 30);
+  Tip: [LessonTip(6, 0.75, "Text copied to the clipboard", 4 degrees, 5)];
+  Options: NoShort;
+};
+
+//======================================================================
+

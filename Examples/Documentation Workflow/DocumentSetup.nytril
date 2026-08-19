@@ -1,0 +1,7 @@
+using Format, HelpConcepts;
+
+class DocumentSetupConcept: AuthoredContent {
+  Constructor {
+    super.Constructor("Basic Document Set Up");
+  }
+}

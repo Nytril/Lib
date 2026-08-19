@@ -1,0 +1,321 @@
+
+using Format, HelpConcepts;
+
+class PublishingConcept: AuthoredContent {
+  Constructor {
+    super.Constructor("Publishing & Exporting Nytril Documents");
+
+    Watermark = "DRAFT";
+
+    AddAuthor(People.ColbertAuthor);
+    AddAuthor(People.McCreightAuthor);
+
+    AddContent(PublishingPurpose);
+    AddContent(PublishingAbout);
+    AddContent(ExportAbout);
+    AddContent(PublishingLocal);
+    AddContent(PublishingRemote);
+    AddContent(PublishStaging);
+    AddContent(PublishResources);
+  }
+}
+
+// ============================================================================
+
+readonly  PublishingPurposeSection  PublishingPurpose = new;
+class  PublishingPurposeSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Purpose";
+    };
+
+    design.SpacedParagraph {
+      "This document describes the process of publishing or exporting documents for use outside of the Nytril IDE.";
+    };
+
+    design.AddFigure(FullPublishFig, Here, ExtentWidth, null, false);
+    design.FigureCaption(FullPublishFig);
+  };
+}
+
+// ============================================================================
+
+readonly  PublishingAboutSection  PublishingAbout = new;
+class  PublishingAboutSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Publish Feature";
+    };
+
+    design.SpacedParagraph {
+      "Publishing builds and exports all documents in a project to a selected file type, the Nytril hosting site, or both. ";
+      "Nytril publishes to PDF, Word, or an HTML page that displays all documents (HtmlDoc). ";
+      "Nytril also publishes to the Nytril.com hosting site, placing documents in your private or public realm. ";
+      "he publish process builds and produces one document per configuration, which can generate multiple language versions, such as English and French. ";
+    };
+  };
+}
+
+readonly  PublishingExportAboutSection  ExportAbout = new;
+class  PublishingExportAboutSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Export Feature";
+    };
+
+    design.SpacedParagraph {
+      "The Export feature serves a different purpose than publishing. ";
+      "Export outputs the document in its currently displayed state and formats it into one of several file types. ";
+      "Unlike publishing, which operates on all documents and configurations in a project, export applies only to the active document and supports a broader range of output types. ";
+    };
+
+    design.SpacedParagraph {
+      "Export supports additional file types beyond publish, including LaTeX, image files, and text files. ";
+      "Users access the feature through the right-click context menu on an open document.";
+    };
+
+    design.SpacedParagraph {
+      "When a document contains volatile data that changes with each build, export captures the content exactly as displayed. ";
+      "The export process does not execute document code; it creates a type-formatted snapshot of the current view. ";
+      "In contrast, publishing rebuilds each document and resolves dynamic content at build time. ";
+      "This distinction defines the primary difference between export and publish operations. ";
+    };
+  };
+}
+
+readonly  PublishingLocalSection  PublishingLocal = new;
+class  PublishingLocalSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Publish Locally";
+    };
+
+    design.NormalParagraph {
+      "Nytril uses local publishing as its default setup. ";
+      "The process builds all documents in the project based on configuration settings, formats them into the selected type, and writes each document to the selected folder. ";
+      "After completion, Nytril opens the folder for review.";
+    };
+
+    design.IndentedBlock {
+      design.CalloutFrame {
+        design.NormalParagraph {
+          "Local publishing produces flat documents that exclude tip popups, user controls, and interactive actions. ";
+          "Nytril preserves only supported actions, such as web links, based on the capabilities of the selected output type. ";
+          "This approach allows the same codebase to generate both rich documents and flat, printable versions. ";
+        };
+      };
+    };
+
+    Paragraph;
+
+    design.SpacedParagraph {
+      "PDF is the most common output format and works well for distribution or website downloads. ";
+      "When exporting to Word, Nytril maps most document elements directly to Word features, except for certain advanced elements such as charts or complex graphics. ";
+      "Ensure the operating system includes the required fonts, or Word will substitute defaults and alter the document’s appearance. ";
+      "The HtmlDoc option outputs each document as a separate HTML file. ";
+    };
+  };
+}
+
+readonly  PublishingRemoteSection  PublishingRemote = new;
+class  PublishingRemoteSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Publish To Nytril.com";
+    };
+
+
+    var w = OnlinePublishFig.Width;
+    var r = ExtentWidth - w;
+    Table(null, null, [r * 0.5, Column.Expand, r * 0.5]) {
+      Row {
+        Cell;
+        Cell {
+          design.NormalParagraph {
+            ParAlignment: Center;
+            design.AddFigure(OnlinePublishFig, FigureOptions.Here, 0, null, false);
+          };
+          design.SpacedParagraph {
+            design.FigureCaption(OnlinePublishFig);
+          };
+        };
+        Cell;
+      };
+    };
+
+    var onlineOptionsRef = design.FigureReference(OnlinePublishFig);
+
+    design.SpacedParagraph {
+      "The IDE publishes content to Nytril.com within a pre-established online realm. ";
+      "A realm is a uniquely named container for IDE-developed content. ";
+      "Users can configure a realm as private or public. ";
+      "Private realms support controlled sharing, while public realms allow general access. ";
+      "Each realm requires a home (landing) page; if none exist, Nytril assigns the first document in the list as the home page. ";
+    };
+
+    design.TightParagraph {
+      "The Publish dialog enables online publishing upon the following conditions: ";
+    };
+
+    design.NumberedList {
+      "Nytril has internet access. ";
+      "The user signed in and has permission to publish to the target realm. ";
+      "The project defines a Site and specifies the realm. ";
+    };
+
+    Paragraph;
+
+    design.SpacedParagraph {
+      "When these conditions are satisfied, the Publish dialog displays the option to publish online, as shown in " onlineOptionsRef ".";
+    };
+
+    Table(null, null, [new Column(62%), new Column(20), Column.Expand] ) {
+      Row {
+        Cell {
+          var mainSiteRef = design.FigureReference(MainSiteFig);
+          design.NormalParagraph {
+            "The project must define the required code to publish online, as shown in " mainSiteRef;
+            "The project establishes "; design.SpanHighlight {"Main.Site"}; " and instantiates it with a "; design.SpanHighlight {"RealmSite"}; "object. ";
+            "RealmSite is a built-in class designed for this purpose. ";
+            mainSiteRef " shows a simple class that inherits from RealmSite and sets the realm in the base constructor. ";
+            "This code typically resides in the Main project file. ";
+          };
+        };
+        Cell;
+        Cell {
+          design.AddFigure(MainSiteFig, Here, 0, null, false);
+          design.FigureCaption(MainSiteFig);
+        };
+      };
+    };
+
+    design.IndentedBlock {
+      design.CalloutFrame {
+        design.NormalParagraph {
+          "Publishing online preserves key actions and keeps them functional on the web platform."
+          "Tip popups, action buttons, links, anchors, document open links, searches, and other dynamic elements continue to operate in hosted documents. ";
+          "This capability provides a richer experience for users viewing content such as user manuals, research papers, or technical specification sheets.";
+        };
+      };
+    };
+
+    Paragraph;
+
+    design.SpacedParagraph {
+      onlineOptionsRef " also shows the option to include PDF files in the publish. ";
+      "When enabled, Nytril builds both the rich online version of the documents and the PDF version, then uploads both. ";
+      "Users can view the hosted version online and download the PDF from the site. ";
+      "When Nytril uploads the PDF, it automatically makes it available for download. ";
+    };
+  };
+}
+
+readonly PublishStagesSection  PublishStaging = new;
+class  PublishStagesSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Staging";
+    };
+
+    design.SpacedParagraph {
+      "Publishing uses named stages to control when content goes live. ";
+      "Stages allow users to review published content online before releasing it. ";
+      "Users signed in to Nytril.com with appropriate permission can view staged realm content privately. ";
+    };
+
+    design.SpacedParagraph {
+      "Only the "; B{"Main"}; " stage serves live content for a public realm. ";
+      "Any other stage name keeps the content private. ";
+      "Online tools allow users to move staged content to the Main stage for public release. ";
+      "Users with publish permissions can also view and manage stages.";
+    };
+  };
+}
+
+// ============================================================================
+
+readonly PublishResourcesSection PublishResources = new;
+class PublishResourcesSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Resources";
+    };
+
+    design.HyperlinkParagraph {
+      ConfigsConcept;
+    };
+  };
+}
+
+// ============================================================================
+
+readonly MainSiteFigure  MainSiteFig = new;
+class  MainSiteFigure: Content {
+  Constructor() {
+    super.Constructor("Adding Site and Realm");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    TextHeight: 8px;
+    var line = SourceSelection(attribute Main.Site).Line;
+    SourceSelectionLines(res "Main.nytril", line, line + 6);
+  };
+}
+
+// ============================================================================
+
+readonly FullPublishFigure  FullPublishFig = new;
+class  FullPublishFigure: Content {
+  Constructor() {
+    super.Constructor("Online Publish Options");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = FitBox(new Image(res "FullPublishDialog.png"), ExtentWidth - 4, null, 2);
+}
+
+// ============================================================================
+
+readonly OnlinePublishFigure  OnlinePublishFig = new;
+class  OnlinePublishFigure: Content {
+  readonly var double Width;
+  Constructor() {
+    super.Constructor("Online Publish Options");
+    Width = 621 * 0.75;
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = FitBox(new Image(res "OnlinePublishOptions.png"), Width, null, 2);
+}

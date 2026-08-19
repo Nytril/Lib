@@ -1,0 +1,121 @@
+using Format;
+
+namespace Chapters.Language.Sections.Ranges;
+
+readonly TutorialLesson Lesson = new(#2be6eb8b-aed9-4cb2-a293-290941a45cbe#, "Ranges");
+
+//======================================================================
+
+SmallRange = 1..5;
+
+readonly LessonExample Content.OrderPairsEx = new(#b2728116-35fa-4a22-8c04-5ec3835954ef#, "Ranges") {
+  Text: "A range is an ordered, inclusive pair of values {0} "(NytrilStyle.OpAttribute(attribute ..));
+  Code: [attribute SmallRange];
+};
+
+//======================================================================
+
+Min    = 1;
+Max    = 5;
+MinMax = Min..Max;
+
+readonly LessonExample Content.RangeVariablesEx = new(#4985739e-4bb3-4b8b-bc71-beb30536bd69#) {
+  Text: "A range can also use variables for the min or max values";
+  Code: [attribute Min, attribute MinMax];
+};
+
+//======================================================================
+
+RangeArray = 1..10 step 2;
+
+readonly LessonExample Content.CreateArrayEx = new(#572ade3e-0221-408d-afe4-f6342aa515a2#, "Range arrays") {
+  Text: "An array can be created with a range {0}"(NytrilStyle.OpAttribute(attribute step));
+  CodeArray: [attribute RangeArray];
+};
+
+//======================================================================
+
+RangeArrayDown = 1..10 step -1;
+
+readonly LessonExample Content.CreateArrayDownEx = new(#fd420e5a-0b2d-457d-aa33-037fa744f43d#) {
+  Text: "Make the array enumerate backwards by using a negative step";
+  CodeArray: [attribute RangeArrayDown];
+};
+
+//======================================================================
+
+x = Symbol("x");
+SymbolRangeArray = x..(x+5) step 1;
+
+readonly LessonExample Content.ShowRangeArrayEx = new(#36e13b7c-4a6b-4284-bba5-b99e828a1160#) {
+  Text: "Non-numeric arrays can be created from a range, as long as the range limits can be compared";
+  CodeArray: [attribute SymbolRangeArray];
+};
+
+//======================================================================
+
+SubRange1 = Min>..Max step 1;
+
+readonly LessonExample Content.RangeTruncation1Ex = new(#d83578d7-4a1c-45dc-81fa-d6744517dac1#) {
+  Text: "Exclude the low end of the range {0}"(NytrilStyle.OpAttribute(attribute >..));
+  CodeArray: [attribute SubRange1];
+};
+
+//======================================================================
+
+SubRange2 = Min..<Max step 1;
+
+readonly LessonExample Content.RangeTruncation12Ex = new(#807faf44-382f-4fab-b03c-9169cbf0bfc0#) {
+  Text: "Exclude the high end of the range {0}"(NytrilStyle.OpAttribute(attribute ..<));
+  CodeArray: [attribute SubRange2];
+};
+
+//======================================================================
+
+Notes      = ["A", "B", "C", "D", "E", "F", "G"];
+FirstThree = Notes[0..2];
+
+readonly LessonExample Content.SliceEx = new(#f9c17965-7b33-49e5-ba74-17540adae558#) {
+  Text: "A slice of an array can be created using a range";
+  CodeArray: [attribute Notes, attribute FirstThree];
+};
+
+//======================================================================
+
+FirstFour = Notes[..<4];
+
+readonly LessonExample Content.LowSliceEx = new(#b9fe2740-04c3-4486-83a9-f9d4aab81032#) {
+  Text: "A low open range can be used to specify the beginning of an array";
+  CodeArray: [attribute FirstFour];
+};
+
+//======================================================================
+
+LastFour = Notes[3..];
+
+readonly LessonExample Content.HighSliceEx = new(#91844607-d4c0-4fd0-a376-9905a6ee6433#) {
+  Text: "A high open range can be used to specify the end of an array";
+  CodeArray: [attribute LastFour];
+};
+
+//======================================================================
+
+LastThree = Notes[-3..];
+
+readonly LessonExample Content.EndSliceEx = new(#50baecd4-246e-4c34-bd04-75832cbd829c#) {
+  Text:"Negative numbers denote the distance from the end of the array";
+  CodeArray: [attribute LastThree];
+};
+
+//======================================================================
+
+OddNotes = Notes.Slice([0, 1..2, 4..6]);
+
+readonly LessonExample Content.RandomSliceEx = new(#3ebc490d-4d48-4e0a-8338-eeb1c60665bd#) {
+  Text: "A slice can include an arbitrary array of indices and ranges";
+  CodeArray: [attribute OddNotes];
+};
+
+//======================================================================
+
+

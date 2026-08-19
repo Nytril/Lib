@@ -1,0 +1,43 @@
+using Units, Format;
+//======================================================================
+
+RainUnit = inch;//centimeter;
+
+class RainClass {
+  var Original,
+      Value,
+      Hi,
+      Lo;
+
+  Constructor(value, hi=null, lo = null) {
+    Original = value;
+    Value    = value tounit RainUnit;
+    Hi       = (hi ?? 1") tounit RainUnit;
+    Lo       = (lo ?? 1") tounit RainUnit;
+  }
+
+  ShowError = Span {
+    if (Lo is valid)
+      Span {"-"; Lo toscale RainUnit};
+    if (Hi is valid)
+      Span {" +"; Hi toscale RainUnit};
+  };
+}
+
+RainClass[] Rainfall = [
+  new(12", 1"),
+  new(1.1'),
+  new(37 centimeters, 3 centimeters),
+  new(470 millimeters),
+  new(0.32 meters, 1 centimeters, 1.5 centimeters),
+  new(0.2 yards),
+  new((1/3) foot),
+  new(1.2 decimeters, 30 millimeters, 10 millimeters),
+  new(5"),
+  new(6"),
+  new(321 millimeters),
+  new(1 foot + 8 centimeters),
+];
+//======================================================================
+
+

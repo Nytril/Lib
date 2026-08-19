@@ -1,0 +1,21 @@
+using Format;
+
+readonly MyDocument Main.Documents.MainDocument = new;
+readonly PublishSiteClass Main.Site = new;
+
+class MyDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#ef044ab9-012b-4ef9-aa9a-a781083738cf#, "UnitedStates");
+  }
+
+  override GetDocument = Document {
+    "United States document";
+  };
+}
+
+class PublishSiteClass: RealmSite {
+  Constructor {
+    super.Constructor("International.United States");
+  }
+}
+

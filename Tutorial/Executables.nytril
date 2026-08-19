@@ -1,0 +1,31 @@
+using Format, IO;
+//======================================================================
+
+namespace Chapters.Platform.Sections.Executables;
+
+readonly TutorialLesson Lesson = new(#b0529ed2-389b-4410-a492-97d41bd898e3#, "Processes");
+
+readonly Console = Paragraph {
+  TextFace: Mono;
+  TextHeight: 12pt;
+  TextColor: Colors.White;
+  ParBackground: Colors.Black;
+  Process process;
+  if (System.OperatingSystem == OperatingSystems.Mac)
+    process = new Process("/bin/ls");
+  else
+    process = new Process(Folders.System FileName("netstat.exe"), "-e");
+  var result = process.Run;
+  if (result.ExitCode == 0)
+    result.StandardOutput;
+  else
+    result.ErrorMessage;
+};
+
+readonly LessonExample Content.NetStatEx = new(#3361a175-5c94-470b-8cda-6f29dbf90744#, "External processes") {
+  Text: "An executable file can be run using {0}"(NytrilStyle.Class(attribute Process));
+  Code: [attribute Console];
+};
+
+//======================================================================
+

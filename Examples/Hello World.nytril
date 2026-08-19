@@ -1,0 +1,13 @@
+using Format;
+
+Main.Documents = new MainDocumentClass;
+
+class MainDocumentClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#f543f13e-66eb-4e11-af37-43342f2cc05d#, "Hello World")
+  }
+
+  override GetDocument = Document {
+    Name;
+  };
+}

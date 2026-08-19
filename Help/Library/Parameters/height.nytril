@@ -1,0 +1,30 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  "The height of the object can be specified in the following ways:";
+};
+
+readonly namespace Example {
+  Header = MeasureText.UseMeasure;
+  Body = HBox {
+    Separation: 10;
+    HBox(4, 0.25", 1);
+    HBox(4, 8mm, 1);
+    HBox(4, 24pt, 1);
+  };
+}
+
+readonly namespace Example2 {
+  Header = MeasureText.UseNumber;
+  Body = HBox(4, 24, 1);
+}
+
+readonly namespace Example3 {
+  Header = MeasureText.UsePercentWidth;
+  Body = HBox(4, 5%, 1);
+}
+
+Main.Help = new HelpExample(null, 3, "height");
+

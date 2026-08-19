@@ -1,0 +1,15 @@
+include "Help";
+
+using Format;
+
+ShowFloor(x) = "The floor of {0} is {1}."(x, Math.Floor(x));
+
+Example = Block {
+  ShowFloor(1.01);
+  ShowFloor(1.99);
+  ShowFloor(-1.02);
+};
+
+Main.Help = new HelpExample(attribute(Math.Floor));
+
+

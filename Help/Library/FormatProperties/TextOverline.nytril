@@ -1,0 +1,18 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  TextHeight: 20pt;
+
+  Paragraph {
+    "The mean of x is denoted "; Span {"x"; TextOverline: true};
+  };
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextOverline));
+
+//============================================================
+

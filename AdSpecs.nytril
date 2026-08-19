@@ -1,0 +1,58 @@
+readonly namespace AdSpecs;
+
+// =========================================================================================================
+
+flags ProviderCampaignTypes {
+  RedditGeneral,
+  GoogleAppCampaign,
+  GoogleDemandGenCampaign,
+  Footer,
+}
+
+enum AdContentType {
+  Image,
+  Text,
+  Video,
+  Thumb
+}
+
+// =========================================================================================================
+
+class AdSpecification {
+  var int                   Width,
+                            Height;
+  var string                Name,
+                            Desc;
+  var AdContentType         Type;
+  var ProviderCampaignTypes CampaignTypes;
+
+  Constructor(int width, int height, string name, AdContentType type, ProviderCampaignTypes campaignTypes) {
+    Width          = width;
+    Height         = height;
+    Name           = name;
+    Type           = type;
+    CampaignTypes  = campaignTypes;
+   }
+ }
+
+// =========================================================================================================
+
+  AdSpecification RedditLandscape      = new AdSpecification(1440, 1080, "Reddit Landscape",    AdContentType.Image, ProviderCampaignTypes.RedditGeneral);
+  AdSpecification RedditHorizontal     = new AdSpecification(1200, 628,  "Reddit Horizontal",   AdContentType.Image, ProviderCampaignTypes.RedditGeneral);
+  AdSpecification RedditSquare         = new AdSpecification(1080, 1080, "Reddit Square",       AdContentType.Image, ProviderCampaignTypes.RedditGeneral);
+  AdSpecification RedditTopBanner      = new AdSpecification(300,  6200, "Reddit Top Banner",   AdContentType.Image, ProviderCampaignTypes.RedditGeneral);
+  AdSpecification RedditThumb          = new AdSpecification(400,  300,  "Reddit Thumb",        AdContentType.Thumb, ProviderCampaignTypes.RedditGeneral);
+
+
+
+  AdSpecification GoogleLandscape      = new AdSpecification(1200, 628,  "Google Landscape",      AdContentType.Image, ProviderCampaignTypes.GoogleAppCampaign | ProviderCampaignTypes.GoogleDemandGenCampaign);
+  AdSpecification GooglePortrait       = new AdSpecification(900,  1600, "Google Portrait",       AdContentType.Image, ProviderCampaignTypes.GoogleAppCampaign);
+  AdSpecification GoogleSquare         = new AdSpecification(1200, 1200, "Google Square",         AdContentType.Image, ProviderCampaignTypes.GoogleAppCampaign | ProviderCampaignTypes.GoogleDemandGenCampaign);
+  AdSpecification GoogleLandscapeLogo  = new AdSpecification(1200, 300,  "Google Landscape Logo", AdContentType.Image, ProviderCampaignTypes.GoogleDemandGenCampaign);
+
+  AdSpecification WriteTheDocsFooter   = new AdSpecification(1200, 800, "WriteTheDocs Footer", AdContentType.Image, ProviderCampaignTypes.Footer);
+// =========================================================================================================
+
+
+
+

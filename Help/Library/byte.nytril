@@ -1,0 +1,13 @@
+include "Help";
+
+using Format;
+
+Example = ListBlock {
+  Paragraph { "Min value "; byte.MinValue};
+  Paragraph { "Max value "; byte.MaxValue};
+};
+
+Main.Help = new HelpExample(attribute byte);
+
+
+

@@ -1,0 +1,196 @@
+using Format, Units;
+//======================================================================
+
+readonly namespace Chapters.Mathematics.Sections.Algebra;
+
+readonly TutorialLesson Lesson = new(#74d5e076-1e9c-4d6e-9d7b-355c58a20864#, "Algebra");
+
+//======================================================================
+
+Number = 1 + 3;
+Sum    = Number + x;
+
+readonly LessonExample Content.AdditionEx = new(#2c6d0c61-a357-4d92-86c0-7c736f8a00e5#) {
+  Text: "Addition is carried out {0}"(NytrilStyle.OpAttribute(attribute +));
+  Code: [attribute Number, attribute Sum];
+};
+
+ //======================================================================
+
+Difference = 5 - 7;
+
+readonly LessonExample Content.SubtractionEx = new(#6a517cce-f939-4c6d-83a6-a40432e0b888#) {
+  Text: "Subtraction is carried out {0}"(NytrilStyle.OpAttribute(attribute -));
+  Code: [attribute Difference];
+};
+
+//======================================================================
+
+Product = 5 * 3;
+
+readonly LessonExample Content.MultiplyEx = new(#852212ac-011d-41bc-b15c-801326a4e2d7#) {
+  Text: "Multiplication is carried out {0}"(NytrilStyle.OpAttribute(attribute *));
+  Code: [attribute Product];
+};
+
+//======================================================================
+
+Ratio = 3 over 5;
+
+readonly LessonExample Content.RationalDivisionEx = new(#38d760d2-d539-4ba4-be5d-fd1f29ca8259#) {
+  Text: "Rational division is carried out {0}"(NytrilStyle.OpAttribute(attribute over));
+  Code: [attribute Ratio];
+};
+
+//======================================================================
+
+RealDivision = 3 / 5;
+
+readonly LessonExample Content.FloatingPointDivisionEx = new(#138f0e02-457c-4a7d-9370-17261c608b44#) {
+  Text: "Floating point division is carried out {0}, the result is a floating point number."(NytrilStyle.OpAttribute(attribute /));
+  Code: [attribute RealDivision];
+};
+
+//======================================================================
+
+IntResult = 8 div 5;
+
+readonly LessonExample Content.DivEx = new(#9e34cbde-ecaf-4ae3-87d4-3109539792ca#) {
+  Text: "Integer division (even division without a remainder) is carried out {0}"(NytrilStyle.OpAttribute(attribute div));
+  Code: [attribute IntResult];
+};
+
+//======================================================================
+
+Remainder = 8 mod 5;
+
+readonly LessonExample Content.ModulusEx = new(#5c7e8104-e6ea-4a0f-93a3-d172e3ed670e#) {
+  Text: "The remainder after integer division can be found {0}"(NytrilStyle.OpAttribute(attribute mod));
+  Code: [attribute Remainder];
+};
+
+//======================================================================
+
+Power = 4^2;
+
+readonly LessonExample Content.RaisePowerEx = new(#bf51547c-3d5a-4a63-b4d7-7c114286a461#) {
+  Text: "A value can be raised to a power {0}"(NytrilStyle.OpAttribute(attribute ^));
+  Code: [attribute Power];
+};
+
+//======================================================================
+
+x          = Symbol("x");
+y          = Symbol("y");
+a          = Symbol("a");
+b          = Symbol("b");
+c          = Symbol("c");
+Polynomial = a x^2 + b x + c;
+
+readonly LessonExample Content.AlgebraEx = new(#4f49bde2-9ed6-47fa-a3b6-b6fe161a5474#) {
+  Text: "Symbols obey the rules of algebra when combined with other symbols and numbers";
+  Code: [attribute Polynomial];
+};
+
+//======================================================================
+
+AddX = 2 x + 5 x + 3;
+
+readonly LessonExample Content.Symbols= new(#0d38b5c5-b95a-4d4c-9d59-d2dd1a300f6e#, "Algebra") {
+  Text: "Basic algebra is performed automatically when symbols are multipled or added";
+  Code: [attribute AddX];
+};
+
+//======================================================================
+
+CompareEquations(f) = Paragraph(null, [1"]) {
+  f;
+  Tab;
+  "=> ";
+  f.GetExpandedTerms;
+};
+
+CompareAll = [
+  CompareEquations(14),
+  CompareEquations((3 x + y) * x * y),
+  CompareEquations(2 * (6 + y) * y),
+  CompareEquations((3 x + 1) * 1 * x),
+];
+
+readonly LessonExample Content.ExpressionEx = new(#79b06a51-7abb-4cfd-937b-90d80e2aced7#) {
+  Form: NytrilStyle.Function(attribute(object.GetExpandedTerms), "Combined terms can be expanded ");
+  Code: [attribute CompareAll];
+};
+
+//======================================================================
+
+ThreeX     = 3 x;
+g          = 9.8 meters per second^2;
+Palindrome = "was it " "a car " "or a cat I saw";
+
+readonly LessonExample Content.Affinity = new(#69c41efc-cddb-40bf-99e9-4bd8dba899ea#, "Operand Affinity") {
+  Text: "The operator between common types can be ommited in simple expressions";
+  Code: [attribute ThreeX, attribute g, attribute Palindrome];
+  Show: [ThreeX, g, Palindrome];
+};
+
+//======================================================================
+
+CheckMin1 = Math.Min(-5, 2);
+CheckMin2 = Math.Min(Symbolic.PI, 4);
+
+readonly LessonExample Content.MinFunctionEx = new(#b56e7294-f1af-40a8-a317-5170eed9e47f#) {
+  Form: NytrilStyle.Function(attribute Math.Min, "Get the minimum of two values");
+  Code: [attribute CheckMin1, attribute CheckMin2];
+  Show: [CheckMin1, CheckMin2];
+};
+
+//======================================================================
+
+CheckMax1 = Math.Max(-5, -2);
+CheckMax2 = Math.Max(Math.E, 2);
+
+readonly LessonExample Content.MaxFunctionEx = new(#f9950d25-9cca-4c0a-91f9-596eb254512d#) {
+  Text: NytrilStyle.Function(attribute Math.Max, "Get the maximum of two values");
+  Code: [attribute CheckMax1, attribute CheckMax2];
+  Show: [CheckMax1, CheckMax2];
+};
+
+//======================================================================
+
+CheckAbs1  = Math.Abs(5);
+CheckAbs2  = Math.Abs(-10);
+CheckAbs3  = Math.Abs(-x);
+
+readonly LessonExample Content.AbsFunctionEx = new(#230b4d2b-1977-437b-8f4f-9af7ae6cd29d#) {
+  Form: NytrilStyle.Function(attribute Math.Abs, "Get the absolute value of a number");
+  Code: [attribute CheckAbs1, attribute CheckAbs2, attribute CheckAbs3];
+  Show: [CheckAbs1, CheckAbs2, CheckAbs3];
+};
+
+//======================================================================
+
+CheckLog1  = {TextDigits: 5} Math.Log(5.345);
+CheckLog2  = Math.Log(Math.E);
+CheckLog3  = Math.Log(Math.E * 2);
+CheckLog4  = Math.Log(1000, 10);
+CheckLog5  = Math.Log(16, 2);
+
+readonly LessonExample Content.LogFunctionEx = new(#cc198484-ebe9-42d6-845b-933ccf4c903c#) {
+  Form: NytrilStyle.Function(attribute Math.Log, "Get the logarithm of a number");
+  Code: [attribute CheckLog1, attribute CheckLog2, attribute CheckLog3, attribute CheckLog4, attribute CheckLog5];
+  Show: [CheckLog1, CheckLog2, CheckLog3, CheckLog4, CheckLog5];
+};
+
+//======================================================================
+
+FactArray = Span {Separator: ", "; Math.Factorial(each 1..6)};
+
+readonly LessonExample Content.FactorialFunctionEx = new(#db69a26a-58fb-449e-aa43-99417a268094#) {
+  Form: NytrilStyle.Function(attribute Math.Factorial, "Get the factorial of a number");
+  Code: [attribute FactArray];
+  Show: [FactArray];
+};
+
+//======================================================================
+

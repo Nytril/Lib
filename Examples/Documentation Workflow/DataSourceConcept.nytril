@@ -1,0 +1,57 @@
+using Format, HelpConcepts;
+
+class DataSourceConcept: AuthoredContent {
+  Constructor {
+    super.Constructor("Connecting Data Sources");
+
+    Watermark = "DRAFT";
+
+    AddAuthor(People.ColbertAuthor);
+    AddAuthor(People.McCreightAuthor);
+
+    AddContent(DataSourcePurpose);
+    AddContent(DataSourceAbout);
+  }
+
+
+}
+
+// ============================================================================
+
+readonly  DataSourcePurposeSection  DataSourcePurpose = new;
+class  DataSourcePurposeSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Purpose";
+    };
+
+    design.SpacedParagraph {
+      "This document describes the process of connecting data sources to the Nytril IDE for use in a project.";
+    };
+  };
+}
+
+// ============================================================================
+
+readonly  DataSourceAboutSection  DataSourceAbout = new;
+class  DataSourceAboutSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Connecting Data Sources Feature";
+    };
+
+    design.SpacedParagraph {
+      "Nytril can be connected to external data sources such as databases and can make external calls, such as calling an API method. ";
+      "Nytril also has the ability to receive output from externally written code, such as a C# program. ";
+      "This document describes the basic process of using these features. ";
+    };
+  };
+}

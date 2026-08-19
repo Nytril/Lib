@@ -1,0 +1,91 @@
+using Format;
+//======================================================================
+
+namespace Chapters.Genetics.Sections.Alignment;
+
+readonly TutorialLesson Lesson = new(#6bfa1563-d9e4-4df4-9d18-d19b40875812#, "Staining");
+
+//======================================================================
+
+class PSequenceClass {
+  var Name,
+      Sequence;
+
+  Constructor(name, sequence) {
+    Name     = name;
+    Sequence = sequence;
+  }
+}
+
+ShowSequence(PSequenceClass[] sequences, columns) = Block {
+  TextHeight: 8pt;
+  TextFace: Mono;
+  SpaceBefore: 0;
+  SpaceAfter: 0;
+
+  int maxlength = 0;
+  foreach (var sequence in sequences)
+    maxlength = Math.Max(maxlength, sequence.Sequence.Length);
+
+  int index = 0;
+  while (index < maxlength) {
+    Table(new Edge(0.5, 0, Colors.LightGray), PadLR(3), [0.7", 80%]) {
+      foreach (var sequence in sequences) {
+        var s = sequence.Sequence;
+        Row {
+          Cell {
+            sequence.Name;
+          };
+          Cell {
+            TextColumns: columns;
+            s[index..<Math.Min(index+columns, s.Length)];
+          };
+        };
+      }
+    };
+    Paragraph {
+      TextHeight: 3pt;
+    };
+    index += columns;
+  }
+};
+
+//======================================================================
+
+readonly Proteins = IO.ReadDocument(res "Proteins.fasta");
+
+readonly PSequenceClass[] ProteinArray = [
+  new("Squac", Proteins.crab_squac),
+  new("Bovin", Proteins.crab_bovin),
+  new("Human", Proteins.crab_human),
+  new("Rabbit", Proteins.crab_rabit),
+  new("Mouse", Proteins.crab_mouse),
+  new("Mesau", Proteins.crab_mesau),
+  new("Rat",   Proteins.crab_rat),
+  new("Anapl", Proteins.crab_anapl),
+  new("Chicken", Proteins.crab_chick)
+];
+readonly ShowProteins = ShowSequence(ProteinArray, 84);
+
+readonly LessonExample Content.LoadProteinsEx = new(#692bfca8-43d5-4f8a-a2e0-c2cd5acd0095#) {
+  Text: "Use an array of proteins included from an external file";
+  Code: [attribute ProteinArray, attribute ShowProteins];
+};
+
+//======================================================================
+
+PSequenceClass Highlight(PSequenceClass a) {
+  var s = a.Sequence as string;
+  return new(a.Name, a.Sequence.Revise(s.FindString(protein"EE"), Stain1));
+}
+
+readonly HArray         = Highlight(each ProteinArray);
+readonly ShowHighlights = ShowSequence(HArray, 84);
+
+readonly LessonExample Content.ShowStainedEx = new(#a9445d64-2d6c-46c5-ad9c-4c952b71edab#) {
+  Text: "Search each item for a matching pattern, and highlight the results";
+  Code: [attribute Highlight, attribute ShowHighlights];
+};
+
+//======================================================================
+

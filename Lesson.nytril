@@ -1,0 +1,499 @@
+using Format;
+
+include "NytrilStyle";
+include "Slideshow";
+
+//======================================================================
+
+class TutorialLesson: Fact {
+  field Name,
+        Title,
+        Description,
+        Log,
+        YouTube;
+
+  Constructor(Guid id, title, name=null, log=null, youtube=null) {
+    super.Constructor(id);
+    Name    = name;
+    Title   = title;
+    Log     = log;
+    YouTube = youtube;
+  }
+}
+
+//======================================================================
+
+class VideoLesson {
+  var TutorialLesson  Lesson;
+  var LessonExample[] Examples;
+  var Size            VideoSize;
+  var bool            Full;
+
+  Constructor(Attribute lesson, in Size size=null, bool full=true) {
+    Lesson      = lesson.FindChildValue("Lesson") as TutorialLesson;
+    Full        = full;
+    VideoSize   = size ?? new Size(1024, 768);
+
+    var content = lesson.FindChildValue("Content");
+    var list    = new List<LessonExample>(16);
+    foreach (var c in content) {
+      if (c is LessonExample e and (full or e.Options.NotFlag(NoShort)))
+        list.Add(e);
+    }
+    Examples = list.ToArray;
+  }
+}
+
+//======================================================================
+
+class CodeSelect {
+  var int Line,
+          Column,
+          Length;
+
+  Constructor(int line, int col, int length) {
+    Line   = line;
+    Column = col;
+    Length = length;
+  }
+}
+
+//======================================================================
+
+abstract class DocCallout {
+  abstract Show(x, y, th);
+}
+
+//======================================================================
+
+class TipCallout: DocCallout {
+  var Text,
+      Angle,
+      Distance;
+
+  Constructor(text, angle, distance) {
+    Text     = text;
+    Angle    = angle;
+    Distance = distance;
+  }
+
+  override Show(x, y, th) = Canvas {
+    X: x;
+    Y: y;
+
+    var outline = 80%;
+    var line    = th * 0.1;
+    var d       = Distance * th;
+    var dx      = d * Math.Cos(Angle);
+    var dy      = d * Math.Sin(Angle);
+
+    Shape(null, new(line, outline, null, Round)) {
+      OpenPath(0, 0) {
+        LineTo(dx, dy);
+      };
+    };
+
+    var b = HBox(null, null, new Edge(line, th * 0.25, outline) + PadLR(6)) {
+      BorderRadius: th * 0.25;
+      Background: #FCFCF4#;
+      Text;
+    };
+    var bh = GetLayoutSize(b).Height;
+
+    b {
+      X: dx;
+      Y: dy - bh * 0.5;
+    };
+  };
+}
+
+//======================================================================
+
+class ExampleCallout {
+  var double     X,
+                 Y;
+  var DocCallout Callout;
+
+  Constructor(x,  y, DocCallout callout) {
+    X       = x;
+    Y       = y;
+    Callout = callout;
+  }
+}
+
+ExampleCallout LessonTip(x, y, text, angle, line=10) {
+  return new(x, y, new TipCallout(text, angle, line));
+}
+
+//======================================================================
+
+class LessonExample: Fact {
+  flags ShowOptions {
+    None,
+    Code,
+    Highlight,
+    Result,
+    Callout,
+  }
+
+  flags LessonOptions {
+    None,
+    NoShort,
+    NoFormat,
+  }
+
+  field string          Name;
+  field                 Text,
+                        Text2;
+  var Attribute[]       Code,
+                        CodeArray;
+  var                   Other,
+                        Show,
+                        Output,
+                        Form,
+                        Formula,
+                        FrameSize,
+                        Doc,
+                        CodeSource,
+                        Title;
+   var ExampleCallout[] Tip;
+   var CodeSelect       Sel;
+   var LessonOptions    Options;
+
+  Constructor(in Guid id, title=null) {
+    super.Constructor(id);
+    Title = title;
+    Name  = GetVariableName;
+    if (Name is valid and Name.EndsWith("Ex"))
+      Name = Name[0..-3];
+  }
+
+  string Caption = Text as string;
+
+  FormatSection(textsize, codesize, resultsize, indent) = Block {
+    if (Formula is valid) {
+      TextHeight: textsize;
+      Paragraph {
+        Text;
+      };
+      Paragraph {
+        LeftIndent: 0.5";
+        HBox(null, null, new Edge(0, 5pt)) {
+          TextStacked: true;
+          TextEquation: true;
+          Formula;
+        }
+      };
+      Text2;
+    }
+    else if (Text is valid) {
+      Paragraph {
+        TextHeight: textsize;
+        SpaceAfter: 8pt;
+        Text;
+      };
+    }
+    else
+      Form;
+
+    bool tc = Tip is valid;
+
+    if (Code is valid) {
+      FormatSource(Code, None, codesize);
+      if (Show is not valid)
+        Yields(indent);
+
+      Block {
+        LeftIndent: indent;
+        TextHeight: resultsize;
+        if (Options.HasFlag(NoFormat)) {
+          RightIndent: indent;
+          ShowCallout(tc, resultsize);
+        }
+        else if (FrameSize is valid) {
+          Frame(ExtentWidth * FrameSize, null, new Edge(0.5, 2, Colors.LightGray)) {
+            ShowCallout(tc, resultsize);
+          };
+        }
+        else
+          ShowCallout(tc, resultsize);
+      }
+    }
+    else if (CodeArray is valid) {
+      Yields(indent);
+      Paragraph {
+        LeftIndent: indent;
+        NytrilStyle.ShowArraySpan(CodeArray.LastElement.Value);
+      };
+    }
+    else if (Doc is valid) {
+      Canvas(null, null, new Edge(1%, 0, 90%)) {
+        Frame(70%, null, new Edge(0.5, 3%)) {
+          Doc.LastElement.Value;
+        }
+      };
+    }
+    else if (CodeSource is valid)
+      FormatSource(CodeSource, Children, codesize);
+
+    Other;
+    Paragraph {TextHeight: textsize; SpaceAfter: 0};
+  };
+
+  Yields(indent) = Paragraph {
+    LeftIndent: indent;
+    KeepWithNext: true;
+    SpaceBefore: 4pt;
+    TextColor: NytrilPalette.Arrow;
+    Markers.TriangleDown;
+  };
+
+  FormatSource(code, SourceSelectOptions options, codesize) = Paragraph {
+    ParBackground: NytrilPalette.SourceBack;
+    TextFace: Mono;
+    TextHeight: codesize;
+
+    var sel = NytrilStyle.CodeSelection(code, options);
+    if (Sel is valid) {
+      var s = code[0].SymbolSource;
+      sel.Show(s.NewPosition(s.Line + Sel.Line, Sel.Column, Sel.Length));
+    }
+    else
+      sel;
+  };
+
+  private ShowCallout(bool show, th) {
+    if (show and Tip is valid) {
+      return Canvas(100%) {
+        ShowOutput;
+        foreach (var t in Tip)
+          t.Callout.Show(t.X * th, t.Y * th, th);
+      };
+    }
+    return ShowOutput;
+  }
+
+  private ShowOutput = Block {
+    if (Show is valid)
+      Show;
+    else {
+      Output;
+      Code?.LastElement?.Value;
+    }
+  };
+
+  CodePar(ShowOptions options, back) = Paragraph {
+    TextFace: Mono;
+    ParBackground: back;
+
+    var sel = NytrilStyle.CodeSelection(Code);
+    if (Sel is valid and options.HasFlag(Highlight)) {
+      var s = Code[0].SymbolSource;
+      sel.Show(s.NewPosition(s.Line + Sel.Line, Sel.Column, Sel.Length));
+    }
+    else
+      sel;
+  };
+
+  CodeFrame(th) {
+    PushExtentSize(10000);
+    var f = Frame {
+      TextHeight: th;
+      CodePar(Code Highlight, Colors.White);
+    };
+    PopExtent;
+    return f;
+  }
+
+  GetContent(in Size size, ShowOptions options, margin, th) = VBox(size.Width, null, PadAll(margin)) {
+    TextHeight: th;
+    Separation: 8pt;
+
+    var line = 1.5pt;
+    var back = 10%;
+
+    if (options.HasFlag(Code)) {
+      Paragraph {
+        HAlignment: Center;
+        TextHeight: th * 1.2;
+        TextColor: Colors.White;
+        Title;
+      };
+
+      Frame(100%, null, new Edge(line, line, NytrilPalette.IconLine)) {
+        BorderRadius: 3pt;
+        Background: back;
+        CodePar(options, back);
+      };
+    }
+
+    if (options.HasFlag(Result)) {
+      var pad = 3pt;
+      var p2  = pad * 0.5;
+      var w   = (size.Width - margin*2) * (FrameSize ?? 100%);
+      var e   = new Edge(line, pad, Colors.Gray);
+
+      if (options.HasFlag(Callout) and Tip is valid) {
+        Canvas(100%) {
+          Frame(w, null, new(e, e, e, new(line, p2, Colors.Gray))) {
+            Background: Colors.White;
+            ShowOutput;
+          };
+          var d = line + pad;
+          foreach (var t in Tip)
+            t.Callout.Show(d + t.X * th, d + t.Y * th, th);
+        };
+      }
+      else {
+        Frame(w, null, new(e, e, e, new(line, p2, Colors.Gray))) {
+          Background: Colors.White;
+          ShowOutput;
+        };
+      }
+    }
+  };
+
+  static RaisedLogo(double th) = Canvas {
+    TextHeight: th;
+    Baseline: 82%;
+    Shape(NytrilPalette.LogoVideo2) {
+      X: 0.5;
+      Y: 0.5;
+      AppIcons.NytrilLogo;
+    };
+    Shape(NytrilPalette.LogoVideo) {
+      AppIcons.NytrilLogo;
+    };
+  };
+
+  FormatVideo(in Size size, ShowOptions options) = Canvas(size.Width, size.Height) {
+    Background: NytrilPalette.VideoBack(size);
+
+    var margin = 10pt;
+    var m2     = margin*2;
+    var w      = size.Width - m2;
+    var h      = size.Height - m2;
+    var lh     = size.Height * 10%;
+    var th     = Math.Min(w, h) * 4%;
+
+    RaisedLogo(lh) {
+      HAlignment: Right;
+      VAlignment: Bottom;
+    };
+
+    var l1 = GetLayoutSize(GetContent(size, Code Highlight Result Callout, margin, th));
+    var l2 = GetLayoutSize(CodeFrame(th), 10000);
+
+    if (l1.Height > h or l2.Width > w)
+      th *= Math.Min(w * 0.95 / l2.Width, h * 0.9 / l1.Height);
+    GetContent(size, options, margin, th);
+  };
+}
+
+//======================================================================
+
+class LessonContent: Content {
+  var LessonExample Example;
+
+  Constructor(LessonExample example) {
+    super.Constructor(example.Title);
+    Example = example;
+  }
+
+  override GetBody(ContentStyle style) {
+    return Frame(100%) {
+      Example.FormatSection(18pt, 10pt, 14pt, 8pt);
+    };
+  }
+}
+
+//======================================================================
+
+class ShortLessonDocument: SlideShow {
+  var VideoLesson Video;
+
+  Constructor(VideoLesson video) {
+    super.Constructor(video.Lesson.FactId, video.Lesson.Name, new FancyDesign, new MLAStyle);
+    Video       = video;
+    Title       = video.Lesson.Title;
+    Description = video.Lesson.Description;
+  }
+
+  override ShowTitle = Block {
+    Paragraph {
+      ParAlignment: Center;
+      SpaceAfter: 20pt;
+      TextHeight: 100pt;
+      NytrilStyle.StandardLogo;
+    };
+
+    Paragraph {
+      ParAlignment: Center;
+      TextHeight: 40pt;
+      SpaceAfter: 40pt;
+      Title;
+    };
+
+    Paragraph {
+      ParAlignment: Justify;
+      TextColor: Colors.Black;
+      LeftIndent: 1";
+      RightIndent: 1";
+      TextHeight: 18pt;
+      Description;
+    };
+
+    var url = Video.Lesson.YouTube;
+    if (url is valid) {
+      Paragraph {
+        ParAlignment: Center;
+        SpaceBefore: 40pt;
+        HBox {
+          VAlign: Center;
+          TextColor: Colors.Black;
+          TextHeight: 20pt;
+
+          var l = new URL(url);
+          NytrilStyle.YouTubeArrow(l, 20pt);
+          Space;
+          Span {
+            "View on YouTube";
+            Action: l;
+          };
+        };
+      };
+    }
+  };
+
+  override InitDocument = {
+    TextHeight: 18pt;
+  };
+
+  override void CreateSlides {
+    foreach (var e in Video.Examples)
+      AddSlide(new FigureSlide(new LessonContent(e), Left));
+  }
+}
+
+//======================================================================
+
+namespace GraphPaper {
+  const LineWidth = 0.25;
+
+  GridLine(line, x1, y1, x2, y2) = Shape(null, new(LineWidth, line)) {
+    OpenPath(x1, y1) {
+      LineTo(x2 - LineWidth, y2 - LineWidth);
+    }
+  };
+
+  XLine(Size size, line, y) = GridLine(line, 0, y, size.Width, y);
+  YLine(Size size, line, x) = GridLine(line, x, 0, x, size.Height);
+
+  Show(Size size, Size i, back=95%, line=85%) = Canvas(size.Width, size.Height, new Edge(LineWidth, 0, line)) {
+    Background: back;
+    XLine(size, line, each i.Height..(size.Height-i.Height) step i.Height);
+    YLine(size, line, each i.Width..(size.Width-i.Width) step i.Width);
+  };
+}
+
+//======================================================================

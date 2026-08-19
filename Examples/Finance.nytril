@@ -1,0 +1,46 @@
+using Format;
+
+import VB "Microsoft.VisualBasic.Core";
+
+using VB.Financial;
+
+readonly Main.Documents = new FinanceDocumentClass;
+
+class FinanceDocumentClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#8a2229b8-c1c4-4e4e-8de8-dfa7aa5a1933#, "Finance");
+  }
+
+  StyleTitle = Paragraph {
+    Bold;
+    TextHeight: 120%;
+    SpaceBefore: 8pt;
+  };
+
+  override GetDocument = Document {
+    TextDigits: 2;
+
+    var cashflow = [-70000, 22000, 25000, 28000, 31000];
+    StyleTitle {"Internal Rate of Return"};
+    Block {
+      LeftIndent: 8pt;
+      Span {
+        Separator: CommaSpace;
+        (each cashflow) * Units.Dollars;
+      };
+      Span {
+        IRR(cashflow, 10%) * 100.0;
+        "%";
+      };
+    };
+
+    StyleTitle {"Straight-Line Depreciation"};
+    SLN(1227.123, 500, 5);
+
+
+    StyleTitle {"Annuity Payments"};
+    Pmt(6%, 18*12, -1000.0, 0, VB.DueDate.EndOfPeriod);
+  };
+}
+
+

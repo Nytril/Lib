@@ -1,0 +1,96 @@
+using Format;
+//======================================================================
+
+namespace Chapters.Language.Sections.Namespaces;
+
+readonly TutorialLesson Lesson = new(#d8de5820-327f-48c9-a9d9-802283daa94d#, "Namespaces");
+
+//======================================================================
+
+namespace Products {
+  Apple = "Gala";
+  Lemon = "Meyer";
+}
+
+ShowProducts = Block {
+  Products.Apple;
+  Products.Lemon;
+};
+
+readonly LessonExample Content.ShowProductsEx = new(#180c89fd-c69e-4d1b-8995-bbfe60b0b676#) {
+  Text: Span {
+    "A namespace is a collection of global variables, functions and classes. ";
+    "A namespace can be declared"; NytrilStyle.Keyword(attribute namespace); DotSpace;
+    "If the namespace does not already exist, it will be created. ";
+    "The variables declared within the space will be added in the order encountered. ";
+  };
+
+  Code: [attribute Products, attribute ShowProducts];
+};
+
+//======================================================================
+
+Handbags.LouisVuitton = "Louis Vuitton";
+
+// Added to the existing 'Handbags' namespace above
+namespace Handbags {
+  Gucci = "Gucci";
+  Prada = "Prada";
+}
+
+ShowAllHandbags = Block {
+  Table(0.5, null, [1", 1"]) {
+    Row {
+      Background: 80%;
+      "Variable"; "Value";
+    };
+    foreach (var a in attribute Handbags) Row {
+      a.Name;
+      a.Value;
+    }
+  }
+};
+
+readonly LessonExample Content.ShowAllHandbagsEx = new(#cf565e38-8f94-486c-8881-66921c099566#) {
+  Text: Span {
+    "Namespaces can also be declared with an indentifier followed by a dot and then the identifier to add to that namespace. ";
+    "As in the case of the of the explicity declared namespace, a namespace will be created if it does not already exist. ";
+  };
+  Code: [attribute Handbags.LouisVuitton, attribute ShowAllHandbags];
+};
+
+//======================================================================
+
+namespace Revenue {
+  Year1 = 20_000_000;
+  Year2 = 670_000_000;
+  Year3 = 1220_000_000;
+}
+
+ShowRevenue = Chart(3", 2") {
+  var revenue = attribute(Revenue).Children;
+
+  ChartType: ChartTypes.Column;
+  XLabel: Bold "Year";
+  XAxis: ChartAxis {
+    (each revenue).Name;
+  };
+
+  ValueLabel: Bold "Revenue\n(Millions)";
+  ValueAxis: ChartAxis;
+  ChartSeries {
+    foreach (var r in revenue)
+      new DataPoint(each0, r.Value * 0.000001);
+  };
+};
+
+readonly LessonExample Content.ShowRevenueEx = new(#b89ec6b9-77e0-417a-86f9-ee67216cf5db#) {
+  Text: Span {
+    "Namespaces can be used to accumulate data into a common container. The container can then be used to make charts, tables or do other calculations. ";
+  };
+  Code: [attribute Revenue, attribute ShowRevenue];
+};
+
+//======================================================================
+
+

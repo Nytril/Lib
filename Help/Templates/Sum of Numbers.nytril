@@ -1,0 +1,64 @@
+using Format;
+
+// Add these numbers
+Numbers = [
+  218,
+  158,
+  311
+];
+
+readonly MyDocument Main.Documents.MainDocument = new;
+
+class MyDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#00000000-1111-2222-3333-444444444444#, "Sum of Numbers");
+  }
+
+  AsSentence(numbers) = Paragraph {
+    LeftIndent: 8pt;
+    "The sum of [";
+    Span {
+      Separator: CommaSpace;
+      LastSeparator: " and ";
+      numbers;
+    };
+    "] is ";
+    Math.Sum(numbers);
+    DotSpace;
+  };
+
+  AsTable(numbers) = Table(null, null, [Column.Fit(2")]) {
+    LeftIndent: 8pt;
+    HAlign: Right;
+    foreach (var n in numbers) {
+      Row {
+        Span {
+          if (each0 > 0)
+            " +";
+          n;
+        };
+      };
+    }
+
+    Row(BorderT(1)) {
+      Math.Sum(numbers);
+    };
+  };
+
+  override GetDocument = Document {
+    TextHeight: 14pt;
+
+    Paragraph {
+      Italic;
+      "As a sentence:";
+    };
+    AsSentence(Numbers);
+    Paragraph {
+      Italic;
+      SpaceBefore: 8pt;
+      " or as a table: ";
+    };
+    AsTable(Numbers);
+  };
+}
+

@@ -1,0 +1,27 @@
+include "Help";
+
+using Format;
+
+Example = Chart(4", 3") {
+  XLabel: "Year";
+  XAxis: ChartAxis {
+    #2021#..#2024# step Units.year;
+  };
+
+  ValueAxis: ChartAxis {
+    MinorTics: true;
+  };
+
+  ValueLabel: HBox {
+    Transform: Transform.Rotate(90 degrees);
+    TransformFit: true;
+    "$ Millions";
+  };
+
+  ChartSeries {
+   [118.5, 99, 132.5, 309.2];
+  };
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.MinorTics));
+

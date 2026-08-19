@@ -1,0 +1,154 @@
+using Format, Math, Units;
+
+//============================================================================
+
+Main.Documents = new MainDocumentClass;
+
+class MainDocumentClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#1f275d8b-fdd8-44c2-9d6e-28bada0571c7#, "Data Tables");
+  }
+
+  override GetDocument = Document {
+    Header: MarginBlock(40pt) {
+      Paragraph {
+        TextHeight: 24pt;
+        Bold;
+        ParAlignment: Center;
+        SpaceAfter: 12pt;
+        "Product Catalog"
+      };
+    };
+    Footer: MarginBlock(40pt) {
+      Paragraph {
+        SpaceBefore: 10pt;
+        ParAlignment: Center;
+        "Page ";
+        DocFields.PageNumber; " of "; DocFields.PageCount;
+      };
+    };
+    Paragraph {
+      TextHeight: 12pt;
+      SpaceAfter: 8pt;
+      "Our product lines."
+    };
+
+    each ProductTable(each ProductLines);
+  };
+}
+//============================================================================
+
+// Here is the data for the products
+namespace ProductLines {
+  ProductLine1 = {
+    Title: "Widgets";
+    Color: Colors.Red;
+    Products:[
+      {Title: "Widget A"; Length: inches; Width: 3.0"; Height: 2.0"},
+      {Title: "Widget B"; Length: 5.0"; Width: 2.0"; Height: 1.5"},
+    ]
+  };
+
+  ProductLine2 = {
+    Title: "Gadgets";
+    Color: Colors.Green;
+    Products:[
+      {Title: "Gadget A"; Length: 2.0"; Width: 1.1"; Height: 2.0"},
+      {Title: "Gadget B"; Length: 8.0"; Width: 12"; Height: 0.5"},
+      {Title: "Gadget C"; Length: 3.0"; Width: 5.0"; Height: 7.0"},
+    ]
+  };
+}
+//============================================================================
+
+namespace Measure {
+  // Here are the two principle measuring systems
+  namespace Metric {
+    TinyLength  = millimeters;
+    SmallLength = centimeters;
+    LargeLength = meters;
+    HugeLength  = kilometers;
+    SmallVolume = SmallLength^3;   // or liters
+  }
+
+  namespace Imperial {
+    TinyLength  = mils;
+    SmallLength = inches;
+    LargeLength = feet;
+    HugeLength  = miles;
+    SmallVolume = SmallLength^3;  // or gallons, pints
+  }
+
+  // If you change this one variable, you switch all computations and displays
+  System = Metric; //Imperial
+
+  namespace Distance {
+    Unit    = System.SmallLength;
+    Get(x)  = x tounit Unit;
+    Show(x) = {TextDigits: 1} x;
+  }
+
+  namespace Area {
+    Unit    = Distance.Unit^2;
+    Get(x)  = x tounit Unit;
+    Show(x) = {TextDigits: 0} x;
+  }
+
+  namespace Volume {
+    Unit    = System.SmallVolume;
+    Get(x)  = x tounit Unit;
+    Show(x) = {TextDigits: 0} x;
+  }
+}
+//============================================================================
+// This is boiler-plate formatting code for the products table
+
+CalcRow(title, length, width, height, Border border=null) = Row(border) {
+  title;
+  Measure.Distance.Show(length);
+  Measure.Distance.Show(width);
+  Measure.Distance.Show(height);
+  Measure.Area.Show(length * width);
+  Measure.Volume.Show(length * width * height)
+};
+
+AddProductRow(p) = CalcRow(
+  p.Title,
+  Measure.Distance.Get(p.Length),
+  Measure.Distance.Get(p.Width),
+  Measure.Distance.Get(p.Height)
+);
+
+AddAverageRow(products) = CalcRow(
+  "Average",
+  Mean(Measure.Distance.Get(each (each products).Length)),
+  Mean(Measure.Distance.Get(each (each products).Width)),
+  Mean(Measure.Distance.Get(each (each products).Height)),
+  BorderT(1)
+) {Background: Colors.LightGray};
+
+ProductTable(line) = Block {
+  Paragraph {
+    TextHeight: 20pt;
+    TextColor: line.Color;
+    SpaceBefore: 12pt;
+    Bold;
+    line.Title
+  };
+  Table(0.5, null, [0.70", 1.1"]) {
+    TextHeight: 9pt;
+    Row {
+      Background: line.Color;
+      TextColor: Colors.White;
+      "Name";
+      "Length";
+      "Width";
+      "Height";
+      "Area";
+      "Volume";
+    };
+    AddProductRow(each line.Products);
+    AddAverageRow(line.Products);
+  }
+};
+//===============================================================================

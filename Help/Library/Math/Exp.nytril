@@ -1,0 +1,41 @@
+include "Help";
+
+using Format;
+
+Range = -3..5;
+
+Description = DescriptionBlock {
+  EquationPar {
+    Symbol("y");
+    Tex.Equals;
+    Symbolic.E sup Symbol("x");
+  };
+
+  Chart(100%, 2") {
+    ChartType: ChartTypes.Line;
+    XAxis: ChartAxis {
+      Range step 1;
+    };
+    ValueAxis: ChartAxis;
+
+    ChartSeries {
+      foreach (var x in Range step 0.1)
+        new DataPoint(x, Math.Exp(x));
+    };
+  };
+};
+
+ShowExp(x) = Span {
+  Symbolic.E sup x; Tex.Equals; Math.Exp(x);
+};
+
+Example = Block {
+  ShowExp(10);
+  ShowExp(1);
+  ShowExp(0);
+  ShowExp(-1);
+};
+
+Main.Help = new HelpExample(attribute(Math.Exp));
+
+

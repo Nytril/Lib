@@ -1,0 +1,87 @@
+using Format;
+
+include "DocumentStyles";
+
+//=============================================================
+
+class CatalogStyleClass: ContentStyle {
+  Constructor(name) {
+    super.Constructor(ReferenceStyles.APA, name, 0.5");
+  }
+
+  virtual LastPar = Paragraph {};
+}
+
+//=============================================================
+
+abstract class CatalogContentClass: Content {
+  Constructor(name) {
+    super.Constructor(name);
+  }
+
+  abstract Body(CatalogStyleClass style);
+
+  override GetBody(ContentStyle style) = Block {
+    Body(style as CatalogStyleClass);
+  };
+}
+
+//=============================================================
+
+class TraditionalStyleClass: CatalogStyleClass {
+  Constructor {
+    super.Constructor("Traditional");
+  }
+
+  override HeadingPar(int level) {
+    if (level == 0) {
+      return Paragraph {
+        SpaceBefore: 10pt;
+        TextHeight: 120%;
+        Bold;
+        TextFamily: TextFamilies.Arial;
+      };
+    }
+    return super.HeadingPar(level);
+  }
+
+  override DefaultPar = Paragraph {
+    TextFamily: TextFamilies.TimesNewRoman;
+  };
+
+  override LastPar = Paragraph {
+  };
+}
+
+//=============================================================
+
+class ModernStyleClass: CatalogStyleClass {
+  Constructor {
+    super.Constructor("Modern");
+    Margins = 1";
+  }
+
+  override HeadingPar(int level) {
+    if (level == 0) {
+      return Paragraph {
+        TextColor: Colors.Brown;
+        SpaceBefore: 20pt;
+        TextHeight: 150%;
+        Bold;
+        TextFamily: TextFamilies.Calibri;
+      };
+    }
+    return super.HeadingPar(level);
+  }
+
+  override DefaultPar = Paragraph {
+    TextFamily: TextFamilies.Georgia;
+    LeftIndent: 8pt;
+  };
+
+  override BulletList = ListBlock(Span {"*"; TextColor: Colors.Gold}) {
+    LeftIndent: 8pt;
+  };
+}
+
+//=============================================================

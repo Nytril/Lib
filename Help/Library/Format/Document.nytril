@@ -1,0 +1,18 @@
+include "Help";
+include "Citations";
+
+using Format, LinkTypes;
+
+class MyDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#feecc21e-c0c0-485a-a663-6f43fd0965b1#, "My Document");
+  }
+
+  override GetDocument = Document {
+    "Hello World";
+  };
+}
+
+Example = (new MyDocument).GetDocument;
+
+Main.Help = new HelpExample(attribute(Format.Document));

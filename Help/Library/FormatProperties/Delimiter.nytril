@@ -1,0 +1,27 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "Use the Delimiter when creating lists with varying delimiters between items. ";
+  };
+};
+
+Example = Block {
+  var comment = Span {
+    "Comment";
+    Delimiter: ", ";
+  };
+
+  Paragraph {
+    comment;
+  };
+
+  Paragraph {
+    comment;
+    comment;
+  }
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.Delimiter));

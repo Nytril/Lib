@@ -1,0 +1,18 @@
+include "Help";
+
+using Format;
+
+Example = Table(null, null, [1.5", 2"]) {
+  Row { "double "; 123.456};
+  Row { "scientific notation "; 1.03E27};
+  Row { "Min value "; double.MinValue};
+  Row { "Max value "; double.MaxValue};
+  Row { "Negative infinity "; double.NegativeInfinity};
+  Row { "Positive infinity "; double.PositiveInfinity};
+  Row { "NaN "; double.NaN};
+};
+
+Main.Help = new HelpExample(attribute(double));
+
+
+

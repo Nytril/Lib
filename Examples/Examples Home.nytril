@@ -1,0 +1,45 @@
+using Format;
+
+include "Site";
+//=====================================================================
+
+readonly HomePage       Main.Documents.Home = new;
+readonly NytrilHomeSite Main.Site           = new("Nytril.Examples", "Examples", Icons.apps);
+
+//===============================================================
+
+class HomePage: SitePage {
+  Constructor {
+    super.Constructor(Main.Site, #1f3ffeed-cbc7-47a4-bd4f-1dc2adb673c2#, "Examples", "Nytril example output");
+
+    Tiles = [
+      new LinkTile(#7b0998a8-4cb5-4b8e-bbc4-e4663f5100e9#, "History", "History Paper", Icons.article),
+      new LinkTile(#4cff4ec6-8958-499d-a9f3-574593f4ec68#, "Chemistry", "Chemical Elements and Properties", Icons.science),
+      new LinkTile(#ac4daea1-bb04-4b9d-9e48-62fe65f01f1f#, "Mortgage Calculator", "Home finanace", Icons.home),
+      new LinkTile(#e208744e-56e0-4100-a0c4-8be6c299e83f#, "Phylogeny", "Organization of living species", Icons.flutter_dash),
+      new LinkTile(#9cb86582-ab51-455a-8350-c69f1d90008a#, "Finger Binary", "Powerful finger couting method", Icons.back_hand),
+      new LinkTile(#57e3aaea-efcc-4882-8839-c90957729dda#, "Family History", "Family tree organizer", Icons.account_tree),
+      new LinkTile(#421b4671-291c-4b8c-aaaa-067bac7f1728#, "White Paper", "The ups and downs of the game of golf", Icons.article),
+      new LinkTile(#9291faec-3d9d-4d6e-af4d-e65b11825678#, "Math Equations", "Math typesetting examples", Icons.superscript),
+    ];
+  }
+
+  override GetHeader = Block {
+    Main.Site.Header;
+    Paragraph {
+      SpaceAfter: 24;
+      TextHeight: 18pt;
+      "The following examples are included with the Nytril Desktop. ";
+      "Click on the squares below to see how these example look when they are published. ";
+      "To use the active features of the examples, ";
+      Span {
+        TextColor: NytrilPalette.Hyperlink;
+        "install";
+        Action: new Action(ToDocument, null, #804ef104-72aa-43bf-98da-8cc54bbe83f0#);
+      };
+      " the desktop software.";
+    };
+  };
+}
+
+//=====================================================================

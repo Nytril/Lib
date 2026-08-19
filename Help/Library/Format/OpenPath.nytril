@@ -1,0 +1,17 @@
+include "Help";
+
+using Format;
+
+Example = Paragraph {
+  Shape(null, new Stroke(5, Colors.Red)) {
+    OpenPath(10, 0) {
+      LineTo(40, 40);
+      LineTo(80, 15);
+      QuadTo(new(140, -20), new(200, 25));
+      CurveTo(new(225, 50), new(240, 10), new(260, 30));
+      ArcTo(new(300, 50), new(20, 20), -60 degrees, true, true);
+    }
+  }
+};
+
+Main.Help = new HelpExample(attribute Format.OpenPath);

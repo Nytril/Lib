@@ -1,0 +1,293 @@
+using Format;
+
+include "Structure";
+include "Site";
+include "Slideshow";
+include "Data";
+//=====================================================================
+
+readonly namespace Main.Documents {
+  HomePage            HomePage     = new;
+  HistorySummary      Summary      = new;
+  HistoryPresentation Presentation = new;
+
+  StyleDocument Paper = new(#97194437-dac5-4861-ae05-f1ea9933b0e0#, "Paper", new PaperContent, PaperStyle);
+  StyleDocument Book  = new(#51fb21c5-63f0-4eea-88a8-0e49e0973ae8#, "Book", new BookContent, new BookStyle);
+}
+
+readonly HistorySite Main.Site = new;
+
+readonly DocCatalogEntry[] Main.Catalog = [
+  new(Main.Documents.Presentation, "Summaries/Other"),
+  new(Main.Documents.Summary),
+];
+
+
+//=====================================================================
+
+class HistoryContent: Content {
+  var Subject Subject;
+
+  Constructor(Subject person) {
+    super.Constructor(person.ShowFullName);
+    Subject = person;
+  }
+
+  override GetBody(ContentStyle style) = Block {
+    TextHeight: 16pt;
+
+    Paragraph {
+      ParAlignment: Center;
+      History.ShowPortrait(Subject, 2.5");
+      SpaceAfter: 10pt;
+    };
+
+    History.ShowPerson(Subject);
+    History.ShowRelations(style, Subject);
+  };
+}
+
+//=========================================================================
+
+class BookStyle: MLAStyle {
+  Constructor {
+    super.Constructor;
+  }
+
+  override GetContentDocument(DocumentEntry document, AuthoredContent content) = Document {
+    var subtitle = content.Reference.Subtitle;
+    Paragraph {
+      TextFace: Serif;
+      SpaceBefore: 3";
+      SpaceAfter: subtitle is valid ? 10pt : 3";
+      ParAlignment: Center;
+      TextHeight: 36pt;
+      content.Title;
+    };
+    if (subtitle is valid) {
+      Paragraph {
+        SpaceAfter: 3";
+        ParAlignment: Center;
+        TextHeight: 24pt;
+        subtitle;
+      };
+    }
+
+    Block {
+      TextHeight: 18pt;
+      ParAlignment: Center;
+      GetFullName(each content.Authors);
+    };
+
+    Block {
+      SectionNextPage;
+      TOC1 {
+        DocLang.TableOfContents;
+      };
+      TOC2(each content.Children);
+    };
+
+    foreach (var c in content.Children) {
+      SectionOddPage {
+        Header: MarginBlock(0.25") {
+          Paragraph {
+            ParAlignment: Right;
+            c.Title;
+          };
+          Even: Block {
+            Paragraph {
+              c.Title;
+            }
+          };
+          First: Block;
+        };
+        Footer: MarginBlock(0.5") {
+          Paragraph {
+            ParAlignment: Center;
+            DocFields.PageNumber;
+          };
+        };
+      };
+
+      Paragraph {
+        TextHeight: 40pt;
+        Bold;
+        Span {
+          DocLang.Chapter;
+          Space;
+          each1;
+        };
+      }
+      RecurseContent(c);
+    }
+
+    SectionOddPage;
+    AddReadings(document);
+    AddReferences;
+    AddTableOfFigures;
+    AddTableOfTables;
+    AddIndex;
+    AddAppendix(content.Appendix);
+  };
+
+  RecurseContent(Content content) = Block {
+    content.GetBody(this);
+    foreach (var c in content.Children)
+      RecurseContent(c);
+  };
+}
+
+//=====================================================================
+
+readonly Graph GeorgeGraph = new {Subjects.GeorgeWashington};
+
+class HistorySummary: DocumentEntry {
+  Constructor {
+    super.Constructor(#3a1481ff-1527-4b5d-880b-1dfc1758151f#, "Fact Summary");
+    Description    = "A summary of the historical facts";
+    ReferenceStyle = PaperStyle;
+    ContentType    = ContentTypes.Article;
+  }
+
+  override GetDocument = Document {
+    Footer: MarginBlock(36pt) {
+      ParAlignment: Center;
+      TextHeight: 12pt;
+      DocFields.PageNumber;
+    };
+    Paragraph {
+      TextHeight: 20pt;
+      SpaceAfter: 20pt;
+      ParAlignment: Center;
+      Name;
+    };
+
+    Paragraph {
+      TextHeight: 14pt;
+      "Connections to George Washington";
+    };
+    FitBox(GeorgeGraph, null, null, new Edge(0.5, 5));
+    PageBreak;
+
+    foreach (var person in History.Presidents) {
+      History.ShowPerson(person);
+      History.ShowRelations(PaperStyle, person);
+      ShowEventTable(person);
+      PageBreak;
+    }
+
+    Block {
+      Paragraph;
+      Separator: Paragraph;
+      History.ShowEvent(PaperStyle, each Events);
+    };
+
+    PaperStyle.AddReferences;
+  };
+}
+
+//=====================================================================
+
+class HistoryPresentation: SlideShow {
+  Constructor {
+    super.Constructor(#294973aa-a177-4dd3-89f0-f501ba0a3201#, "U.S. History Slideshow", new FancyDesign, new MLAStyle);
+    Description = "A slideshow presentation of the main historical points";
+  }
+
+  override void CreateSlides {
+    foreach (var p in History.Presidents)
+      AddSlide(new FigureSlide(new HistoryContent(p)));
+
+    AddSlide(new ReferenceSlide);
+  }
+}
+
+//=====================================================================
+
+readonly Color          DarkGold  = #BA6229#;
+readonly Color          LightGold = #FCDE52#;
+readonly LinearGradient GoldFill  = new(0, 0, 1, 1, [new(0, LightGold), new(1, DarkGold)]);
+
+
+class HistorySite: RealmSite {
+  Constructor {
+    super.Constructor("Nytril.Examples.History");
+    ToolbarBackground             = #B9B7BDFF#;
+    ToolbarColor                  = Colors.White;
+    ButtonActive                  = #EF3353FF#;
+    ButtonInactive                = Colors.DarkRed;
+    SlideHeaderBackgroundActive   = DarkGold;
+    SlideHeaderBackgroundInactive = Colors.LightGray;
+    SlideHeaderColorActive        = LightGold;
+    SlideHeaderColorInactive      = DarkGold;
+    SlideBackground               = Colors.Black;
+    PaperColor                    = Colors.White;
+  }
+
+  override GetLayoutIcon = Shape(GoldFill, new(0.25, ToolbarBackground)) {
+    TextFamily: TextFamilies.TimesNewRoman;
+    Bold;
+    "H";
+  };
+
+  override GetLayoutBug = GetLayoutIcon;
+
+  override GetLayoutLogo = Span {
+    TextFamily: TextFamilies.TimesNewRoman;
+    TextColor: DarkGold;
+    Shape(GoldFill) {
+      Bold;
+      "H";
+    };
+
+    "istory";
+  };
+
+  override GetLayoutSiteLogo = GetLayoutLogo;
+}
+
+//===============================================================
+
+class HistoryTile: DocTile {
+  Constructor(DocumentEntry document, icon) {
+    super.Constructor(document, icon);
+    BackColor    = DarkGold..LightGold;
+    TitleColor   = LightGold;
+    LineColor    = LightGold;
+    IconFill     = GoldFill;
+    IconLine     = Colors.White;
+    CornerRadius = 5pt;
+  }
+}
+
+//===============================================================
+
+class HomePage: SitePage {
+  Constructor {
+    super.Constructor(Main.Site, #7b0998a8-4cb5-4b8e-bbc4-e4663f5100e9#, "Home", "U.S. History Research Project");
+
+    Tiles = [
+      new HistoryTile(Main.Documents.Paper, Icons.article),
+      new HistoryTile(Main.Documents.Summary, Icons.lightbulb),
+      new HistoryTile(Main.Documents.Presentation, Icons.slideshow),
+      new HistoryTile(Main.Documents.Book, Icons.book),
+    ];
+  }
+
+  override GetHeader = Block {
+    Paragraph {
+      Span {
+        TextHeight: 40pt;
+        Main.Site.GetLayoutLogo;
+      };
+      Span {
+        TextColor: LightGold;
+        TextHeight: 20pt;
+        "of the United States";
+      };
+      SpaceAfter: 20pt;
+    };
+  };
+}
+
+//=====================================================================

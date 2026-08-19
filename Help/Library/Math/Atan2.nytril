@@ -1,0 +1,27 @@
+include "Help";
+
+using Format;
+
+Range = -5..5;
+
+Description = DescriptionBlock {
+  Span {
+    "Use this function when you have a rise/run and you need the angle. A zero value for x will return ";
+    Symbolic.PI / 2;
+  };
+};
+
+ShowAtan2(y, x) = Span {
+  "The arc tangent of {0}, {1} is {2}."(y, x, Math.Atan2(y, x));
+};
+
+Example = Block {
+  ShowAtan2(10, 5);
+  ShowAtan2(0, 0);
+  ShowAtan2(100, 0);
+  ShowAtan2(0, 100);
+};
+
+Main.Help = new HelpExample(attribute(Math.Atan2));
+
+

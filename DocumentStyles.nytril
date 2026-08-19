@@ -1,0 +1,905 @@
+using Format, LinkTypes;
+
+include "Citations";
+
+//=========================================================================
+
+class MLAStyle: ContentStyle {
+  Constructor(TemplateOptions options=TemplateOptions.None) {
+    super.Constructor(ReferenceStyles.MLA, "MLA", 0.75", options);
+    InlineOptions    = CiteOptions.ShowAuthors | CiteOptions.ShowPages | CiteOptions.ShowBrackets;
+    DefDelim         = DotSpace;
+    PersonAnd        = " and ";
+    CitePagePrefixes = [Empty, Empty];
+    RefTitleStyle    = Italic;
+    ParIndent        = 36pt;
+    BibTable         = false;
+    DateParen        = false;
+    NameListAfter    = false;
+  }
+
+  override WriteEndName(Person person) = each0 == 0 ? GetLastFirst(person) : GetFullName(person);
+
+  override EndnoteSpan(DocReference reference) = Span {
+    WriteEndNames(GetAuthorList(reference));
+    GetTitle(reference);
+    GetInterview(reference, false, null, ", Interviewer");
+
+    GetNameList(reference, TranslatorLink, "Translated by ", null, true);
+    GetNameList(reference, EditorLink, "Edited by ");
+    GetNameList(reference, PerformerLink, "Performed by ");
+    GetNameList(reference, DirectorLink, "Directed by ");
+    GetNameList(reference, ComposerLink, "Conposed by ");
+
+    GetPublisherDate(reference);
+    GetChapterPages(reference);
+    GetOnline(reference);
+    GetNotePublish(reference);
+  };
+
+  override GetOnline(DocReference reference) = ShowWebsite(reference, null, null, "Accessed ", DotSpace);
+}
+
+//=========================================================================
+
+class ChicagoStyle: ContentStyle {
+  Constructor(TemplateOptions options=TemplateOptions.None) {
+    super.Constructor(ReferenceStyles.Chicago, "Chicago", 0.75", options);
+
+    InlineOptions = CiteOptions.ShowAuthors | CiteOptions.ShowDate | CiteOptions.ShowPages | CiteOptions.ShowBrackets;
+    DefDelim      = DotSpace;
+    PersonAnd     = " and ";
+    ParIndent     = 36pt;
+    BibTable      = false;
+    DateParen     = false;
+    InlineAuthors = 5;
+    RefTitleStyle = Italic;
+    NameListAfter = false;
+  }
+
+  override EndnoteSpan(DocReference reference) = Span {
+    var authors = GetAuthorList(reference);
+    if (authors is valid) {
+      WriteEndNames(authors);
+      NextDelim = reference.Type == ReferenceTypes.Interview ? CommaSpace : DotSpace;
+    }
+
+    GetInterview(reference, false, " interview by ");
+    if (reference.Date is valid) {
+      AddDelim;
+      reference.Date.Year;
+    }
+
+    GetTitle(reference);
+
+    GetNameList(reference, TranslatorLink, "Translated by ", null, true);
+    GetNameList(reference, EditorLink, "Edited by ");
+    GetNameList(reference, PerformerLink, "Performed by ");
+    GetNameList(reference, DirectorLink, "Directed by ");
+    GetNameList(reference, ComposerLink, "Conposed by ");
+
+    GetOnline(reference);
+    GetReferenceNumbers(reference);
+    GetEdition(reference);
+    GetChapterPages(reference);
+    GetPublisherDate(reference);
+    GetNotePublish(reference);
+  };
+
+  override WriteEndName(Person person) = each0 == 0 ? GetLastFirst(person) : GetFullName(person);
+
+  override GetOnline(DocReference reference) = ShowWebsite(reference, null, " Accessed ", null, DotSpace);
+}
+
+//=========================================================================
+
+class APAStyle: ContentStyle {
+  Constructor(TemplateOptions options=TemplateOptions.None) {
+    super.Constructor(ReferenceStyles.APA, "APA", 0.75", options);
+    DateFormat     = ["yyyy", "yyyy, M", "yyyy, MMMM dd"];
+    InlineOptions  = CiteOptions.ShowAuthors | CiteOptions.ShowDate | CiteOptions.ShowPages | CiteOptions.ShowBrackets;
+    EndAuthors     = 20;
+    PartialAuthors = 18;
+    AuthorPartial  = true;
+    InlineAuthors  = 3;
+    DateAlternate  = "(n.d.)";
+    ParIndent      = 36pt;
+    BibTable       = false;
+  }
+
+  WritePublishDate(DocReference reference) = Span {
+    if (reference.Date is not null) {
+      AddDelim;
+      PushParen;
+      FormatDate(reference.Date);
+      PopParen(DotSpace);
+    }
+  };
+
+  override EndnoteSpan(DocReference reference) = Span {
+    var authors = GetAuthorList(reference);
+    if (authors is valid) {
+      WriteEndNames(authors);
+      WritePublishDate(reference);
+      GetTitle(reference);
+    }
+    else {
+      GetTitle(reference);
+      WritePublishDate(reference);
+    }
+
+    GetInterview(reference, true, null, ", Interviewer");
+    GetNameList(reference, TranslatorLink, " Trans.", null, true);
+    GetNameList(reference, EditorLink, " Eds.", " Ed.");
+    GetNameList(reference, PerformerLink, " Performers");
+    GetNameList(reference, DirectorLink, " Dirs.", " Dir.");
+    GetNameList(reference, ComposerLink, " Comps.", " Comp.");
+
+    int count = 0;
+    if (reference.Volume is valid)
+      ++count;
+    if (reference.Edition is valid)
+      ++count;
+    if (reference.Pages is valid or reference.Chapter is valid)
+      ++count;
+    if (count > 1)
+      PushParen;
+
+    GetReferenceNumbers(reference);
+    GetEdition(reference);
+    GetChapterPages(reference);
+    if (count > 1)
+      PopParen;
+
+    GetPublisher(reference);
+    GetOnline(reference);
+    GetNotePublish(reference);
+  };
+}
+
+//=========================================================================
+
+class IEEEStyle: ContentStyle {
+  Constructor(TemplateOptions options=TemplateOptions.None) {
+    super.Constructor(ReferenceStyles.IEEE, "IEEE", 0.75", options);
+    DateFormat     = ["yyyy", "MMM. yyyy", "MMM. dd, yyyy"];
+    InlineBrackets = ['[', ']'];
+    Options        = StyleOptions.ReferenceFootnotes;
+    InlineOptions  = CiteOptions.ShowOrder;
+    EndAuthors     = 7;
+    RefTitleStyle  = Italic;
+    NameListAfter  = false;
+    InlineBegin    = " [";
+    InlineEnd      = "]";
+  }
+
+  override PaperEndnotes(DocumentEntry document, AuthoredContent content) = Block {
+    AddReadings(document);
+    AddTableOfFigures;
+    AddTableOfTables;
+    AddAppendix(content.Appendix);
+    AddComments(content);
+  };
+
+  override EndnoteSpan(DocReference reference) = Span {
+    var authors = GetAuthorList(reference);
+    if (authors is valid) {
+      WriteEndNames(authors);
+      if (reference.Type == ReferenceTypes.Interview)
+        "Interviewee";
+    }
+    GetTitle(reference);
+    if (reference.Type == ReferenceTypes.Interview) {
+      "[Interview]";
+      NextDelim = DotSpace;
+    }
+
+    GetNameList(reference, TranslatorLink, "trans. by ", null, true);
+    GetNameList(reference, EditorLink, "ed. by ");
+    GetNameList(reference, PerformerLink, "perf. by ");
+    GetNameList(reference, DirectorLink, "dir. by ");
+    GetNameList(reference, ComposerLink, "comp. by ");
+
+    GetPublisherDate(reference);
+    GetOnline(reference);
+    GetChapterPages(reference);
+    GetNotePublish(reference);
+  };
+
+  override EndnoteNumber(index) = Span {
+    "[";
+    index;
+    "]";
+  };
+
+  override GetOnline(DocReference reference) = ShowWebsite(reference, "[Online] Available: ", DotSpace, "Accessed: ");
+}
+
+//=========================================================================
+
+abstract class JournalStyle: ContentStyle {
+  Constructor(Organization journal, ReferenceStyles style, Thickness margin, TemplateOptions options=None) {
+    super.Constructor(style, journal.Name, margin, options);
+  }
+}
+
+//=========================================================================
+
+class NatureStyle: JournalStyle {
+  Constructor(Organization journal, TemplateOptions options=TemplateOptions.None) {
+    super.Constructor(journal, ReferenceStyles.IEEE, 0.75", options);
+    DateFormat    = ["yyyy", "MMMM yyyy", "MMMM dd, yyyy"];
+    InlineOptions = CiteOptions.ShowOrder | CiteOptions.ShowPages;
+    InlineFormat  = {TextColor: Colors.Blue; TextAlignment: TextAlignments.Superscript};
+  }
+}
+
+//=========================================================================
+
+class PNASStyle: JournalStyle {
+  Constructor(Organization journal, TemplateOptions options=TemplateOptions.None) {
+    super.Constructor(journal, ReferenceStyles.IEEE, new(0.72", 0.75", 0.78", 0.72"), options);
+    TexTemplate      = "pnas-new";
+    DateFormat       = ["yyyy", "MMMM yyyy", "MMMM dd, yyyy"];
+    InlineOptions    = CiteOptions.ShowOrder | CiteOptions.ShowPages;
+    InlineBegin      = " (";
+    InlineEnd        = ")";
+    SectionCode      = "section*";
+    AuthorEnumerator = @Enumerators.Alpha;
+
+
+    TexOptions.Add("9pt");
+    TexOptions.Add("twoside");
+    TexOptions.Add(options.HasFlag(TwoColumn) ? "twocolumn" : "onecolumn");
+    if (options.HasFlag(LineNumbers)) {
+      TexPackages.Add("lineno");
+      TexOptions.Add("lineno");
+    }
+  }
+
+  override PaperEndnotes(DocumentEntry document, AuthoredContent content) = Block {
+    AddReadings(document);
+    AddReferences;
+    AddAppendix(content.Appendix);
+    AddComments(content);
+  };
+
+  override GetContentDocument(DocumentEntry document, AuthoredContent content) = Document(Margins, false) {
+    SetDocumentOptions(content);
+
+    Footer: GetFooter(content);
+
+    AddTitle(content);
+    if (content.Authors is valid) {
+      Block {
+        SansSerif;
+        TextHeight: 10pt;
+        ShowTitleAuthors(content);
+      }
+    }
+
+    Paragraph {
+      DocLang.CompiledOn;
+      Span {
+        content.Created;
+        TextFormat: "MMMM d, yyyy";
+      };
+      SpaceAfter: 10pt;
+    };
+
+    SectionContinuous(Columns, ColGap);
+
+    if (content.Abstract is not null)
+      ShowAbstract(content.Abstract);
+
+    var sig = content.SignificanceStatement;
+    if (sig is not null) {
+      Figure(100%, null, sig, FigureOptions.Bottom, new Edge(0.5pt, 6pt, #0065A5#)) {
+        Background:#CDD9EB#;
+        Paragraph {
+          TextColor: #0065A5#;
+          SpaceAfter: 3pt;
+          Bold;
+          sig.Title;
+        };
+        Block {
+          TextColor: #0065B4#;
+          AddBody(sig);
+        };
+      };
+    }
+
+    if (content.Keywords is valid) {
+      SinglePar {
+        TextHeight: 8pt;
+        SpaceBefore: 8pt;
+        SpaceAfter: 8pt;
+        DocFields.Anchor(content.AnchorName);
+        Span {
+          Separator: " | ";
+          content.Keywords;
+        }
+      };
+    }
+
+    ShowSections(content);
+    PaperEndnotes(document, content);
+  };
+
+  override GetFooter(AuthoredContent content) = MarginBlock(0.6") {
+    SansSerif;
+    TextHeight: 8pt;
+
+    var sep = "   |   ";
+
+    TabStop[] tabstops = [new(ExtentWidth, TabTypes.Right)];
+    var r = content.Reference;
+    var pnas = Span {
+      Separator: sep;
+      Name;
+      Span {
+        r.Date;
+        TextFormat: "MMMM dd, yyyy";
+        Bold;
+      };
+      var vol = r.Volume;
+      if (vol is valid)
+        Span {"vol."; vol};
+
+      var num = r.Number;
+      if (num is valid)
+        Span {"no."; num};
+    };
+
+    var authorsum = null;
+    var authors   = content.Authors;
+    if (authors is valid) {
+      authorsum = Span {
+        authors[0].Last;
+        if (authors.Length > 1)
+          Italic " et. al.";
+      };
+    }
+
+    var url = content.DocumentURL;
+    Paragraph(null, tabstops) {
+      Span {
+        Bold;
+        DocFields.PageNumber;
+      };
+      sep;
+      if (url is valid) {
+        url;
+        Tab;
+      }
+      authorsum;
+    };
+
+    First: Paragraph(null, tabstops) {
+      if (url is valid) {
+        url;
+        Tab;
+      }
+      pnas;
+      sep;
+      Span {
+        TextColor: Colors.Blue;
+        DocFields.PageNumber; "-"; DocFields.PageCount;
+      };
+    };
+
+    Even: Paragraph(null, tabstops) {
+      authorsum;
+      Tab;
+      pnas;
+      sep;
+      Span {
+        Bold;
+        DocFields.PageNumber;
+      };
+    }
+  };
+}
+
+//=========================================================================
+
+class OUPStyle: JournalStyle {
+  const MarginBorderLine = 0.75pt;
+
+  Constructor(Organization journal, TemplateOptions options=None) {
+    super.Constructor(journal, ReferenceStyles.APA, new(0.75", 0.5", 0.75", 0.5"), options);
+    TexTemplate   = "oup-authoring-template";
+    DateFormat    = ["yyyy", "MMMM yyyy", "MMMM dd, yyyy"];
+    PubDateFormat = ["yyyy", "M yyyy", "dd M, yyyy"];
+    InlineOptions = CiteOptions.ShowAuthors | CiteOptions.ShowDate | CiteOptions.ShowBrackets | CiteOptions.ShowPages;
+    InlineBegin   = " (";
+    InlineEnd     = ")";
+    PagePrefixes  = ["page ", "pages "];
+    PersonAnd     = " and ";
+    DateParen     = false;
+    BibTable      = false;
+    TexOptions.Add(options.HasFlag(SectionNumbers) ? "numsec" : "nonumsec");
+    TexOptions.AddEach(["webpdf", "modern", "large", "namedate"]);
+
+    TexPackages.AddEach(["verbatim", "array", "booktabs"]);
+    if (options.HasFlag(LineNumbers))
+      TexPackages.Add("lineno");
+  }
+
+  override SetTextStyle = {
+    TextHeight: 10pt;
+    TextFamily: TextFamilies.LibertinusSans;
+  };
+
+  override GetHeader(AuthoredContent content) = MarginBlock(0.25") {
+    SansSerif;
+    TextHeight: 9pt;
+
+    var page = Span {
+      Bold;
+      DocFields.PageNumber;
+    };
+
+    var title = content.Title;
+
+    var par = Paragraph(BorderB(new Edge(MarginBorderLine, 6pt)), [new(ExtentWidth, TabTypes.Right)]) {
+      SpaceAfter: 6pt;
+    };
+
+    par {
+      page;
+      Tab;
+      title;
+    };
+
+    First: Block;
+
+    Even: par {
+      title;
+      Tab;
+      page;
+    }
+  };
+
+  override GetFooter(AuthoredContent content) = MarginBlock(0.5") {
+    First: Block {
+      SansSerif;
+      TextHeight: 7pt;
+      Paragraph(BorderT(new(MarginBorderLine, 12))) {
+        Tex.copyright;
+        Space;
+        "The Author";
+        if (content.Authors.Length > 1)
+          "s";
+        var r = content.Reference;
+        if (r is valid and r.Date is valid) {
+          Space;
+          r.Date.Year;
+          DotSpace;
+        }
+
+        var publisher = content.Reference.FindFirstFact(JournalLink) as Organization;
+        if (publisher is valid) {
+          "Published by ";
+          publisher.Name;
+          DotSpace;
+        }
+      };
+      OpenAccessLicense;
+    };
+  };
+
+  PaperHeader(AuthoredContent content) = Paragraph(null, [new(ExtentWidth, Right)]) {
+    TextFamily: TextFamilies.LibertinusSans;
+    TextHeight: 10pt;
+    var tc = TextColor: Colors.DarkGray;
+
+    HBox(100%) {
+      VAlign: Center;
+      Justify: Justifiers.SpaceBetween;
+      VBox {
+        Paragraph {
+          tc;
+          Italic;
+          Name;
+        };
+
+        var r   = content.Reference;
+        var url = content.DocumentURL;
+        if (url is valid) {
+          Paragraph {
+            tc;
+            new URL(url);
+          }
+        }
+
+        Paragraph {
+          SpaceAfter: 10pt;
+          tc;
+          ShowPublishDate(r);
+        };
+
+        var type = r.Type.Name;
+        if (r.Type == ReferenceTypes.Article)
+          type = "Research Article";
+        Paragraph {
+          Bold;
+          type;
+        };
+      };
+      Tab;
+      HBox {
+        TextFamily: TextFamilies.CMUSansSerif;
+        TextColor: #3B3B3B#;
+        TextHeight: 18pt;
+        TextLetterSpace: 25%;
+       "OXFORD";
+      };
+    }
+  };
+
+  override AuthorListSeparator = WideLine;
+
+  override GetContentDocument(DocumentEntry document, AuthoredContent content) = Document(Margins) {
+    SetDocumentOptions(content);
+
+    Header: GetHeader(content);
+    Footer: GetFooter(content);
+
+    PaperHeader(content);
+    WideLine;
+
+    AddTitle(content);
+    if (content.Authors is valid) {
+      Block {
+        TextHeight: 10pt;
+        SansSerif;
+        ShowTitleAuthors(content);
+      };
+
+      if (content.AuthorNotes is valid and not IsAnonymous) {
+        Paragraph {
+          LeftIndent: NoteIndexIndent;
+          FirstIndent: -NoteIndexIndent;
+
+          foreach (var n in content.AuthorNotes) {
+            Span {
+              TextAlignment: TextAlignments.Superscript;
+              n.Mark;
+            };
+            Space;
+            n.Text;
+            var email = n.Author.FindFirstFact(WorkEmailLink);
+            if (email is valid) {
+              DotSpace;
+              email;
+            }
+          }
+        };
+      }
+    }
+    Paragraph;
+
+    var abst = content.Abstract;
+    if (abst is not null) {
+      Block {
+        Bold;
+        SansSerif;
+        AddBody(abst);
+      }
+    }
+
+    if (content.Keywords is valid) {
+      SinglePar {
+        DocFields.Anchor(content.AnchorName);
+        SansSerif;
+        SpaceBefore: 8pt;
+        SpaceAfter: 16pt;
+        Bold DocLang.Keywords;
+        Space;
+        Span {
+          Separator: CommaSpace;
+          content.Keywords;
+        };
+      };
+    }
+
+    if (Columns > 1)
+      SectionContinuous(Columns, ColGap);
+    ShowSections(content);
+    PaperEndnotes(document, content);
+  };
+
+  WideLine = Paragraph(BorderT(1pt)) {
+    SpaceAfter: 2pt;
+    SpaceBefore: 10pt;
+  };
+
+  override HeadingPar(int level) = Paragraph {
+    SansSerif;
+    Bold;
+    KeepWithNext: true;
+
+    switch (level) {
+      case 0:
+        TextHeight: 16pt;
+        KeepWithNext: true;
+        SpaceBefore: 18pt;
+        SpaceAfter: 4pt;
+        break;
+
+      case 1:
+        TextHeight: 14pt;
+        SpaceBefore: 14pt;
+        SpaceAfter: 2pt;
+        break;
+
+      case 2:
+        TextHeight: 13pt;
+        SpaceBefore: 10pt;
+        SpaceAfter: 8pt;
+        break;
+
+      default:
+        TextHeight: 12pt;
+        Italic;
+        SpaceBefore: 4pt;
+        break;
+    }
+  };
+
+  override GetOnline(DocReference reference) = ShowWebsite(reference, null, null, "Retrieved ", " URL ");
+
+  override void TexAuthors(TexSource tex, AuthoredContent content) {
+    var cmarker = "$\\ast$";
+    var authors = content.Authors;
+
+    if (authors is valid) {
+      var corr = content.Correspondant;
+      var email;
+
+      foreach (var author in authors) {
+        tex.Keyword("author");
+        tex.Code("[{0}"(each1));
+        if (author == corr) {
+          email = corr.FindFirstFact(WorkEmailLink);
+          if (email is valid)
+            tex.Code(","+cmarker);
+        }
+        tex.Code("]");
+        tex.OpenScope;
+        tex.Text(author);
+        CloseScope(tex, 1);
+      }
+
+      tex.LineBreak;
+
+      foreach (var author in authors)
+        ShowAuthorAddress(tex, author);
+      tex.LineBreak;
+      tex.LineBreak;
+
+      if (email is valid) {
+        tex.Keyword("corresp");
+        tex.Code("[{0}]"(cmarker));
+        tex.OpenScope;
+        tex.Text(corr);
+        tex.Code(Space);
+        tex.Keyword("href");
+        tex.Code("{email:");
+        Code(tex, email.Value);
+        tex.Code("}{");
+        Code(tex, email.Value);
+        tex.CloseScope;
+        CloseScope(tex, 2);
+      }
+    }
+  }
+
+  void ShowAuthorAddress(TexSource tex, Person author) {
+    var department = author.FindFirstFact(DepartmentLink) as Organization;
+    if (department is valid) {
+      tex.Keyword("address");
+      tex.Code("[{0}]"(each1));
+      tex.OpenScope;
+
+      Marker(tex, "orgdiv", department.Name, 0);
+      tex.Code(CommaSpace);
+      var org = department.FindFirstFact(DepartmentLink, true) as Organization;
+      if (org is valid)
+        Marker(tex, "orgname", org.Name, 0);
+
+      var loc = org ?? department;
+
+      var address = loc.FindFirstFact(PostalAddress) as PostalAddress;
+      if (address is valid) {
+        tex.Keyword("orgaddress");
+        tex.OpenScope;
+        Marker(tex, "street", address.Address, 0);
+        if (address.PostalCode is valid) {
+          tex.Code(CommaSpace);
+          Marker(tex, "postcode", address.PostalCode, 0);
+        }
+
+        var city = address.FindFirstFact(City);
+        Fact s;
+        if (city is valid)
+          s = city.FindFirstFact(State);
+        else
+          s = address.FindFirstFact(State);
+        if (s is State state) {
+          tex.Code(CommaSpace);
+          Marker(tex, "state", state.Name, 0);
+        }
+
+        Fact c;
+        if (c is valid)
+          c = c.FindFirstFact(Country);
+        else
+          c = address.FindFirstFact(Country) ?? city?.FindFirstFact(Country);
+        if (c is Country country) {
+          tex.Code(CommaSpace);
+          Marker(tex, "country", country.Name, 0);
+        }
+        tex.CloseScope;
+      }
+    }
+    CloseScope(tex, 1);
+  }
+
+  override void GetTexContent(TexSource tex, AuthoredContent content) {
+    TexOutput = true;
+    AddDocumentStatement(tex);
+
+    if (Columns == 1) {
+      tex.Keyword("onecolumn");
+      tex.LineBreak;
+    }
+
+    StandardCommands(tex, content);
+
+    Marker(tex, "begin", "document");
+    if (DocOptions.HasFlag(LineNumbers))
+      Marker(tex, "linenumbers", null);
+
+    Marker(tex, "journaltitle", Name);
+    var doi = content.Reference.DOI;
+    if (doi is valid)
+      Marker(tex, "DOI", doi);
+
+    var year = content.Reference.Date;
+
+    Marker(tex, "copyrightyear", year);
+    Marker(tex, "pubyear", year);
+//    \access{Advance Access Publication Date: Day Month Year}
+    Marker(tex, "appnotes", "Paper");
+    Marker(tex, "firstpage", 1);
+
+//    \subtitle{Subject Section}
+
+    AddHeader(tex, content);
+
+    if (content.Abstract is valid) {
+      var body = AddBody(content.Abstract);
+      if (body is valid) {
+        tex.Keyword("abstract");
+        tex.OpenScope;
+        tex.Text(body);
+        tex.CloseScope;
+        tex.LineBreak;
+        tex.LineBreak;
+      }
+    }
+    if (content.Keywords is valid) {
+      tex.Keyword("keywords");
+      tex.OpenScope;
+      foreach (var k in content.Keywords) {
+        if (each0 > 0)
+          tex.Code(CommaSpace);
+        tex.Text(k);
+      }
+      tex.CloseScope;
+      tex.LineBreak;
+      tex.LineBreak;
+    }
+
+    tex.Keyword("maketitle");
+    tex.LineBreak;
+
+    PushExtentSize(new(HalfWidth, ExtentHeight));
+    foreach (var c in content.Children)
+      ShowChildTex(tex, each1, 0, c);
+    if (content.Acknowledgements is not null)
+      ShowChildTex(tex, 1, 0, content.Acknowledgements);
+    PopExtent();
+    tex.LineBreak;
+
+
+    Marker(tex, "bibliographystyle", "abbrvnat");
+    Marker(tex, "bibliography", "main", 2);
+    Marker(tex, "end", "document");
+    TexOutput = false;
+  }
+
+  override WriteEndName(Person person) = GetFirstInitialLast(person);
+
+  override PaperEndnotes(DocumentEntry document, AuthoredContent content) = Block {
+    AddReadings(document);
+    AddReferences;
+//    AddTableOfFigures;
+//    AddTableOfTables;
+    AddAppendix(content.Appendix);
+    AddComments(content);
+  };
+
+  override GetLayoutFootnotes(Citation[] citations) = Block {
+    Paragraph(BorderB(1)) {
+      RightIndent: 70%;
+    };
+
+    GetNotes(citations, InlineOptions.NotFlag(CiteOptions.ShowAuthors), true, 0);
+  };
+
+  override GetLayoutTipNotes(Citation[] citations) = GetNotes(citations.ToSortedArray(false, @OrderComp), false, true, 0);
+}
+
+//======================================================================
+
+class StyleDocument: DocumentEntry {
+  var ContentStyle    Style;
+  var AuthoredContent Content;
+
+  Constructor(Guid id, string name, AuthoredContent content, ContentStyle style) {
+    super.Constructor(id, name);
+    Created        = content.Created.WithPrecision(Month);
+    Description    = content.Description;
+    Content        = content;
+    Title          = content.Title;
+    Subject        = content.Reference.Abstract;
+    Style          = style;
+    ReferenceStyle = style;
+    ContentType    = ContentTypes.Article;
+    var r = content.Reference;
+    if (r is valid and r.Type == ReferenceTypes.Book)
+      ContentType = ContentTypes.Book;
+
+
+    Link to content.Reference;
+
+    if (content.Keywords is valid)
+      Link to (new Tag(each content.Keywords));
+    if (style.IsAnonymous)
+      Creator = DocLang.Anonymous;
+    else if (content.Authors is valid)
+      Creator = style.TextList {style.GetFullName(each content.Authors)};
+  }
+
+  override GetDocument = Style.GetContentDocument(this, Content);
+
+  override void GetTexSource(TexSource tex) {
+    Style.GetTexContent(tex, Content);
+  }
+}
+
+//=========================================================================
+
+class TexDocument: DocumentEntry {
+  var StyleDocument Doc;
+
+  Constructor(Guid id, StyleDocument doc) {
+    super.Constructor(id, "LaTeX for \"{0}\""(doc.Name));
+    Doc       = doc;
+    NoPublish = true;
+    ReferenceStyle = doc.ReferenceStyle;
+  }
+
+  override GetDocument = Document(0.5") {
+    TextHeight: 7pt;
+    var tex = new TexSource;
+    Doc.Style.GetTexContent(tex, Doc.Content);
+    tex.GetLayoutBlock;
+  };
+}
+
+//=========================================================================
+

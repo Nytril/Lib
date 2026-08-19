@@ -1,0 +1,31 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "The MatrixBox is a small table of rows and cell inserted as a frame inside a span. ";
+  };
+};
+
+Example = Paragraph {
+  MatrixBox {
+    Bracket: Brackets.Square;
+    Row {1; 2; 3};
+    Row {4; 5; 6};
+    Row {7; 8; 9};
+  };
+};
+
+Example2 = Paragraph {
+  var n = Symbol("n");
+  var k = Symbol("k");
+
+  n; " choose "; k; Tex.Equals;
+  MatrixBox {
+    Bracket: Brackets.Round;
+    n; k;
+  };
+};
+
+Main.Help = new HelpExample(attribute Format.MatrixBox, 2);

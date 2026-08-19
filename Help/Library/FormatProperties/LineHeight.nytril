@@ -1,0 +1,26 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  "Normal";
+  Paragraph {
+    LeftIndent: 16pt;
+    LoremIpsum(50);
+  };
+  "1.5 times";
+  Paragraph {
+    LeftIndent: 16pt;
+    LineHeight: 150%;
+    LoremIpsum(50);
+  };
+
+  "2 times";
+  Paragraph {
+    LeftIndent: 16pt;
+    LineHeight: 200%;
+    LoremIpsum(50);
+  };
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.LineHeight));

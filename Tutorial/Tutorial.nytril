@@ -1,0 +1,227 @@
+using Format;
+
+include "English";
+include "NytrilStyle";
+include "Lesson";
+include "SlideShow";
+include "NytrilLanguage";
+include "BasicSyntax";
+include "GettingStarted";
+include "Revisions";
+include "Functions";
+include "Each";
+include "Namespaces";
+include "Numbers";
+include "Strings";
+include "Percents";
+include "Dates";
+include "Units";
+include "Currency";
+include "Arrays";
+include "Ranges";
+include "Objects";
+include "TextFormatting";
+include "FormatNumbers";
+include "MathFormatting";
+include "Paragraphs";
+include "Images";
+include "Hyperlinks";
+include "Boxes";
+include "Fills";
+include "Drawings";
+include "Transforms";
+include "Charts";
+include "Tables";
+include "Trees";
+include "Documents";
+include "Symbols";
+include "Algebra";
+include "Statistics";
+include "Vectors";
+include "Matrices";
+include "Equation";
+//include "Database";
+include "Executables";
+include "Folders";
+include "Basetypes";
+include "Proteins";
+include "Mutations";
+include "Alignment";
+
+
+readonly namespace Chapters {
+  Language.Heading    = Lang.Introduction;
+  Formatting.Heading  = Lang.Formatting;
+  Mathematics.Heading = Lang.Mathematics;
+  Platform.Heading    = "Local Resources";
+  Genetics.Heading    = Lang.Genetics;
+}
+
+readonly namespace Main.Documents {
+  TutorialDocument     Tutorial     = new(#fda46c87-c829-4c9d-9d64-c89b07aa6643#, Lang.Tutorial);
+  TutorialShowDocument TutorialShow = new;
+}
+
+//======================================================================
+
+class TutorialShowDocument: SlideShow {
+  Constructor {
+    super.Constructor(#4610e2c4-8282-4667-84ae-be6f01ae108f#, Lang.Introduction, new FancyDesign, new MLAStyle);
+    Description = Lang.AQuickOverview;
+  }
+
+  override ShowTitle = Block {
+    TextHeight: 60pt;
+    ParAlignment: Center;
+    Lang.Introducing;
+    NytrilStyle.StandardLogo;
+  };
+
+  override InitDocument = {
+    TextHeight: 18pt;
+  };
+
+  override void CreateSlides {
+    foreach (var chapter in Chapters) {
+      foreach (var section in chapter.Sections) {
+        foreach (var content in section.Content) {
+          if (content.?Slide is valid)
+            AddSlide(new FigureSlide(new LessonContent(content as LessonExample), Left));
+        }
+      }
+    }
+  }
+}
+
+//======================================================================
+
+class TutorialDocument: DocumentEntry {
+  Constructor(id, name) {
+    super.Constructor(id, name);
+    Description = Lang.LearnHowTo;
+  }
+
+  SectionHeading(name) = Paragraph {
+    KeepWithNext: true;
+    TextFamily: TextFamilies.TimesNewRoman;
+    TextHeight: 18pt;
+    TextColor: NytrilPalette.SectionBack;
+    SpaceBefore: 8pt;
+    Bold;
+    name;
+  };
+
+  Attribute GetSections(Attribute chapter) = chapter.FindChild("Sections");
+
+  override GetDocument = Document(0.75") {
+    Paragraph {
+      TextHeight: 60pt;
+      TextColor: NytrilPalette.Logo1;
+      SpaceBefore: 2";
+      Lang.ProgrammingLang(NytrilStyle.StandardLogo);
+    };
+    Paragraph {
+      ParAlignment: Center;
+      SpaceBefore: 3";
+      TextHeight: 14pt;
+      Lang.Version;
+      Space;
+      System.GetVersion;
+    };
+
+    SectionNextPage;
+    NytrilStyle.Heading1 {
+      Lang.TableOfContents;
+    };
+
+    var chapters = attribute(Chapters).Children;
+    foreach (var chapter in chapters) {
+      var sections = GetSections(chapter);
+      if (sections is valid) {
+        SectionHeading(chapter.Value.Heading);
+        foreach (var block in sections.Children) {
+          var name = block.FullName;
+          Paragraph(null, [new(ExtentWidth, TabTypes.Right, TabLeaders.Dot)]) {
+            TextHeight: 12pt;
+            LeftIndent: 0.25";
+            Span {
+              Action: new Action(Actions.ToAnchor, name);
+              var lesson = block.FindChildValue("Lesson") as TutorialLesson;
+              lesson.Title;
+            };
+            Tab;
+            DocFields.PageReference(name);
+          };
+        }
+      }
+    }
+
+    var name = Span {"Nytril"; Span {TextAlignment: TextAlignments.Superscript; Tex.textregistered}};
+
+    foreach (var chapter in chapters) {
+      SectionOddPage {
+        Header: MarginBlock(0.25") {
+          Paragraph {
+            ParAlignment: Right;
+            chapter.FindChildValue("Heading");
+          };
+          Even: Block {
+            Paragraph {
+              Lang.ProgrammingLang(name)
+            }
+          };
+          First: Block;
+        };
+        Footer: MarginBlock(0.5") {
+          Paragraph {
+            ParAlignment: Center;
+            Lang.PageNumbers(DocFields.PageNumber, DocFields.PageCount);
+          };
+        };
+      };
+      AddChapter(chapter);
+    }
+  };
+
+  AddChapter(Attribute chapter) = Block {
+    var sections = GetSections(chapter);
+    if (sections is valid) {
+
+      NytrilStyle.Heading1 {
+        chapter.Value.Heading;
+      };
+
+      foreach (var block in sections.Children) {
+        var video  = new VideoLesson(block);
+        var lesson = video.Lesson;
+
+        Block {
+          var title = lesson.Title;
+          if (title is valid) {
+            NytrilStyle.Heading2 {
+              DocFields.Anchor(block.FullName);
+              title;
+            };
+          }
+
+          var height = 12pt;
+          var desc = lesson.Description;
+          if (desc is valid) {
+            Paragraph {
+              ParAlignment: Justify;
+              TextFace: Serif;
+              TextHeight: height+4pt;
+              SpaceAfter: 20pt;
+              desc;
+            };
+          }
+
+          (each video.Examples).FormatSection(height, 9pt, 10pt, 16pt);
+        };
+      }
+    }
+  };
+}
+
+//======================================================================
+

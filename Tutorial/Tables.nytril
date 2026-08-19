@@ -1,0 +1,80 @@
+include "Tutorial/rainfall";
+
+using Format;
+//======================================================================
+
+namespace Chapters.Formatting.Sections.Tables;
+
+readonly TutorialLesson Lesson = new(#cb56234a-8e61-4737-b53d-72fc1b4bb463#, "Tables");
+
+//======================================================================
+
+RainRow(RainClass r) = Row {
+  if (each0 mod 2 == 1)
+    Background: 96%;
+
+  CalendarMonth.MonthsOfTheYear[each0].LongName;
+  r.Value;
+  r.ShowError;
+};
+
+RainfallTable = Table(new Edge(1, 0, Colors.LightGray), PadLR(3), [0.8", 1", 1"]) {
+  TextDigits: 1;
+  TextHeight: 9pt;
+  NytrilStyle.HeaderRow {
+    Cell(null, 3) {ParAlignment: Center; "Rainfall"};
+  };
+  Row {Background: Colors.DarkGray; TextColor: Colors.White; "Month"; "Value"; "Error"};
+  RainRow(each Rainfall)
+};
+
+readonly LessonExample Content.RainfallEx = new(#3647be77-2684-4369-b9ee-132a8913352c#, "Tables") {
+  Form: NytrilStyle.ObjectType(attribute Table, "A table can be created from a fixed set of values");
+  Code: [attribute RainfallTable];
+};
+//======================================================================
+
+Attribute[] TrigFunctions = [attribute Symbolic.Sin, attribute Symbolic.Cos, attribute Symbolic.Tan];
+
+TrigRow(angle) = Row {
+  HAlign: Center;
+  VAlign: Center;
+  angle;
+  foreach (var f in TrigFunctions) {
+    f.Value(angle);
+  }
+};
+
+Angles = 0..Symbolic.PI/2 step Symbolic.PI/12;
+
+TrigTable = Table(new Edge(1, 0, Colors.LightGray), PadAll(1), [1", 1.5"]) {
+  TextHeight: 10pt;
+  Row {
+    TextHeight: 14pt;
+    Background: 95%;
+    Cell(null, 4) {
+      ParAlignment: Center;
+      "Trig Functions";
+    }
+  };
+  Row {
+    VAlign: Center;
+    HAlign: Center;
+    Background: 70%;
+    TextColor: Colors.White;
+    TextHeight: 12pt;
+    "Angle";
+    foreach (var f in TrigFunctions) {
+      Span {f.Prototype; Tip: f};
+    }
+  };
+  TrigRow(each Angles)
+};
+
+readonly LessonExample Content.TrigEx = new(#e814d18e-de82-4638-98e2-28b9bd928b6a#) {
+  Text: "Table cells can contain any type of formatter, including other tables.";
+  Code: [attribute TrigFunctions, attribute Angles, attribute TrigTable];
+};
+
+//======================================================================
+

@@ -1,0 +1,43 @@
+include "Help";
+
+using Format;
+
+ExChart(data) = Chart(150, 160) {
+  ChartSeries {
+    data;
+  };
+};
+
+Example = Block {
+  Paragraph {
+    Separator: Space;
+    VBox {
+      "Linear Scale";
+      ExChart([1, 8, 4, 12, 16]) {
+        ValueAxis: ChartAxis {
+          AxisType: Linear;
+        };
+      };
+    };
+
+    VBox {
+      "Log Scale";
+      ExChart([0.01, 27, 102, 287, 957]) {
+        ValueAxis: ChartAxis {
+          AxisType: Log;
+        };
+      };
+    };
+
+    VBox {
+      "Percent Scale";
+      ExChart([0.01, 0.27, 0.57, 0.287, 0.957]) {
+        ValueAxis: ChartAxis {
+          AxisType: Percent;
+        };
+      }
+    };
+  }
+};
+
+Main.Help = new HelpExample(attribute FormatProperties.AxisType);

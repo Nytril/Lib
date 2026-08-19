@@ -1,0 +1,317 @@
+using LinkTypes, CitationLib;
+
+include "Basic Facts";
+//===============================================================
+
+namespace People {
+  Person PJCohen    = new(#81ab10e1-def4-4392-8bb7-5a5991fed261#, "P", "J", "Cohen");
+  Person LSusskind  = new(#65425e49-25e8-4229-94d8-96ab976e6f9c#, "Leonard", null, "Susskind");
+  Person MSwetla    = new(#adf2b792-dd87-491a-a79f-4f6202c45994#, "Maria", null, "Swetla");
+  Person LUrry      = new(#cb94d7c9-6cbb-41f4-b0ae-1dde58f07421#, "Lisa", "A", "Urry");
+  Person MCain      = new(#5abde32b-7f87-4daa-aeaa-b32bf681ef0c#, "Micheal", "L", "Cain");
+  Person SWasserman = new(#62dad220-3d83-4ee8-8e6c-90b96f962137#, "Steven", "A", "Wasserman");
+  Person PMinorsky  = new(#06084868-e5f3-468b-a2d9-69c0babdc740#, "Peter", "V", "Minorsky");
+  Person JReece     = new(#cd0903e6-d749-4a9e-8b30-057df09d45e3#, "Jane", "B", "Reece");
+  Person THawley    = new(#9154ccb9-1681-4f9b-9bd4-11bd6856e494#, "Teresa", "S", "Hawley");
+  Person RHawley    = new(#562807a6-1cc6-40af-9a6d-59507917a737#, "Robert", "G", "Hawley");
+  Person HShapiro   = new(#69c22219-d690-4270-9227-b4aade6a27d8#, "Howard", "M", "Shapiro");
+  Person PHolleis   = new(#e954b7e0-38e5-4700-b565-46b08d90b2da#, "Paul", null, "Holleis");
+  Person MWagner    = new(#05db4bf5-e9c3-44d2-9d6d-885aa33905b4#, "Matthias", null, "Wagner");
+  Person JKoolwaaij = new(#b96ff32c-4936-4b64-9358-c8abc10a70ee#, "Johan", null, "Koolwaji");
+  Person JTang      = new(#23ff6b65-3217-47b4-9a6d-ee27f04ab41a#, "Jian", null, "Tang");
+  Person RRempel    = new(#380324ed-3407-4c43-9160-6903022f95e5#, "Robert", "Charles", "Rempel");
+  Person VBennett   = new(#de0ffb00-ea98-4ef1-8377-e523067313b4#, "Vicki", null, "Bennett");
+  Person KBowman    = new(#ef84079b-6b28-4602-bc45-440817ce0428#, "Kate", null, "Bowman");
+  Person SWright    = new(#136bb43d-8ad5-4352-b5b9-548858f6ad42#, "Sarah", null, "Wright");
+  Person MSuresh    = new(#fb10cf14-f263-4c6c-907e-8bb6cf81fb46#, "Mohinder", null, "Suresh");
+  Person MadeUp     = new(#a9599da2-9ecd-4101-bc84-51c79f78f118#, "Made", null, "Up");
+}
+
+//===============================================================
+
+namespace Organizations {
+  Organization PenguinRandomHouse = new(#da547769-ac16-46bf-8e0c-eafaee8948d7#, "Penguin Random House") {
+    Link to Cities.NewYork;
+  };
+
+  Organization Pearson = new(#912d8939-374b-4827-83a7-a20573bff540#, "Pearson") {
+    Link to Cities.NewYork;
+  };
+
+  Organization Springer = new(#984b68b3-e266-49a9-819b-65675088732b#, "Springer") {
+    Link to Cities.NewYork;
+  };
+
+  Organization ACM = new(#eb754566-2ee1-4f42-96ec-6956afc3f954#, "ACM") {
+    Link to Cities.NewYork;
+  };
+
+  Organization NationalAcademySciences = new(#ed045a12-5a76-4000-a0e9-ab9289f77aef#, "Proceedings of the National Academy of Sciences");
+
+  Organization MIT = new(#edea3a70-fc55-46f4-b72c-da3ec0acae30#, "Massachusetts Institute of Technology", "MIT") {
+    StreetAddress("123 Main Street", Cities.CambridgeMA, 10234);
+  };
+
+  Organization Stanford = new(#fdde12f4-7c79-4b37-9930-4f7f496f7ada#, "Stanford University", "Stanford") {
+    StreetAddress("123 Pine Tree Lane", Cities.PaloAlto, 91234);
+  };
+
+  Organization RTeam = new(#18623ec0-c97c-416f-8b0a-6365c4f7a076#, "R Core Team") {
+    Link to Cities.Vienna;
+  };
+
+  Organization RFoundation = new(#7286ba6b-c767-46cb-9b3c-a4edf9dd7924#, "R Foundation for Statistical Computing");
+
+  Organization NASA = new(#924ecec5-7e8d-42ce-98c2-1b8a2119cbca#, "National Aeronautics and Space Administration", "NASA") {
+    StreetAddress("1117 Main Street", USTerritories.DC, 21340);
+  };
+
+  Organization SaltCity = new(#21dfa009-e1a6-4a4d-aaf3-e4ac038bdaeb#, "Salt Lake City Corporation") {
+    StreetAddress("321 Main Street", Cities.SaltLakeCity, 56432);
+  };
+
+  Organization ParamountPictures = new(#bd94f249-3f8a-4f3c-83b1-ae49b82e53ab#, "Paramount Pictures");
+}
+
+//=========================================================================
+
+readonly namespace Reading {
+  DocReference Book = new(#190beb94-e8ba-4399-b892-c8b535a51836#, ReferenceTypes.Book) {
+    Title: "Ad hoc, ergo prompter hoc";
+    Date : #2017#;
+    PublisherLink to Organizations.PenguinRandomHouse;
+    AuthorLink to People.MadeUp;
+  };
+}
+
+readonly namespace References {
+  DocReference Art = new(#75467891-eeb8-4e04-80fe-8ecb38338a05#, ReferenceTypes.Art) {
+    Title : "The Mona Lisa";
+    Date : #1503#;
+    ArtistLink to new Person(#a1891475-ece5-429f-9b84-8c4c453995e7#, "Leonardo", null, "Da Vinci");
+  };
+
+
+  DocReference Article = new(#9cf6b619-d6d1-491a-a792-ee4204a184fd#, ReferenceTypes.Article) {
+    Title  : "The independence of the continuum hypothesis";
+    Volume : 50;
+    Number : 6;
+    Pages  : 1143..1148;
+    Date  : #1963#;
+    JournalLink to Organizations.NationalAcademySciences;
+    AuthorLink to People.PJCohen;
+    TranslatorLink to People.MSwetla;
+  };
+
+  DocReference Book = new(#dccb0e3d-ed17-46ce-9b4d-5e4444c50e31#, ReferenceTypes.Book) {
+    Title: "Classical mechanics: the theoretical minimum";
+    Date : #2014#;
+    PublisherLink to Organizations.PenguinRandomHouse;
+    TranslatorLink to People.MSwetla;
+    AuthorLink to People.LSusskind;
+  };
+
+  DocReference Booklet = new(#1ae90fe9-f547-4985-8032-2f128892f616#, ReferenceTypes.Booklet) {
+    Title       : "Canoe tours in Sweden";
+    HowPublished: "Distributed at the Stockholm Tourist Office";
+    Date        : #2015-7#;
+    AuthorLink to People.MSwetla;
+  };
+
+  DocReference Case = new(#6f9f5e89-7d5a-4b29-823f-683d47f6d5e3#, ReferenceTypes.Case) {
+    Title    : "Oliver Brown, et al. v. Board of Education of Topeka, et al.";
+    Date     : #1954#;
+    AuthorLink to [
+      new Person(#99539cfe-ac83-49bf-99ba-1b9d576ed55d#, "Earl", null, "Warren"),
+      new Person(#2d01e8f6-0d97-4ef3-ac4e-6aa49bffcd41#, "Hugo", null, "Black"),
+      new Person(#a335af28-ab91-42c9-8752-2a19bc005dac#, "Stanley", "F.", "Reed"),
+      new Person(#53f9eeea-8423-4c60-80c3-1a394959482c#, "Felix", null, "Frankfurter"),
+      new Person(#b94276de-551c-4576-a605-b4a36c9143c5#, "William", "O.", "Douglas"),
+      new Person(#88cb091c-c958-433b-82e0-b5b6b557a664#, "Robert", "H.", "Jackson"),
+      new Person(#67f96f04-953e-4b67-80a1-7d6d4b90ec41#, "Harold", "H.", "Burton"),
+      new Person(#a6e05748-38d1-495f-85d3-f2b714f51c85#, "Tom", "C.", "Clark"),
+      new Person(#f73309bd-7574-4f01-8dc4-1449a5a1872e#, "Sherman", null, "Minton"),
+    ];
+  };
+
+  DocReference Conference = new(#f2b48a13-63f7-4d65-8cd2-b31998eeae89#, ReferenceTypes.Conference) {
+    Title    : "Solvay Conference";
+    Date     : #1911#;
+    AuthorLink to [
+      new Person(#f74088cc-7d92-4404-b690-ba4bd761bd3b#, "Hendrick", null, "Lorentz"),
+      new Person(#fb6369c4-6b67-4f45-a75f-b11d49192f0d#, "Max", null, "Planck"),
+      new Person(#9b2091b4-9a66-4fe1-986a-25873e5aa457#, "Albert", null, "Einstein"),
+      new Person(#c301f485-0178-49f3-a50b-7e18515c9429#, "Earnest", null, "Rutherford"),
+      new Person(#2d7d3d9e-cbd4-4632-b3d8-5039b89564b3#, "Maurice", null, "de Broglie"),
+    ];
+  };
+
+  DocReference ElectronicSource = new(#57a2cdf0-6eea-408f-8bc0-216cd304d9a4#, ReferenceTypes.ElectronicSource) {
+    Title: "International Phonetic Alphabet";
+    Date : #2019#;
+
+    Link to new URL("en.wikipedia.org/wiki/International_Phonetic_Alphabet");
+    PublisherLink to Organizations.Wikipedia;
+  };
+
+  DocReference Film = new(#5133d3cc-629d-4431-bd5f-6f6b8e6e68af#, ReferenceTypes.Film) {
+    Title: "The Godfather";
+    Date : #1972#;
+
+    PublisherLink to Organizations.ParamountPictures;
+    DirectorLink to [new Person(#85ebbe36-5367-4c1c-8241-ddaa8ff3d986#, "Francis", "Ford", "Coppola")];
+    PerformerLink to [new Person(#91ddbe89-94bc-40e5-8ae6-46c0b9b9196b#, "Marlon", null, "Brando")];
+  };
+
+  DocReference Inbook = new(#19f8a7e2-9c65-46eb-801d-587cfa5cc74b#, ReferenceTypes.InBook) {
+    Title    : "Photosynthesis";
+    BookTitle: "Campbell Biology";
+    Date     : #2016#;
+    Pages    : 187..221;
+    Edition  : "4th";
+    TranslatorLink to People.MSwetla;
+    PublisherLink to Organizations.Pearson;
+    EditorLink to People.MCain;
+    AuthorLink to [People.LUrry, People.MCain, People.SWasserman, People.PMinorsky, People.JReece];
+    BookAuthorLink to [People.LUrry, People.MCain];
+  };
+
+  DocReference Incollection = new(#1e54c120-6aed-49b6-b93b-bde40f672336#, ReferenceTypes.InCollection) {
+    Title    : "Flow Cymetry: The glass is half full";
+    BookTitle: "Flow Cytometry Protocols";
+    Date     : #2018#;
+    Pages    : 1..10;
+
+    PublisherLink to Organizations.Springer;
+    AuthorLink to [People.THawley, People.RHawley, People.HShapiro];
+    EditorLink to [People.THawley, People.RHawley];
+  };
+
+  DocReference Inproceedings = new(#d5f3aba8-1fe2-4631-af65-fd0882ea778f#, ReferenceTypes.InProceedings) {
+    Title    : "Studying mobile context-aware social services in the wild";
+    BookTitle: "Proc. of the 6th Nordic Conf. On Human Computer Interaction";
+    Series   : "NordiCHI '10";
+    Date     : #2010#;
+    Pages    : 207..216;
+    Note     : "Powerpoint Presentation";
+    PublisherLink to Organizations.ACM;
+
+    AuthorLink to [People.PHolleis, People.MWagner, People.JKoolwaaij];
+  };
+
+  DocReference InternetDocument = new(#a029628c-7a32-4830-80af-3b8256fe483b#, ReferenceTypes.InternetDocument) {
+    Title: "International Phonetic Alphabet";
+    Date : #2019#;
+
+    Link to new URL("en.wikipedia.org/wiki/International_Phonetic_Alphabet");
+    PublisherLink to Organizations.Wikipedia;
+  };
+
+  DocReference InternetSite = new(#8dd1356b-de9c-41f9-902a-9ffe25f8f6ea#, ReferenceTypes.InternetSite) {
+    Title: "Wikipedia";
+    Date : #2001#;
+    Note: "The online encyclopedia";
+
+    Link to new URL("en.wikipedia.org");
+    PublisherLink to Organizations.Wikipedia;
+  };
+
+  DocReference Interview = new(#21718aad-cb1c-428b-acad-1857d3993363#, ReferenceTypes.Interview) {
+    Title: "The David Letterman Show";
+    Date : #2001#;
+
+    Link to new URL("www.buzzfeed.com/benjaminbowles/10-funny-celebrity-interviews");
+    AuthorLink to [
+      new Person(#621583a6-0fe1-4c57-be76-c06c21533355#, "Madonna", "Louise", "Ciccone")
+    ];
+    InterviewerLink to [
+      new Person(#3d2ed3d4-63c8-450d-88cc-479a7f480136#, "David", null, "Letterman"),
+    ];
+  };
+
+  DocReference Manual = new(#629d5c44-a85a-4756-bd68-5806bf2a0abc#, ReferenceTypes.Manual) {
+    Edition: 2;
+    Title  : "R: A Language and Environment for Statistical Computing";
+    Date   : #2018#;
+    PublisherLink to Organizations.RTeam;
+    SponsorLink to Organizations.RFoundation;
+  };
+
+  DocReference MastersThesis = new(#2927d98f-c99f-4a0a-98a6-d69c7f0e7879#, ReferenceTypes.MastersThesis) {
+    Title: "Spin structure of the nucleon in the asymptotic limit";
+    Date : #1996-9#;
+    SchoolLink to Organizations.MIT;
+    AuthorLink to People.JTang;
+  };
+
+  DocReference Misc = new(#c6e8fd47-bbc9-4689-8bed-7c2385ff1a7d#, ReferenceTypes.Misc) {
+    Title: "Pluto: The 'other' red planet";
+    Date : #2015#;
+    Link to new URL("www.nasa.gov/nh/pluto-the-other-red-planet/");
+    Accessed: #2018-12-6#;
+    PublisherLink to Organizations.NASA;
+  };
+
+  DocReference Patent = new(#8a7715c4-1689-498c-99f6-ae47b2239f54#, ReferenceTypes.Patent) {
+    Title: "Pet Rock";
+    Date : #1971#;
+    Number: "12345678";
+    InventorLink to [new Person(#3ccb01c0-ac31-4715-a779-842d419f4823#, "Gary", null, "Dahl")];
+  };
+
+  DocReference Performance = new(#93088197-ce7d-4dac-8718-78d29330b150#, ReferenceTypes.Performance) {
+    Title: "Macbeth";
+    Date : #1978#;
+    Link to new URL("web.archive.org/web/20080907125019/http://www.bardolatry.com/reviews/nunnmacbeth.html");
+    Accessed: #2018-12-6#;
+    DirectorLink to new Person(#adbb383d-6a59-4615-80d8-f65597cddb91#, "Trevor", null, "Nunn");
+    PerformerLink to [
+      new Person(#5685dcc4-a20d-463a-b45f-8185f5928a99#, "Ian", null, "McKellan"),
+      new Person(#5332132a-b6ba-4dc5-8a44-02c0aebf3dbd#, "Judy", null, "Dench")
+    ];
+  };
+
+  DocReference PHDThesis = new(#fb7b955a-f27d-472b-8af2-dd5b74bbb340#, ReferenceTypes.PHDThesis) {
+    Title: "Relaxation effects for coupled nuclear spins";
+    Date : #1956-6#;
+    SchoolLink to Organizations.Stanford;
+    AuthorLink to People.RRempel;
+  };
+
+  DocReference SoundRecording = new(#d5468b43-47a8-48b5-9591-679f6b8cb61e#, ReferenceTypes.SoundRecording) {
+    Title: "9th Symphony";
+    Link to new URL("www.youtube.com/watch?v=rOjHhS5MtvA");
+    Accessed: #2024-1-6#;
+    ConductorLink to new Person(#b574b197-bab7-4289-86a9-9eadc1b5ab3d#, "Riccardo", null, "Muti");
+    ComposerLink to new Person(#a1304ee4-4e0d-472a-8184-4e94bc2d5051#, "Ludwig", "van", "Beethoven");
+  };
+
+  DocReference Proceedings = new(#de7a3b91-57e1-4cc9-bcc8-854cb66ae651#, ReferenceTypes.Proceedings) {
+    Title : "Proceedings of the 17th International Conference on Computation and Natural Computation";
+    Date  : #2018#;
+    Volume: 10867;
+    Series: "Lecture Notes in Computer Science";
+    PublisherLink to Organizations.Springer;
+    Link to new City(#54c3d0e7-737b-4f72-9d6b-4df3df1f27c6#, "Fontainebleau") {
+      Link to Countries.France;
+    };
+  };
+
+  DocReference TechReport = new(#f719578d-bf9b-4cc1-8bdb-69b7c83ed02d#, ReferenceTypes.TechReport) {
+    Title : "Wasatch Solar Project Final Report";
+    Number: "DOE-SLC-6903-1";
+    Date  : #2018-9#;
+    Pages: 1..100;
+    SponsorLink to Organizations.SaltCity;
+    AuthorLink to [People.VBennett, People.KBowman, People.SWright];
+  };
+
+  DocReference Unpublished = new(#2f2f392f-e1bf-4066-9131-fe57429b19e5#, ReferenceTypes.Unpublished) {
+    Title: "Evolution: a revised theory";
+    Date : #2006#;
+    AuthorLink to People.MSuresh;
+  };
+}
+//===============================================================
+
+

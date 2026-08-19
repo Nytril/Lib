@@ -1,0 +1,39 @@
+using Format;
+
+include "User Interface";
+
+readonly Main.Documents.InstallGit = new InstallGitDocument;
+
+//======================================================================
+
+class InstallGitDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#db4da74f-86ef-491a-ab78-efd10a7414e0#, "Git Desktop Installation");
+    Description = Name;
+  }
+
+  Hyperlink(text, url) = Span {
+    TextColor: NytrilPalette.Hyperlink;
+    text;
+    TipAction: new URL(url);
+  };
+
+  override GetDocument = Document(0.75") {
+    TextHeight: 12pt;
+    SpaceAfter: 10pt;
+    ParAlignment: Justify;
+
+    NytrilStyle.Heading2 {
+      "To install the Git Desktop on your computer: ";
+    };
+
+    ListBlock {
+      Span {
+        "Click here to go to the GitHub ";
+        Hyperlink("Download Page", "https://desktop.github.com/download/"); DotSpace;
+      };
+      "Follow the instructions for installing GitHub Desktop on your computer.";
+    };
+  };
+}
+

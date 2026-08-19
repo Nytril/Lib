@@ -1,0 +1,228 @@
+using Format, IO, DB;
+
+readonly DataFile = res "Address List.xlsx";
+
+readonly UserOptions                      Options = new;
+readonly MailMergeDocument Main.Documents.Options   = new(#600789e3-18b4-4039-9640-a1f5e2aa4ccf#, "Setup Labels", true);
+readonly MailMergeDocument Main.Documents.MailMerge = new(#47a4cce0-ef87-4e4e-a8d9-9d9eee44fd2f#, "Print Labels", false);
+
+
+//=======================================================================
+
+enum LabelStyles {
+  var Height,
+      Family,
+      TextColor,
+      Picture;
+
+  Constructor(name, height, Color color, family, image=null) {
+    super.Constructor(name);
+    Height    = height;
+    TextColor = color;
+    Family    = family;
+
+    if (image is valid)
+      Picture = new Image(Folders.Source FileName(image) Extensions.PNG);
+  }
+
+  Basic("Basic", 12pt, Colors.Black, TextFamilies.TimesNewRoman),
+  Mistletoe("Mistletoe", 12pt, Colors.DarkGreen, TextFamilies.Arial, "Mistletoe"),
+  Halloween("Halloween", 10pt, Colors.Brown, TextFamilies.Impact, "Jackolantern"),
+}
+
+//=======================================================================
+
+enum AveryLabels {
+  var      Width,
+           Height;
+  var Size Gap;
+  var int  Rows,
+           Columns;
+
+  Constructor(name, width, height, Size gap, int rows, int cols) {
+    super.Constructor(name);
+    Width   = width;
+    Height  = height;
+    Gap     = gap;
+    Rows    = rows;
+    Columns = cols;
+  }
+
+  Avery4200("4200", 2.625", 1", new(0.125", 0), 10, 3),
+  Avery5160("5160", 2.6", 1", new(10pt, 0), 10, 3),
+  Avery8162("8162", 4", 1.33", new(0, 0), 8, 2),
+}
+
+//=======================================================================
+
+class UserOptions: Fact {
+  field AveryLabels Label;
+  field LabelStyles Style;
+  field int         LabelStart;
+
+  Constructor {
+    super.Constructor(#7067a3f9-6269-447d-b81a-9eb833b707f7#);
+    ReadFromStorage;
+  }
+}
+
+//=======================================================================
+
+class MailMergeDocument: DocumentEntry {
+  var bool      ShowForm;
+  var Thickness Margins;
+  var Edge      CellEdge;
+
+  Constructor(Guid id, name, bool showform) {
+    super.Constructor(id, name);
+    ShowForm = showform;
+    if (showform)
+      CellEdge = new(0.1pt, 0, null, Dotted);
+  }
+
+  override GetDocument {
+    CalcMargins;
+
+    if (ShowForm) {
+      return Document {
+        FormPage;
+        Paragraph {
+          SpaceBefore: 10pt;
+          "The view below is a preview. Go to the ";
+          Span {
+            TextColor: Colors.Blue;
+            Action: new Action(Actions.ToDocument, Main.Documents.MailMerge);
+            Main.Documents.MailMerge.Name;
+          };
+          " document to print labels.";
+        };
+        SectionNextPage(Margins);
+        LabelPages;
+      };
+    }
+    else {
+      return Document(Margins) {
+        LabelPages;
+      };
+    }
+  }
+
+  void CalcMargins {
+    var label  = Options.Label;
+    var width  = 8.5";
+    var height = 11";
+    var lr     = (width - label.Width * label.Columns - label.Gap.Width * (label.Columns-1)) * 0.5;
+    var tb     = (height - label.Height * label.Rows - label.Gap.Height * (label.Rows-1)) * 0.5;
+
+    Margins = new(lr, tb, lr, tb);
+  }
+
+  LabelPages= Block {
+    var label     = Options.Label;
+    var pagecount = label.Columns * label.Rows;
+
+    var all = new List<DbRow>(128);
+    if (Options.LabelStart < pagecount) {
+      for (int i = 0; i < Options.LabelStart; ++i)
+        all.Add(null);
+    }
+
+    foreach (var p in new ExcelDb(DataFile).RunQuery("SELECT * FROM [Sheet1$];")) {
+      if (p.FindField("Name").Value is valid)
+        all.Add(p);
+    }
+
+    var style = Options.Style;
+    Table(null, null, [label.Width, label.Gap.Width] * label.Columns) {
+      TextHeight: style.Height;
+      TextFamily: style.Family;
+      TextColor: style.TextColor;
+
+      var rows = all.ToArray / label.Columns;
+      foreach (var row in rows) {
+        Row {
+          foreach (var person in row) {
+            GetCell(person, label);
+            Empty;
+          }
+        }
+      }
+    };
+  };
+
+  FormPage = Block {
+    TextHeight: 16pt;
+    Paragraph {
+      TextHeight: 32pt;
+      ParAlignment: Center;
+      Name;
+    };
+
+    HBox {
+      VAlign: Top;
+
+      Separation: 20;
+      InputLabel("Style", attribute UserOptions.Label, ref Options.Label);
+      InputLabel("Avery Label Number", attribute UserOptions.Style, ref Options.Style);
+
+      IntControl(new(ref Options.LabelStart), 32pt, null, new Edge(1, 2), 0, 100, 1) {
+        Placement: Placements.Top;
+        BorderRadius: 3;
+        "Used Labels";
+        Action: Actions.Rebuild;
+      };
+    };
+  };
+
+  InputLabel(name, Attribute prop, ref data) = VBox {
+    name;
+    VBox(null, null, new Edge(0.5, 6)) {
+      BorderRadius: 5;
+      foreach (var label in prop.Type.GetEnumValues) {
+        Paragraph {
+          RadioControl(new(ref data), label) {
+            Placement: Placements.Right;
+            Action: Actions.Rebuild;
+            label.Name;
+          };
+        };
+      }
+    };
+  };
+
+  GetCell(person, AveryLabels label) = Cell(CellEdge) {
+    HAlign: Center;
+    if (person?.?Name is valid) {
+      HBox(null, label.Height) {
+        VAlign: Center;
+        var image = Options.Style.Picture;
+        if (image is not null)
+          FitBox(image, null, label.Height * 0.4) {Margin: PadR(2)};
+
+        Frame {
+          person.Name;
+          person.Address;
+          person?.Address2;
+          Span {
+            Separator: CommaSpace;
+            LastSeparator: Space;
+            person.City;
+            person.State;
+            person.Zip;
+          }
+        };
+      };
+    }
+    else {
+      Canvas(null, label.Height) {
+        HAlign: Center;
+        VAlign: Center;
+        TextColor: Colors.LightGray;
+        "Blank";
+      };
+    }
+  };
+}
+
+//=======================================================================
+

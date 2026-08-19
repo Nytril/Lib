@@ -1,0 +1,39 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "ListBlocks are collections of items that are numbered or bulleted. ";
+    "If present, the enumerator specifies a string OR a delegate taking a 1-based index as a parameter. ";
+  };
+};
+
+readonly Items = ["One", "Two"];
+
+Example = ListBlock {
+  Items;
+};
+
+Example2 = ListBlock("*") {
+  Items;
+};
+
+Example3 = ListBlock(@Enumerators.RomanDot) {
+  Items;
+};
+
+Example4 = ListBlock(i => "Number {0})"(i), 101) {
+  Items;
+};
+
+Example5 = ListBlock(@Enumerators.Number) {
+  "One";
+  ListBlock(@Enumerators.AlphaDot) {
+    "A";
+    "B";
+  };
+  "Two";
+};
+
+Main.Help = new HelpExample(attribute(Format.ListBlock), 5);

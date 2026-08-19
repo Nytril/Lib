@@ -1,0 +1,49 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  "A block that sits inside a header or footer margin. ";
+};
+
+SampleCode = SectionNextPage {
+  Header: MarginBlock(0.5") {
+    Paragraph {    // Odd page / regular header content
+      ParAlignment: Right;
+      "Title";
+    };
+    Even: Block {  // Different header on even page
+      Paragraph {
+        "Chapter";
+      }
+    };
+    First: Block;  // No header on first page of section
+  };
+  Footer: MarginBlock(0.5") {
+    Paragraph {
+      ParAlignment: Center;
+      DocFields.PageNumber; " / "; DocFields.PageCount;
+    };
+  };
+};
+
+Example = Block {
+  VBox(4", null, 1) {
+    HAlign: Center;
+    HBox(null, 0.5") {
+      "Header";
+      VAlign: Bottom;
+    };
+    HBox(100%, 1", BorderTB(0.1)) {
+      Background: 95%;
+      HAlign: Center;
+      VAlign: Center;
+      "...";
+    };
+    HBox(null, 0.5") {
+      "Footer";
+    };
+  }
+};
+
+Main.Help = new HelpExample(attribute(Format.MarginBlock), 0);

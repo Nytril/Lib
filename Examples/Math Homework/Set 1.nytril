@@ -1,0 +1,108 @@
+using Format, Syms, Styles;
+
+namespace HomeworkSets.ProblemSet1 {
+  namespace Problem1 {
+    Title = "Logic A";
+    Problem =  ProblemPar {
+      "Simplify";
+      Space;
+      Inline {Parens{Parens{"Q" Tex.wedge "Q"}; Tex.vee;
+      Parens{Tex.neg "T" Tex.Rightarrow "P"};
+      Tex.Rightarrow;
+      Parens{"Q" Tex.wedge "F"} Tex.wedge;
+      Parens{"T" Tex.Rightarrow "T"}}}
+    };
+    Answer = AnswerPar {
+      F;
+    };
+  }
+
+  namespace Problem2 {
+    Title = "Logic B";
+    Problem = ProblemPar {
+      "Give me a proof that";
+      Inline {"A" Tex.Rightarrow};
+      "B and B";
+      Inline {Tex.Rightarrow};
+      "C implies A";
+      Inline {Tex.Rightarrow};
+      "C. You may use symbol manipulation or a truth table."
+    };
+
+    Answer = AnswerBlock {
+      Table(1pt, BorderB(0.25pt), [0.5"] * 6 + [1.5"]) {
+        HAlign: Center;
+        TextHeight: 9pt;
+        TextEquation: true;
+        Row {
+          A;
+          B;
+          C;
+          A Tex.Rightarrow B;
+          A Tex.Rightarrow C;
+          B Tex.Rightarrow C;
+          A Tex.Rightarrow B Tex.wedge B Tex.Rightarrow C;
+          Span {
+            Parens {A Tex.Rightarrow B Tex.wedge B Tex.Rightarrow C};
+            Tex.Rightarrow;
+            Parens {A Tex.Rightarrow C}
+          }
+        };
+        Row {T; T; T; T; T; T; T; T};
+        Row {T; T; F; T; F; F; F; T};
+        Row {T; F; T; F; T; T; F; T};
+        Row {T; F; F; F; F; T; F; T};
+        Row {F; T; T; T; T; T; T; T};
+        Row {F; T; F; T; T; F; F; T};
+        Row {F; F; T; T; T; T; T; T};
+        Row {F; F; F; T; T; T; T; T};
+      };
+    };
+  }
+
+  namespace Problem3 {
+    Title   = "Sets A";
+    Problem = ProblemPar {
+      "Give me a pair of sets A,B where";
+      Inline {A Tex.cup B Tex.Equals SetR }; ", ";
+      Inline {A Tex.cap B Tex.Equals SetZ};
+      " but A";
+      Inline {Tex.notsubset B};
+      " and ";
+      Inline {B Tex.notsubset A};
+    };
+    Answer = AnswerPar {
+      "The set of irrationals and the integers, ";
+      Inline {SetP Tex.cup SetZ};
+      ", and the set of rationals, ";
+      SetQ; "."
+    };
+  }
+
+  namespace Problem4 {
+    Title    = "Sets B";
+    Problem = ProblemPar {
+      "Prove that if ";
+      Inline {X Tex.subseteq Z} " and ";
+      Inline {Y Tex.subseteq Z}; " then ";
+      Inline {Parens{X Tex.cup Y} Tex.subseteq Z};
+    };
+  }
+
+  namespace Problem5 {
+    Title    = "Graph A";
+    Problem = ProblemPar {
+      "Give an example of a graph with 8 vertexes and 12 edges"
+    };
+  }
+
+  namespace Problem6 {
+    Title   = "Graph B";
+    Problem = ProblemPar {
+      "How many simple graphs are there with 3 vertexes ";
+      Braces{Separator: CommaSpace; x; y; z};
+      "? Note they need not be connected graphs, merely graphs with those three vertexes";
+    };
+  }
+}
+

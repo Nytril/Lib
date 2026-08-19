@@ -1,0 +1,19 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  "This setting overrides the any HAlign setting from the parent object";
+};
+
+Example = Canvas(2", 50, 1) {
+  var shape = Canvas(null, null, 0.25);
+
+  shape {"Left"; HAlignment: HAligns.Left};
+  shape {"Center"; HAlignment: HAligns.Center};
+  shape {"Right"; HAlignment: HAligns.Right};
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.HAlignment));
+
+

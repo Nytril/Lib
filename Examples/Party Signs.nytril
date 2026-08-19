@@ -1,0 +1,73 @@
+using Format;
+
+Main.Documents.MyDocument = new SignsClass;
+
+class SignsClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#b87848f9-2c88-40fa-b7be-52b3ed17ea8f#, "Party Signs");
+  }
+
+  ThisWay(text, Icon icon) = Block {
+    Paragraph {
+      SpaceBefore: 70pt;
+      ParAlignment: Center;
+      TextHeight: 130pt;
+      VBox(100%, 7") {
+        Justify: Justifiers.SpaceBetween;
+        HAlign: Center;
+        Paragraph {
+          TextFamily: TextFamilies.TimesNewRoman;
+          text;
+        };
+        Paragraph {
+          TextHeight: 200pt;
+          Shape(Colors.Blue, 2) {
+            icon;
+          }
+        };
+        "This Way";
+      }
+    }
+  };
+
+  Card(Icon icon, text, color) = VBox(null, 48%) {
+    HAlign: Center;
+    Canvas {
+      TextHeight: 180pt;
+      Shape(color, 2) {
+        icon;
+      }
+    };
+    HBox {
+      TextFamily: TextFamilies.TimesNewRoman;
+      TextHeight: 100pt;
+      text;
+    };
+  };
+
+  TentCard(Icon icon, text, color) = Block {
+    ParAlignment: Center;
+    VBox {
+      HAlign: Center;
+      Card(icon, text, color) {
+        Transform: Transform.Rotate(180 degrees);
+        TransformFit: true;
+      };
+      Canvas(100%, 1, BorderT(new Edge(1, 0, Colors.LightGray, Dotted)));
+      Card(icon, text, color);
+    }
+  };
+
+  override GetDocument = Document(36pt) {
+    Separator: PageBreak;
+    ThisWay("Party", Icons.west);
+    ThisWay("Bathroom", Icons.west);
+    ThisWay("Bathroom", Icons.north);
+    TentCard(Icons.local_drink, "Margarita", Colors.Yellow..Colors.LimeGreen.Scale(1.5));
+    TentCard(Icons.local_bar, "Mojito", Colors.Purple);
+    TentCard(Icons.sports_bar, "Beer", Colors.Tan..Colors.Tan.Scale(0.75));
+    TentCard(Icons.wine_bar, "Wine", Colors.DarkRed.Scale(1.25)..Colors.DarkRed);
+    TentCard(Icons.water_drop, "Water", (98%)..(90%));
+  };
+}
+

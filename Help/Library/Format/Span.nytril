@@ -1,0 +1,17 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  "Each span inherits the formatting of the parent paragraph, but can override individual properties.";
+};
+
+Example = Paragraph {
+  Span {"This text is italic"; Italic};
+  Span {", while this text is bold"; Bold};
+  Span {", and this text is fixed and underlined."; TextFace: Mono; Underline};
+};
+
+Main.Help = new HelpExample(attribute(Span));
+
+

@@ -1,0 +1,56 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  "Geometric Series";
+  Paragraph {
+    var i = Symbol("i");
+
+    TextStacked: true;
+
+    "Sum"; Tex.Equals;
+    Nary {
+      Operator: Tex.sum;
+      Upper: Math.PositiveInfinity;
+      Lower: Span {i; Tex.Equals; 1};
+      Fraction {
+        1;
+        i ^ 2;
+      };
+    };
+  };
+};
+
+Example2 = Block {
+  "Calculus 1";
+  Paragraph {
+    var x = Symbol("x");
+
+    TextStacked: true;
+
+    Nary {
+      Operator: Tex.Integral1;
+      x ^ 2;
+    };
+    " dx";
+    Tex.Equals;
+    1 over 3;
+    x;
+    Tex.Plus;
+    "C";
+  };
+};
+
+Example3 = Block {
+  "Chemistry";
+  Paragraph {
+    Nary {
+      Operator: "C";
+      PreUpper: 14;
+      PreLower: 2;
+    };
+  };
+};
+
+Main.Help = new HelpExample(attribute Format.Nary, 3);

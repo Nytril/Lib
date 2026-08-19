@@ -1,0 +1,396 @@
+using Format;
+//======================================================================
+
+namespace Chapters.Formatting.Sections.Paragraphs;
+
+readonly TutorialLesson Lesson = new(#1e0ee954-bdb1-4e5e-b9f8-986309f4e064#, "Paragraph Formatting", "Paragraphs", "par", "https://youtu.be/0klwAmNHBq8") {
+  Description: Span {
+    "Paragraphs wrap content inside the body of a document or frame. ";
+    "They are the fundamental container for free flowing text in your documents. ";
+    "A paragraph inherits the properties of a Span formatter, and adds borders, tabs and indenting. ";
+  };
+};
+
+//======================================================================
+
+SimpleBlock = Block {
+  // Explicit paragraph
+  Paragraph {
+    "Paragraph One";
+  };
+  // Non-paragraph elements turned into a paragraphs
+  "Paragraph Two";
+  Span {Bold; Math.Sqrt(2) + 1};
+};
+
+readonly LessonExample Content.BlockEx = new(#8a7959ff-b793-43bb-a938-4e55e097db2e#, "Blocks") {
+  Text:  Span {
+    "Let's review some basics. ";
+    "A {0} contains Paragraph or Table elements. "(NytrilStyle.Formatter(attribute Block));
+    "If those elements are not already Paragraphs, they will be automatically placed inside a Paragraph. ";
+    "A Block can have formatting properties, which will serve as the default properties of the child elements. ";
+  };
+  Code: [attribute SimpleBlock];
+  Sel: new(0, 14, 5);
+  Options: NoShort;
+};
+
+//======================================================================
+
+NestedBlock = Block {
+  TextColor: Colors.Red;
+  Block {
+    "Line 1";
+  };
+  "Line 2";
+  Block {
+    TextColor: Colors.Blue;
+    "Line 3";
+  };
+};
+
+readonly LessonExample Content.NestedBlockEx = new(#d4fd8b42-d96b-48a7-9b63-b2cc373bde22#, "Nested Blocks") {
+  Text:  Span {
+    "A Block can be included inside another Block, but this does not create a nested structure. ";
+    "Instead, the parent Block will simply include the child Block's formatted content. ";
+  };
+  Code: [attribute NestedBlock];
+  Sel: new(2, 2, 5);
+  Tip: [
+    LessonTip(3.5, 1, "Default block format", -5 degrees, 5),
+    LessonTip(3.5, 3, "Overridden format", 0 degrees, 5)
+  ];
+  Options: NoShort;
+};
+
+//======================================================================
+
+Success = Paragraph {
+  "I've missed more than 9000 shots in my career. ";
+  "I've lost almost 300 games. ";
+  "26 times I've been trusted ";
+  "to take the game winning shot and missed. ";
+  "I've failed over and over and over again in my life. ";
+  "And that is why I succeed. ";
+  "–Michael Jordan";
+};
+
+readonly LessonExample Content.ParagraphsEx = new(#b034a4e3-8c32-4196-afdc-417d6cee2b33#, "Paragraphs") {
+  Text: Span {
+    "A {0} is a formatter that puts its child elements end-to-end into horizontal lines. "(NytrilStyle.Formatter(attribute Paragraph));
+    "The text will wrap at the edge of the available space, and may continue onto the next page of the document. ";
+  };
+  FrameSize: 70%;
+  Code: [attribute Success];
+  Sel: new(0, 10, 9);
+};
+
+//======================================================================
+
+Greatness = Paragraph {
+  "Be not afraid of greatness. ";
+  "Some are born great, ";
+  "some achieve greatness, ";
+  "and others have greatness thrust upon them. ";
+};
+
+Quote = Block {
+  Greatness {
+    RightIndent: 10pt;
+    LeftIndent: 16pt;
+    FirstIndent: -8pt;  // Relative to LeftIndent
+    TextHeight: 120%;
+  };
+  Italic "― William Shakespeare, Twelfth Night";
+};
+
+readonly LessonExample Content.IndentingEx = new(#b98f5513-a97e-41c9-924b-0efb56d0f920#, "Indenting") {
+  Text: Span {
+    "Use the {0}, {1}, and {2} properties to control the margins of the paragraph. "(
+    NytrilStyle.PropName(attribute FormatProperties.LeftIndent),
+    NytrilStyle.PropName(attribute FormatProperties.RightIndent),
+    NytrilStyle.PropName(attribute FormatProperties.FirstIndent)
+    );
+    "Notice that you may revise an existing paragraph with new properties, without changing the original. ";
+  };
+  FrameSize: 60%;
+  Code: [attribute Greatness, attribute Quote];
+  Sel: new(9, 4, 62);
+};
+
+//======================================================================
+
+SmallBlock = Block {
+  Paragraph {ParAlignment: Left; "Left"};
+  Paragraph {ParAlignment: Center; "Center"};
+  Paragraph {ParAlignment: Right; "Right"};
+};
+
+readonly LessonExample Content.AlignmentEx = new(#12c09bbc-6e5f-4e29-97c7-3ec7d737403d#, "Alignment") {
+  Text: "Alignment of the text can be controlled with the {0} property. "(NytrilStyle.PropName(attribute FormatProperties.ParAlignment));
+  Code: [attribute SmallBlock];
+  Sel: new(1, 13, 12);
+};
+
+//======================================================================
+
+JustifiedBlock = Paragraph {
+  ParAlignment: Justify;
+  "As the light changed from red to green to yellow and back to red again, ";
+  "I sat there thinking about life.  ";
+  "Was it nothing more than a bunch of honking and yelling?  ";
+  "Sometimes it seemed that way. ";
+  Tex.EmDash; " Jack Handey";
+};
+
+readonly LessonExample Content.JustifyEx = new(#5a98eaa5-ba08-46cf-978c-9589ec162040#, "Justify Alignment") {
+  Text: "The Justify alignment stretches the spaces in the line so that it fits evenly on the right. ";
+  Code: [attribute JustifiedBlock];
+  Sel: new(1, 2, 21);
+  FrameSize: 50%;
+  Options: NoShort;
+};
+
+//======================================================================
+
+TabStop[] TabList = [
+  5%,                                       // Left align (default)
+  new(20%, TabTypes.Bar),                   // Place vertical bar (no stop)
+  new(30%, TabTypes.Center),                // Center text around tab
+  new(60%, TabTypes.Decimal),               // Line up decimal point at tab
+  new(95%, TabTypes.Right, TabLeaders.Dot), // Right align at tab
+];
+
+TabStopExample = Block {
+  Paragraph(null, TabList) {
+    Tab; "Left"; Tab; "Center"; Tab; "3.1415"; Tab; "Right";
+  };
+  Paragraph(null, TabList) {
+    Tab; "Left Align"; Tab; "Center Align"; Tab; "527.10"; Tab; "Right Align";
+  };
+};
+
+readonly LessonExample Content.TabStopsEx = new(#03c3cef8-fa03-4579-9192-098cf122904b#, "Tab stops") {
+  Text: "The tabstops argument is an array of TabStop objects that determine how the tab character is interpreted inside a paragraph. ";
+  Code: [attribute TabList, attribute TabStopExample];
+  Sel: new(9, 18, 7);
+  Options: NoShort;
+};
+
+//======================================================================
+
+FrameExample = Paragraph {
+  "Quote ";
+  // Acts like a big single character
+  Frame(30%, null, new Edge(1, 4pt)) {
+    "Luck is what happens when preparation meets opportunity.";
+    "—Seneca ";
+  };
+  " of the day. ";
+};
+
+readonly LessonExample Content.TextWithFrameEx = new(#ecdaf984-4536-4f8e-aebc-776366195971#, "Frames") {
+  Text: "A {0} is a rectangular box that can contain Paragraphs and Tables, but it acts like a large character when placed inside a Paragraph. "(NytrilStyle.Formatter(attribute Frame));
+  Code: [attribute FrameExample];
+  Sel: new(3, 2, 5);
+  Tip: [LessonTip(16, 1.5, "Large 'character' in the text", -5 degrees, 5)];
+  Options: NoShort;
+};
+
+//======================================================================
+
+Topics = ["Point one", "Point two", "Point three"];
+
+NumberedSpan = Paragraph {
+  "Main discussion points: ";
+  ListSpan(@Enumerators.NumberParens) {
+    Separator: "; ";
+    End: DotSpace;
+    Topics;
+  };
+};
+
+readonly LessonExample Content.NumberedSpanEx = new(#90b9059a-fd50-46c9-965d-e99e10e6c390#, "Inline lists") {
+  Text: Span {
+    "A {0} formatter can be used to create a numbered list inside a paragraph with a variety of numbering styles. "(NytrilStyle.Formatter(attribute ListSpan));
+    "Notice that the \"Topics\" array variable is automatically expanded inside the revision to become a part of the numbered list. ";
+  };
+  Code: [attribute Topics, attribute NumberedSpan];
+  Sel: new(0, 0, 6);
+  Options: NoShort;
+};
+
+//======================================================================
+
+HeaderPar = Paragraph {
+  ParBackground: Colors.Blue;
+  TextColor: Colors.White;
+  ParAlignment: Center;
+  Bold;
+  "Header";
+};
+
+readonly LessonExample Content.ParBackgroundEx = new(#a5000074-de6d-4055-8b81-3f6f2442153f#, "Background Color") {
+  Text: "Paragraphs have an optional background color which can be set with the {0} property. "(NytrilStyle.PropName(attribute FormatProperties.ParBackground));
+  Code: [attribute HeaderPar];
+  Sel: new(1, 2, 26);
+};
+
+//======================================================================
+
+ParSpaceBefore = Block {
+  Bold "Header";
+  Paragraph {
+    "First line";
+    SpaceBefore: 200%;
+  };
+};
+
+readonly LessonExample Content.SpaceBeforeEx = new(#358cc977-df49-4b4a-9158-b02c9134042c#, "Space Before") {
+  Text: "Add extra space before the start of a paragraph using the {0} property. "(NytrilStyle.PropName(attribute FormatProperties.SpaceBefore));
+  Code: [attribute ParSpaceBefore];
+  Sel: new(4, 4, 15);
+  Tip: [LessonTip(3, 3, "Space before the paragraph", -5 degrees, 10)];
+};
+
+//======================================================================
+
+ParSpaceAfter = Block {
+  Paragraph {
+    SpaceAfter: 200%;
+    TextHeight: 120%;
+    Bold;
+    "Title";
+  };
+  "Body text";
+};
+
+readonly LessonExample Content.SpaceAfterEx = new(#c2e6ef98-b396-4660-841f-798a600418bf#, "Space After") {
+  Text: "Add extra space after the end of a paragraph using the {0} property. "(NytrilStyle.PropName(attribute FormatProperties.SpaceAfter));
+  Code: [attribute ParSpaceAfter];
+  Sel: new(2, 4, 15);
+  Tip: [new(2, 2, new TipCallout("Space after the paragraph", 5 degrees, 10))];
+  Options: NoShort;
+};
+
+//======================================================================
+
+BorderPar(Border border) = Paragraph(border) {
+  ParAlignment: Center;
+  ParBackground: 95%;
+};
+
+BorderExamples = Block { Separator: Paragraph;
+  BorderPar(4pt) {"all sides"};
+  BorderPar(BorderTB(4pt)) {"top - bottom"};
+  BorderPar(BorderLR(4pt)) {"left - right"};
+};
+
+readonly LessonExample Content.BordersEx = new(#81de0ca8-ff0c-4a59-a647-e8ccd48a7009#, "Borders") {
+  Text: "Set the border argument for a Paragraph to display a border on any combination of sides. ";
+  Code: [attribute BorderPar, attribute BorderExamples];
+  Sel: new(0, 37, 6);
+};
+
+//======================================================================
+
+ColorBorder = Paragraph(new Edge(3pt, 5pt, Colors.Red)) {
+  ParAlignment: Center;
+  ParBackground: #FCFCF4#;
+  LeftIndent: 16pt;
+  RightIndent: 15pt;
+  Bold;
+  "Very Important Notice";
+};
+
+readonly LessonExample Content.BorderColorsEx = new(#0ada0b98-75dc-40f1-a9ce-f4864e82a571#, "Border color and padding") {
+  Text: "Paragraph borders can also have different colors and padding";
+  Code: [attribute ColorBorder];
+  Sel: new(0, 24, 28);
+  Options: NoShort;
+};
+
+//======================================================================
+
+LegalText = Block {
+  LineHeight: 200%;
+  TextFace: Mono;
+  Paragraph {
+    Bold;
+    TextCase: AllUpper;
+    Underline;
+    "Memorandum of Points";
+  };
+  "Statement of Relevant Facts";
+};
+
+readonly LessonExample Content.LegalTextEx = new(#68a99bb4-7730-4236-9985-3774c23d57c3#, "Line Height") {
+  Text: "Change the default line height using the {0} property. "(NytrilStyle.PropName(attribute FormatProperties.LineHeight));
+  Code: [attribute LegalText];
+  Sel: new(1, 2, 16);
+  Tip: [LessonTip(11, 2, "Double-spaced lines", -5 degrees, 10)];
+  Options: NoShort;
+};
+
+//======================================================================
+
+Normal   = Paragraph {TextFamily: TextFamilies.CMUSerif};
+Heading1 = Normal {ParAlignment: Center; TextFace: Serif; TextHeight: 140%; Bold};
+Heading2 = Normal {TextHeight: 110%; Underline};
+Body     = Normal {FirstIndent: 8pt; TextFamily: ParAlignment: Justify};
+
+Chapter1 = Block {
+  Heading1 {"Chapter 1"};
+  Heading2 {"Introduction"};
+  Body {"Consider the curious case of Dr. Jeckle. "};
+};
+
+readonly LessonExample Content.NamedStylesEx = new(#5e7cfb86-7e18-491a-90ae-8318912fdc65#, "Create Named Styles") {
+  Text: Span {
+    "Use global variables to create styles with familiar names. ";
+    "You can even use a named style to serve as the root template for another style, as show below. ";
+  };
+  Code: [attribute Normal, attribute Chapter1];
+  Sel: new(0, 0, 6);
+};
+
+//======================================================================
+
+Emphasis = Span {Italic; TextColor: Colors.Red};
+
+Chapter2 = Block {
+  Heading1 {"Chapter 2"};
+  Heading2 {"Introduction"};
+  Body {"I would like to "; Emphasis {"emphasize"}; " the following points. "};
+};
+
+readonly LessonExample Content.StyleSheetsEx = new(#5d818bdc-5065-4e7e-8242-bef41a2dc581#, "Style Sheets") {
+  Text: Span {
+    "Once you have a set of styles, you can use them consistently throughout your content. ";
+    "Now, all of your style information is in one place, separated from your content. ";
+  };
+  Code: [attribute Emphasis, attribute Chapter2];
+  Sel: new(3, 2, 24);
+  Options: NoShort;
+};
+
+//======================================================================
+
+Book = Block {
+  Chapter1;
+  Chapter2;
+};
+
+readonly LessonExample Content.CombineContentEx = new(#e0a37537-bc46-4c30-8976-a64da08faf57#, "Combine Content") {
+  Text: Span {
+    "You can also build manageable blocks of content in the same way, for reuse in different documents, limited only by your imagination. ";
+    "A global style change, across all content and all documents is now almost instant. ";
+  };
+  Code: [attribute Book];
+  Sel: new(1, 0, 20);
+  Options: NoShort;
+};
+
+//======================================================================
+
+

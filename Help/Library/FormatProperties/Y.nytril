@@ -1,0 +1,18 @@
+include "Help";
+
+using Format;
+
+Example = Canvas(50, 2", 1) {
+  var shape = Canvas(10, 10, 1) {
+    X: 10;
+    BorderRadius: 2;
+  };
+
+  shape {Y: 10}; // Plain numbers are pixels...
+  shape {Y: 40px};
+  shape {Y: 100pt};
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.Y));
+
+

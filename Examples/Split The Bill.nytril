@@ -1,0 +1,172 @@
+using Math, Format, Units, People;
+
+//======================================================================
+
+// List the people who contributed or used funds
+flags People {
+  None,
+  Eileen,
+  Steve,
+  Carrie,
+  Will,
+  Drew,
+}
+
+Everyone = People.AllFlags;
+
+// Put all trip expenses in this table like this
+//  new("Expense Name", amount, person who paid, all who benefitted),
+
+ExpenseClass[] Expenses = [
+  new("House", 3000, Eileen, Everyone),
+  new("Skis", 20, Eileen, Carrie),
+  new("Groceries", 155.78, Carrie, Eileen Carrie Steve),
+  new("Groceries", 47.90, Steve, Eileen Steve Carrie),
+  new("Gas", 40.17, Carrie, Everyone),
+  new("Dinner", 160, Will, Everyone),
+  new("Dinner", 130, Steve, Everyone),
+  new("Car", 796.44, Eileen, Eileen Carrie),
+  new("Lunch", 30, Carrie, Everyone),
+  new("Gas", 25, Steve, Carrie Eileen),
+];
+
+//======================================================================
+
+namespace DocMetrics {
+  NumberSize = 1";
+  NameSize   = 1";
+}
+
+class ExpenseClass {
+  var Name,
+      Amount,
+      By,
+      UsedBy;
+
+  Constructor(name, amount, by, usedby) {
+    Name   = name;
+    Amount = amount;
+    By     = by;
+    UsedBy = usedby;
+  }
+}
+
+//======================================================================
+
+Main.Documents.SplitTheBill = new MainDocumentClass;
+
+class MainDocumentClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#db395765-c569-49f0-a9ed-f01ca3e204c6#, "Split the bill");
+    Description = "Split joint expenses easily and fairly";
+  }
+
+  override GetDocument = Document {
+    Paragraph {
+      TextHeight: 18pt;
+      ParBackground: Colors.Blue;
+      ParAlignment: Center;
+      TextColor: Colors.White;
+      SpaceBefore: 20pt;
+      Name
+    };
+
+    HeaderStyle {
+      "Contributions";
+    };
+
+    Table(1, PadLR(2pt), [20pt, Column.Fit(DocMetrics.NameSize), DocMetrics.NumberSize, Column.Fit(3 inch), Column.Expand]) {
+      Row(BorderB(1)) {
+        Background: 90%;
+        Empty; "By"; "Amount"; "Used By"; "For";
+      };
+      foreach (var e in Expenses) {
+        Row(PadLR(2pt)) {
+          if (each0 mod 2 == 1)
+            Background: 95%;
+          each0+1;
+          Cell(PadLR(4pt)) {
+            e.By;
+          };
+          NumberCell(e.Amount);
+          e.UsedBy;
+          e.Name;
+        }
+      }
+      Row(BorderT(1)) {
+        Background: 80%;
+        Empty;
+        "Total";
+        NumberCell(TotalExpense);
+      };
+    };
+
+    HeaderStyle {
+      "Breakdown";
+    };
+
+    Table(1, null, [DocMetrics.NameSize, DocMetrics.NumberSize]) {
+      Row(BorderB(1)) {
+        Background: 90%;
+        Empty; "Contributed"; "Used"; "Is Owed"; "Owes";
+      };
+      foreach (var p in People) {
+        if (p != None) {
+          var added = GetContribution(p);
+          var used  = GetUsed(p);
+          var dif   = added - used;
+          Row {
+            p;
+            NumberCell(added);
+            NumberCell(used);
+            if (dif > 0)
+              NumberCell(dif, 0);
+            else
+              Empty;
+
+            if (dif < 0)
+              NumberCell(-dif, 0) {TextColor: Colors.Red};
+            else
+              Empty;
+          }
+        }
+      }
+    };
+  };
+
+  TotalExpense = Sum((each Expenses).Amount);
+
+  GetUsed(person) {
+    var sum = 0.0;
+    foreach (var e in Expenses) {
+      if (e.UsedBy.HasFlag(person))
+        sum += e.Amount / e.UsedBy.GetFlagCount;
+    }
+    return sum;
+  }
+
+  GetContribution(person) {
+    var list = Expenses.FindSlice(e => e.By == person);
+    if (list.Length > 0)
+      return Sum((each list).Amount);
+    return 0;
+  }
+
+
+  NumberCell(x, digits=2) = Cell(PadR(3)) {
+    HAlign: Right;
+    Paragraph(null, [new(28pt, TabTypes.Decimal)]) {
+      TextDigits: digits;
+      Tab;
+      "$";
+      x;
+    }
+  };
+
+  HeaderStyle = Paragraph {
+    TextHeight: 14pt;
+    SpaceBefore: 10pt;
+  };
+}
+
+//======================================================================

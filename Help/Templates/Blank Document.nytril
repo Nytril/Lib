@@ -1,0 +1,14 @@
+using Format;
+
+readonly MyDocument Main.Documents.MainDocument = new;
+
+class MyDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#00000000-1111-2222-3333-444444444444#, "Blank Document");
+  }
+
+  override GetDocument = Document {
+    "Start from scratch";
+  };
+}
+

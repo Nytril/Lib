@@ -1,0 +1,854 @@
+using Format;
+
+include "DocumentStyles";
+include "NytrilStyle";
+
+//======================================================================
+
+abstract class ShowDesign {
+  var      SideGap,
+           BulletIndent,
+           Bullet,
+           BulletSize,
+           BulletDone,
+           BulletCurrent,
+           ItemIndent,
+           TotalIndent,
+           ItemSpacer,
+           ItemTextFormat,
+           TopicHeight,
+           HeaderGap,
+           FooterGap,
+           HeaderHeight,
+           FooterHeight;
+  var Fill LineColor;
+
+  Constructor {
+    SideGap        = 0.5";
+    ItemSpacer     = 10pt;
+    BulletIndent   = 24pt;
+    ItemIndent     = 0.5";
+    TotalIndent    = ItemIndent + BulletIndent;
+    Bullet         = NytrilStyle.ShowMarker(Markers.Square(Colors.Black));
+    BulletDone     = NytrilStyle.ShowMarker(Markers.TriangleRight(Colors.Black));
+    BulletCurrent  = NytrilStyle.ShowMarker(Markers.Circle(NytrilPalette.Bullet));
+    ItemTextFormat = {TextHeight: 20pt};
+    TopicHeight    = 32pt;
+    HeaderGap      = 6pt;
+    FooterGap      = 32pt;
+    HeaderHeight   = 38pt;
+    FooterHeight   = 24pt;
+    LineColor      = #96858F#;
+  }
+
+  virtual HeaderFooter(SlideShow show, title, footer) = Block {
+    PageBreak;
+  };
+
+  virtual TopicPage(title, color) = Paragraph {
+    var h = 40pt;
+    SpaceBefore: (ExtentPage.Height - h) * 0.25;
+    ParAlignment: Center;
+    TextColor: color;
+    TextHeight: h;
+    title;
+  };
+
+  virtual ShowTopicTitle(title) = Paragraph {
+    SpaceAfter: 4pt;
+    TextHeight: TopicHeight;
+    title;
+  };
+
+  FixedFrame(x, y, width, height) = Frame(width, height) {
+    HRelative: HRelatives.Page;
+    VRelative: VRelatives.Page;
+    Wrapping: Wrappings.BehindText;
+    X: x;
+    Y: y;
+  };
+
+  abstract GetFigureCaption(ContentStyle style, Content content);
+}
+
+//======================================================================
+
+class TexDesign: ShowDesign {
+  Constructor {
+    super.Constructor;
+    HeaderGap    = 24pt;
+    HeaderHeight = 38pt;
+    FooterHeight = 24pt;
+  }
+
+  override GetFigureCaption(ContentStyle style, Content content) {
+    var title   = content.Title;
+    var caption = content.GetCaption(style);
+
+    if (title is valid or caption is valid) {
+      return Frame(ExtentWidth, null, PadB(10pt)) {
+        if (title is valid) {
+          Paragraph {
+            LeftIndent: -16pt;
+            TextHeight: 28pt;
+            title;
+          };
+        }
+        if (caption is valid) {
+          Block {
+            TextHeight: 16pt;
+            caption;
+          };
+        }
+      };
+    }
+
+    return null;
+  }
+
+  GetBox(SlideShow show, th, Thickness margin, width, bool spread=false) = HBox(spread ? width : null) {
+    TextHeight: th;
+    if (spread)
+      Justify: Justifiers.SpaceBetween;
+    else
+      Separation: 2;
+
+    Margin: margin;
+
+    foreach (var group in show.Groups) {
+      VBox {
+        group.Title;
+        HBox {
+          TextHeight: 60%;
+          var i = group.StartCount;
+          for (var j = 0; j < group.CompleteCount; ++j) {
+            HBox(null, null, PadLR(1pt)) {
+              if (i < show.PageIndex)
+                Markers.Circle(Colors.Black);
+              else
+                Markers.Circle(Colors.White, Colors.Black);
+            };
+            ++i;
+          }
+        };
+      };
+    }
+  };
+
+  HeaderBackground(SlideShow show) = Block {
+    show.Style.SansSerif;
+    TextColor: Colors.Gray;
+    var margin = new Thickness(24pt, 12pt, 24pt, 12pt);
+    var th     = 11pt;
+    var width  = ExtentPage.Width - margin.Left - margin.Right;
+    for (;;) {
+      var bw  = GetLayoutSize(GetBox(show, th, margin, width), new(width, ExtentHeight)).Width;
+      if (bw > width)
+        th -= 0.5pt;
+      else {
+        GetBox(show, th, margin, width, true);
+        break;
+      }
+    }
+  };
+
+  FooterBackground(SlideShow show) = Paragraph {
+    RightIndent: 24pt;
+    ParAlignment: Right;
+    TextHeight: 16pt;
+    show.PageIndex+1;
+    " / ";
+    show.PageTotal;
+  };
+
+  override HeaderFooter(SlideShow show, title, footer) = Block {
+    var page = ExtentPage;
+    Paragraph {
+      PageBreakBefore: true;
+      FixedFrame(0, 0, page.Width, HeaderHeight) {
+        HeaderBackground(show);
+      };
+
+      FixedFrame(0, page.Height - FooterHeight, page.Width, FooterHeight) {
+        FooterBackground(show);
+      };
+    };
+  };
+}
+
+//======================================================================
+
+class FancyDesign: ShowDesign {
+  var Fill HeaderLeftBar,
+                HeaderRightBar,
+                FooterLeftBar,
+                FooterRightBar,
+                FooterText,
+                FooterPage,
+                TitlePageFore,
+                HeaderText;
+
+  Constructor {
+    super.Constructor;
+    HeaderHeight   = 48pt;
+    HeaderGap      = 6pt;
+    FooterHeight   = 24pt;
+    HeaderLeftBar  = NytrilPalette.Logo1.Scale(0.75)..NytrilPalette.Logo1.Scale(0.5);
+    HeaderRightBar = (80%)..(100%);
+    FooterLeftBar  = (98%)..(90%);
+    FooterText     = Color.GrayScale(65%);
+    FooterPage     = Color.GrayScale(50%);
+    TitlePageFore  = Colors.White;
+    HeaderText     = Colors.White;
+  }
+
+  override ShowTopicTitle(title) = null;
+
+  override GetFigureCaption(ContentStyle style, Content content) {
+    var caption = content.GetCaption(style);
+
+    if (caption is valid) {
+      return Frame(ExtentWidth, null, PadB(10pt)) {
+        TextHeight: 16pt;
+        caption;
+      };
+    }
+    return null;
+  }
+
+  Design(height, right, leftbar, rightbar) = Canvas(ExtentPage.Width, height) {
+    var width = ExtentPage.Width;
+    var t     = 0.10 height;
+    var x1    = 0.9 width;
+    var x2    = 0.96 width;
+    var p1    = new Point((x2 + x1)*0.5, height * right);
+
+    Shape(leftbar) {
+      ClosedPath(0) {
+        LineTo(0, t);
+        LineTo(x1, t);
+        QuadTo(p1, new(x2, height));
+        LineTo(0, height);
+      }
+    };
+
+    Shape(LineColor) {
+      ClosedPath(0) {
+        LineTo(x1, 0);
+        QuadTo(p1, new(x2, height-t));
+        LineTo(width, height-t);
+        LineTo(width, height);
+        LineTo(x2, height);
+        QuadTo(p1, new(x1, t));
+        LineTo(0, t);
+      }
+    };
+
+    if (rightbar is valid) {
+      Shape(rightbar) {
+        ClosedPath(x1, 0) {
+          LineTo(width, 0);
+          LineTo(width, height-t);
+          LineTo(x2, height-t);
+          QuadTo(p1, new(x1, 0));
+        }
+      };
+    }
+  };
+
+  HeaderBackground(content, height, textheight) = Design(height, 0.25, HeaderLeftBar, HeaderRightBar) {
+    Frame(0.75 * ExtentPage.Width) {
+      X: ExtentMargin.Left;
+      VAlignment: Center;
+      Paragraph {
+        TextHeight: textheight;
+        TextColor: HeaderText;
+        content;
+      };
+    };
+  };
+
+  FooterBackground(content, page, height) = Design(height, 0.75, FooterLeftBar, FooterRightBar) {
+    VAlign: VAligns.Center;
+
+    Frame(ExtentPage.Width) {
+      X: ExtentMargin.Left;
+      Paragraph(null, [ExtentWidth - ExtentMargin.Right - ExtentMargin.Left]) {
+        TextHeight: height * 0.5;
+        Span {
+          TextColor: FooterText;
+          content;
+        };
+        Tab;
+        Span {
+          TextColor: FooterPage;
+          page;
+        }
+      }
+    }
+  };
+
+  override HeaderFooter(SlideShow show, title, footer) = Block {
+    if (show.PageIndex > 0) {
+      var page = ExtentPage;
+
+      Paragraph {
+        PageBreakBefore: true;
+        if (title is valid) {
+          FixedFrame(0, 0, page.Width, HeaderHeight) {
+            HeaderBackground(title, HeaderHeight, HeaderHeight * 0.5)
+          };
+        }
+        if (footer is valid) {
+          FixedFrame(0, page.Height - FooterHeight, page.Width, FooterHeight) {
+            FooterBackground(footer, show.PageIndex, FooterHeight);
+          };
+        }
+      }
+    }
+  };
+
+  override TopicPage(title, color) = Block {
+    var page = ExtentPage;
+    Paragraph {
+      FixedFrame(0, 0, page.Width, page.Height) {
+        Background: NytrilPalette.TitlePageBack;
+      }
+    };
+    super.TopicPage(title, TitlePageFore);
+  };
+}
+
+//======================================================================
+
+class ShowSlide {
+  var Title,
+      Footer;
+
+  Constructor(title, footer=null) {
+    Title  = title;
+    Footer = footer;
+  }
+
+  virtual ShowBody(SlideShow show) = null;
+
+  virtual AddSlidePage(SlideShow show, title, footer) = Block {
+    show.Design.HeaderFooter(show, title, footer);
+    ShowBody(show);
+    show.PageIndex++;
+  };
+
+  virtual void CountSlidePage(SlideShow show) {
+    show.PageTotal++;
+  }
+}
+
+//======================================================================
+
+class TitleSlide: ShowSlide {
+  var List<SlideItem> Items;
+  var                 StartCount,
+                      CompleteCount;
+
+  Constructor(variable) {
+    super.Constructor(variable.Title);
+    Items         = new(32);
+    StartCount    = 0;
+    CompleteCount = 0;
+  }
+
+  override AddSlidePage(SlideShow show, title, footer) = Block {
+    show.Design.HeaderFooter(show, null, null);
+    show.Design.TopicPage(title, Colors.Black);
+    show.PageIndex++;
+  };
+}
+
+//======================================================================
+
+class IntroSlide: ShowSlide {
+  const NameHeight = 24pt;
+  const NameGap    = 10pt;
+
+  Constructor(title) {
+    super.Constructor(title);
+  }
+
+  override AddSlidePage(SlideShow show, title, footer) = Block {
+    show.Design.HeaderFooter(show, null, null);
+    ShowBody(show);
+    show.PageIndex++;
+  };
+
+  override ShowBody(SlideShow show) = Block {
+    var title = Paragraph {
+      TextHeight: 40pt;
+      Title;
+    };
+
+    var gap = ExtentHeight - GetLayoutSize(title).Height;
+    if (show.AuthorList is valid)
+      gap -= (NameGap+NameHeight)*(show.AuthorList.Length+1);
+    gap *= 25%;
+
+    ParAlignment: Center;
+    Paragraph {
+      SpaceBefore: gap;
+      TextColor: NytrilPalette.Title;
+      title;
+    };
+
+    if (show.AuthorList is valid) {
+      foreach (var author in show.AuthorList) {
+        Paragraph {
+          TextHeight: NameHeight;
+          SpaceBefore: each0 > 0 ? NameGap : gap;
+          author.First;
+          Space;
+          author.Last;
+        };
+
+        if (show.AuthorList.Length == 1) {
+          Block {
+            ParAlignment: Center;
+
+            var department = author.FindFirstFact(LinkTypes.DepartmentLink) as Organization;
+            if (department is valid) {
+              department.Name;
+              var org = department.FindFirstFact(LinkTypes.DepartmentLink) as Organization;
+              if (org is valid)
+                org.Name;
+            }
+            author.FindFirstFact(LinkTypes.WorkEmailLink);
+          }
+        }
+      }
+    }
+
+    if (show.Created is valid) {
+      Paragraph {
+        SpaceBefore: gap;
+        TextFormat: "MMMM dd, yyyy";
+        show.Created;
+      };
+    }
+  };
+}
+
+//======================================================================
+
+class ContentSlide: ShowSlide {
+  var Content Content;
+
+  Constructor(Content content) {
+    super.Constructor(content.Title);
+    Content = content;
+  }
+
+  override ShowBody(SlideShow show) = Block {
+    show.Style.AddBody(Content);
+  };
+}
+
+//======================================================================
+
+class EndSlide: ShowSlide {
+  Constructor(title) {
+    super.Constructor(title);
+  }
+
+  override AddSlidePage(SlideShow show, title, footer) = Block {
+    ShowBody(show);
+  };
+
+  override ShowBody(SlideShow show) = Block {
+    ParAlignment: Center;
+    Paragraph {
+      PageBreakBefore: true;
+      TextHeight: 50pt;
+      Title;
+    };
+
+    Paragraph {
+      var h = 150pt;
+      SpaceBefore: (ExtentHeight - h) * 0.4;
+
+      Shape(NytrilPalette.SphericalFill(NytrilPalette.Title), new(3, show.Design.LineColor)) {
+        TextHeight: h;
+        Icons.help;
+      }
+    };
+  };
+}
+
+//======================================================================
+
+class ReferenceSlide: ShowSlide {
+  Constructor {
+    super.Constructor(DocLang.References);
+  }
+
+  override AddSlidePage(SlideShow show, title, footer) = Block {
+    PageBreak;
+    show.Style.AddReferences;
+  };
+}
+
+//======================================================================
+
+ShowItem(SlideShow show, variable) = Block {
+  var design = show.Design;
+
+  if (variable.?Title is valid)
+    design.ShowTopicTitle(variable.?Title);
+
+   Paragraph {
+     var width = ExtentWidth - design.ItemIndent;
+     var text  = variable.?Text;
+     PushExtentSize(new(width, ExtentHeight));
+     Frame(width) {
+       if (text is valid) {
+         design.ItemTextFormat;
+         text;
+       }
+       else {
+         Block {
+           design.ItemTextFormat;
+           var f = variable.?Figure;
+           if (f is not null)
+             show.Style.AddBody(f);
+           else
+             variable.?GetBody(show.Style);
+         };
+       }
+
+       PopExtent();
+     };
+   }
+};
+
+//======================================================================
+
+class SlideItem {
+  var Width,
+      Height,
+      Content,
+      Numbered,
+      Number;
+
+   Constructor(SlideShow show, variable, number, width) {
+     Width    = width;
+     Number   = number;
+     Numbered = variable.?Numbered ?? 0;
+
+     PushExtentSize(new(width, ExtentHeight));
+     Content = Frame(ExtentWidth) {
+       ShowItem(show, variable);
+     };
+     Height = GetLayoutSize(Content).Height;
+     PopExtent();
+   }
+}
+
+//======================================================================
+
+class SlideGroup {
+  var List<SlideItem> Items;
+  var SlideItem       Item;
+  var                 Title;
+
+  Constructor(SlideShow show, variable, width) {
+    Items = new(8);
+    Item  = new(show, variable, 0, width);
+    Title = variable.?Title;
+  }
+}
+
+//======================================================================
+
+class FigureSlide: ShowSlide {
+  var Content       Content;
+  var ParAlignments ParAlignment;
+
+  Constructor(Content content, ParAlignments alignment=ParAlignments.Center) {
+    super.Constructor(content.Title, null);
+    Content      = content;
+    ParAlignment = alignment;
+  }
+
+  override AddSlidePage(SlideShow show, title, footer) = Block {
+    show.Design.HeaderFooter(show, title, footer);
+
+    var width  = ExtentWidth;
+    var height = ExtentHeight;
+
+    var header = Frame(width) {
+      show.Design.GetFigureCaption(show.Style, Content);
+    };
+    var hh = GetLayoutSize(header).Height;
+    header;
+
+    Paragraph {
+      ParAlignment: ParAlignment;
+
+      Frame {
+        PushExtentSize(new(width, height - hh));
+        show.Style.AddBody(Content);
+        PopExtent();
+      };
+
+    };
+    show.PageIndex++;
+  };
+}
+
+//======================================================================
+
+class TopicSlides: ShowSlide {
+  var List<SlideGroup> Groups;
+  var                  Main,
+                       Start,
+                       Topic,
+                       Pause;
+
+  Constructor(SlideShow show, TitleSlide main, topic, pause) {
+    super.Constructor(null);
+    Topic  = topic;
+    Main   = main;
+    Pause  = pause;
+    Start  = topic.Title;
+    Groups = new(32);
+
+    var width = ExtentWidth - show.Design.TotalIndent;
+    var group = new SlideGroup(show, topic, width);
+    Groups.Add(group);
+
+    var height = 0.0;
+    foreach (var iv in show.GetTopicItems(topic)) {
+      var item = new SlideItem(show, iv, each1, width);
+      main.Items.Add(item);
+
+      if (group.Items.Length > 0 and height + item.Height >= ExtentHeight) {
+        group = new SlideGroup(show, topic, width);
+        Groups.Add(group);
+        height = 0.0;
+      }
+      group.Items.Add(item);
+      height += item.Height + show.Design.ItemSpacer;
+    }
+  }
+
+  ShowSet(SlideShow show, title, footer, SlideGroup group, count, number) = Block {
+    var design = show.Design;
+    design.HeaderFooter(show, title, footer);
+
+    var contentwidth = ExtentWidth - design.TotalIndent;
+
+    if (Start is valid)
+      show.Design.ShowTopicTitle(Start);
+
+    Table(null, null, [design.BulletIndent, contentwidth]) {
+      LeftIndent: design.ItemIndent;
+
+      for (var i = 0; i < count; ++i) {
+        Row(PadB(design.ItemSpacer)) {
+          var gi = group.Items[i];
+          Cell {
+            VAlign: Center;
+            Paragraph {
+              design.ItemTextFormat;
+              if (gi.Numbered > 0) {
+                HBox(null, null, PadLR(2pt)) {
+                  Background: 80%;
+                  gi.Numbered;
+                };
+              }
+              else if (gi.Number == number+count)
+                design.BulletCurrent;
+              else
+                Pause ? design.BulletDone : design.Bullet;
+            };
+          };
+          Cell {
+            PushExtentSize(new(contentwidth, ExtentHeight));
+            gi.Content;
+            PopExtent();
+          };
+        }
+      }
+    };
+  };
+
+  override AddSlidePage(SlideShow show, title, footer) = Block {
+    if (Pause) {
+      var number = 0;
+      foreach (var group in Groups) {
+        foreach (var item in group.Items)
+          ShowSet(show, group.Title, Main.Title, group, each1, number);
+        number += group.Items.Length;
+        show.PageIndex++;
+      }
+    }
+    else {
+      var group = Groups.FirstElement;
+      ShowSet(show, group.Title, Main.Title, group, group.Items.Length, group.Items.Length);
+      show.PageIndex++;
+    }
+  };
+
+  override void CountSlidePage(SlideShow show) {
+    if (Pause)
+      show.PageTotal += Groups.Length;
+    else
+      show.PageTotal++;
+  }
+}
+
+//=========================================================================
+
+class VarFigureClass: Content {
+  var Variable;
+
+  Constructor(variable) {
+    super.Constructor(variable.?Title);
+    Variable = variable;
+  }
+
+  override GetCaption(ContentStyle style) = Variable.?Caption;
+
+  override GetBody(ContentStyle style) = Block {
+    if (exists Variable.?Text)
+      Variable.Text;
+    else
+      Variable.?GetBody(style);
+  };
+}
+
+//======================================================================
+
+class SlideShow: DocumentEntry {
+  var List<ShowSlide>  SlideDeck;
+  var ContentStyle     Style;
+  var Person[]         AuthorList;
+  var ShowDesign       Design;
+  var List<TitleSlide> Groups;
+  var                  PageIndex,
+                       PageTotal,
+                       CompleteCount;
+  var Thickness        Margins;
+  var Size             PaperSize;
+
+  Constructor(id, name, ShowDesign design, ContentStyle style, Person[] authors=null) {
+    super.Constructor(id, name);
+    DocumentType   = DocumentTypes.Presentation;
+    Style          = style;
+    ContentType    = ContentTypes.Article;
+    ReferenceStyle = Style;
+    Title          = name;
+    Design         = design;
+    AuthorList     = authors;
+    Groups         = new(32);
+    SlideDeck      = new(128);
+    PaperSize      = new(8.5", 11");
+    Margins        = new(design.SideGap, design.HeaderHeight + design.HeaderGap, design.SideGap, design.FooterHeight);
+  }
+
+  GetTopicItems(topic) {
+    return topic.?Items ?? topic.?GetItems(this) ?? [];
+  }
+
+  AddSlidePage(ShowSlide slide) = slide.AddSlidePage(this, slide.Title, slide.Footer);
+
+  void AddSlide(ShowSlide slide) {
+    SlideDeck.Add(slide);
+  }
+
+  virtual ShowTitle = null;
+
+  void AddFigureSlide(Content content) {
+    AddSlide(new FigureSlide(content));
+  }
+
+  bool CanInclude(_) {
+    return true;
+  }
+
+  virtual InitDocument = null;
+
+  virtual void CreateSlides {
+  }
+
+  override GetDocument = Document(Margins, true, null, null, null, PaperSize) {
+    InitDocument;
+
+    var height = ExtentHeight;
+    var area = new Size(ExtentWidth, height - Design.FooterGap);
+    PushExtentSize(area);
+    SlideDeck.Clear();
+    CreateSlides;
+
+    PageTotal = 1;
+    foreach (var slide in SlideDeck)
+      slide.CountSlidePage(this);
+
+    PageIndex = 0;
+    AddSlidePage(new IntroSlide(ShowTitle ?? Title));
+    foreach (var slide in SlideDeck) {
+      PushExtentSize(area);
+      AddSlidePage(slide);
+      PopExtent();
+    }
+    PopExtent();
+  };
+
+  void AddSlideVariable(slidevar) {
+    var first = CompleteCount;
+    ++CompleteCount;
+
+    var topics = slidevar.?Slide;
+    if (topics is valid) {
+      var ts = new TitleSlide(slidevar);
+      Groups.Add(ts);
+      AddSlide(ts);
+
+      foreach (var topic in topics) {
+        if (CanInclude(topic)) {
+          ++CompleteCount;
+
+          ShowSlide s;
+          var figure = topic.?Figure;
+          if (figure is valid)
+            s = new FigureSlide(figure);
+          else {
+            var items = GetTopicItems(topic);
+            if (items.Length > 0) {
+              var pause = topic.?Pause;
+              s = new TopicSlides(this, ts, topic, pause is valid and pause);
+            }
+            else
+              s = new FigureSlide(new VarFigureClass(topic));
+          }
+          AddSlide(s);
+        }
+      }
+      ts.StartCount    = first;
+      ts.CompleteCount = CompleteCount - first;
+    }
+    else {
+      Content content = slidevar.?Figure;
+      content ??= new VarFigureClass(slidevar);
+      AddFigureSlide(content);
+    }
+  }
+
+  void AddSlideGroup(slidesvar) {
+    CompleteCount = 0;
+    foreach (var slidevar in slidesvar) {
+      if (CanInclude(slidevar))
+        AddSlideVariable(slidevar);
+    }
+  }
+}
+
+//======================================================================
+

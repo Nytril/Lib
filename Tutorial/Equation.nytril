@@ -1,0 +1,48 @@
+using Format;
+//======================================================================
+
+namespace Chapters.Mathematics.Sections.Equations;
+
+readonly TutorialLesson Lesson = new(#9b189c69-aef3-4960-9888-e1cde01fac53#, "Automatic Equation Typesetting");
+
+//======================================================================
+
+x          = Symbol("x");
+y          = Symbol("y");
+SquareRoot = x^(1 over 2);
+
+readonly LessonExample Content.RootTypesettingEx = new(#8154babb-058b-4c0c-98bd-bcdfecab64b4#) {
+  Text: "Unresolved square roots are automatically typeset";
+  Code: [attribute x, attribute SquareRoot];
+};
+
+//======================================================================
+
+CubeRoot = x^(1 over 3);
+
+readonly LessonExample Content.CubeRootTypesettingEx = new(#e57b05d7-906d-4610-99fc-dc4c07ceb3ee#) {
+  Text: "Higher roots are also typeset";
+  Code: [attribute CubeRoot];
+};
+
+//======================================================================
+
+Part1 = (x / y)^(1 over 3);
+Part2 = Part1 + x/y + x^2/y + (x^3/y^5)^(1 over 3) + x;
+
+readonly LessonExample Content.ComplexEquationsEx = new(#52693eb0-a59b-4d7d-8903-f6c4eab6638f#) {
+  Text: "Equations of arbitray complexity will be typeset";
+  Code: [attribute Part1, attribute Part2];
+};
+
+//======================================================================
+
+LargeEquation = Symbolic.Sqrt(Part1 / Part2);
+
+readonly LessonExample Content.SimplificationEx = new(#ea5c2c8e-2958-420b-8c01-0124048e8c96#) {
+  Text: "Expressions can be combined to form larger formulas";
+  Code: [attribute LargeEquation];
+};
+
+//======================================================================
+

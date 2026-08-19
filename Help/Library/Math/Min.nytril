@@ -1,0 +1,15 @@
+include "Help";
+
+using Format;
+
+ShowMin(x, y) = "The lesser of {0} and {1} is {2}."(x, y, Math.Min(x, y));
+
+Example = Block {
+  ShowMin(3, 2);
+  ShowMin(4, 7);
+  ShowMin(-5, -18);
+};
+
+Main.Help = new HelpExample(attribute(Math.Min));
+
+

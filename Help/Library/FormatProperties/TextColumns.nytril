@@ -1,0 +1,16 @@
+include "Help";
+
+using Format;
+
+
+Example = Paragraph {
+  TextColumns: 10;
+  "This text will automatically break after each 10 characters";
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextColumns));
+
+//============================================================
+

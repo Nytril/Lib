@@ -1,0 +1,282 @@
+using Format;
+
+//=======================================================
+
+flags OptionFlags {
+  None("None"),
+  One("Flag 1"),
+  Two("Flag 2"),
+  Three("Flag 3"),
+}
+
+enum Choices {
+  One("Choice 1"),
+  Two("Choice 2"),
+  Three("Choice 3"),
+}
+
+readonly Main.Documents.Main = new InputDocument;
+
+//=======================================================
+
+class UserOptions: Fact {
+  field bool        DisableMessage,
+                    CheckBox2;
+  field BoolStates  CheckBox3;
+  field Choices     Choice;
+  field OptionFlags Option;
+  field double      Number;
+  field int         Slide,
+                    Pressed;
+  field string      Search,
+                    Single,
+                    Multi,
+                    Password;
+
+  Constructor {
+    super.Constructor(#e5a6c08b-c1d0-4839-a7b9-62713f94b6a8#);
+    Option = OptionFlags.One | OptionFlags.Three;
+    ReadFromStorage;
+  }
+}
+
+//=======================================================
+
+class MessageActionClass: Action {
+  var UserOptions Options;
+
+  Constructor(UserOptions data) {
+    super.Constructor(Actions.Execute, null);
+    Options = data;
+  }
+
+  override EventResponse Execute {
+    var message = Paragraph {
+      HBox {
+        TextHeight: 24pt;
+        VAlign: Center;
+        Shape(Colors.Red, Colors.Black) {
+          Icons.message;
+        };
+        Space;
+        "A message for the user";
+      };
+    };
+
+    return EventResponses.MessageTip(message);
+  }
+}
+
+//=======================================================
+
+class MessageEvent: ControlEvent {
+  var UserOptions Options;
+
+  Constructor(UserOptions data) {
+    super.Constructor;
+    Options = data;
+  }
+
+  override bool IsDisabled = Options.DisableMessage;
+}
+
+//=======================================================
+
+class NumberEvent: ControlEvent {
+  Constructor {
+    super.Constructor;
+  }
+
+  override string GetDisplayString(value) = Span {
+    "$";
+    value;
+  };
+}
+
+//=======================================================
+
+class IncAction: Action {
+  var UserOptions Options;
+
+  Constructor(UserOptions data) {
+    super.Constructor(Actions.Execute, null);
+    Options = data;
+  }
+
+  override EventResponse Execute {
+    ++Options.Pressed;
+    Options.WriteToStorage;
+    return EventResponses.Refresh;
+  }
+}
+
+//=======================================================
+
+class InputDocument: DocumentEntry {
+  var UserOptions Options;
+
+  Constructor {
+    super.Constructor(#270b1284-062d-462b-ad99-66eaa57faef0#, "Input Form");
+    Options = new;
+  }
+
+  override GetDocument = Document {
+    TextHeight: 14pt;
+    ShowControls;
+    ShowData;
+  };
+
+  OptionCheck(OptionFlags option) = Paragraph {
+    CheckControl(new(ref Options.Option), option) {
+      Placement: Placements.Right;
+      Action: Actions.Refresh;
+      option.Name;
+    };
+  };
+
+  ChoiceCheck(Choices choice) = Paragraph {
+    RadioControl(new(ref Options.Choice), choice) {
+      Placement: Placements.Right;
+      Action: Actions.Rebuild;
+      choice.Name;
+    };
+  };
+
+  ShowTitle = Paragraph(BorderB(1pt)) {
+    TextHeight: 20pt;
+    Bold;
+  };
+
+  ShowControls = Block {
+    var edge = new Edge(1, 2);
+
+    ShowTitle {
+      "User Controls";
+    };
+
+    TextControl(new(ref Options.Search), 3", null, edge) {
+      BorderRadius: 3;
+      Action: new Action(Actions.RunSearch);
+      "Search";
+      Space;
+    };
+
+    SliderControl(new(ref Options.Slide), 1", null, null, 0..100 step 1) {
+      "HSlide ";
+      Action: Actions.Refresh;
+    };
+
+    SliderControl(new(ref Options.Slide), null, null, null, 0..100 step 1) {
+      Direction: Directions.Vertical;
+      "VSlide ";
+      Action: Actions.Refresh;
+    };
+
+    DoubleControl(new(ref Options.Number), 1.25", null, edge, -10, 1000000, 1.0) {
+      TextGroup: true;
+      TextDigits: 2;
+      BorderRadius: 3;
+      Events: new NumberEvent;
+      "Number ";
+      Action: Actions.Refresh;
+    };
+
+    Paragraph {
+      SpaceBefore: 10pt;
+      ButtonControl(null, null, new Edge(2, 3)) {
+        BorderRadius: 5;
+        "Increment";
+        Action: new IncAction(Options);
+      };
+      Space;
+
+      ButtonControl(null, null, new Edge(2, 3, Colors.Green)) {
+        BorderRadius: 5;
+        TextColor: Colors.Green;
+        "Message";
+        Action: new MessageActionClass(Options);
+      };
+    };
+
+    CheckControl(new(ref Options.DisableMessage)) {
+      Placement: Placements.Right;
+      "Disable Message";
+      Action: Actions.Refresh;
+    };
+
+    CheckControl(new(ref Options.CheckBox2)) {
+      Placement: Placements.Right;
+      "Simple Check Box";
+      Action: Actions.Refresh;
+    };
+
+    CheckControl(new(ref Options.CheckBox3)) {
+      Placement: Placements.Right;
+      "Three State Check Box";
+      Action: Actions.Refresh;
+    };
+
+    OptionCheck(each OptionFlags.ValueArray[1..]);
+
+    VBox(null, null, new Edge(0.5, 6)) {
+      BorderRadius: 3;
+      ChoiceCheck(each Choices);
+    };
+
+    IntControl(new(ref Options.Pressed), 1", null, edge, 0, 200) {
+      BorderRadius: 3;
+      Action: Actions.Refresh;
+      "Pressed";
+      Space;
+    };
+
+    TextControl(new(ref Options.Single), 3", null, edge) {
+      BorderRadius: 3;
+      Action: Actions.Refresh;
+      "Single Line";
+      Space;
+    };
+
+    TextControl(new(ref Options.Password), 3", null, edge, TextControlOptions.Password) {
+      BorderRadius: 3;
+      Action: Actions.Refresh;
+      "Password";
+      Space;
+    };
+
+    TextControl(new(ref Options.Multi), 3", 2", edge, TextControlOptions.Multiline | TextControlOptions.Wrap | TextControlOptions.KeepEnter) {
+      BorderRadius: 3;
+      Action: Actions.Refresh;
+      "Multi Line";
+      Space;
+    };
+  };
+
+  ShowField(name, value) = Paragraph(null, [1.5"]) {
+    Span {
+      Bold;
+      name;
+    };
+    Tab;
+    value;
+  };
+
+  ShowData = Block {
+    ShowTitle {
+      SpaceBefore: 20pt;
+      "Options";
+    };
+    ShowField(nameof UserOptions.Number, Options.Number);
+    ShowField(nameof UserOptions.Option, Options.Choice);
+    ShowField(nameof UserOptions.Option, Options.Option);
+    ShowField(nameof UserOptions.CheckBox2, Options.CheckBox2);
+    ShowField(nameof UserOptions.CheckBox3, Options.CheckBox3);
+    ShowField(nameof UserOptions.Pressed, Options.Pressed);
+    ShowField(nameof UserOptions.Password, Options.Password);
+    ShowField(nameof UserOptions.Single, Options.Single);
+    ShowField(nameof UserOptions.Multi, Options.Multi);
+  };
+}
+
+//=======================================================
+

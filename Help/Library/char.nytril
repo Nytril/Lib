@@ -1,0 +1,21 @@
+include "Help";
+
+using Format;
+
+const char linefeed = '\u000A';
+
+Example = Paragraph {
+  "Line 1"; linefeed; "Line 2"; linefeed;
+  "A dime is 10"; '\u00A2';
+};
+
+Example2 = Paragraph {
+  var c = 'A';
+
+  "The ascii value of '{0}' is {1}."(c, c as int);
+};
+
+Main.Help = new HelpExample(attribute char, 2);
+
+
+

@@ -1,0 +1,69 @@
+include "Basic Facts";
+
+using Format;
+
+readonly Image USImage = new(res "united states.jpg");
+
+readonly MyDocument Main.Documents.MainDocument = new;
+
+readonly Main.Facts = [
+  Cities,
+];
+
+class StateTipClass {
+  var State State;
+
+  Constructor(State state) {
+    State = state;
+  }
+
+  override GetLayoutTip = Frame(3") {
+    Paragraph {
+      TextHeight: 14pt;
+      Icons.flag_circle;
+      Space;
+      State.Name;
+    };
+    var cities = State.FindFacts(City) as City[];
+    if (cities is valid) {
+      Paragraph {
+        Underline;
+        "Major Cities";
+      };
+      ListBlock {
+        foreach (var city in  cities)
+          city.Name;
+      }
+    }
+  };
+}
+
+class MyDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#7b793fd2-f4c6-4eb7-bedd-ea401799bab3#, "U.S. Map");
+  }
+
+  override GetDocument = Document(0.5") {
+    var fit = FitBox(USImage, 100%);
+    var map = new GeoMap(fit.Width, fit.Height, new(71.34594, -168.42807), new(18.53608, -66.43054));
+
+    Paragraph {
+      TextHeight: 20;
+      ParAlignment: Center;
+      "Map of the U.S. with 50 state markers";
+    };
+
+    Canvas(fit.Width, fit.Height) {
+      fit;
+      TextHeight: 6pt;
+
+      foreach (var s in USStates) {
+        var p = map.ToDocument(s.Coordinates);
+        Markers.Diamond(Colors.Blue, null, p) {
+          Tip: new StateTipClass(s);
+        };
+      }
+    };
+  };
+}
+

@@ -1,0 +1,110 @@
+using Format, Stoics;
+
+readonly StoicDocumentClass Main.Documents.StoicQuotes = new;
+
+readonly namespace Stoics.MarcusAurelius {
+  Name        = "Marcus Aurelius";
+  Description = "A Roman emperor and Stoic philosopher who lived around 121-180 CE";
+  Credit      = "By Pierre-Selim - Self-photographed, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=18101954";
+  Image Pic = new(res "Marcus Aurelius.jpg");
+}
+
+readonly namespace Stoics.Seneca {
+  Name        = "Seneca";
+  Description = "A Roman statesman, playwright, and Stoic philosopher who lived around 4 BCE - 65 CE";
+  Credit      = "By I, Calidius, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=2456052";
+  Image Pic = new(res "Seneca.jpg");
+}
+
+readonly namespace Stoics.Epictetus {
+  Name        = "Epictetus";
+  Description = "A former slave who became a renowned Stoic philosopher, Epictetus lived around 50-135 CE";
+}
+
+//==============================================================
+
+class StoicDocumentClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#0f563bd0-e542-45d8-9c4b-f99396114724#, "Quotes");
+    Description = "Quotations from Famous Stoics";
+  }
+
+  Quote(stoic, quote) = Block {
+    Paragraph {
+      SpaceBefore: 8pt;
+      TextHeight: 14pt;
+      Tex.LeftDoubleQuote;
+      quote;
+      Tex.RightDoubleQuote;
+    };
+    Paragraph {
+      LeftIndent: 8pt;
+      TextHeight: 12pt;
+      TextColor: #63574E#;
+      "—";
+      Span {
+        stoic.Name;
+        Tip: stoic.Description;
+      }
+    };
+  };
+
+  ShowPic(number, stoic, angle) = VBox(30%, null, new Edge(8, 0, #F3E6D5#)) {
+    Transform: Transform.Skew(angle) Transform.Rotate(angle);
+    TransformFit: true;
+    BorderRadius: 4;
+    Background: #F3E6D5#;
+
+    FitBox(stoic.Pic, 100%) {
+      BorderClip: true;
+      BorderRadius: 8;
+    };
+    HBox(100%) {
+      HAlign: Center;
+      Span {
+        TextHeight: 16pt;
+        TextColor: #63574E#;
+        stoic.Name;
+      };
+      Span {
+        TextAlignment:Superscript;
+        number;
+        Tip: stoic.Credit;
+      }
+    };
+  };
+
+  override GetDocument = Document(0.75") {
+    Canvas(100%) {
+      var angle = 5 degrees;
+      HBox {
+        VAlign: Center;
+        ShowPic(1, MarcusAurelius, -angle);
+        Frame(38%) {
+          TextFamily: TextFamilies.Impact;
+          TextHeight: 30pt;
+          ParAlignment: Center;
+          Span {
+            TextCase: WordUpper;
+            TextColor: #63574E#;
+            Description;
+          };
+        };
+        ShowPic(2, Seneca, angle);
+      }
+    };
+
+    Quote(MarcusAurelius, "You have the power over your mind—not outside events. Realize this, and you will find strength.");
+    Quote(Seneca, "We suffer more often in imagination than in reality.");
+    Quote(Epictetus, "It's not what happens to you, but how you react to it that matters.");
+    Quote(MarcusAurelius, "The happiness of your life depends upon the quality of your thoughts.");
+    Quote(Seneca, "As is a tale, so is life: not how long it is, but how good it is, is what matters.");
+    Quote(Epictetus, "First you say to yourself what you would be; and then you do what you have to do.");
+    Quote(MarcusAurelius, "Waste no more time arguing about what a good man should be. Be one.");
+    Quote(Seneca, "Luck is what happens when preparation meets opportunity.");
+    Quote(Epictetus, "He who laughs at himself never runs out of things to laugh at.");
+    Quote(MarcusAurelius, "When you arise in the morning, think of what a precious privalege it is to be alive—to breath, to think, to enjoy, to love.");
+  };
+}
+
+//==============================================================

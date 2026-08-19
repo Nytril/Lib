@@ -1,0 +1,21 @@
+include "Help";
+
+using Format;
+
+ShowClause(bool longform) = Span {
+  "This is the ";
+  if (longform)
+    "long form of the explanation, with several sections.";
+  else
+    "short form of the explanation.";
+};
+
+readonly Example = Block {
+  ShowClause(false);
+  ShowClause(true);
+};
+
+Main.Help = new HelpExample(attribute bool);
+
+
+

@@ -1,0 +1,20 @@
+include "Help";
+
+using Format;
+
+ArgString = "This is a {0} with {1} arguments";
+
+readonly Example = ListBlock {
+  "Plain string";
+  "String with \t tab character and \n linefeed character. ";
+  "String with \u0009 (hex unicode tab) character";
+  ArgString("string", 2);
+  "The answer is {0}. "(42);
+  "Back-" "to-" "back strings";
+  "Multiply-"*5;
+};
+
+Main.Help = new HelpExample(attribute string);
+
+
+

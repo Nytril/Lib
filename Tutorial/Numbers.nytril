@@ -1,0 +1,172 @@
+using Format;
+//======================================================================
+
+namespace Chapters.Language.Sections.Numbers;
+
+readonly TutorialLesson Lesson = new(#6458e285-14fe-4b61-ba91-e81775308584#, "Numbers");
+
+//======================================================================
+
+IntegerValue = 42;
+
+readonly LessonExample Content.IntegerValueEx = new(#74b3b3b6-f21c-4ff2-ba80-6464316c0c9d#) {
+  Text: "An integer is a simple sequence of decimal digits without a decimal point";
+  Code: [attribute IntegerValue];
+};
+
+//======================================================================
+
+UnsignedValue = 33U;
+
+readonly LessonExample Content.UnsignedValueEx = new(#5b68d7d6-2ede-4d7d-9fa7-9752c2d7e844#) {
+  Text: "An unsigned integer is an integer that cannot have a negative value";
+  Code: [attribute UnsignedValue];
+};
+
+//======================================================================
+
+NumberTypeList = Block {
+  typeof(2);
+  typeof(2L);
+  typeof(2U);
+  typeof(2UL);
+  typeof(2.0F);
+  typeof(2.0D);
+  typeof(2.0M);
+};
+
+readonly LessonExample Content.NumberTypeListEx = new(#19981c6c-eb13-4db8-852f-03c5db062da8#) {
+  Text: "Here is a list of the numeric types that can be specified with a special suffix";
+  Code: [attribute NumberTypeList];
+};
+
+//======================================================================
+
+HexValue = 0x15;
+
+readonly LessonExample Content.HexValueEx = new(#5df08952-41b2-4dc7-be37-182d2f710e1a#) {
+  Text: "Hexadecimal values can be specified by preceeding the number with 0x";
+  Code: [attribute HexValue];
+};
+
+//======================================================================
+
+BinaryValue = 0b1101;
+
+readonly LessonExample Content.BinaryValueEx = new(#af109798-e683-4902-8cde-dd3a9c31581b#) {
+  Text: "Binary values can be specified by preceeding the number with 0b";
+  Code: [attribute BinaryValue];
+};
+
+//======================================================================
+
+RealValue = 3.14;
+
+readonly LessonExample Content.RealValueEx = new(#8bb495f5-16c0-42bb-ae16-ca536edee15d#, "Numbers") {
+  Text: "Real numbers are a sequence of decimal digits containing a decimal point";
+  Code: [attribute RealValue];
+};
+
+//======================================================================
+
+OneThird    = 1 over 3;
+FractionSum = OneThird + 5 over 6;
+
+readonly LessonExample Content.RationalsEx = new(#7dbfdf3c-d4cb-4501-bd49-3269de59783c#, "Rational numbers") {
+  Text: "Ratios of integers can be created {0}"(NytrilStyle.OpAttribute(attribute over));
+  Code: [attribute OneThird, attribute FractionSum];
+};
+
+//======================================================================
+
+DerivedValue = RealValue * FractionSum;
+
+readonly LessonExample Content.DerivedValueEx = new(#77829f83-e689-4078-b2cd-5fba2bb3ecc6#) {
+  Text: "Operations that mix real and fractional or integer values will be converted to real numbers";
+  Code: [attribute DerivedValue];
+};
+
+//======================================================================
+
+FormattedValue = {TextDigits:3} DerivedValue;
+
+readonly LessonExample Content.FormattedValueEx = new(#7b412488-2fe7-45f8-ad88-953998fc8ba4#) {
+  Text: "Real numbers can be formatted to the desired number of decimal places";
+  Code: [attribute FormattedValue];
+};
+
+//======================================================================
+
+SegmentedValue = 2_164_843;
+
+readonly LessonExample Content.SegmentedValueEx = new(#0c3d1d84-8402-4eb1-a93c-8cf1ce52cab0#) {
+  Text: "Digit groups for large numbers can be seperated {0}"(NytrilStyle.Operator("using an underscore", "_"));
+  Code: [attribute SegmentedValue];
+};
+
+//======================================================================
+
+Imaginary1 = Symbolic.Sqrt(-1) + 1i + Math.I + (-1)^(1 over 2);
+
+readonly LessonExample Content.Imaginary1Ex = new(#65c0a27a-cee6-4356-87b9-ee392514d6bb#) {
+  Text: "Imaginary numbers can be expressed in a variety of forms";
+  Code: [attribute Imaginary1];
+};
+
+//======================================================================
+
+Imaginary2 = 3i;
+ISum       = Imaginary1 + Imaginary2;
+
+readonly LessonExample Content.Imaginary2Ex = new(#a93b24dd-f674-4ca6-aa37-86e666cd5890#) {
+  Text: "Imaginary numbers can be added";
+  Code: [attribute Imaginary2, attribute ISum];
+};
+
+//======================================================================
+
+Complex1 = 3i + 2i + 5 + 3;
+
+readonly LessonExample Content.Complex1Ex = new(#5dd276d4-e183-4342-9e63-b899b67645df#, "Complex Numbers") {
+  Text: "Complex numbers are also supported, and real and imaginary parts are automatically aggregated";
+  Code: [attribute Complex1];
+};
+
+//======================================================================
+
+Complex2 = Complex1 * (2i + 4);
+
+readonly LessonExample Content.ComplexMultiplicationEx = new(#89eb8fce-11fe-40fb-9ff5-932f8a696cbb#) {
+  Text: "Complex multiplication and powers are supported";
+  Code: [attribute Complex2];
+};
+
+//======================================================================
+
+Real2 = Math.RealPart(Complex2);
+
+readonly LessonExample Content.GetRealPartEx = new(#10d67d14-7c7f-4125-8377-d29083546a5c#) {
+  Form: NytrilStyle.Function(attribute Math.RealPart, "Get the real part of a complex number");
+  Code: [attribute Real2];
+};
+
+//======================================================================
+
+Imaginary3 = Math.ImaginaryPart(Complex2);
+
+readonly LessonExample Content.GetImaginaryPartEx = new(#492e0c43-6985-407f-9dd0-8c5146eb28ec#) {
+  Form: NytrilStyle.Function(attribute Math.ImaginaryPart, "Get the imaginary part of a complex number");
+  Code: [attribute Imaginary3];
+};
+
+//======================================================================
+
+ComplexModulus = Math.Abs(Complex2);
+
+readonly LessonExample Content.GetComplexModulusEx = new(#5867a1fa-e844-44dd-9b30-3a79f3ee8845#) {
+  Form: NytrilStyle.Function(attribute Math.Abs, "Get the modulus of a complex number");
+  Code: [attribute ComplexModulus];
+};
+
+//======================================================================
+

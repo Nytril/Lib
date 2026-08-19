@@ -1,0 +1,599 @@
+using   Format;
+include "TechDesign";
+
+var AllDesigns = [
+   BasicNumbered1,
+   BasicNumbered2,
+   BasicNumbered3,
+   BasicNumbered4
+];
+
+// ======================================================================================
+//  Basic Numbered Phase Design 1
+//
+//  This design has simple bolded headers with content broken into phases.
+//  The design allows for 3 phases without additional modification.
+// ======================================================================================
+
+
+readonly BasicNumberedDesign1 BasicNumbered1 = new;
+class BasicNumberedDesign1: TechDesign {
+  Constructor {
+    super.Constructor("Basic Numbered Design 1", 1");
+
+    SectionIndentation   = 42;
+  }
+
+  override SetTextStyle = {
+    TextFamily: TextFamilies.Calibri;
+    TextHeight: 10pt;
+    TextColor:  Palette.Dark1;
+  };
+
+  override GetFooter(AuthoredContent content) = FooterBlock {
+    FooterParagraph {
+      "Created in Nytril";
+    };
+    FooterParagraph {
+      Tex.copyright 2026 " Nytril LLC";
+    };
+  };
+
+  override CalloutFrame = Frame(ExtentWidth - SectionIndentation, null, BorderAll(new(1, 4, Palette.Accent4))) {
+    Margin: new Thickness(0, 12, 0, 5);
+    Background: Palette.Lighten(Palette.Light2, 80);
+    BorderRadius: 3;
+  };
+
+  override CalloutParagraph = NormalParagraph {
+    SpaceAfter: 6px;
+    TextHeight: 8pt;
+    TextColor: Palette.Dark2;
+  };
+
+  override CodeParagraph = NormalParagraph {
+    TextHeight: 11px;
+    ParBackground: Palette.Dark1;
+  };
+
+  override MainTitle = Paragraph {
+    TextFamily: TextFamilies.LibertinusSerif;
+    Bold;
+    TextHeight: 19pt;
+  };
+
+  override FooterParagraph = Paragraph {
+    ParAlignment: Center;
+    TextHeight: 12px;
+    TextColor: Palette.Lighten(Palette.Dark1, 75);
+  };
+
+  override HeaderParagraph = Paragraph(null, [6"]) {
+    TextFamily: TextFamilies.LibertinusSans;
+    TextHeight: 9pt;
+    TextColor: Palette.Lighten(Palette.Dark1, 50);
+  };
+
+  override Heading1 = Paragraph {
+    TextHeight: 18pt;
+    SpaceBefore: 36;
+    TextColor: Palette.Accent1;
+    TextCase: AllUpper;
+    Bold;
+  };
+
+  override Heading2 = Paragraph {
+    TextHeight: 16pt;
+    TextWeight: TextWeights.Medium;
+    Bold;
+  };
+
+  override Heading3 = Paragraph {
+    TextFamily: TextFamilies.LibertinusSans;
+    SpaceBefore: 24;
+    SpaceAfter: 6;
+    Bold;
+    TextHeight: 14pt;
+  };
+
+  override Heading4 = Heading1 {
+    SpaceBefore: 0;
+  };
+
+  override NormalParagraph = Paragraph {
+    TextFamily: TextFamilies.LibertinusSerif;
+    TextHeight: 11pt;
+  };
+
+  override NumberedHeading(level, title, anchorText) = Paragraph {
+    SpaceBefore: 28;
+    SpaceAfter: 6px;
+    LeftIndent: SectionIndentation;
+    NumberedHeadingBadge { level };
+    Tab;
+    NumberedHeadingTitle { title };
+    DocFields.Anchor(anchorText);
+  };
+
+  override NumberedHeadingBadge = HBox(null, null, new Border(new Edge(1, 10, Palette.Dark2), new(0, 1), new(0, 10), new(1, 1, Palette.Dark2))) {
+    HAlign:       Center;
+    TextFamily:   TextFamilies.Calibri;
+    Background:   Palette.Dark2;
+    TextColor:    Palette.Light1;
+    TextHeight:   13pt;
+    BorderRadius: 4;
+  };
+
+  override NumberedHeadingTitle = Span {
+    TextFamily: TextFamilies.LibertinusSans;
+    Bold;
+    TextHeight: 14pt;
+  };
+
+  override QuickRefTable = Table(null, null, [Column.Expand, Column.Expand, Column.Expand]);
+
+  override QuickRefHeaderRow = Row(null, null, 25, LineRules.Exact) {
+    TextHeight: 17px;
+  };
+
+  override QuickRefCell = Cell {
+    LineHeight: 18px;
+    TextColor: Palette.Hyperlink;
+    TextHeight: 12px;
+    TextLetterSpace: -0.15;
+  };
+
+  override SpecialHeading1 = Paragraph {
+    TextHeight: 10pt;
+    TextColor: Palette.Accent2;
+  };
+
+  override SpecialFrame1 = Frame {
+    Margin: new Thickness(14, 0, 0, 0);
+    TextHeight: 8pt;
+    TextColor: Palette.Accent2;
+  };
+}
+
+
+// ======================================================================================
+//  Basic Numbered Phase Design 2
+//
+//  This design has highlighted caps headers with content broken into phases.
+//  The design allows for 3 phases without additional modification.
+// ======================================================================================
+
+readonly BasicNumberedDesign2 BasicNumbered2 = new;
+class BasicNumberedDesign2: TechDesign {
+  Constructor {
+    super.Constructor("Basic Numbered Design 2", 1");
+
+    SectionIndentation   = 42;
+  }
+
+  override SetTextStyle = {
+    TextFamily: TextFamilies.Calibri;
+    TextHeight: 10pt;
+    TextColor:  Palette.Dark1;
+  };
+
+  override GetFooter(AuthoredContent content) = FooterBlock {
+    FooterParagraph {
+      "Created in Nytril";
+    };
+    FooterParagraph {
+      Tex.copyright 2026 " Nytril LLC";
+    };
+  };
+
+  override CalloutFrame = Frame(ExtentWidth - SectionIndentation, null, BorderAll(new(1, 4, Palette.Accent4))) {
+    Margin: new Thickness(0, 12, 0, 5);
+    Background: Palette.Lighten(Palette.Light2, 80);
+    TextHeight: 8pt;
+    TextColor: Palette.Dark2;
+    BorderRadius: 3;
+  };
+
+  override CodeParagraph = NormalParagraph {
+    TextHeight: 11px;
+    ParBackground: Palette.Dark1;
+  };
+
+  override MainTitle = Paragraph {
+    TextFamily: TextFamilies.LibertinusSerif;
+    Bold;
+    TextHeight: 19pt;
+  };
+
+  override FooterParagraph = Paragraph {
+    ParAlignment: Center;
+    TextHeight: 12px;
+    TextColor: Palette.Lighten(Palette.Dark1, 75);
+  };
+
+  override HeaderParagraph = Paragraph(null, [6"]) {
+    TextFamily: TextFamilies.LibertinusSans;
+    TextHeight: 9pt;
+    TextColor: Palette.Lighten(Palette.Dark1, 50);
+  };
+
+  override Heading1 = Paragraph {
+    TextHeight: 18pt;
+    SpaceBefore: 36;
+    TextColor: Palette.Dark1;
+    TextCase: AllUpper;
+    ParBackground: Palette.Accent1;
+    Bold;
+  };
+
+  override Heading2 = Paragraph {
+    TextHeight: 16pt;
+    TextWeight: TextWeights.Medium;
+    TextColor: Palette.Darken(Palette.Accent1, 50);
+    Bold;
+  };
+
+  override Heading3 = Paragraph {
+    TextFamily: TextFamilies.LibertinusSans;
+    SpaceBefore: 24;
+    SpaceAfter: 6;
+    Bold;
+    TextHeight: 14pt;
+  };
+
+  override Heading4 = Heading1 {
+    SpaceBefore: 0;
+  };
+
+  override NormalParagraph = Paragraph {
+    TextFamily: TextFamilies.LibertinusSerif;
+    TextHeight: 11pt;
+  };
+
+  override NumberedHeading(level, title, anchorText) = Paragraph {
+    SpaceBefore: 28;
+    SpaceAfter: 6px;
+    LeftIndent: SectionIndentation;
+    NumberedHeadingBadge { level };
+    Tab;
+    NumberedHeadingTitle { title };
+    DocFields.Anchor(anchorText);
+  };
+
+  override NumberedHeadingBadge = HBox(null, null, new Border(new Edge(1, 10, Palette.Dark2), new(0, 1), new(0, 10), new(1, 1, Palette.Dark2))) {
+    HAlign:       Center;
+    TextFamily:   TextFamilies.Calibri;
+    Background:   Palette.Dark2;
+    TextColor:    Palette.Light1;
+    TextHeight:   13pt;
+    BorderRadius: 4;
+  };
+
+  override NumberedHeadingTitle = Span {
+    TextFamily: TextFamilies.LibertinusSans;
+    Bold;
+    TextHeight: 14pt;
+  };
+
+  override QuickRefTable = Table(null, null, [Column.Expand, Column.Expand, Column.Expand]);
+
+  override QuickRefHeaderRow = Row(null, null, 25, LineRules.Exact) {
+    TextHeight: 17px;
+  };
+
+  override QuickRefCell = Cell {
+    LineHeight: 18px;
+    TextColor: Palette.Hyperlink;
+    TextHeight: 12px;
+    TextLetterSpace: -0.15;
+  };
+
+  override SpecialHeading1 = Paragraph {
+    TextHeight: 10pt;
+    TextColor: Palette.Accent2;
+  };
+
+  override SpecialFrame1 = Frame {
+    Margin: new Thickness(14, 0, 0, 0);
+    TextHeight: 8pt;
+    TextColor: Palette.Accent2;
+  };
+}
+
+
+// ======================================================================================
+//  Basic Numbered Phase Design 3
+//
+//  This design has highlighted caps headers with content broken into phases.
+//  The design allows for 3 phases without additional modification.
+// ======================================================================================
+
+readonly BasicNumberedDesign3 BasicNumbered3 = new;
+class BasicNumberedDesign3: TechDesign {
+  Constructor {
+    super.Constructor("Basic Numbered Design 3", 1");
+
+    SectionIndentation   = 42;
+  }
+
+  override SetTextStyle = {
+    TextFamily: TextFamilies.Calibri;
+    TextHeight: 10pt;
+    TextColor:  Palette.Dark1;
+  };
+
+  override GetFooter(AuthoredContent content) = FooterBlock {
+    FooterParagraph {
+      "Created in Nytril";
+    };
+    FooterParagraph {
+      Tex.copyright 2026 " Nytril LLC";
+    };
+  };
+
+  override CalloutFrame = Frame(ExtentWidth - SectionIndentation, null, BorderAll(new(1, 4, Palette.Accent4))) {
+    Margin: new Thickness(0, 12, 0, 5);
+    Background: Palette.Lighten(Palette.Light2, 80);
+    TextHeight: 8pt;
+    TextColor: Palette.Dark2;
+    BorderRadius: 3;
+  };
+
+  override CodeParagraph = NormalParagraph {
+    TextHeight: 11px;
+    ParBackground: Palette.Dark1;
+  };
+
+  override MainTitle = Paragraph(new Border(0, new Edge(1, 20, Palette.Accent3), 0, new(1, 20, Palette.Accent3))) {
+    TextFamily: TextFamilies.LibertinusSerif;
+    Bold;
+    TextHeight: 16pt;
+    ParAlignment: Center;
+    TextCase: AllUpper;
+  };
+
+  override FooterParagraph = Paragraph {
+    ParAlignment: Center;
+    TextHeight: 12px;
+    TextColor: Palette.Lighten(Palette.Dark1, 75);
+  };
+
+  override HeaderParagraph = Paragraph(null, [6"]) {
+    TextFamily: TextFamilies.LibertinusSans;
+    TextHeight: 9pt;
+    TextColor: Palette.Lighten(Palette.Dark1, 50);
+  };
+
+  override Heading1 = Paragraph {
+    TextHeight: 18pt;
+    SpaceBefore: 36;
+    TextColor: Palette.Darken(Palette.Accent1, 50);
+    TextCase: AllUpper;
+    Bold;
+    ParAlignment: Center;
+  };
+
+  override Heading2 = Paragraph {
+    TextHeight: 16pt;
+    TextWeight: TextWeights.Medium;
+    TextColor: Palette.Dark1;
+    Bold;
+    ParAlignment: Center;
+  };
+
+  override Heading3 = Paragraph {
+    TextFamily: TextFamilies.LibertinusSans;
+    SpaceBefore: 24;
+    SpaceAfter: 6;
+    Bold;
+    TextHeight: 14pt;
+    TextCase: AllUpper;
+    ParAlignment: Center;
+  };
+
+  override Heading4 = Heading1 {
+    SpaceBefore: 0;
+  };
+
+  override NormalParagraph = Paragraph {
+    TextFamily: TextFamilies.LibertinusSerif;
+    TextHeight: 11pt;
+  };
+
+  override NumberedHeading(level, title, anchorText) = Paragraph {
+    SpaceBefore: 28;
+    SpaceAfter: 6px;
+    LeftIndent: SectionIndentation;
+    NumberedHeadingBadge { level };
+    Tab;
+    NumberedHeadingTitle { title };
+    DocFields.Anchor(anchorText);
+  };
+
+  override NumberedHeadingBadge = HBox(null, null, new Border(new Edge(1, 10, Palette.Dark2), new(0, 1), new(0, 10), new(1, 1, Palette.Dark2))) {
+    HAlign:       Center;
+    TextFamily:   TextFamilies.Calibri;
+    Background:   Palette.Dark2;
+    TextColor:    Palette.Light1;
+    TextHeight:   13pt;
+    BorderRadius: 4;
+  };
+
+  override NumberedHeadingTitle = Span {
+    TextFamily: TextFamilies.LibertinusSans;
+    Bold;
+    TextHeight: 14pt;
+  };
+
+  override QuickRefTable = Table(null, null, [Column.Expand, Column.Expand, Column.Expand]);
+
+  override QuickRefHeaderRow = Row(null, null, 25, LineRules.Exact) {
+    TextHeight: 17px;
+  };
+
+  override QuickRefCell = Cell {
+    LineHeight: 18px;
+    TextColor: Palette.Hyperlink;
+    TextHeight: 12px;
+    TextLetterSpace: -0.15;
+  };
+
+  override SpecialHeading1 = Paragraph {
+    TextHeight: 10pt;
+    TextColor: Palette.Accent2;
+  };
+
+  override SpecialFrame1 = Frame {
+    Margin: new Thickness(14, 0, 0, 0);
+    TextHeight: 8pt;
+    TextColor: Palette.Accent2;
+  };
+}
+
+// ======================================================================================
+//  Basic Numbered Phase Design 4
+//
+//  This design is similar to design 3, but with left justified section headers.
+// ======================================================================================
+
+readonly BasicNumberedDesign4 BasicNumbered4 = new;
+class BasicNumberedDesign4: TechDesign {
+  Constructor {
+    super.Constructor("Basic Numbered Design 4", 1");
+
+    SectionIndentation   = 42;
+  }
+
+  override SetTextStyle = {
+    TextFamily: TextFamilies.Calibri;
+    TextHeight: 10pt;
+    TextColor:  Palette.Dark1;
+  };
+
+  override GetFooter(AuthoredContent content) = FooterBlock {
+    FooterParagraph {
+      "Created in Nytril";
+    };
+    FooterParagraph {
+      Tex.copyright 2026 " Nytril LLC";
+    };
+  };
+
+  override CalloutFrame = Frame(ExtentWidth - SectionIndentation, null, BorderAll(new(1, 4, Palette.Accent4))) {
+    Margin: new Thickness(0, 12, 0, 5);
+    Background: Palette.Lighten(Palette.Light2, 80);
+    TextHeight: 8pt;
+    TextColor: Palette.Dark2;
+    BorderRadius: 3;
+  };
+
+  override CodeParagraph = NormalParagraph {
+    TextHeight: 11px;
+    ParBackground: Palette.Dark1;
+  };
+
+  override MainTitle = Paragraph(new Border(0, new Edge(1, 20, Palette.Accent3), 0, new(1, 20, Palette.Accent3))) {
+    TextFamily: TextFamilies.LibertinusSerif;
+    Bold;
+    TextHeight: 16pt;
+    ParAlignment: Center;
+    TextCase: AllUpper;
+  };
+
+  override FooterParagraph = Paragraph {
+    ParAlignment: Center;
+    TextHeight: 12px;
+    TextColor: Palette.Lighten(Palette.Dark1, 75);
+  };
+
+  override HeaderParagraph = Paragraph(null, [6"]) {
+    TextFamily: TextFamilies.LibertinusSans;
+    TextHeight: 9pt;
+    TextColor: Palette.Lighten(Palette.Dark1, 50);
+  };
+
+  override Heading1 = Paragraph {
+    TextHeight: 18pt;
+    SpaceBefore: 36;
+    TextColor: Palette.Darken(Palette.Accent1, 50);
+    TextCase: AllUpper;
+    Bold;
+    ParAlignment: Left;
+  };
+
+  override Heading2 = Paragraph {
+    TextHeight: 16pt;
+    TextWeight: TextWeights.Medium;
+    TextColor: Palette.Dark1;
+    Bold;
+    ParAlignment: Left;
+  };
+
+  override Heading3 = Paragraph {
+    TextFamily: TextFamilies.LibertinusSans;
+    SpaceBefore: 24;
+    SpaceAfter: 6;
+    Bold;
+    TextHeight: 14pt;
+    TextCase: AllUpper;
+    ParAlignment: Left;
+  };
+
+  override Heading4 = Heading1 {
+    SpaceBefore: 0;
+  };
+
+  override NormalParagraph = Paragraph {
+    TextFamily: TextFamilies.LibertinusSerif;
+    TextHeight: 11pt;
+  };
+
+  override NumberedHeading(level, title, anchorText) = Paragraph {
+    SpaceBefore: 28;
+    SpaceAfter: 6px;
+    LeftIndent: SectionIndentation;
+    NumberedHeadingBadge { level };
+    Tab;
+    NumberedHeadingTitle { title };
+    DocFields.Anchor(anchorText);
+  };
+
+  override NumberedHeadingBadge = HBox(null, null, new Border(new Edge(1, 10, Palette.Dark2), new(0, 1), new(0, 10), new(1, 1, Palette.Dark2))) {
+    HAlign:       Center;
+    TextFamily:   TextFamilies.Calibri;
+    Background:   Palette.Dark2;
+    TextColor:    Palette.Light1;
+    TextHeight:   13pt;
+    BorderRadius: 4;
+  };
+
+  override NumberedHeadingTitle = Span {
+    TextFamily: TextFamilies.LibertinusSans;
+    Bold;
+    TextHeight: 14pt;
+  };
+
+  override QuickRefTable = Table(null, null, [Column.Expand, Column.Expand, Column.Expand]);
+
+  override QuickRefHeaderRow = Row(null, null, 25, LineRules.Exact) {
+    TextHeight: 17px;
+  };
+
+  override QuickRefCell = Cell {
+    LineHeight: 18px;
+    TextColor: Palette.Hyperlink;
+    TextHeight: 12px;
+    TextLetterSpace: -0.15;
+  };
+
+  override SpecialHeading1 = Paragraph {
+    TextHeight: 10pt;
+    TextColor: Palette.Accent2;
+  };
+
+  override SpecialFrame1 = Frame {
+    Margin: new Thickness(14, 0, 0, 0);
+    TextHeight: 8pt;
+    TextColor: Palette.Accent2;
+  };
+}

@@ -1,0 +1,73 @@
+using Format, IO, DB;
+//======================================================================
+
+namespace Chapters.Data.Sections.Databases;
+
+Heading = "Databases";
+//======================================================================
+
+Connection = new ExcelDb(Folders.Main FileName("people") Extensions.Excel);
+
+readonly LessonExample Content.EstablishConnectionEx = new(#3b283ea7-f4e3-4481-9159-5761fb7ed2fe#) {
+  Text: "To open a connection to a database file, create a new " NytrilStyle.Class(attribute DbConnection);
+  Code: [attribute Connection];
+  Show: [];
+};
+
+ShowView(table) = Table(0.5pt, null, [1", 1.5", 1", 1", 1"]) {
+  var fields = table[0].GetFields;
+  Row(BorderB(0.5pt)) {
+    Background: 95%;
+    Bold;
+    (each fields).Name;
+  };
+  foreach (var row in table)
+    Row {row.GetValues;}
+};
+
+Query   = "SELECT * FROM [People$];";  // Excel needs tables names to be enclosed by [_$]
+View    = Connection.RunQuery(Query);
+GetView = ShowView(View);
+
+readonly LessonExample Content.GetViewsEx = new(#ea11a1e4-e0ae-47b3-961c-b15a9c39063f#) {
+  Text:  NytrilStyle.Function(attribute DbConnection.RunQuery, "Get a view from a database table");
+  Code: [attribute ShowView, attribute GetView];
+};
+
+//======================================================================
+
+FilteredView    = Connection.RunQuery(Query, r => r.FullName == "Janet Johnson");
+GetFilteredView = ShowView(FilteredView);
+
+readonly LessonExample Content.GetFilteredViewsEx = new(#c93d7e11-b272-4bab-a1f7-dcf27213519b#) {
+  Text: "You may optionally add a predicate function to filter out certain rows.";
+  Code: [attribute FilteredView, attribute GetFilteredView];
+};
+
+//======================================================================
+
+readonly LessonExample Content.CloseConnectionEx = new(#ec229765-b19c-415c-880b-f239f949a84b#) {
+  Text: NytrilStyle.Function(attribute DbConnection.Close, "Close out the database connection");
+  Show: [];
+};
+
+//======================================================================
+
+readonly Attribute[] dblist = [attribute SQLite, attribute ExcelDb, attribute MSAccess, attribute MySQL, attribute SQLServer, attribute Oracle, attribute Postgre, attribute DB2];
+
+readonly LessonExample Content.ConnectionTypesEx = new(#d74005ae-b701-43f4-8074-7dfacdb37b1b#) {
+
+  Text: Block {
+    Paragraph {
+      "Some common database types have build-in connection classes"
+    };
+    foreach (var c in dblist)
+      Paragraph {
+        LeftIndent: 0.5";
+        c;
+      };
+  };
+};
+
+//======================================================================
+

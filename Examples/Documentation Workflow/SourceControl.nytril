@@ -1,0 +1,201 @@
+using Format, HelpConcepts;
+
+class SourceControlConcept: AuthoredContent {
+  Constructor {
+    super.Constructor("Connecting Nytril IDE & Repo to Git");
+
+    Watermark = "DRAFT";
+
+    AddAuthor(People.ColbertAuthor);
+    AddAuthor(People.McCreightAuthor);
+
+    AddContent(GitPurpose);
+    AddContent(GitRequirements);
+    AddContent(GitConnectSteps);
+    AddContent(GitAuthentication);
+    AddContent(GitTroubleshooting);
+    AddContent(GitResources);
+  }
+}
+
+// ============================================================================
+
+readonly GitPurposeSection GitPurpose = new;
+class GitPurposeSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Purpose";
+    };
+
+    design.SpacedParagraph {
+      "This document describes how to connect a Git repository to the Nytril IDE for version tracking and collaboration.";
+    };
+
+    design.AddFigure(GitConnectDialogFig, Here, ExtentWidth, null, false);
+    design.FigureCaption(GitConnectDialogFig);
+  };
+}
+
+// ============================================================================
+
+readonly GitRequirementsSection GitRequirements = new;
+class GitRequirementsSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Requirements";
+    };
+
+    design.SpacedParagraph {
+      "Before connecting Git, ensure the Nytril code repository has access to a Git repository. ";
+      "The repository may already exist on a hosting service such as GitHub, Azure DevOps, or another Git server, or it may exist locally on disk. ";
+    };
+
+    design.TightParagraph {
+      "Ensure the following conditions before setup begins:";
+    };
+
+    design.NumberedList {
+      "The Nytril repository can access a Git repository.";
+      "The user has permission to access the repository.";
+      "The repository address or clone URL is available.";
+      "The user has Git credentials, including a username or email and a personal access token.";
+    };
+  };
+}
+
+// ============================================================================
+
+readonly GitConnectStepsSection GitConnectSteps = new;
+class GitConnectStepsSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Connect GIT";
+    };
+
+    var gitDialogRef = design.FigureReference(GitConnectDialogFig);
+    design.SpacedParagraph {
+      "To connect GIT, select "; design.SpanHighlight { "Git => Clone from Git" }; ", to reveal the connection dialog, as Shown in " gitDialogRef ". ";
+    };
+
+    design.TightParagraph {
+      "In a typical setup, the process is as follows.";
+    };
+
+    design.NumberedList {
+      "Open the connection dialog.";
+      "Browse the nytril code repository and select the root folder.";
+      "Ensure the repository name properly matches the folder name.";
+      "Provide the sign in credentials.";
+      "Enter a branch (optional)";
+      "Select OK and allow Nytril to validate GIT repository access.";
+    };
+
+    Paragraph;
+
+    design.SpacedParagraph {
+      "After Nytril accepts the repository information, it associates the current project with the selected Git repository. ";
+      "The Git menu then displays the available Git commands.";
+    };
+  };
+}
+
+// ============================================================================
+
+readonly GitAuthenticationSection GitAuthentication = new;
+class GitAuthenticationSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Authentication";
+    };
+
+    design.SpacedParagraph {
+      "Git repositories often require authentication before Nytril can connect, fetch, push, or pull changes. ";
+      "Depending on the server, authentication may use a username and password, a personal access token, or an SSH key. ";
+      "If authentication fails, the repository may appear reachable but will not allow updates. ";
+    };
+
+    design.SpacedParagraph {
+      "When possible, verify repository access outside of Nytril first. ";
+      "After you confirm the credentials, connecting the repository to the IDE is easier. ";
+    };
+  };
+}
+
+// ============================================================================
+
+readonly GitTroubleshootingSection GitTroubleshooting = new;
+class GitTroubleshootingSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Common Issues";
+    };
+
+    design.TightParagraph {
+      "The most common setup issues include:";
+    };
+
+    design.NumberedList {
+      "The repository URL is incorrect.";
+      "The selected local folder is not a Git repository.";
+      "The user does not have permission to access the repository.";
+      "Authentication credentials are missing, expired, or invalid.";
+    };
+
+    Paragraph;
+    design.SpacedParagraph {
+      "If the connection fails, verify the repository location, then confirm that the account or key has permission to read from or write to the repository. ";
+    };
+  };
+}
+
+// ============================================================================
+
+readonly GitResourcesSection GitResources = new;
+class GitResourcesSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Resources";
+    };
+
+    design.HyperlinkParagraph {
+      Repositories;
+    };
+  };
+}
+
+// ============================================================================
+
+readonly GitConnectDialogFigure GitConnectDialogFig = new;
+class GitConnectDialogFigure: Content {
+  Constructor() {
+    super.Constructor("Git Repository Connection");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = FitBox(new Image(res "GitConnectDialog.png"), ExtentWidth - 4, null, 2);
+}

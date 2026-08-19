@@ -1,0 +1,135 @@
+using Format, Net, Parallel, Units;
+
+readonly Main.Documents = new NewsDocument;
+
+//=============================================================================
+
+class NewsStory: Thread {
+  var          Category,
+               Link,
+               Headline,
+               Summary;
+  var string   PicUrl;
+  var DateTime Date;
+  var Image    Picture;
+
+  Constructor(story) {
+    super.Constructor;
+
+    Category = story.category;
+    Link     = story.?url;
+    var dt = story.FindProperty("datetime");
+    Date     = DateTime.FromUnix(dt as int);
+    Headline = story.headline;
+    Summary  = story.summary;
+
+    string pic = story.?image as string;
+    if (pic is valid and pic.IndexOf("market_watch_logo") < 0)
+      PicUrl = pic;
+  }
+
+  override bool Execute {
+    var request = new HttpGet(PicUrl);
+    request.CacheTimeSpan(1 day);
+    var reply = request.Send();
+
+    if (reply is valid && reply.IsSuccessStatusCode) {
+      Picture = new Image(reply.ContentBlob);
+      return true;
+    }
+    return false;
+  }
+}
+
+//=============================================================================
+
+class NewsDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#dd896eae-2fe7-4d53-bf7e-2c001f6e8249#, "News Feed");
+  }
+
+  override GetDocument = Document(0.5") {
+    var request = new HttpGet("https://finnhub.io/api/v1/news");
+    if (request.AddCredential("Finnhub", "X-Finnhub-Token")) {
+      request.CacheTimeSpan(5 minutes);
+      request.QueryParameter("category", "general");
+
+      var r = request.Send;
+      if (r.IsSuccessStatusCode) {
+        var stories  = new NewsStory(each r.ContentJSON);
+        var needpics = stories.FindSlice(s => s.PicUrl is valid);
+        ParallelEach(needpics, 100%);
+        ShowFeedTable(needpics);
+      }
+      else
+        Span {"Status: "; r.StatusCode};
+    }
+    else {
+      "News Feed reads content from an online news provider.";
+      Bold "This app requires an API token.";
+      Empty;
+      TextHeight: 14pt;
+      "To continue:";
+      ListBlock(@Enumerators.NumberDot) {
+        Span {
+          "Go to ";
+          Span {new URL("www.finnhub.io"); TextColor: Colors.Blue};
+          " and sign up for a free api token."
+        };
+        Span {
+          "Add a new user credential to nytril desktop using the menu ";
+          Span {"View..User Credentials"; TextColor: Colors.Blue; Action: DesktopMenus.UserCredentials};
+        };
+        "Use \"Finnhub\" as the credential name, and your new finnhub api token as the password.";
+        "Refresh this script";
+      }
+    }
+  };
+
+  string Clean(string s) {
+    return s.Replace('\u2011', Empty);
+  }
+
+  ShowFeedTable(NewsStory[] stories) = Block {
+    TextHeight: 14pt;
+
+    foreach (var story in stories) {
+      VBox(100%, null, PadAll(10)) {
+        if (each0 mod 2 == 0)
+          Background: 97%;
+
+        Paragraph {
+          Span {
+            TextColor: Colors.White;
+            TextBackground: Colors.DarkRed;
+            Space;
+            story.Category;
+            Space;
+            if (story.Link is valid)
+              TipAction: new URL(story.Link);
+          };
+          Space*5;
+          Span {
+            TextFormat: "D";
+            story.Date;
+          };
+        };
+        Paragraph {
+          Bold;
+          Clean(story.Headline);
+        };
+        Paragraph {
+          LeftIndent: 8pt;
+          TextHeight: 80%;
+          SpaceAfter: 8pt;
+          Clean(story.Summary);
+        };
+
+        if (story.Picture is valid)
+          FitBox(story.Picture, 50%, 2");
+      }
+    }
+  };
+}
+
+//=============================================================================

@@ -1,0 +1,31 @@
+using Format;
+
+class DesignToolbar {
+
+  static GetToolbarDocument(height) = Document(0.1, null, null, null, null, new(8.5", height)) {
+    Table(PadL(3), null, [Column.Expand, Column.Expand]) {
+      Background: #F0F2F5#;
+      Row(null, null, height) {
+        VAlign: Center;
+        Cell {
+          HBox {
+            SliderControl(new (ref UserOps.DesignSlideIndex), 100, 20, null, 0..<AllDesigns.Length step 1) {
+              "Design";
+              Action: Actions.Rebuild;
+            };
+            AllDesigns[UserOps.DesignSlideIndex].Name;
+          };
+        };
+        Cell {
+          HBox {
+            SliderControl(new (ref UserOps.PaletteSlideIndex), 200, 20, null, 0..<AllPalettes.Length step 1) {
+              "Palette";
+              Action: Actions.Rebuild;
+            };
+            AllPalettes[UserOps.PaletteSlideIndex].Name;
+          };
+        };
+      };
+    };
+  };
+}

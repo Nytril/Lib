@@ -1,0 +1,69 @@
+
+namespace People.MikeJones {
+  Identity  = new Person(#5a792716-56a7-47e3-9743-42bb99098a72#, "Michael", "Glenn", "Jones");
+  Email     = "mike.jones@gmail.com";
+  Phone     = "123-867-5309";
+  Address   = "456 Ashley Ave.";
+  City      = "Lakewood";
+  State     = "New Jersey";
+  Zip       = "99999";
+  Statement = "Customer Service Representative for over 10 years, with experience in management and conflict resolution.";
+
+  Skills = [
+    "Team Building",
+    "Conflict Resolution",
+    "Cash Handling",
+    "SQL Databases",
+    "Fluent in Spanish",
+  ];
+
+  namespace Experience.OrgnCo {
+    Name       = "Org 'n' Co.";
+    Title      = "Manager";
+    Start      = "February 2012";
+    End        = "Present";
+    Highlights = [
+      "Reorganized stock room for maximum efficiency.",
+      "Gained a 100% Customer Service Satisfaction Rating.",
+    ];
+  }
+
+  namespace Experience.GoCloset {
+    Name       = "Closet, Inc.";
+    Title      = "Public Relations Liason";
+    Start      = "July 2011";
+    End        = "August 2011";
+    Highlights = [
+      "Lead an internal campaign to rebrand the company.",
+      "Dealt with multiple PR incidents with minimal damage to the company's image.",
+    ];
+  }
+
+  namespace Experience.Company {
+    Name       = "Corporation";
+    Title      = "Assistant Manager";
+    Start      = "February 2008";
+    End        = "July 2011";
+    Highlights = [
+      "Reorganized office work space.",
+    ];
+  }
+
+  namespace Education.CalLearning {
+    Name       = "California Institute of Learning";
+    Graduated  = 1998;
+    Degree     = "Communications";
+    Highlights = [
+      "Bachelor of Arts, Communications",
+    ];
+  }
+
+  namespace Education.Business {
+    Name       = "Maine School of Business";
+    Graduated  = 2002;
+    Degree     = "Business";
+    Highlights = [
+      "Master of Business",
+    ];
+  }
+}

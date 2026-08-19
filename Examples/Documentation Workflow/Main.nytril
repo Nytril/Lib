@@ -1,0 +1,101 @@
+include "TechDesigns";
+include "HelpConcepts";
+include "Workflow";
+include "RepoAndSourceControl";
+include "ConfigurationsConcept";
+include "Publishing";
+include "SourceControl";
+include "DataSourceConcept";
+include "MeasuresConcept";
+include "DocumentSetup";
+include "DesignTemplateConcept";
+include "HeadersAndFooters";
+include "Translations";
+include "Lang";
+include "People";
+
+readonly ShowDesignControls    = true;
+readonly PublishDesignDefault  = AllDesigns.FindElementIndex(BasicNumbered4);
+readonly PublishPaletteDefault = AllPalettes.FindElementIndex(DesignPalettes.Office_20072010);
+
+readonly TechDocWorkflowContent   WorkflowContent             = new;
+readonly RepoAndSourceControl     RepoAndSourceContent        = new;
+readonly ConfigurationsConcept    ConfigConceptContent        = new;
+readonly PublishingConcept        PublishingContent           = new;
+readonly SourceControlConcept     SourceControlContent        = new;
+readonly DataSourceConcept        DataSourceContent           = new;
+readonly MeasuresHelpConcept      MeasuresContent             = new;
+readonly DocumentSetupConcept     DocumentSetupContent        = new;
+readonly DesignTemplateConcept    DesignTemplateContent       = new;
+readonly HeadersAndFootersConcept HeadersAndFootersContent    = new;
+readonly TranslationsHelpConcept  TranslationsContent         = new;
+
+readonly namespace Main.Documents {
+  StyledDocument       WorkflowDocDesign        = new(#9e76e7ba-842b-405a-b48c-68f84c40e3b5#, "Documentation Workflow"      , WorkflowContent         );
+  StyledDocument       RepoAndSourceDoc         = new(#6cab5c98-20bf-480e-ab3f-c9bae282112f#, "Nytril Repository"           , RepoAndSourceContent    );
+  StyledDocument       ConfigurationConceptsDoc = new(#a178e044-cfdf-4b4d-b94f-86ac77c60b35#, "Configurations Concept"      , ConfigConceptContent    );
+  StyledDocument       PublishingConceptsDoc    = new(#2a4f27ae-838a-4a90-8959-8651423103e0#, "Publishing Concept"          , PublishingContent       );
+  StyledDocument       SourceControlDoc         = new(#45083a11-3f92-492b-a9a6-85798ee8b0fc#, "Source Control Concept"      , SourceControlContent    );
+  StyledDocument       DataSourceDoc            = new(#a34109d3-22cc-4e95-8701-e7bde71dd19e#, "Data Source Concept"         , DataSourceContent       );
+  StyledDocument       MeasuresDoc              = new(#03972ec2-987f-40b5-9f90-88e2fe14cd22#, "Measures Concept"            , MeasuresContent         );
+  StyledDocument       DocumentSetupDoc         = new(#1ee8d25a-3a33-43e7-bf5d-1f7e2c3b5801#, "Document Setup Concept"      , DocumentSetupContent    );
+  StyledDocument       DesignTemplatesDoc       = new(#67851cf1-1aeb-4f63-a7cc-b9bf68c4a785#, "Design Template Concept"     , DesignTemplateContent   );
+  StyledDocument       HeadersAndFootersDoc     = new(#992f9959-ff6d-4349-ae8d-c479693d4a7a#, "Headers and Footers Concept" , HeadersAndFootersContent);
+  StyledDocument       TranslationsDoc          = new(#6a286f11-bd5c-4055-8968-a0f5b74b119d#, "Translations Concept"        , TranslationsContent     );
+  DesignPaletteSamples PaletteSamples           = new;
+}
+
+readonly NytrilHelpDocsSite Main.Site = new;
+
+class NytrilHelpDocsSite: RealmSite {
+  Constructor {
+    super.Constructor("NytrilHelpDocs");
+  }
+}
+
+//=============================================================================
+readonly UserOptions UserOps = new;
+class UserOptions: Fact {
+  field int  DesignSlideIndex,
+             PaletteSlideIndex;
+
+  Constructor {
+    super.Constructor(#52b2bf9c-b7d6-46fa-8f5e-b2c1daaf4811#);
+    DesignSlideIndex  = PublishDesignDefault;
+    PaletteSlideIndex = PublishPaletteDefault;
+    if (!System.IsPublishing)
+      ReadFromStorage;
+  }
+}
+
+//=============================================================================
+
+class StyledDocument: DocumentEntry {
+  var TechDesign       Design;
+  var AuthoredContent  Content;
+
+  Constructor(Guid id, string name, AuthoredContent content) {
+    super.Constructor(id, name);
+
+    Content            = content;
+    Title              = content.Title;
+    Design             = GetDesign(UserOps.DesignSlideIndex, AllDesigns);
+    Design.Palette     = GetPalette(UserOps.PaletteSlideIndex, AllPalettes);
+    ContentType        = ContentTypes.Article;
+  }
+
+  override GetDocument = Design.GetStyledDocument(Content);
+
+  TechDesign GetDesign(int index, Array designs) {
+    if (index > designs.Length)
+      return designs[designs.Length - 1];
+    return designs[index];
+  }
+
+  DesignPalette GetPalette(int index, DesignPalette[] palettes) {
+    if (index > palettes.Length)
+      return palettes[palettes.Length - 1];
+    return palettes[index];
+  }
+}
+

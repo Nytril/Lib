@@ -1,0 +1,45 @@
+using Format, IO, Units, Math;
+
+include "CookingUnits";
+include "Styles";
+include "Data";
+include "Tags";
+include "Food";
+
+namespace Metrics {
+  Indent = 0.25";
+}
+
+//======================================================================
+
+readonly RecipeDocumentClass Main.Documents.RecipeBook = new;
+
+class RecipeDocumentClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#390600e9-6833-4a19-97e7-8e1ae075dd44#, "Recipe Book");
+    Description = "A collection of your favorite recipes";
+  }
+
+  override GetDocument = Document(0.5") {
+    var recipes = MyRecipes.ToArray;
+
+
+    RecipeStyle.TitlePage.ShowPage;
+    SectionNextPage(1");
+    RecipeStyle.TableOfContents.ListRecipes(recipes);
+
+    SectionNextPage {
+      Footer: MarginBlock(24pt) {
+        ParAlignment: Center;
+        TextHeight: 12pt;
+        DocFields.PageNumber;
+      };
+    };
+    RecipeStyle.ShowRecipe(each recipes, 1);
+
+    SectionNextPage(1");
+    RecipeStyle.Index.ListIndex(recipes);
+  };
+}
+
+//======================================================================

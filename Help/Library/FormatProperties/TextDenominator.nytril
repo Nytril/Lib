@@ -1,0 +1,22 @@
+include "Help";
+
+using Format;
+
+
+Example = Paragraph {
+  TextDenominator: 16;
+  0.5;
+  Tab;
+  0.125;
+  Tab;
+  3.75;
+  Tab;
+  0.23432;
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextDenominator));
+
+//============================================================
+

@@ -1,0 +1,14 @@
+include "Help";
+
+using Format;
+
+Example = Paragraph {
+  Shape(null, new Stroke(5, Colors.Red)) {
+    ClosedPath(10, 0) {
+      LineTo(40, 40);
+      LineTo(80, 15);
+    }
+  }
+};
+
+Main.Help = new HelpExample(attribute Format.ClosedPath);

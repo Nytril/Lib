@@ -1,0 +1,100 @@
+using  Format;
+
+include "Site";
+include "Geo Time Scale";
+include "Classifications";
+include "Style";
+include "Birds";
+
+readonly namespace Main.Documents {
+   HomePage Home      = new;
+   PhyloDoc Phylogeny = new;
+   GeoDoc   Geo       = new;
+ }
+
+readonly namespace Main.Facts {
+  BirdTaxa = LifeCatalog;
+}
+
+readonly NytrilIconSite Main.Site = new("Nytril.Examples.BirdPhylogeny", Icons.flutter_dash);
+
+//===============================================================
+
+class HomePage: SitePage {
+  Constructor {
+    super.Constructor(Main.Site, #e208744e-56e0-4100-a0c4-8be6c299e83f#, "Phylogeny", "Organization of living species");
+
+    Tiles = [
+      new DocTile(Main.Documents.Phylogeny, Icons.flutter_dash),
+      new DocTile(Main.Documents.Geo, Icons._public),
+    ];
+  }
+
+  override GetHeader = Block {
+    Paragraph {
+      TextHeight: 40pt;
+      NytrilStyle.SiteIcon(Icons.account_tree);
+      Space;
+      Name;
+    };
+    Paragraph {
+      SpaceAfter: 30;
+      TextHeight: 20pt;
+      Description;
+    };
+  };
+}
+
+//=======================================================================
+
+class PhyloDoc: DocumentEntry {
+  Constructor {
+    super.Constructor(#a404d35c-9ad7-48bc-836d-7929c0c72fbf#, "Birds");
+    Description = "Phylogeny of various bird species";
+  }
+
+  override GetDocument = Document {
+    var set = new HashSet<Taxon>(256);
+    foreach (var item in LifeCatalog) {
+      if (item.Rank == Taxon.RankTypes.Species)
+        item.Gather(set);
+    }
+    var birds = set.ToArray;
+    var first  = birds[0];
+
+    PhyloStyle.Header1(Name);
+    TreeBox(ExtentWidth, null) {
+      TextHeight: 7pt;
+      Default: new Node(null) {
+        Bevel: 10%;
+        Curvature: 10%;
+      };
+
+      Root: first.GetTree(birds);
+    };
+
+    PageBreak;
+    PhyloStyle.Header1("Catalog");
+    first.ShowList(birds);
+  };
+}
+
+//=======================================================================
+
+class GeoDoc: DocumentEntry {
+  Constructor {
+    super.Constructor(#a917b6b2-57db-4c71-bba1-f5e15e23722c#, "Geologic Periods");
+    Description = "Nomeclature tables for geologic periods";
+  }
+
+  override GetDocument = Document {
+    var box = new GeoTimelineClass(ExtentHeight - 1", 0.5");
+    PhyloStyle.Header1("Early Geologic Periods");
+    box.EarlyGeoTimelines;
+    PageBreak;
+    PhyloStyle.Header1("Late Geologic Periods");
+    box.LateGeoTimelines;
+  };
+}
+
+//=======================================================================

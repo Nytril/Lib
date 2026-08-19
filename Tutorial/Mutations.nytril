@@ -1,0 +1,70 @@
+using Format;
+
+namespace Chapters.Genetics.Sections.Mutations;
+
+readonly TutorialLesson Lesson = new(#e04c612d-9ebc-4780-9b0f-ff20bf03e3ad#, "Mutations");
+
+//======================================================================
+
+Gene2          = dna"GCTGATTC";
+CompleteRegion = dna"TATAAA" + 20 + Gene2;
+
+readonly LessonExample Content.PlusOperatorEx = new(#b51dfc22-62dd-483c-91ad-b4af8442c680#) {
+  Text: "Long sequences can be built up from short sequences {0}"(NytrilStyle.OpAttribute(attribute +));
+  Code: [attribute CompleteRegion];
+};
+
+//======================================================================
+
+InsertedRegion = CompleteRegion.Insert(10, dna"AACCTTGG");
+
+readonly LessonExample Content.InsertOperatorEx = new(#8422513a-33c2-423d-84b4-40a32cd97921#) {
+  Form: NytrilStyle.Function(attribute Array.Insert, "Sections can be inserted into existing sequences");
+  Code: [attribute InsertedRegion];
+};
+
+//======================================================================
+
+DeletedRegion = InsertedRegion.Remove(16..28);
+
+readonly LessonExample Content.DeleteOperatorEx = new(#b30b1418-bcd7-467d-883e-5470477aae64#) {
+  Form: NytrilStyle.Function(attribute Array.Remove, "Sections can be removed from existing sequences");
+  Code: [attribute DeletedRegion];
+};
+
+//======================================================================
+
+Substitution = DeletedRegion.Substitute(12..17, dna"GGGGG");
+
+readonly LessonExample Content.SubstitutionsEx = new(#b6b3a1e5-1ada-47b2-98dc-9f7d18a937b6#) {
+  Form: NytrilStyle.Function(attribute Array.Substitute, "Sections can be replaced");
+  Code: [attribute Substitution];
+};
+
+//======================================================================
+
+AluElement = dna"GCCGGGCGCGGTGGCGCGTGCCTGTAGTCCC{0}ACTCGGGAGGCTGAGGCTGGAGGATCGCTTGAGTCCAGGAGTTCTGGGCTGTAGTGCGCTATGCCGATCGGAATAGCCACTGCACTCCAGCCTGGGCAACATAGCGAGACCCCGTCTC";
+Stain      = {TextColor: Colors.White; TextBackground: Colors.Red};
+AluExample = AluElement(Stain dna"AGCT") * 5;
+
+readonly LessonExample Content.AluElementsEx = new(#addd8062-6e81-4cd1-872f-27c5aa23548c#) {
+  Text: "Repetitive sequences like Alu elements can be encoded to highlight unique sections";
+  Code: [attribute AluElement, attribute AluExample];
+};
+
+//======================================================================
+
+AluFormat = Span {
+  TextColumns: 40;
+  TextDivision: 5;
+  TextHeight: 8pt;
+  AluExample;
+};
+
+readonly LessonExample Content.FormattingEx = new(#6e749f9d-c030-4426-ac57-e9874452431b#) {
+  Text: "Sequences can be formatted to fit in regular columns";
+  Code: [attribute AluFormat];
+};
+
+//======================================================================
+

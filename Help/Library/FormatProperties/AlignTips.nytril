@@ -1,0 +1,37 @@
+include "Help";
+
+using Format;
+
+ExTree = TreeBox(100, 100, new Edge(0, 5)) {
+  Root: new Node("A") {
+    new Node("B", 10);
+    new Node("C", 5) {
+      new Node("D", 10);
+      new Node("E", 5);
+    }
+  };
+
+  Default: new Node(null) {
+    NodeGap: 5pt;
+    Bevel: 20%;
+    Curvature: 20%;
+  };
+};
+
+Example = Block {
+  Paragraph {
+    VBox {
+      "Normal";
+      ExTree;
+    };
+
+    VBox {
+      "Aligned";
+      ExTree {
+        AlignTips: true;
+      };
+    };
+  };
+};
+
+Main.Help = new HelpExample(attribute FormatProperties.AlignTips);

@@ -1,0 +1,52 @@
+include "Help";
+
+using Format;
+
+PieChart(Placements placement) = VBox(null, null) {
+  HAlign: Center;
+  Span {
+    TextHeight: 14pt;
+    placement;
+    " Legend";
+  };
+
+  Chart(2", 1.5") {
+    Legend: ChartLegend(null, null, PadAll(3)) {
+      Direction: Directions.Vertical;
+      Placement: placement;
+    };
+
+    XAxis: ChartAxis {
+      "Yes";
+      "No";
+    };
+
+    ChartSeries {
+      Label: "Poll 1";
+      40;
+      60;
+    };
+    ChartSeries {
+      Label: "Poll 2";
+      45;
+      55;
+    };
+
+  };
+};
+
+Example = Block {
+  Paragraph {
+    PieChart(Placements.Left); Tab;
+    PieChart(Placements.Right);
+  };
+
+  Paragraph {
+    PieChart(Placements.Top); Tab;
+    PieChart(Placements.Bottom);
+  };
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.Placement));
+
+

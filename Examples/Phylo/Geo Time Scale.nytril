@@ -1,0 +1,265 @@
+using Format, Math, IO;
+//=======================================================================
+
+readonly LinkType TimeParentLink = new(TimeFrame, TimeFrame, "Child", "Parent");
+
+class TimeFrame: Fact {
+  enum SegmentTypes {
+    Supereon,
+    Eon,
+    Era,
+    Period,
+    Epoch,
+    Age,
+  }
+
+  field string       Name;
+  field double       Start,
+                     Stop;
+  field SegmentTypes Segment;
+  var TimeFrame      Parent;
+  var Color          BackColor;
+
+  Constructor(Guid id, SegmentTypes segment, name, start, stop, TimeFrame parent, Color color) {
+    super.Constructor(id);
+
+    Parent    = parent;
+    Name      = name;
+    Start     = start;
+    Stop      = stop;
+    Segment   = segment;
+    BackColor = color;
+
+    if (parent is valid)
+      System.Assert(parent.Segment + 1 == segment);
+    TimeParentLink.Connect(parent, this);
+  }
+
+  static CE(x) = 0.001 * (2000 - x);
+
+  void Gather(set) {
+    Parent?.Gather(set);
+    set.Add(this);
+  }
+
+  static TimeFrame[] GetTreeList(TimeFrame[] list) {
+    var set = new HashSet<TimeFrame>(256);
+    foreach (var item in list)
+      item.Gather(set);
+    return set.ToArray;
+  }
+
+  UpperTime = Span {
+    if (Parent is valid) {
+      Parent.UpperTime;
+      if (Parent.Name.Length > 0)
+        "-";
+    }
+    Span {
+      TextBackground: BackColor;
+      Name;
+    }
+  };
+
+  override GetLayoutTip = Canvas(null, null, PadTB(3pt)) {
+    var t = (Start + Stop) * 0.5;
+    GeoTimelineClass timeline = new(2", 1.5") {
+      Start: Min(Start + t * 0.1, TimeFrames.Precambrian.Start);
+      Stop: Max(0, Stop - t * 0.1);
+      Time: t;
+    };
+    timeline.GeoTimeline(Start, Stop, Supereon, Segment)
+  };
+
+}
+
+//=======================================================================
+
+int CompareTime(TimeFrame s1, TimeFrame s2) = s1.Start.Compare(s2.Start);
+
+readonly TimeFrame[] GeoTimes       = TimeFrames.ToArray;
+readonly TimeFrame[] SortedGeoTimes = GeoTimes.ToSortedArray(true, @CompareTime);
+readonly TimeFrame[] GeoList        = TimeFrame.GetTreeList(GeoTimes);
+
+//=======================================================================
+
+readonly namespace<TimeFrame> TimeFrames {
+  Precambrian      = new(#a6e53d7e-15b1-4e01-855c-ea1702dc1a28#, Supereon, "Precambrian", 4600, 541, null, #F6426F#);
+  Phanerozoic      = new(#d8ff49fa-3df2-4835-bae2-5cf6b3fbe218#, Eon, "Phanerozoic", 541, 0, null, #6ED8DC#);
+  Proterozoic      = new(#858f9f1d-feb6-478c-b440-0942f30b6e82#, Eon, "Proterozoic", 2500, 541, Precambrian, #F63462#);
+  Cenozoic         = new(#0749b25b-93e8-4e4b-bdae-aa2047bbb9c4#, Era, "Cenozoic", 66, 0, Phanerozoic, #F1F81C#);
+  Quaternary       = new(#736269ce-b70e-49e4-9623-5b730907f6e5#, Period, "Quaternary", 2.58, 0, Cenozoic, #F8F87E#);
+  Holocene         = new(#c4450a2d-ffe9-4dcb-8041-0624357e9083#, Epoch, "Holocene", 0.0117, 0, Quaternary, #FEF1E0#);
+  Meghalayan       = new(#f8425d93-06c1-4603-8ebe-6edc9c936582#, Age, "Meghalayan", 0.0042, 0, Holocene, #F8F9FA#);
+  Nortgrippian     = new(#ef71659c-8fc1-43f4-9e8e-666f3d8c9486#, Age, "Nortgrippian", 0.0082, 0.0042, Holocene, #F8F9FA#);
+  Greenlandian     = new(#370b74c1-7102-4ab5-bffb-1c867f97b59c#, Age, "Greenlandian", 0.0117, 0.0082, Holocene, #F8F9FA#);
+  Pleistocene      = new(#afea1f9f-4c5c-489e-bb85-3d22eeddfa07#, Epoch, "Pleistocene", 2.58, 0.0117, Quaternary, #FEEFB8#);
+  Tarantian        = new(#e7ca1d5f-b5cd-4cae-b10b-bef7be24e6f3#, Age, "Tarantian", 0.126, 0.0117, Pleistocene, #FEF1D6#);
+  Chibanian        = new(#cb1f30fb-6af9-4974-8f5f-0bda32a70fa4#, Age, "Chibanian", 0.773, 0.126, Pleistocene, #FEF0CC#);
+  Calabrian        = new(#b7c8230d-77f6-4364-80ac-16cdd547f235#, Age, "Calabrian", 1.8, 0.773, Pleistocene, #FEEFC1#);
+  Gelasian         = new(#1d4693bc-adf9-49a5-ad51-cd65d1d0fca8#, Age, "Gelasian", 2.58, 1.8, Pleistocene, #FEEEAD#);
+  Neogene          = new(#758019aa-1fe7-434a-afdb-d552e92afa66#, Period, "Neogene", 23.03, 2.58, Cenozoic, #FFE518#);
+  Pliocene         = new(#b300d80e-609e-4719-b8a7-2abc0c3a343e#, Epoch, "Pliocene", 5.333, 2.58, Neogene, #FEF8A6#);
+  Piacenzian       = new(#78fbd627-346b-49a8-9f78-e7445f9b1a3e#, Age, "Piacenzian", 3.6, 2.58, Pliocene, #FEFAC8#);
+  Zanclean         = new(#1bab2c94-074c-4e8c-a8fd-1f9171a6aea3#, Age, "Zanclean", 5.333, 3.6, Pliocene, #FEF9BD#);
+  Miocene          = new(#5ae02615-f242-42c0-9adb-51f2cf240a42#, Epoch, "Miocene", 23.03, 5.333, Neogene, #FEEF00#);
+  Messinian        = new(#1850f278-9ff7-4db5-a857-35a89ce44d1b#, Age, "Messinian", 7.246, 5.333, Miocene, #FEF587#);
+  Tortonian        = new(#0756ff9a-230e-43ef-aa1a-e5781a713cdc#, Age, "Tortonian", 11.63, 7.246, Miocene, #FEF47D#);
+  Serravallian     = new(#dca31543-1523-41f2-93d9-9799d4ca6dc1#, Age, "Serravallian", 13.82, 11.63, Miocene, #FEF472#);
+  Langhian         = new(#ad0c421a-db69-4946-8696-aefc14f03a5a#, Age, "Langhian", 15.97, 13.82, Miocene, #FEF366#);
+  Burdigalian      = new(#41f9b32f-e718-4df2-9347-0bf52e03c6d7#, Age, "Burdigalian", 20.44, 15.97, Miocene, #FEF259#);
+  Aquitanian       = new(#6de7510d-0412-4105-b017-c3cfc1792874#, Age, "Aquitanian", 23.03, 20.44, Miocene, #FEF14D#);
+  Paleogene        = new(#003cfb5d-ca9a-4ecd-9033-ad977ffc7e81#, Period, "Paleogene", 66, 23.03, Cenozoic, #FC9951#);
+  Oligocene        = new(#9df0bf34-4ef7-44b1-b254-5d15394a18a7#, Epoch, "Oligocene", 33.9, 23, Paleogene, #FEC386#);
+  Chattian         = new(#f58b404a-e864-4636-8a80-d671613ae7d1#, Age, "Chattian", 27.8, 23, Oligocene, #FEE4B2#);
+  Rupelian         = new(#4399f178-edba-4d94-b7d2-8792dae8c4b7#, Age, "Rupelian", 33.9, 27.8, Oligocene, #FED9A2#);
+  Eocene           = new(#fb68b18c-0a5f-4d63-9112-0e37fa23b2f3#, Epoch, "Eocene", 56, 33.9, Paleogene, #FEB979#);
+  Priabonian       = new(#bd8613c6-8806-4dc3-90ab-bf78415fc511#, Age, "Priabonian", 37.8, 33.9, Eocene, #FECFA7#);
+  Bartonian        = new(#612eaba2-38fc-4668-a2df-093e47f521bd#, Age, "Bartonian", 41.2, 37.8, Eocene, #FEC498#);
+  Lutetian         = new(#c6835402-af5b-4307-b2ec-5fdb4f8d9e5e#, Age, "Lutetian", 47.8, 41.2, Eocene, #FEB98A#);
+  Ypresian         = new(#f3d33bab-9417-4f3a-8156-05f1505a1276#, Age, "Ypresian", 56, 47.8, Eocene, #FEAE7D#);
+  Paleocene        = new(#ee1ad89d-8d65-4b29-9490-aae5a0b74e15#, Epoch, "Paleocene", 66, 56, Paleogene, #FEAD6E#);
+  Thanetian        = new(#8de3c006-5517-4b5a-81b4-5aa016fbb70d#, Age, "Thanetian", 59.2, 56, Paleocene, #FEC37D#);
+  Selandian        = new(#268edf05-9446-4eab-a040-2035110bb5f6#, Age, "Selandian", 61.6, 59.2, Paleocene, #FEC274#);
+  Danian           = new(#7fff7e1a-236d-4827-b41e-75222ed2d3fc#, Age, "Danian", 66, 61.6, Paleocene, #FEB872#);
+  Mesozoic         = new(#274c1e6e-6b5f-461b-a455-bef98738c12b#, Era, "Mesozoic", 251.902, 66, Phanerozoic, #66C4C9#);
+  Cretaceous       = new(#8c88c1a1-f24a-4698-b4cf-0f90b1ec9bec#, Period, "Cretaceous", 145, 66, Mesozoic, #7EC54E#);
+  LateCretaceous   = new(#53f118d5-5d99-4e0b-9538-f37fd036a175#, Epoch, "Late Cretaceous", 100.5, 66, Cretaceous, #A6D468#);
+  Maastrichtian    = new(#2e26ee58-b688-4d70-aca2-10c0ec2f44c7#, Age, "Maastrichtian", 72.1, 66, LateCretaceous, #F3F29C#);
+  Campanian        = new(#2f8a8110-aa49-41c1-8348-ca1149446c56#, Age, "Campanian", 83.6, 72.1, LateCretaceous, #EAED93#);
+  Santonian        = new(#f933524b-1d90-4e7d-86b1-44f1af457a64#, Age, "Santonian", 86.3, 83.6, LateCretaceous, #DEE78A#);
+  Coniacian        = new(#81f742c0-c710-4c37-88a5-77a0ab91fc62#, Age, "Coniacian", 89.8, 86.3, LateCretaceous, #D1E382#);
+  Turonian         = new(#bab9932f-e9f3-420c-a005-96f6d7a50bb8#, Age, "Turonian", 93.9, 89.8, LateCretaceous, #C3DF79#);
+  Cenomanian       = new(#1cbd1733-f969-4118-a863-c94a83a8f185#, Age, "Cenomanian", 100.5, 93.9, LateCretaceous, #B5DA71#);
+  EarlyCretaceous  = new(#163a74e9-93ed-46c9-8aab-ed86749851d8#, Epoch, "Early Cretaceous", 145, 100.5, Cretaceous, #7ECD74#);
+  Albanian         = new(#6d55d9fd-ee44-4534-9100-92475fc4041c#, Age, "Albanian", 113, 100.5, EarlyCretaceous, #CDE5A8#);
+  Aptian           = new(#56d2cbfe-62d3-4e20-8db4-f4cf5af8f3d1#, Age, "Aptian", 125, 113, EarlyCretaceous, #BFE19F#);
+  Barremian        = new(#8f6c7fcd-6d69-4d43-8df4-cc45e98d5af5#, Age, "Barremian", 129.4, 125, EarlyCretaceous, #AFDD97#);
+  Hauterivian      = new(#4fa3e7c3-1bf9-43d2-bdf3-fdfc679793e4#, Age, "Hauterivian", 132.9, 129.4, EarlyCretaceous, #9ED78E#);
+  Valanginian      = new(#ac206dee-70e3-4a47-b5a0-4156c1a810f4#, Age, "Valanginian", 139.8, 132.9, EarlyCretaceous, #8DD285#);
+  Berriasian       = new(#100c4d48-94fe-4807-9d5d-1732ebfc59a7#, Age, "Berriasian", 145, 139.8, EarlyCretaceous, #7CCE7C#);
+  Jurassic         = new(#147b045d-9da3-4715-ad51-d9a3cc425a3e#, Period, "Jurassic", 201.3, 145, Mesozoic, #33B1C8#);
+  LateJurassic     = new(#270e3aa2-5ec6-468e-b6eb-a7e24a51809c#, Epoch, "Late Jurassic", 163.5, 145, Jurassic, #97E3FA#);
+  Tithonian        = new(#696abc7c-8d2c-4a07-a859-36149e24d1fd#, Age, "Tithonian", 152.1, 145, LateJurassic, #CFF0FC#);
+  Kimmeridgian     = new(#0ff27090-5034-4008-ae51-c983265f2561#, Age, "Kimmeridgian", 157.3, 152.1, LateJurassic, #BDEBFB#);
+  Oxfordian        = new(#921bb1c3-5d54-4038-ae56-9de7438dc78b#, Age, "Oxfordian", 163.5, 157.3, LateJurassic, #ABE7FB#);
+  MiddleJurassic   = new(#da6ca40f-a2e4-45ae-a9bb-3227846b87af#, Epoch, "Middle Jurassic", 174.1, 163.5, Jurassic, #34D1EB#);
+  Callovian        = new(#8670de39-eae8-42f9-be46-6540d6a52c9b#, Age, "Callovian", 166.1, 163.5, MiddleJurassic, #AEE6F0#);
+  Bathonian        = new(#df05f5a8-480d-4188-8a9b-2f43179a430e#, Age, "Bathonian", 168.3, 166.1, MiddleJurassic, #9CE2EF#);
+  Bajocian         = new(#73acb02f-d28f-4725-a987-7b3d128bc9bb#, Age, "Bajocian", 170.3, 168.3, MiddleJurassic, #87DEEE#);
+  Aalenian         = new(#9f9f9ff7-ca8c-40b7-97af-36535f571516#, Age, "Aalenian", 174.1, 170.3, MiddleJurassic, #6FDAED#);
+  EarlyJurassic    = new(#d22092f5-e17e-4723-a264-c8bd13edcce7#, Epoch, "Early Jurassic", 201.3, 174.1, Jurassic, #00B7EA#);
+  Toarcian         = new(#6d003f2a-c663-4018-9126-d8785d1dcc16#, Age, "Toarcian", 182.7, 174.1, EarlyJurassic, #74D1F0#);
+  Pliensbachian    = new(#87b1210e-9ab4-49cd-85f0-34348132fec4#, Age, "Pliensbachian", 190.8, 182.7, EarlyJurassic, #3CC9EF#);
+  Sinemurian       = new(#2b2342c6-2f7d-41d3-85b0-fc034c0fcde4#, Age, "Sinemurian", 199.3, 190.8, EarlyJurassic, #07C1ED#);
+  Hettangian       = new(#44f8cf56-4b7a-4588-a4f9-46fa9fd4e1b9#, Age, "Hettangian", 201.3, 199.3, EarlyJurassic, #00BBEB#);
+  Triassic         = new(#7ce4a1e3-d9ae-4ee9-b695-6cf2f17e6955#, Period, "Triassic", 251.902, 201.3, Mesozoic, #802A91#);
+  LateTriassic     = new(#452a4add-1cff-462d-a7fe-95fb6b757824#, Epoch, "Late Triassic", 237, 201.3, Triassic, #C698C2#);
+  Rhaetian         = new(#9ae4cddd-afbb-453e-9306-c8640b44a99f#, Age, "Rhaetian", 208.5, 201.3, LateTriassic, #E8C2D8#);
+  Norian           = new(#49f138c7-886b-4b80-b64c-fe3f44691c78#, Age, "Norian", 227, 208.5, LateTriassic, #DDB4D1#);
+  Carnian          = new(#8270d438-6c59-4e41-8b87-37e9063ef5a2#, Age, "Carnian", 237, 227, LateTriassic, #D1A6C9#);
+  MiddleTriassic   = new(#30aab39a-7429-4b98-aaea-f58f4f71b350#, Epoch, "Middle Triassic", 247.2, 237, Triassic, #BF7CB1#);
+  Ladinian         = new(#c32a6099-70c8-455f-9af3-e7ae28fb33bf#, Age, "Ladinian", 242, 237, MiddleTriassic, #D492BD#);
+  Anisian          = new(#9f645b12-6dc5-42bc-bf73-91bf693b2ca0#, Age, "Anisian", 247.2, 242, MiddleTriassic, #C986B6#);
+  EarlyTriassic    = new(#1fa58128-25dd-480f-9ff6-1df5aa9c9782#, Epoch, "Early Triassic", 251.902, 247.2, Triassic, #AD579A#);
+  Olenekian        = new(#ad1e139e-c162-41cc-9a07-5f1a15d2b3f1#, Age, "Olenekian", 251.2, 247.2, EarlyTriassic, #C26AA5#);
+  Induan           = new(#0010bbc3-b0a0-4dfe-a225-b3114b344af3#, Age, "Induan", 251.902, 251.2, EarlyTriassic, #B861A0#);
+  Paleozoic        = new(#c04de4f3-da00-4b6f-ac3f-8d440197e55e#, Era, "Paleozoic", 541, 251.902, Phanerozoic, #99BF8C#);
+  Permian          = new(#601772e6-97b1-4b8c-8688-c3da6f23ff5a#, Period, "Permian", 298.9, 251.902, Paleozoic, #EF3F27#);
+  Lopingian        = new(#ad54b4e3-9a0e-4b50-b9ab-cdb55b72ac9c#, Epoch, "Lopingian", 259.1, 251.902, Permian, #FEAF97#);
+  Changhsingian    = new(#89e5a94a-553c-4203-b998-11fb85652f44#, Age, "Changhsingian", 254.14, 251.902, Lopingian, #FEC6B3#);
+  Wuchiapingian    = new(#254b9372-3f82-4416-94f0-f10f5dd56efc#, Age, "Wuchiapingian", 259.1, 254.14, Lopingian, #FEBBA5#);
+  Guadalupian      = new(#41d6c601-45cc-4a74-b905-451510bbd37c#, Epoch, "Guadalupian", 272.95, 259.1, Permian, #FE8367#);
+  Capitanian       = new(#468bacf9-962d-4b92-84ab-fe7f03a4e185#, Age, "Capitanian", 265.1, 259.1, Guadalupian, #FEA38A#);
+  Wordian          = new(#40008856-5598-41e6-9758-8b6ce5577bae#, Age, "Wordian", 268.8, 265.1, Guadalupian, #FE987E#);
+  Roadian          = new(#adc2c827-93a8-4917-97e4-5861ee037e75#, Age, "Roadian", 272.95, 268.8, Guadalupian, #EF947F#);
+  Cisualian        = new(#c064279d-f3b1-4183-b024-19febb18caf8#, Epoch, "Cisualian", 298.9, 272.95, Permian, #F76E54#);
+  Kungurian        = new(#705d254b-8511-4a16-9ea2-31ab07850165#, Age, "Kungurian", 283.5, 272.95, Cisualian, #FE8E72#);
+  Artinskian       = new(#6b9367d5-3c14-445c-a886-83b148a91300#, Age, "Artinskian", 290.1, 283.5, Cisualian, #EF8A74#);
+  Sakmarian        = new(#25002df7-3149-46a0-873e-ede00e0873b0#, Age, "Sakmarian", 295, 290.1, Cisualian, #EF806A#);
+  Asselian         = new(#945d17ed-b649-4db4-950f-cc8caf5e2536#, Age, "Asselian", 298.9, 295, Cisualian, #F0775F#);
+  Carboniferous    = new(#c0f4fa63-259e-403f-8cbe-d15ca24fb503#, Period, "Carboniferous", 358.9, 298.9, Paleozoic, #66A499#);
+  Pennsylvanian    = new(#ee2f8b24-7953-46f2-ae1f-b6ee317d7eae#, Epoch, "Pennsylvanian", 323.2, 298.9, Carboniferous, #8AC6C3#);
+  Gzhelian         = new(#b420813f-71a3-46e7-9c48-ac609eed6f35#, Age, "Gzhelian", 303.7, 298.9, Pennsylvanian, #CBD5CD#);
+  Kasimovian       = new(#bb68a1a8-de47-4b72-aa45-4f3a56ab0707#, Age, "Kasimovian", 307, 303.7, Pennsylvanian, #BBD1CD#);
+  Moscovian        = new(#92604d2d-70b4-43ef-8ca7-926b471b02dc#, Age, "Moscovian", 315.2, 307, Pennsylvanian, #AECDC4#);
+  Bashkirian       = new(#7aa729d8-e1a7-4872-899a-4e1cf950315a#, Age, "Bashkirian", 323.2, 315.2, Pennsylvanian, #8AC6C3#);
+  Mississippian    = new(#2050d0fe-78f6-4d75-8a00-214f338862fb#, Epoch, "Mississippian", 358.9, 323.2, Carboniferous, #619D7E#);
+  Serpukhovian     = new(#2fecf070-d31e-49a1-945f-1dc47339527a#, Age, "Serpukhovian", 330.9, 323.2, Mississippian, #C8C281#);
+  Visean           = new(#282e0200-398a-486a-af99-4549109a1a38#, Age, "Visean", 346.7, 330.9, Mississippian, #ABBC82#);
+  Tournaisian      = new(#83043ec6-615d-47cf-95a2-3a336953eb05#, Age, "Tournaisian", 358.9, 346.7, Mississippian, #8AB584#);
+  Devonian         = new(#32575d1b-d179-4ee6-87cf-a5e76f5abac1#, Period, "Devonian", 419.2, 358.9, Paleozoic, #CA8B36#);
+  LateDevonian     = new(#ce12bc3d-cf85-43d4-b0dc-3859b536759b#, Epoch, "Late Devonian", 382.7, 358.9, Devonian, #F4E0A9#);
+  Famennian        = new(#3d48b9e6-b11f-480a-a573-0e75541c0d5d#, Age, "Famennian", 372.2, 358.9, LateDevonian, #F4E0A9#);
+  Frasnian         = new(#d9395578-5e86-4347-b35a-ae0e606f7ce9#, Age, "Frasnian", 382.7, 372.2, LateDevonian, #F4E0A9#);
+  MiddleDevonian   = new(#9b2c1fa7-bb0e-4c40-a7d8-4627bbcc2289#, Epoch, "Middle Devonian", 393.3, 382.7, Devonian, #F6C87A#);
+  Givetian         = new(#18818111-e761-4747-931f-5f87e1f63a0a#, Age, "Givetian", 387.7, 382.7, MiddleDevonian, #F6C87A#);
+  Eifelian         = new(#c399d65a-245e-48b2-99a8-66cb4006dfa9#, Age, "Eifelian", 393.3, 387.7, MiddleDevonian, #F6C87A#);
+  EarlyDevonian    = new(#1f2b2456-5f58-4a43-a0f5-0d975dce6cf3#, Epoch, "Early Devonian", 419.2, 393.3, Devonian, #EFB063#);
+  Emsian           = new(#1fb3f55b-4b7f-445d-96eb-7abb5e1ebb83#, Age, "Emsian", 407.6, 393.3, EarlyDevonian, #EFB063#);
+  Pragian          = new(#53bb790a-1b33-438f-af2e-bcc67245d76b#, Age, "Pragian", 410.8, 407.6, EarlyDevonian, #EFB063#);
+  Lochkovian       = new(#7a3845a3-52b2-4f61-bbce-627b36c68a74#, Age, "Lochkovian", 419.2, 410.8, EarlyDevonian, #EFB063#);
+  Silurian         = new(#bd4ab784-f4aa-4a7f-8fc2-0de51b8d662d#, Period, "Silurian", 443.8, 419.2, Paleozoic, #B3E0B5#);
+  Pridoli          = new(#3e84b8e1-e9f1-4f9d-b8c9-8d737efa86d6#, Epoch, "Pridoli", 423, 419.2, Silurian, #E4F2E6#);
+  Ludlow           = new(#0d9d5479-25c8-4a99-b395-8c8c7440a69c#, Epoch, "Ludlow", 427.4, 423, Silurian, #B4E5DB#);
+  Ludfordian       = new(#24fea935-4595-445d-8703-f8e6848d2eef#, Age, "Ludfordian", 425.6, 423, Ludlow, #D4EEE6#);
+  Gorstian         = new(#f6b58700-cf87-4aa8-9fec-34da21f0fe0f#, Age, "Gorstian", 427.4, 425.6, Ludlow, #C3EAE6#);
+  Wenlock          = new(#21ed1f67-a024-4259-8994-edb15274a46e#, Epoch, "Wenlock", 433.4, 427.4, Silurian, #A4E0D0#);
+  Homerian         = new(#8077bb03-9c7a-4ca0-8289-f4e9162a1a28#, Age, "Homerian", 430.5, 427.4, Wenlock, #C5E9DB#);
+  Sheinwoodian     = new(#145bf934-30c3-47af-a114-8b3adf8fff37#, Age, "Sheinwoodian", 433.4, 430.5, Wenlock, #B6E4D0#);
+  Llandovery       = new(#c5cc1a8d-5174-4f39-861d-850761ee4afa#, Epoch, "Llandovery", 443.8, 433.4, Silurian, #7ED7C6#);
+  Telychian        = new(#73076dc0-e5db-431f-825f-51e8ba416827#, Age, "Telychian", 438.4, 433.4, Llandovery, #B4E5DB#);
+  Aeronian         = new(#92c66d0b-ca58-4048-9dcd-9fcb9d403a61#, Age, "Aeronian", 440.8, 438.4, Llandovery, #A4E0D0#);
+  Rhuddanian       = new(#644d90c5-b666-43e6-843c-00e3707bbb25#, Age, "Rhuddanian", 443.8, 440.8, Llandovery, #93DBC6#);
+  Ordovician       = new(#66491dab-1dc1-4d34-a45b-3fdaa066d2e9#, Period, "Ordovician", 485.4, 443.8, Paleozoic, #00916F#);
+  LateOrdovician   = new(#44fd7201-d322-4eb1-9e89-c6a14f1593fd#, Epoch, "Late Ordovician", 458.4, 443.8, Ordovician, #5ECCA9#);
+  Hirnantian       = new(#c3304d04-9ec8-4c75-b34f-3acfcca3c534#, Age, "Hirnantian", 445.2, 443.8, LateOrdovician, #95DABC#);
+  Katian           = new(#3c92fead-4558-48f6-a575-17a742f8b4e0#, Age, "Katian", 453, 445.2, LateOrdovician, #81D6BC#);
+  Sandbian         = new(#ef8bf7b4-c515-46f3-91fc-b15d5230c94b#, Age, "Sandbian", 458.4, 453, LateOrdovician, #72D0A9#);
+  MiddleOrdovician = new(#2c507591-eff4-413f-b703-9754a9bb16d8#, Epoch, "Middle Ordovician", 470, 458.4, Ordovician, #00BD97#);
+  Darriwilian      = new(#7b1e2496-dc35-4136-a59c-47497f56efb0#, Age, "Darriwilian", 467.3, 458.4, MiddleOrdovician, #35C9B2#);
+  Dapingian        = new(#da22d710-b085-432b-a929-0398f92488b3#, Age, "Dapingian", 470, 467.3, MiddleOrdovician, #12C5A9#);
+  EarlyOrdovician  = new(#5b09030d-9e80-49e2-b22e-e703485683e4#, Epoch, "Early Ordovician", 485.4, 470, Ordovician, #00AF89#);
+  Floian           = new(#ac4b50ed-82ae-4e85-8016-11fe884efbb5#, Age, "Floian", 477.7, 470, EarlyOrdovician, #00BAA0#);
+  Tremadocian      = new(#e6d73d5b-9117-404c-8fcc-77a0bbc016f9#, Age, "Tremadocian", 485.4, 477.7, EarlyOrdovician, #00B698#);
+  Cambrian         = new(#d9c830c9-1eb2-4b8d-add2-26f15b031d87#, Period, "Cambrian", 541, 485.4, Paleozoic, #7E9F55#);
+  Furongian        = new(#a8b93ae1-f04e-4fdc-9117-55a28e59e529#, Epoch, "Furongian", 497, 485.4, Cambrian, #ADDDA8#);
+  Stage10          = new(#dc94d365-e0e2-41fb-9549-a0a6cf9dd39f#, Age, "Stage10", 489.5, 485.4, Furongian, #E5F1D1#);
+  Jiangshanian     = new(#3dac4ae7-a0d2-4f84-996b-b7a70ed4412c#, Age, "Jiangshanian", 494, 489.5, Furongian, #D8ECC6#);
+  Paibian          = new(#84950661-262c-49c8-adb4-3317597398ba#, Age, "Paibian", 497, 494, Furongian, #CAE7BC#);
+  Miaolingian      = new(#4f616c33-201e-45ef-9c46-b5f890eecaab#, Epoch, "Miaolingian", 509, 497, Cambrian, #A1CF9B#);
+  Guzhangian       = new(#822ebf56-df90-4123-94fe-2ac176d615cf#, Age, "Guzhangian", 500.5, 497, Miaolingian, #CCDDB8#);
+  Drumian          = new(#fba07ea8-fa7b-4c84-b6a5-bbef4539fab1#, Age, "Drumian", 504.5, 500.5, Miaolingian, #BFD8AD#);
+  Wuliuan          = new(#5ed9bb1d-3945-45c0-b94f-1ab516ec69e5#, Age, "Wuliuan", 509, 504.5, Miaolingian, #B2D4A3#);
+  Series2          = new(#30c30778-ad32-44aa-993e-90229bd0fb8d#, Epoch, "Series2", 521, 509, Cambrian, #95C28F#);
+  Stage4           = new(#ebafbd31-5bbb-45cb-a319-c895d9c29068#, Age, "Stage4", 514, 509, Series2, #B4CBA0#);
+  Stage3           = new(#282c249f-6729-48e0-b565-995a9631264d#, Age, "Stage3", 521, 514, Series2, #A5C697#);
+  Terreneuvian     = new(#455d6b76-9188-467c-98ab-14ae16edebf8#, Epoch, "Terreneuvian", 541, 521, Cambrian, #8AB584#);
+  Stage2           = new(#2a07029c-c60a-4b17-a98c-0ed97ae92430#, Age, "Stage2", 529, 521, Terreneuvian, #A8BD93#);
+  Fortunian        = new(#9d791096-7fe9-430f-bd3c-0ddc66125112#, Age, "Fortunian", 541, 529, Terreneuvian, #9ABA8B#);
+  Neoproterozoic   = new(#a4dbc988-cda1-4759-9085-54db1f17d948#, Era, "Neoproterozoic", 1000, 541, Proterozoic, #FDB241#);
+  Ediacaran        = new(#adbf5912-2940-44a0-b64b-d70d1363dee8#, Period, "Ediacaran", 635, 541, Neoproterozoic, #FDD869#);
+  Cryogenian       = new(#266ea907-4887-4480-83c5-0fe1d51ca0cb#, Period, "Cryogenian", 720, 635, Neoproterozoic, #FDCC5B#);
+  Tonian           = new(#7aeba5e0-f1a0-422f-93f5-71b91681fff7#, Period, "Tonian", 1000, 720, Neoproterozoic, #FDBF4D#);
+  Mesoproterozoic  = new(#34406ca6-9bd6-47cc-8eb3-7583fc426fbe#, Era, "Mesoproterozoic", 1600, 1000, Proterozoic, #FDB361#);
+  Stenian          = new(#aa386c3e-6f87-420b-8fb0-7b467ee4dbd8#, Period, "Stenian", 1200, 1000, Mesoproterozoic, #FDD89A#);
+  Ectasian         = new(#e025e677-c7db-4cf9-977a-269890f3338e#, Period, "Ectasian", 1400, 1200, Mesoproterozoic, #FDCC89#);
+  Calymmian        = new(#ec3c0633-fadd-4584-9884-e6cb60117f8f#, Period, "Calymmian", 1600, 1400, Mesoproterozoic, #FDBF79#);
+  Paleoproterozoic = new(#c521d423-23d4-4139-a3c8-d9e703c5b415#, Era, "Paleoproterozoic", 2500, 1600, Proterozoic, #F64370#);
+  Statherian       = new(#73cce098-9a8a-47b9-8800-f022bd91ad4a#, Period, "Statherian", 1800, 1600, Paleoproterozoic, #F675A7#);
+  Orosirian        = new(#dfc0cd01-c908-4dad-90e3-43e5d8d27638#, Period, "Orosirian", 2050, 1800, Paleoproterozoic, #F66897#);
+  Rhyacian         = new(#17702ff5-3346-492b-854a-3d6d2b0af4b5#, Period, "Rhyacian", 2300, 2050, Paleoproterozoic, #F65B88#);
+  Siderian         = new(#6bf13306-50e5-4fb8-a7d6-f1d8a07fc9e9#, Period, "Siderian", 2500, 2300, Paleoproterozoic, #F64E79#);
+  Archean          = new(#1d2d4d9f-d735-4759-8b13-96e5c29c9325#, Eon, "Archean", 4000, 2500, Precambrian, #FD287E#);
+  Neoarchean       = new(#54f1b122-0222-48ad-9210-7fe59af9b0ac#, Era, "Neoarchean", 2800, 2500, Archean, #B56AA8#);
+  Mesoarchean      = new(#457cd5ac-f09d-4dd5-8bd7-170aafcfcdc3#, Era, "Mesoarchean", 3200, 2800, Archean, #F668A8#);
+  Paleoarchean     = new(#0de466da-0529-4de4-8a61-a550da5cc502#, Era, "Paleoarchean", 3600, 3200, Archean, #F4439F#);
+  Eoarchean        = new(#cd07ec6c-77f1-4846-b30f-a642e2aeca51#, Era, "Eoarchean", 4000, 3600, Archean, #E61D8B#);
+  Hadean           = new(#446e7cde-4862-4e4b-ac84-337b6a0b968e#, Eon, "Hadean", 4600, 4000, Precambrian, #B6007D#);
+  Nectarian        = new(#1d872bad-6582-43f8-9649-ec638284dd69#, Era, "Nectarian", 4280, 4000, Hadean, #FFFFFF#);
+  EarlyImbrian     = new(#c2f256db-85f2-4bf9-99f0-33f00060f954#, Era, "Early Imbrian", 4310, 4280, Hadean, #FFFFFF#);
+  BasinGroups      = new(#dbf711e5-fd42-4c24-b1ce-3e59b9309c59#, Era, "Basin Groups", 4533, 4310, Hadean, #FFFFFF#);
+  Cryptic          = new(#9d9e0e7c-fe0a-4b5a-9962-0b9779d0229a#, Era, "Cryptic", 4600, 4533, Hadean, #FFFFFF#);
+}
+//=======================================================================
+

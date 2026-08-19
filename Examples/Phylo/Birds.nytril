@@ -1,0 +1,103 @@
+readonly namespace<Taxon> LifeCatalog {
+  Root             = new(null, Life, #d77168d5-4fc5-4e02-b58b-d15faeef56a2#, "Life", 4500, 0, null, "Every living thing");
+
+  Animalia         = new(Root, Kingdom, #187198b1-1127-40a9-8772-6d59d7abe0bc#, "Animalia", 665, 0, "Animals", "One of the basic groups of living things that comprises either all the animals or all the multicellular animals");
+  Plantae          = new(Root, Kingdom, #bd6aaf2f-50d7-498c-a1e1-bbfc584f2443#, "Plantae", 1600, 0, "Plants", "Includes all land plants: mosses, ferns, conifers, flowering plants, and so on—an amazing range of diverse forms");
+  Fungi            = new(Root, Kingdom, #e0bbefb9-0809-4321-b316-8cf907ff3b9d#, "Fungi", 410, 0, null, "Fungi have cells with nuclei. Their cell walls contain chitin, unlike the cell walls of plants, which contain cellulose.");
+  Protista         = new(Root, Kingdom, #e561bea9-d3e2-4a60-a1b9-8c59560adc5f#, "Protista", 2500, 0, "Protists", "A protist or protoctist is any eukaryotic organism that is not an animal, plant, or fungus");
+  Archaea          = new(Root, Kingdom, #68d88167-81f7-4be9-ba3c-1bb80d399a7b#, "Archaea", 3500, 0, null, "Archaea are a major part of Earth's life. They are part of the microbiota of all organisms.");
+  Bacteria         = new(Root, Kingdom, #33612ac5-91ce-46bb-97b1-c323fc1ccbed#, "Bacteria", 4000, 0, null, "Bacteria are ubiquitous, mostly free-living organisms often consisting of one biological cell. ");
+
+  //================================================================
+
+  Chordata         = new(Animalia, Phylum, #c766577c-7fbd-4bf0-96f9-ba0dddfeeb64#, "Chordata", 535, 0, null, "During some period of their life cycle, chordates possess a notochord, a dorsal nerve cord, pharyngeal slits, an endostyle, and a post-anal tail: these five anatomical features define this phylum. Chordates are also bilaterally symmetric; and have a coelom, metameric segmentation, and a circulatory system.");
+
+  //================================================================
+
+  Aves              = new(Chordata, Class, #0401e461-de0c-4905-94e5-b2a69ef11b21#, "Aves", 121, 0, "Birds", "A group of endothermic vertebrates, characterized by feathers, toothless beaked jaws, the laying of hard-shelled eggs, a high metabolic rate, a four-chambered heart, and a strong yet lightweight skeleton.");
+
+  //================================================================
+
+  Struthioniformes  = new(Aves, Order, #4752d31b-a606-4bab-a0bc-d15e83526164#, "Struthioniformes", 53);
+  Tinamiformes      = new(Aves, Order, #d8e8e6d2-ddd7-4a19-8312-3dfb1d83bdc9#, "Tinamiformes", 10, 0, "Great Tinamou", null, "tinamou");
+  Dinornithiformes  = new(Aves, Order, #dee4acc7-c45b-4c8f-a6b8-670faeaff51d#, "Dinornithiformes", 17, 0.0006, "Moa", null, "Dinornithiformes");
+  Casuariiformes    = new(Aves, Order, #eedbdf1c-4cce-4e04-8c49-a62e94e08aee#, "Casuariiformes", TimeFrames.Miocene.Start, 0, "Flightless birds");
+  Rheiformes        = new(Aves, Order, #4b286836-a74c-48dd-92cd-c73017872ac5#, "Rheiformes", 56, 0, "Flightless ratite birds");
+  Galliformes       = new(Aves, Order, #c8aa0420-0145-4b28-b67f-079d245008b3#, "Galliformes", 55, 0, "Landfowl", null, "chickens");
+  Anseriformes      = new(Aves, Order, #7f5a25b0-e5bf-4fa8-8267-0f5f39cb461b#, "Anseriformes", 71, 0, "Waterfowl", null, "waterbirds");
+  Aepyornithiformes = new(Aves, Order, #18db3e59-8576-43e2-a9bf-7b0389322c35#, "Aepyornithiformes", TimeFrames.Quaternary.Start, 0, "Elephant Birds", null, "aepyronithiformes");
+  Apterygiformes    = new(Aves, Order, #ad1972ee-7e86-4cec-987c-6e74d945547e#, "Apterygiformes", TimeFrames.Miocene.Start, 0, "Kiwis");
+  Saurischia        = new(Aves, Order, #8433d4d6-2e8f-4d9a-9349-93935c45c326#, "Saurischia", 233.23, 0, "Reptile-hipped");
+  Neoaves           = new(Aves, Order, #14d8e291-c8be-46c7-bda0-2d715a38b3b6#, "Neoaves", 69);
+  Yixianornis       = new(Aves, Order, #f340f795-4a68-4035-9e7c-e5a052e528f1#, "Yixianornis", 120);
+  Enantiornithes    = new(Aves, Order, #490133d7-1dbd-4079-8904-43a1a4489357#, "Enantiornithes", 145.5, 66);
+
+  //================================================================
+
+  Apterygidae      = new(Apterygiformes, Family, #0414e4d1-a050-4816-bda9-ef4bbf6110a0#, "Apterygidae", TimeFrames.Miocene.Start);
+  Casuariidae      = new(Casuariiformes, Family, #ed9cea20-6ef7-4c82-8b20-b8d334e101e4#, "Casuariidae", 20.45);
+  Hesperornithidae = new(Saurischia, Family, #7542612d-e8a4-4cb8-b83a-3c67ae8ea262#, "Hesperornithidae", 100, 66);
+  Rheidae          = new(Rheiformes, Family, #f8b3dffb-d530-46d5-b348-5bfc54ffec18#, "Rheidae", 56);
+  Struthionidae    = new(Struthioniformes, Family, #8d48b16c-b7fe-44ae-ac5a-896ca2eda122#, "Struthionidae", 53);
+  Aepyornithidae   = new(Aepyornithiformes, Family, #d8ed11df-24d2-4024-b119-ac1f9d4419cc#, "Aepyornithidae", TimeFrames.Quaternary.Start, TimeFrames.Quaternary.Stop);
+  Anatidae         = new(Anseriformes, Family, #65cb98b0-80c4-4607-b2ca-345a3671cd2b#, "Anatidae", 33.9);
+  Tinamidae        = new(Tinamiformes, Family, #ff77d396-ca4f-4ecd-80d1-1de2e8f5a21e#, "Tinamidae", 10);
+  Dinornithidae    = new(Dinornithiformes, Family, #56e5ee76-7e87-4fbc-a778-f82f675c2b7b#, "Dinornithidae", 17, 0.0006);
+  Emeidae          = new(Dinornithiformes, Family, #1e9d9ddb-847a-4992-a99a-8df4db8ac5dc#, "Emeidae", 17, 0.0006);
+  Megalapterygidae = new(Dinornithiformes, Family, #a3171450-3f1e-4397-8d03-b0bdc1e25df2#, "Megalapterygidae", 17, 0.0006);
+  Neognathae       = new(Galliformes, Family, #4a84db7b-924c-480f-bc82-a920ab8b3b1b#, "Neognathae", 55);
+
+  //================================================================
+
+  Struthio         = new(Struthionidae, Genus, #3e2db242-5b38-47bf-b8e1-bd4e5927f896#, "Struthio", 23, 0, null, null, "struthio");
+  Dromaius         = new(Casuariidae, Genus, #167d4e35-db6f-478d-a177-e1ca996b58c8#, "Dromaius", 20.45, 0, "Emu", null, "emu");
+  Rhea             = new(Casuariidae, Genus, #84801724-2b91-43d1-ae6c-665e6eff7a97#, "Rhea", 20.45, 0, "Greater Rhea", null, "rhea");
+  Casuarius        = new(Casuariidae, Genus, #a3d7f547-3ec2-454d-9471-90ef86f1a36b#, "Casuarius", 20.45, 0, "Cassowary", null, "casuarius");
+  Apteryx          = new(Casuariidae, Genus, #27abd3a7-3bac-4e43-b44e-5cd2ce844c5d#, "Apteryx", 20.45, 0, "Kiwi", null, "kiwi");
+  Hesperornis      = new(Hesperornithidae, Genus, #b16be4d6-ae32-4224-823e-a59e6c4e9a4a#, "Hesperornis", 83.5, 78);
+  Aepyornis        = new(Aepyornithidae, Genus, #dfa64db9-9dd7-4617-b6ce-b02710c98ffe#, "Aepyornis", TimeFrames.Quaternary.Start, TimeFrames.Quaternary.Stop);
+  Mullerornis      = new(Aepyornithidae, Genus, #192d17b7-4c60-438d-ab43-4941ca59e967#, "Mullerornis", TimeFrames.Quaternary.Start, TimeFrames.Quaternary.Stop);
+  Vorombe          = new(Aepyornithidae, Genus, #d744b84c-6ed6-4c05-9df2-b9935a171357#, "Vorombe", TimeFrames.Quaternary.Start, TimeFrames.Quaternary.Stop);
+  Tinamus          = new(Tinamidae, Genus, #5a803974-f0cd-4c93-b12f-6d6cf5d870d4#, "Tinamus", 10);
+  Dinornis         = new(Dinornithidae, Genus, #209d8228-401a-4927-a8ca-889b99048e5c#, "Dinornis", 17, 0.0006);
+  Anas             = new(Anatidae, Genus, #b89b20c3-f1f6-409f-bd00-ae6d78e8d2d5#, "Anas", 33.9);
+
+//================================================================
+
+  Haastii                 = new(Apteryx, Species, #35ee1335-2b5d-49ef-87be-88dc1b702988#, "Haastii", 23.03, 2.58);
+  Owenii                  = new(Apteryx, Species, #e86f664a-8b06-4824-b0fe-fec5a9cecf78#, "Owenii", 23.03, 2.58);
+  Rowi                    = new(Apteryx, Species, #ed7781a0-83ad-4e26-8255-e000594762d8#, "Rowi", 23.03, 2.58);
+  Australis               = new(Apteryx, Species, #fefb2f64-7497-49c7-805d-c565a0f4fdf4#, "Australis", 23.03, 2.58);
+  Mantelli                = new(Apteryx, Species, #a8302e82-29f7-41a9-b6dd-0cc6f16f16d9#, "Mantelli", 23.03, 2.58);
+  Regalis                 = new(Hesperornis, Species, #67d1b0f3-9a4d-4999-935e-d386d4f50b49#, "Regalis", 83.5, 78);
+  Crassipes               = new(Hesperornis, Species, #68c26626-f548-40d3-aac7-e637ddd48785#, "Crassipes", 83.5, 78);
+  Gracilis                = new(Hesperornis, Species, #dfbcbc2d-7702-402a-bf5f-86769a17b0f4#, "Gracilis", 83.5, 78);
+  Altus                   = new(Hesperornis, Species, #75a35562-bcd9-4b7c-8ecd-7d63cf8428e9#, "Altus", 83.5, 78);
+  Montana                 = new(Hesperornis, Species, #1b0c870d-3362-4e11-ba47-cc47dad363f2#, "Montana", 83.5, 78);
+  Rossicus                = new(Hesperornis, Species, #fe64b9b6-8da7-4ac1-88c6-9ab5fff7e381#, "Rossicus", 83.5, 78);
+  Bairdi                  = new(Hesperornis, Species, #4bdd793c-6c91-466b-b422-5387c3737d97#, "Bairdi", 83.5, 78);
+  Chow                    = new(Hesperornis, Species, #5cce313b-a7b4-400b-a367-d9d38debe8b4#, "Chow", 83.5, 78);
+  Macdonali               = new(Hesperornis, Species, #b89a6b97-2520-4ac9-9efe-d84ec818cd30#, "Macdonali", 83.5, 78);
+  Mengeli                 = new(Hesperornis, Species, #b2e62085-7f5e-4633-a557-bc5c6adc766e#, "Mengeli", 83.5, 78);
+  Lumgairi                = new(Hesperornis, Species, #d40df79f-3f4b-45c0-90b2-b6a7c2b130fb#, "Lumgairi", 83.5, 78);
+  CasuariusCasuarius      = new(Casuarius, Species, #8cf693f4-ae0f-432e-baf6-65cfd1e15968#, "Casuarius", 5, 0);
+  Unappendiculatus        = new(Casuarius, Species, #51ce2bea-3a17-4a63-8c2d-b9ec62f70190#, "Unappendiculatus", 5, 0);
+  Bennetti                = new(Casuarius, Species, #5dba1449-9521-4d6e-8e22-d1923258e1c8#, "Bennetti", 5, 0);
+  Lydekkeri               = new(Casuarius, Species, #106f5d9d-7ae4-485f-b8d2-24673ce56db2#, "Lydekkeri", 5, 0);
+  Fossilis                = new(Rhea, Species, #0e12d606-5c7a-4f72-bca7-427175f409fc#, "Fossilis", 0.126, 0);
+  Mesopotamica            = new(Rhea, Species, #3e0e9809-b0bb-4f31-a526-de41c7dcc546#, "Mesopotamica", 0.126, 0);
+  Pampeana                = new(Rhea, Species, #7dd58839-6cda-408d-8e90-bc340342699e#, "Pampeana", 0.126, 0);
+  SubPampeana             = new(Rhea, Species, #9eda248b-6d46-4273-8432-32effd48f99c#, "SubPampeana", 0.126, 0);
+  Americana               = new(Rhea, Species, #d4d69b70-a4b9-4ccc-aac1-485b03b93485#, "Americana", 0.126, 0);
+  FosPennatasilis         = new(Rhea, Species, #255b27f1-5156-4fcd-aa8a-728f584706be#, "Pennata", 0.126, 0);
+  AepyornisMaximus        = new(Aepyornis, Species, #d826c96c-654b-4a7a-9be0-ad8b2f515d2a#, "Aepyornis maximus", 2.58, TimeFrame.CE(1000));
+  MullerornisModestus     = new(Mullerornis, Species, #d8a5e1f1-df64-4367-a086-652894a53503#, "Mullerornis modestus", 1260, 2.58);
+  VorombeTitan            = new(Vorombe, Species, #62a24a79-3b70-4dfb-9e10-64c081b5fa45#, "Vorombe titan", 3680, 2.58);
+  Camelus                 = new(Struthio, Species, #5539a32e-4d56-4569-bbd1-835aff721697#, "Struthio Camelus", 1260, 15, "Common Ostrich", "The common ostrich (Struthio camelus), or simply ostrich, is a species of large flightless bird native to certain large areas of Africa.", "struthio camelus");
+  TinamusMajor            = new(Tinamus, Species, #445d6df8-a4d2-4d9c-9999-1f3642b46402#, "Tinamus major", 10, 0, null, "A species of tinamou ground bird native to Central and South America. There are several subspecies, mostly differentiated by their coloration");
+  DinornisNovaezealandiae = new(Dinornis, Species, #dd819c93-cc9e-4cdd-8a5f-64854e05f95c#, "Dinornis novaezealandiae", 17, 0.0006);
+  AnasPlatyrhynchos       = new(Anas, Species, #2f266204-a8ad-49e0-a764-b7346fd42c7a#, "Anas platyrhynchos", 33.9);
+  DromaiusNovaehollandiae = new(Dromaius, Species, #aec7ccda-4acd-4a7d-a850-74fba6223fc7#, "Dromaius novaehollandiae", 20.45);
+}
+
+//================================================================

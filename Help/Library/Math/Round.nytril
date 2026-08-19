@@ -1,0 +1,15 @@
+include "Help";
+
+using Format;
+
+ShowRound(x) = "The number {0} rounds to {1}."(x, Math.Round(x));
+
+Example = Block {
+  ShowRound(1.001);
+  ShowRound(1.499);
+  ShowRound(1.5);
+};
+
+Main.Help = new HelpExample(attribute(Math.Round));
+
+

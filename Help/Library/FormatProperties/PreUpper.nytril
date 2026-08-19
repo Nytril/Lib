@@ -1,0 +1,14 @@
+include "Help";
+
+using Format;
+
+Example = Paragraph {
+  TextHeight: 32pt;
+  Nary {
+    Operator: "X";
+    PreUpper: "PreUpper";
+    PreLower: Tex.square;
+  }
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.PreUpper));

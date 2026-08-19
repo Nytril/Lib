@@ -1,0 +1,633 @@
+using LinkTypes, CitationLib;
+
+//=========================================================================
+
+namespace CitationLib {
+  State USState(id, name, abreviation, GeoCoordinate c=null) = new(id, name, abreviation, c) {
+    Link to Countries.USA;
+  };
+
+  StreetAddress(address, city, zip) = Link to (new PostalAddress(address, zip) {Link to city});
+}
+
+//=========================================================================
+
+readonly namespace<Country> Countries {
+  Afghanistan       = new(#3b61af6e-8fdd-42de-8bdf-0254a1b79ba3#, "Afghanistan");
+  Albania           = new(#2b6ab187-7da8-4e71-9cc4-207bcaddf6d4#, "Albania");
+  Algeria           = new(#5201bba0-b9a1-428a-9ed1-2699dc289313#, "Algeria");
+  Andorra           = new(#62c36c28-59bb-44f0-a34d-68fa66e7bf15#, "Andorra");
+  Angola            = new(#57b302b2-f95b-4d35-b10c-14fa9dc5da04#, "Angola");
+  Antarctica        = new(#2636fe9b-2fed-4933-b6b8-1ef57644293a#, "Antarctica");
+  AntiguaBarbuda    = new(#b5dac6e7-db3a-402f-b93c-3d9f5b3b623d#, "Antigua and Barbuda");
+  Argentina         = new(#13026f71-60ca-45f1-86b2-95d0085eefdf#, "Argentina");
+  Armenia           = new(#89af29cf-9461-4684-b3e3-2832536760e7#, "Armenia");
+  Australia         = new(#9646896d-88cb-4245-93e5-fe46ea0d19c8#, "Australia");
+  Austria           = new(#0e84bb15-fd95-5f4f-a460-23f35674d050#, "Republic of Austria", "AUS", "Austria");
+  Azerbaijan        = new(#41eaaf80-2b32-4341-bf0d-c965738f2ff9#, "Azerbaijan");
+  Bahamas           = new(#15d5c24b-9758-4c24-95a3-c4d409eed307#, "The Bahamas");
+  Bahrain           = new(#d22486ec-6afa-4758-945d-db72355395e3#, "Bahrain");
+  Bangladesh        = new(#9fbe0844-de60-46ce-a96f-044a0279e774#, "Bangladesh");
+  Barbados          = new(#588b0e70-145f-4d0f-ad56-ecf4db78e0f4#, "Barbados");
+  Belarus           = new(#49708892-cce1-42b4-a77e-3ded8a6cc9c7#, "Belarus");
+  Belgium           = new(#4ff3036f-d765-4236-83f1-9ea2db7291f6#, "Belgium");
+  Belize            = new(#f68be021-7686-4967-bdd0-c88f7bfa8e98#, "Belize");
+  Benin             = new(#4efc3c25-bc7f-4f40-973f-ee12e320ae5f#, "Benin");
+  Bhutan            = new(#a6b23f8e-5808-46e9-b996-37a5efd6b42b#, "Bhutan");
+  Bolivia           = new(#58e4b17e-49fe-4f01-ad1c-6aa9fed7bd38#, "Bolivia");
+  BosniaHerzegovina = new(#81fb34a4-ae55-4a63-a6a4-89aa278ddb3d#, "Bosnia and Herzegovina");
+  Botswana          = new(#30e31e19-00c2-4b1f-96ba-8a424ce5eaf6#, "Botswana");
+  Brazil            = new(#4072861e-61ec-43c8-ad61-5dc7b9b11af8#, "Brazil");
+  Brunei            = new(#9fba2f58-8319-4a1f-8fdb-ee751edf95bf#, "Brunei");
+  Bulgaria          = new(#6635ac90-b195-48cb-b2b8-c6b089b2912c#, "Bulgaria");
+  BurkinaFaso       = new(#ce4da825-e118-4cfc-bd74-65a558e5b996#, "Burkina Faso");
+  Burundi           = new(#ea051550-0fa5-46d9-a92e-dbfddddef218#, "Burundi");
+  CaboVerde         = new(#d6e67284-b482-435c-809c-d2abeab9615a#, "Cabo Verde");
+  Cambodia          = new(#924b429f-b1b6-45ed-ac05-495c31e0ff0b#, "Cambodia");
+  Cameroon          = new(#de65c8a6-f7fa-4801-be79-dcaf9d44bb80#, "Cameroon");
+  Canada            = new(#bbb8e6a2-c28e-4638-be1d-d72dc8882973#, "Canada");
+  CAR               = new(#a4524b07-58df-4232-ae50-1f0b8756d984#, "Central African Republic");
+  Chad              = new(#62780136-9f3f-43e6-bcd7-89a8d188bd87#, "Chad");
+  Chile             = new(#083c9f81-9713-43bd-91d9-d259911450bc#, "Chile");
+  China             = new(#af5f4ef0-1172-4ec3-a22e-ef9a2ff445dc#, "China");
+  Colombia          = new(#82fc5f79-a9ad-4988-a84a-b6a187402636#, "Colombia");
+  Comoros           = new(#106c5b52-cced-4d66-ad48-af1fe4cf802d#, "Comoros");
+  Congo             = new(#b0962cc1-6502-4be8-a7b5-42d6d77f0527#, "Republic of the Congo");
+  CostaRica         = new(#9710e3ea-e29c-40df-a49a-a56f2f856750#, "Costa Rica");
+  Croatia           = new(#d4670b2e-7f70-46e7-a09a-db0ef5182a24#, "Croatia");
+  Cuba              = new(#816e2665-1d2c-4699-90cf-6c0b5ede7996#, "Cuba");
+  Cyprus            = new(#d2d611a6-f99c-4f2c-8fae-902e2700f399#, "Cyprus");
+  CzechRepublic     = new(#d4575164-8d22-42ec-be56-a977e75fc709#, "Czech Republic");
+  Denmark           = new(#e7df375a-3c35-434c-a9ba-deab738404ef#, "Denmark");
+  Djibouti          = new(#7cc12c6a-afae-4a80-8c88-a12a79e5fa5b#, "Djibouti");
+  Dominica          = new(#bb18ea04-240c-4f57-8095-5ed008a321bb#, "Dominica");
+  DominicanRepublic = new(#764b90a7-9a29-4f5a-bcae-01d847c00091#, "Dominican Republic");
+  DRC               = new(#10d46210-0476-46cb-a269-66b94a5fc456#, "Democratic Republic of the Congo");
+  EastTimor         = new(#37ac0e21-ece9-48ec-afc6-3c563cb2104d#, "East Timor (Timor-Leste)");
+  Ecuador           = new(#6c385e38-fdfb-4a8f-bd5e-f2f7447932f7#, "Ecuador");
+  Egypt             = new(#6d3a4f83-8a3d-4c58-b6f6-68ab677f1f20#, "Egypt");
+  ElSalvador        = new(#82cc1851-d8a0-4dde-9cd3-db0d64ab8af1#, "El Salvador");
+  England           = new(#bd39a9ee-f837-f040-8fcb-5d4680922c21#, "England", "ENG");
+  EquatorialGuinea  = new(#a2baaf04-3a41-4adc-8800-7abc19b74f67#, "Equatorial Guinea");
+  Eritrea           = new(#72036c27-28fa-42d3-8a41-d84de2c4e94a#, "Eritrea");
+  Estonia           = new(#396d1637-7029-4ff4-95d2-5e32062eb23c#, "Estonia");
+  Eswatini          = new(#50d81baa-4b31-43a2-b31a-7f410a3c70bb#, "Eswatini");
+  Ethiopia          = new(#3526b80e-41c7-4c06-8c57-f8eab8515027#, "Ethiopia");
+  Fiji              = new(#1228cd8c-b363-4979-b35e-7c5fe4dc7b43#, "Fiji");
+  Finland           = new(#22964cb2-424e-4b1b-95fc-57fd2f720fdd#, "Finland");
+  France            = new(#f1420df2-dfef-314e-bc36-23a0107c5372#, "French Republic", "FR", "France");
+  Gabon             = new(#b22477d2-0870-49dc-97c7-7da5ce9f8f33#, "Gabon");
+  Gambia            = new(#fa63a5ac-e67c-4445-b312-56dce0c7183f#, "The Gambia");
+  Georgia           = new(#39d9785f-5c8c-4afa-b21a-73ff4a0b856f#, "Georgia");
+  Germany           = new(#0935af0e-fc6a-0848-b4fd-309669aa2fe2#, "Federal Republic of Germany", "GDR", "Germany");
+  Ghana             = new(#5dc866b0-c48e-4ca6-982d-1f30fa5edfff#, "Ghana");
+  Greece            = new(#b4d72c9c-b538-456a-82e5-b3b835ff475a#, "Greece");
+  Grenada           = new(#b6ce3424-ff7b-438f-8626-843d5a91addd#, "Grenada");
+  Guatemala         = new(#83860b2c-da1f-43e0-bea5-7aed7184949d#, "Guatemala");
+  Guinea            = new(#4daad237-2bd9-491b-a4ad-ae83d534f316#, "Guinea");
+  GuineaBissau      = new(#bd047aba-e9c2-4316-9e77-3fe66a3bb0f8#, "Guinea-Bissau");
+  Guyana            = new(#cab1bb22-c867-4afb-8681-d418d9e42630#, "Guyana");
+  Haiti             = new(#9f6289cd-8c78-4177-989a-3734d96fe39b#, "Haiti");
+  Honduras          = new(#b1e8bfc7-5ec8-4e06-8fd7-26ed478d9e5d#, "Honduras");
+  HongKong          = new(#84426dd2-3671-49bf-b07e-d554c7187031#, "Hong Kong");
+  Hungary           = new(#705cf519-4e4a-4ef2-a544-03cf493ac048#, "Hungary");
+  Iceland           = new(#d06a2f3c-d246-4b15-ba1b-c1e434445324#, "Iceland");
+  India             = new(#b16a7c12-732d-429f-aed3-cc74d67976ca#, "India");
+  Indonesia         = new(#e5df0fdb-23ef-4f0f-a839-2ecb0c08d7d5#, "Indonesia");
+  Iran              = new(#059c81fa-db76-427d-9fbc-c7b1bf943f05#, "Iran");
+  Iraq              = new(#8b7a331b-6dbe-4ee4-9237-99a53ef62be2#, "Iraq");
+  Ireland           = new(#a2e43300-4371-4f41-a775-48e66c663a63#, "Ireland");
+  Israel            = new(#0a5aab83-4ae2-4377-8618-0893c1b09ad5#, "Israel");
+  Italy             = new(#0dc87126-5133-48f3-b421-62a05972755a#, "Italy");
+  IvoryCoast        = new(#94bdc3d1-ef15-4478-95ee-d7a946a93447#, "Côte d’Ivoire");
+  Jamaica           = new(#29c674c4-48f4-4efe-9ce1-d15164c1b7eb#, "Jamaica");
+  Japan             = new(#7424da47-d434-4fa1-a65b-91cc70af9c89#, "Japan");
+  Jordan            = new(#e983c972-7cb5-4ac0-998b-719ff14ddc8f#, "Jordan");
+  Kazakhstan        = new(#eedb9d06-150c-4bda-8a96-5bc9bb455275#, "Kazakhstan");
+  Kenya             = new(#0c6f3d77-015d-445c-b3b4-bde7bdc229de#, "Kenya");
+  Kiribati          = new(#00142ffd-4e27-4e8c-8c83-67e2aa8b7913#, "Kiribati");
+  Kosovo            = new(#111eda63-395d-48fc-89c0-ce59c8943cf3#, "Kosovo");
+  Kuwait            = new(#64e761e7-14d9-4072-a4e2-ed06184e9249#, "Kuwait");
+  Kyrgyzstan        = new(#155941aa-5b08-4ae7-873d-86da94aa1080#, "Kyrgyzstan");
+  Laos              = new(#dca30044-5e52-4cc7-b2a1-cbf265206dff#, "Laos");
+  Latvia            = new(#ea4045e5-4f88-4eb5-96f9-003a283ad854#, "Latvia");
+  Lebanon           = new(#434aed51-2f95-42e9-8221-5b550c529c10#, "Lebanon");
+  Lesotho           = new(#6bd46d87-5e2f-418d-adcb-97c1efe017a4#, "Lesotho");
+  Liberia           = new(#892f192f-0f2d-4c5c-a6d0-540ff7352acc#, "Liberia");
+  Libya             = new(#ba581abe-0b5a-4f2f-ab56-02b9d235fb72#, "Libya");
+  Liechtenstein     = new(#64742597-2e0b-43b9-93c3-831cc5de72e4#, "Liechtenstein");
+  Lithuania         = new(#4b3922a2-5c1f-4e56-8666-9e8cb669d272#, "Lithuania");
+  Luxembourg        = new(#db5a3943-660f-4fc2-b28f-cb45fe0689b1#, "Luxembourg");
+  Madagascar        = new(#200a3352-d1ad-4193-97dc-231d7c49436d#, "Madagascar");
+  Malawi            = new(#049a8eef-40d6-4785-bf04-9e4b4825673a#, "Malawi");
+  Malaysia          = new(#b19b6a86-a99d-45d5-8909-7c910977fc12#, "Malaysia");
+  Maldives          = new(#a2c43c94-695b-4a21-88eb-9f0392f6eb95#, "Maldives");
+  Mali              = new(#bb28f21a-a1e6-4b14-ae6c-cb0863d6371e#, "Mali");
+  Malta             = new(#dc35f71f-2c47-416f-9f9a-02fd648431ce#, "Malta");
+  MarshallIslands   = new(#4cec7dcb-de60-4234-8729-c9ebc2727af2#, "Marshall Islands");
+  Mauritania        = new(#ed6628bd-3617-4ba3-ad33-7a0f9a1683bb#, "Mauritania");
+  Mauritius         = new(#75dd6339-7098-4647-9cb2-7a3fedf1c26e#, "Mauritius");
+  Mexico            = new(#46842f08-ba8e-438c-9bd4-a50829cc7abf#, "Mexico");
+  Micronesia        = new(#50ef045f-90bd-4919-b8e4-f132e1ead55a#, "Federated States of Micronesia");
+  Moldova           = new(#ec93ab88-ee32-4649-bb9c-d8356c4b65b8#, "Moldova");
+  Monaco            = new(#aea20806-fc42-42dc-ba03-bbd810385d63#, "Monaco");
+  Mongolia          = new(#79fb8bd7-ef07-4a56-a410-7d9efe0f9395#, "Mongolia");
+  Montenegro        = new(#b4108e01-2be5-4fcd-bea4-1d53e0056cd5#, "Montenegro");
+  Morocco           = new(#caa84b7c-6215-45f2-b72c-e9d0136109ae#, "Morocco");
+  Mozambique        = new(#4ee70296-e63b-48fd-a6c1-9f724c9159ae#, "Mozambique");
+  Myanmar           = new(#00a22150-9839-429f-802e-8e8d6fbdb729#, "Myanmar", null, "Burma");
+  Namibia           = new(#ae54494f-be84-468b-a1a5-6acf9afce706#, "Namibia");
+  Nauru             = new(#1cb200e3-ddba-4293-a509-67ed4c18e01d#, "Nauru");
+  Nepal             = new(#9076666b-7faf-410b-b9ae-0c2385241eb9#, "Nepal");
+  Netherlands       = new(#4cd5fd31-3766-f248-8b40-b2ab567da5e3#, "The Netherlands", "NLD", "Holland");
+  NewZealand        = new(#f0b6dd43-abbb-4351-87fc-f345f6e7282e#, "New Zealand");
+  Nicaragua         = new(#1fd8502f-ef1b-4f6d-91f5-512b833d0890#, "Nicaragua");
+  Niger             = new(#a9fe5829-29dc-4508-b45a-21847d234345#, "Niger");
+  Nigeria           = new(#0bcbf5df-5331-4012-977f-7f3838729a86#, "Nigeria");
+  NorthernIreland   = new(#4fe5ff37-3fab-4139-be36-4f319bb7a7d7#, "Northern Ireland");
+  NorthKorea        = new(#d6aef341-b8f8-4694-b9dd-86eb624e99da#, "Nort hKorea");
+  NorthMacedonia    = new(#c1c68c3d-9943-40d2-b4d5-2c9b6a4975a0#, "North Macedonia");
+  Norway            = new(#beacd84f-6c4f-4da7-a113-97b1ce903e09#, "Norway");
+  Oman              = new(#82eae073-932e-4986-be74-4fec50d2f6e4#, "Oman");
+  Pakistan          = new(#7973e6a9-1f5f-4c1f-beba-6ff0a86714a4#, "Pakistan");
+  Palau             = new(#87378839-8130-463c-8de2-d15c1b091463#, "Palau");
+  Panama            = new(#782f8b56-8944-47ce-9314-c97aebe35497#, "Panama");
+  PapuaNewGuinea    = new(#1de5dc40-b3a2-48c5-9df8-d7043443346d#, "Papua New Guinea");
+  Paraguay          = new(#9df3348e-ed0c-415c-83c5-e957d6a5012f#, "Paraguay");
+  Peru              = new(#f94d8a5d-f545-48ab-857f-1c346bd75340#, "Peru");
+  Philippines       = new(#4b16d487-554e-4ca3-9af5-e53d06085a96#, "Philippines");
+  Poland            = new(#d8441ea2-8b4d-44e9-a543-debf2b87207b#, "Poland");
+  Portugal          = new(#09a660ac-d783-477f-9c72-075214dec798#, "Portugal");
+  Qatar             = new(#aced2721-e438-450b-a1a5-5ab373daf9c4#, "Qatar");
+  Romania           = new(#e61ae3c7-8159-4778-9cab-7c1b63d88308#, "Romania");
+  Russia            = new(#f960152e-5c04-4e2f-b87e-7c909ca42f4d#, "Russia");
+  Rwanda            = new(#262194e9-b6d1-4ca3-affd-2df15794e7fd#, "Rwanda");
+  SaintKittsNevis   = new(#8649e344-3d55-482a-9eb0-0035b67557fd#, "Saint Kitts and Nevis");
+  SaintLucia        = new(#62305d17-8d59-4499-8996-0f669fce3ab9#, "Saint Lucia");
+  Samoa             = new(#abb35968-3013-4daa-84d8-853a9d019740#, "Samoa");
+  SanMarino         = new(#9ddd2f62-fa31-4cb4-977e-681a92bed51f#, "San Marino");
+  SaoTomePrincipe   = new(#76055612-3ea9-4f3c-a6aa-d2495738a469#, "Sao Tome and Principe");
+  SaudiArabia       = new(#0fe979c8-bf0c-4de5-a9fb-48b54bec56a9#, "Saudi Arabia");
+  Scotland          = new(#e48a300e-e62e-46aa-bb46-fa1bf94d4762#, "Scotland");
+  Senegal           = new(#546140d2-621f-4d6c-8b29-4a5735256ed6#, "Senegal");
+  Serbia            = new(#2929c3dd-0201-49ca-86d4-1a20cca11e4d#, "Serbia");
+  Seychelles        = new(#f4c61dde-5f59-4646-81f9-a84e3bcb5c75#, "Seychelles");
+  SierraLeone       = new(#a8875287-c944-4a8a-9de9-d02d4f8bfcd5#, "Sierra Leone");
+  Singapore         = new(#066caf7a-bdfb-4128-ab5d-0e9194218072#, "Singapore");
+  Slovakia          = new(#7d196595-4636-420a-ae8b-91ff82caab6a#, "Slovakia");
+  Slovenia          = new(#819a72b3-c0ab-4c8e-94f0-5f4a07518df0#, "Slovenia");
+  SolomonIslands    = new(#6c92220c-e61d-4710-9fc1-fb8635eea65b#, "Solomon Islands");
+  Somalia           = new(#8875899f-00f6-4bd5-93ba-95e778db5d73#, "Somalia");
+  SouthAfrica       = new(#e47def6c-5d8a-4387-9b79-360b8577bfae#, "South Africa");
+  SouthKorea        = new(#f7b9fdeb-05cd-46f3-baed-5f4b67286bd5#, "South Korea");
+  SouthSudan        = new(#e3fde869-6944-438a-8418-1aa64f0f8e02#, "South Sudan");
+  Spain             = new(#f6954d4e-16b5-4191-9478-9ddd5946f167#, "Spain");
+  SriLanka          = new(#a11ef2d4-bf4c-4971-bc14-417828a41201#, "Sri Lanka");
+  Sudan             = new(#5c13b4b8-43bd-43c2-b776-6438e63f44b4#, "Sudan");
+  Suriname          = new(#9404ce3d-405d-451b-aae3-ced7d7661820#, "Suriname");
+  SVG               = new(#690ba39d-d79c-454a-a980-c05ea7e59a5a#, "Saint Vincent and the Grenadines");
+  Sweden            = new(#a3565944-62dc-47a8-a992-082548d2f7bd#, "Sweden");
+  Switzerland       = new(#ce097808-1b0c-4ee3-a3da-f806e325d7cc#, "Switzerland");
+  Syria             = new(#cc92c9b9-0caa-4e62-a40f-ca03857ecdd8#, "Syria");
+  Taiwan            = new(#055e3480-bc5b-4793-a055-9b9050964fb6#, "Taiwan");
+  Tajikistan        = new(#e3a07521-3b48-4d39-8a99-731f64ddfb7e#, "Tajikistan");
+  Tanzania          = new(#a2cee8fd-473b-41b3-b16a-ad0dc0ed2d39#, "Tanzania");
+  Thailand          = new(#1961ef3d-889a-4a74-b321-2ba0bbac315b#, "Thailand");
+  Togo              = new(#a5c1a76e-cfa8-4063-bee7-8ef476aff8a0#, "Togo");
+  Tonga             = new(#0109e79c-bbe7-4159-93db-78e4d91725ab#, "Tonga");
+  TrinidadTobago    = new(#b2666ffc-35c6-4b7a-b875-e600b540e9e0#, "Trinidad and Tobago");
+  Tunisia           = new(#f8fa27f1-2e72-4610-9c0c-c5fefcbd7cd7#, "Tunisia");
+  Turkey            = new(#576aa7d3-801f-40bd-888c-3a99222b35ac#, "Turkey");
+  Turkmenistan      = new(#8c2028c0-9f41-4cc6-a37f-ba9212f9e49c#, "Turkmenistan");
+  Tuvalu            = new(#8c284060-e68b-4f36-932f-a4da587f55d8#, "Tuvalu");
+  UAE               = new(#afbb466f-453a-427b-8f12-160294796396#, "United Arab Emirates");
+  Uganda            = new(#26b658fc-013c-4c82-8ff9-8fd58e70f707#, "Uganda");
+  UK                = new(#2883b3da-25ef-5b42-88e7-74307d50ae83#, "United Kingdom", "UK");
+  Ukraine           = new(#c180c024-02ae-486a-85ae-f1befe0545ed#, "Ukraine");
+  Uruguay           = new(#86ffeed3-4332-4b30-8494-7b55637caaaf#, "Uruguay", "UY", "Oriental Republic of Uruguay");
+  USA               = new(#96a3387a-d0aa-7741-a931-18e0d073a584#, "United States of America", "USA", "United States");
+  Uzbekistan        = new(#b05c8a9c-58e6-4e83-84ac-5f33c6716d3f#, "Uzbekistan");
+  Vanuatu           = new(#79836d38-3a5b-4157-b2b9-15004e53f1bc#, "Vanuatu");
+  VaticanCity       = new(#99c4a131-d2e6-4b28-93b0-90f88228fc2c#, "Vatican City");
+  Venezuela         = new(#f3ba4764-e848-4509-8025-aed471fd64ea#, "Venezuela");
+  Vietnam           = new(#7df608d3-1077-44e5-a9be-a4c87abfc934#, "Vietnam");
+  Wales             = new(#4c03fbbd-6b82-4dca-9c9e-725c552febdd#, "Wales");
+  Yemen             = new(#7730291c-f88c-4015-95a4-e34140201469#, "Yemen");
+  Zambia            = new(#74c28ed2-1241-4eb6-8267-415a53c7b3d7#, "Zambia");
+  Zimbabwe          = new(#0dcf868f-7421-4b9d-8582-c59ec2463b30#, "Zimbabwe");
+}
+
+//=========================================================================
+
+readonly namespace<State> USStates {
+  Alabama       = USState(#43add86b-11b8-c648-abad-1fd7e743e6f3#, "Alabama", "AL", new(32.318231, -86.902298));
+  Alaska        = USState(#6871f0b3-d69d-244c-84f8-0a0f0bd8e62d#, "Alaska", "AK", new(63.588753, -154.493062));
+  Arizona       = USState(#20422585-e168-d540-9e38-e57e89f28675#, "Arizona", "AZ", new(34.048928, -111.093731));
+  Arkansas      = USState(#c7ac4229-18f6-c743-85e2-84a1847d977a#, "Arkansas", "AR", new(35.20105 , -91.831833));
+  California    = USState(#16f63383-a989-e04b-bcf6-ac3432a14675#, "California", "CA", new(36.778261, -119.417932));
+  Colorado      = USState(#69b4c574-ee7b-7e44-9d50-032b1b8dfe4b#, "Colorado", "CO", new(39.550051, -105.782067));
+  Connecticut   = USState(#212dd6eb-28ae-df4b-a2dc-2ed763d698a9#, "Connecticut", "CT", new(41.603221, -73.087749));
+  Delaware      = USState(#08092d19-2cfa-ee49-9de9-d40702db6805#, "Delaware", "DE", new(38.910832, -75.52767));
+  Florida       = USState(#dc5d0a6a-0b25-9a49-bfbd-734c5f2f1caf#, "Florida", "FL", new(27.664827, -81.515754));
+  Georgia       = USState(#5bf7da5d-a556-b94c-b53b-74cf8045d9ff#, "Georgia", "GA", new(32.157435, -82.907123));
+  Hawaii        = USState(#a2875e15-5531-dc44-ad3e-7cb35eccbb4e#, "Hawaii", "HI", new(19.898682, -155.665857));
+  Idaho         = USState(#0cdb6965-9809-6d4f-acde-97e3cb5e0df4#, "Idaho", "ID", new(44.068202, -114.742041));
+  Illinois      = USState(#c0d1bc78-e95f-6e4e-b45e-a5213f124d15#, "Illinois", "IL", new(40.633125, -89.398528));
+  Indiana       = USState(#73b82838-1ed2-7940-bca3-3a750b531b3d#, "Indiana", "IN", new(40.551217, -85.602364));
+  Iowa          = USState(#41729655-4dd8-c942-abcc-88f0373c9708#, "Iowa", "IA", new(41.878003, -93.097702));
+  Kansas        = USState(#b472f0fe-cdd4-2241-9050-0a5cf9fcd146#, "Kansas", "KS", new(39.011902, -98.484246));
+  Kentucky      = USState(#fcb947dc-f89a-9c43-b552-76def43f5a54#, "Kentucky", "KY", new(37.839333, -84.270018));
+  Louisiana     = USState(#79c41dc9-de73-7f43-8b1c-fedc94cbbf92#, "Louisiana", "LA", new(31.244823, -92.145024));
+  Maine         = USState(#ae0f7e2b-459b-a947-9165-a324017c2092#, "Maine", "ME", new(45.253783, -69.445469));
+  Maryland      = USState(#5764a8dd-edf2-8b45-b968-5a31fb3cdb5b#, "Maryland", "MD", new(39.045755, -76.641271));
+  Massachusetts = USState(#007c7ac9-7f40-b54d-a763-90690b742de0#, "Massachusetts", "MA", new(42.407211, -71.382437));
+  Michigan      = USState(#5d8e6e5a-bd81-0341-93ee-74655437f911#, "Michigan", "MC", new(44.314844, -85.602364));
+  Minnesota     = USState(#b03ffe90-67e8-4349-bfd4-1346ab458c99#, "Minnesota", "MN", new(46.729553, -94.6859));
+  Mississippi   = USState(#9adc7ebe-028e-ba40-8b34-25e0bec1764e#, "Mississippi", "MI", new(32.354668, -89.398528));
+  Missouri      = USState(#9d25c216-6764-c044-99dc-a0ee08933631#, "Missouri", "MO", new(37.964253, -91.831833));
+  Montana       = USState(#2c2aaa87-62bd-cd46-bc09-5fb5f6e013eb#, "Montana", "MT", new(46.879682, -110.362566));
+  Nebraska      = USState(#937af91d-79ff-2540-9b52-77ca41baa927#, "Nebraska", "NB", new(41.492537, -99.901813));
+  Nevada        = USState(#da7381cf-3998-6d4e-99d4-fa096f46a37f#, "Nevada", "NV", new(38.80261 , -116.419389));
+  NewHampshire  = USState(#aeda1fe9-50d6-6b44-a0af-ebe62154e094#, "New Hampshire", "NH", new(43.193852, -71.572395));
+  NewJersey     = USState(#6e0b39a4-50fe-a544-9074-eeb10f9a70a6#, "New Jersey", "NJ", new(40.058324, -74.405661));
+  NewMexico     = USState(#1d84f1ec-442f-454a-9a72-83b08d3502ce#, "New Mexico", "NM", new(34.97273 , -105.032363));
+  NewYork       = USState(#c7cce562-3a05-3446-a616-a2fec0354669#, "New York", "NY", new(43.299428, -74.217933));
+  NorthCarolina = USState(#38ca2872-22a0-db44-81ad-18a10901fa9a#, "North Carolina", "NC", new(35.759573, -79.0193));
+  NorthDakota   = USState(#c184bb17-2a35-f44f-acbd-2ef61487f355#, "North Dakota", "ND", new(47.551493, -101.002012));
+  Ohio          = USState(#9d2555cf-d128-084a-ac49-b4a54c7e1ab5#, "Ohio", "OH", new(40.417287, -82.907123));
+  Oklahoma      = USState(#ff186451-48fa-7c41-ada5-c638867e9212#, "Oklahoma", "OK", new(35.007752, -97.092877));
+  Oregon        = USState(#36d4f2c8-2ad5-e04b-956c-79d70490aab3#, "Oregon", "OR", new(43.804133, -120.554201));
+  Pennsylvania  = USState(#44b733e7-1b65-9f44-8299-8d7331dd1293#, "Pennsylvania", "PA", new(41.203322, -77.194525));
+  RhodeIsland   = USState(#c696bb04-cd06-3a46-86b5-5fac741db12c#, "Rhode Island", "RI", new(41.580095, -71.477429));
+  SouthCarolina = USState(#5f96af6d-b692-0940-90ad-c62a2c056b2a#, "South Carolina", "SC", new(33.836081, -81.163725));
+  SouthDakota   = USState(#4daf1ffe-c451-ac41-af88-571702224f17#, "South Dakota", "SD", new(43.969515, -99.901813));
+  Tennessee     = USState(#64b57221-d85e-5940-aef6-784549f42927#, "Tennessee", "TN", new(35.517491, -86.580447));
+  Texas         = USState(#c978c817-eb0d-d547-a1a7-d28332ec6293#, "Texas", "TX", new(31.968599, -99.901813));
+  Utah          = USState(#9122ef9a-113f-3249-b1aa-82edc102f0e4#, "Utah", "UT", new(39.32098 , -111.093731));
+  Vermont       = USState(#02f61d91-7b4f-4b44-b796-9892af7e05cc#, "Vermont", "VT", new(44.558803, -72.577841));
+  Virginia      = USState(#61e7e067-6da6-c146-bb8d-556d21e4990e#, "Virginia", "VA", new(37.431573, -78.656894));
+  Washington    = USState(#4294c201-c238-7145-b22a-5bd04cef96bc#, "Washington", "WA", new(47.751074, -120.740139));
+  WestVirginia  = USState(#efbdcc19-0920-0c41-9784-e4cdfa879692#, "West Virginia", "WV", new(38.597626, -80.454903));
+  Wisconsin     = USState(#a4289807-7787-4443-861d-1f29bf6fa804#, "Wisconsin", "WI", new(43.78444 , -88.787868));
+  Wyoming       = USState(#ae475c07-c23d-1e4b-a6a2-4fb122f88104#, "Wyoming", "WY", new(43.075968, -107.290284));
+}
+
+readonly namespace<State> USTerritories {
+  DC                     = USState(#d403c672-3b01-d845-92d6-aa124a722af5#, "District of Colombia", "DC", new(38.905985, -77.033418));
+  AmericanSamoa          = USState(#b1eaaedc-0ee3-be48-9a9e-d851cef940b0#, "American Samoa", "AS");
+  Guam                   = USState(#0e06ad0f-6667-6941-b81a-5b80ffa22253#, "Guam", "GU");
+  NorthernMarianaIslands = USState(#f81bf323-63fb-e24c-bd76-88647b612e11#, "Northern Mariana Islands", "MP");
+  PuertoRico             = USState(#7363a78d-2315-7740-b016-53cf59c2ca92#, "Puerto Rico", "PR", new(18.220833, -66.590149));
+  USVirginIslands        = USState(#ba98b1af-1341-ef4f-bd67-e425e8066b04#, "U.S. Virgin Islands", "VI");
+  USMinorOutlyingIslands = USState(#a5c591b8-07c0-fe43-aa87-f862dbb76479#, "U.S. Minor Outlying Islands", "UM");
+  BakerIsland            = USState(#1db828f2-9944-fc49-a7ce-369ac810fb35#, "Baker Island", "UM-81");
+  HowlandIsland          = USState(#bb638cf4-b7ed-1b4f-ba74-246372d41b28#, "Howland Island", "UM-84");
+  JarvisIsland           = USState(#2fac276d-c28c-2b4b-b4ec-0c3aa60b0038#, "Jarvis Island", "UM-86");
+  JohnstonAtoll          = USState(#e3f2856c-b7f2-c241-a8b8-2fc31ad2deed#, "Johnston Atoll", "UM-67");
+  KingmanReef            = USState(#d494775c-838a-5547-a6e5-c783501a2fdb#, "Kingman Reef", "UM-89");
+  MidwayIslands          = USState(#0377526b-4011-4e44-b352-65d26078cbdb#, "Midway Islands", "UM-71");
+  NavassaIsland          = USState(#13eb3351-f16e-144d-a41f-606e0bcdc19e#, "Navassa Island", "UM-76");
+  PalmyraAtoll           = USState(#709343ae-80e5-0c48-92d3-efa31e20a662#, "Palmyra Atoll", "UM-95");
+  WakeIsland             = USState(#5ac58564-f796-374e-a7e9-997c460e3a5d#, "Wake Island", "UM-79");
+}
+
+//=========================================================================
+
+readonly namespace<City> Cities {
+  Passau          = new(#8cf68d2d-ba6d-4310-a9b6-de70fbe889d2#, "Passau") {Link to Countries.Germany};
+  Aberdeen        = new(#4dde4b49-3ee2-494b-bbef-d4e8cc4115ac#, "Aberdeen") {Link to Countries.Scotland};
+  Dundee          = new(#5d2fb432-31cb-4c8c-89a1-d7592903fae2#, "Dundee") {Link to Countries.Scotland};
+  Dunfermline     = new(#52d6b44c-0261-4a91-9042-037aecaf541a#, "Dunfermline") {Link to Countries.Scotland};
+  Edinburgh       = new(#1d846777-e78b-4fc2-ba6e-45f80c3c96b3#, "Edinburgh") {Link to Countries.Scotland};
+  Glasgow         = new(#fbe44220-affd-4db8-9ebd-aeb7ef693a66#, "Glasgow") {Link to Countries.Scotland};
+  Inverness       = new(#aec548fe-a53c-4f1e-891f-01cefbf69054#, "Inverness") {Link to Countries.Scotland};
+  Perth           = new(#d65896ff-b634-42b7-82e0-9948f9e8d364#, "Perth") {Link to Countries.Scotland};
+  Stirling        = new(#b5410a0b-65a7-4859-8df3-4c81c8576df6#, "Stirling") {Link to Countries.Scotland};
+  Juneau          = new(#e586590c-e466-45f4-afcc-a822a88a366e#, "Juneau") {Link to USStates.Alaska};
+  Hartford        = new(#a7597c1b-3ffd-4915-8c9a-c69f2f5bb78e#, "Hartford") {Link to USStates.Connecticut};
+  Dover           = new(#7f474063-1b66-4caf-bfd3-b14063a6f69d#, "Dover") {Link to USStates.Delaware};
+  AugustaMaine    = new(#5be42a67-43d7-4f63-8613-bc72e85eafcf#, "Augusta") {Link to USStates.Maine};
+  Jackson         = new(#d754ab71-deb2-40ea-99e9-b7382931b081#, "Jackson") {Link to USStates.Mississippi};
+  Helena          = new(#87301e65-21fe-4d04-b314-2be6c81f362d#, "Helena") {Link to USStates.Montana};
+  Concord         = new(#b99ad71b-3949-4413-b657-e23f8eb89c38#, "Concord") {Link to USStates.NewHampshire};
+  Bismarck        = new(#e40abc9c-9077-46e4-85d5-3f6dd2f491bb#, "Bismarck") {Link to USStates.NorthDakota};
+  Providence      = new(#12112149-328f-4ceb-89a1-366b10e6dada#, "Providence") {Link to USStates.RhodeIsland};
+  Columbia        = new(#461d2fa7-ca0e-4f15-bec9-3d7b055bb424#, "Columbia") {Link to USStates.SouthCarolina};
+  Montpelier      = new(#d95ff32a-07c2-456d-855a-ad387d4710aa#, "Montpelier") {Link to USStates.Vermont};
+  Charleston      = new(#45cd4487-8e3c-493d-b52e-a1b90d018d3d#, "Charleston") {Link to USStates.WestVirginia};
+  Cheyenne        = new(#df97eeb1-3594-4558-8642-30c9e6ba8bf6#, "Cheyenne") {Link to USStates.Wyoming};
+  Ahmedabad       = new(#ecf119e4-b92a-47ae-9242-7ee387c60560#, "Ahmedabad") {Link to Countries.India};
+  Albuquerque     = new(#b61c4669-5f9c-43ee-90c9-dab51e37d19d#, "Albuquerque") {Link to USStates.NewMexico};
+  Alexandria      = new(#740b4dd1-3d64-4529-8254-f7f109bcce88#, "Alexandria") {Link to Countries.Egypt};
+  Amarillo        = new(#fa9e5270-07c1-40c9-94c0-0bf949e70e93#, "Amarillo") {Link to USStates.Texas};
+  Amsterdam       = new(#72a144fe-5281-4775-b1dc-7b769703249b#, "Amsterdam") {Link to Countries.Netherlands};
+  Anaheim         = new(#9b0e64b0-22ce-40b2-9808-1122546a804c#, "Anaheim") {Link to USStates.California};
+  Anchorage       = new(#82329805-ef70-42c0-a096-df6f12ff0372#, "Anchorage") {Link to USStates.Arkansas};
+  Arlington       = new(#2348dc70-25dd-4b86-be7b-91b5bfc32a32#, "Arlington") {Link to USStates.Texas};
+  Atlanta         = new(#f570f0f2-7107-42de-90a2-6a7eb086f8dd#, "Atlanta") {Link to USStates.Georgia};
+  Augusta         = new(#28c48216-c1b9-4a3f-af41-5d3da05367eb#, "Augusta") {Link to USStates.Georgia};
+  Aurora          = new(#4c73c57e-44c2-4d23-8de0-e600f2cc673e#, "Aurora") {Link to USStates.Colorado};
+  Austin          = new(#121549f4-2fef-4da6-a1f7-3a25ba53e922#, "Austin") {Link to USStates.Texas};
+  Baghdad         = new(#90d841a0-b5c9-42aa-aac0-c39608c65d36#, "Baghdad") {Link to Countries.Iraq};
+  Bakersfield     = new(#ee5ddd43-6c49-40cf-8698-2ea72e1695f1#, "Bakersfield") {Link to USStates.California};
+  Baltimore       = new(#8d96f496-c79f-4e85-84de-949090283a19#, "Baltimore") {Link to USStates.Maryland};
+  Bangalore       = new(#04505cd8-6f9e-470a-93be-3f755ac645e5#, "Bangalore") {Link to Countries.India};
+  Bangkok         = new(#83e85078-6224-4ca6-838f-7c7869e7c5cd#, "Bangkok") {Link to Countries.Thailand};
+  Barcelona       = new(#dee44e32-64cc-46bc-a7fc-6880198e5f6f#, "Barcelona") {Link to Countries.Spain};
+  BatonRouge      = new(#29713c9d-7275-44c8-ba99-4a3b6156a558#, "Baton Rouge") {Link to USStates.Louisiana};
+  Beijing         = new(#42b913f5-5880-4474-89bb-461ff72651b8#, "Beijing") {Link to Countries.China};
+  BeloHorizonte   = new(#f2b8ef96-eb8a-47d9-aa3f-2b297147c0fd#, "Belo Horizonte") {Link to Countries.Brazil};
+  Berkeley        = new(#5d11612c-ce2e-45cd-bd20-dd4194904797#, "Berkeley") {Link to USStates.California};
+  Birmingham      = new(#9f7a3f3e-eb1f-483a-a1ca-0903a3bbc73c#, "Birmingham ") {Link to USStates.Alabama};
+  Bogotá          = new(#d69f6d23-6cae-4927-a143-41c370edcb25#, "Bogotá") {Link to Countries.Colombia};
+  Boise           = new(#1f8857cd-2da8-41c2-b370-6bc5b6e975d0#, "Boise") {Link to USStates.Idaho};
+  Boston          = new(#569e734e-dc4d-42e2-b00b-c473676f75da#, "Boston") {Link to USStates.Massachusetts};
+  BuenosAires     = new(#6466cf57-d3c0-4715-9c58-95b5693ad0b9#, "Buenos Aires") {Link to Countries.Argentina};
+  Buffalo         = new(#e4e733d5-879e-498f-ab43-dcbee33f0d3f#, "Buffalo") {Link to USStates.NewYork};
+  Cairo           = new(#88e3ed59-8d5b-42a1-a9ba-d455362f27f2#, "Cairo") {Link to Countries.Egypt};
+  Cambridge       = new(#6e16a406-418c-4d1a-bb0b-04b3697d51bf#, "Cambridge") {Link to Countries.England};
+  CambridgeMA     = new(#f7a83fd1-cfee-48fb-ba35-6e1b3b6ef062#, "Cambridge") {Link to USStates.Massachusetts};
+  CapeCoral       = new(#b7656b49-1614-4098-84f3-4033dde7ad6d#, "Cape Coral") {Link to USStates.Florida};
+  Chandler        = new(#29502b4a-bdb3-437d-bbc9-367fa7133288#, "Chandler") {Link to USStates.Arizona};
+  Charlotte       = new(#abcac206-584d-49eb-a14a-6b076a42612d#, "Charlotte") {Link to USStates.NorthCarolina};
+  Charlottesville = new(#a7ef7900-4886-4c56-ab23-b1b0ccb13f84#, "Charlottesville") {Link to USStates.Virginia};
+  Chengdu         = new(#e04f4613-9ebb-47ab-87c4-93ea6e31b538#, "Chengdu") {Link to Countries.China};
+  Chennai         = new(#10aa90bf-1861-4e54-80e5-2aa386367125#, "Chennai") {Link to Countries.India};
+  Chesapeake      = new(#1b19396d-e027-47fc-94b7-d234900b8001#, "Chesapeake") {Link to USStates.Virginia};
+  Chicago         = new(#c103e0fc-ffc0-48da-b627-c1458b2d2573#, "Chicago") {Link to USStates.Illinois};
+  Chongqing       = new(#a4a89d1f-82c6-4ca4-9927-af1f319ccaf0#, "Chongqing") {Link to Countries.China};
+  ChulaVista      = new(#861ca7ca-6650-4ce8-b368-f5723f986285#, "Chula Vista") {Link to USStates.California};
+  Cincinnati      = new(#03cf7a9b-1b0d-4e50-8cfc-337a6c62ca5c#, "Cincinnati") {Link to USStates.Ohio};
+  Cleveland       = new(#81cefb7e-b676-4bc8-9d66-d0e61701de26#, "Cleveland") {Link to USStates.Ohio};
+  ColoradoSpr     = new(#8b52c0a0-2507-4f53-bdb8-1fcb4e43ddb0#, "Colorado Springs") {Link to USStates.Colorado};
+  Columbus        = new(#249892a9-0875-4cce-9121-ccddc8390135#, "Columbus") {Link to USStates.Ohio};
+  ColumbusGA      = new(#74d980fe-63d1-41ec-951b-37878d997aa4#, "Columbus") {Link to USStates.Georgia};
+  CorpusChristi   = new(#1d01def3-14ed-47dc-abf3-50bebfb7c14e#, "Corpus Christi") {Link to USStates.Texas};
+  Dalian          = new(#a773e95f-77da-4cd3-82b3-86e8bc995379#, "Dalian") {Link to Countries.China};
+  Dallas          = new(#61b5b100-664c-4b67-8422-bcf99a887b63#, "Dallas") {Link to USStates.Texas};
+  DarEsSalaam     = new(#0b54097b-7890-4638-b80d-0656f45583d6#, "Dar es Salaam") {Link to Countries.Tanzania};
+  Delhi           = new(#2b42d38f-dd5a-4e48-a8f0-a7fbe34439e0#, "Delhi") {Link to Countries.India};
+  Denver          = new(#2d87570b-0450-4de2-867b-27df0f300344#, "Denver")  {Link to USStates.Colorado};
+  DesMoines       = new(#107b26ab-d67c-4c1c-b27c-c7fbc30bba63#, "Des Moines") {Link to USStates.Iowa};
+  Detroit         = new(#40dc41d5-6217-4c43-a957-9ec8eeba6da6#, "Detroit") {Link to USStates.Michigan};
+  Dhaka           = new(#fd20d1d0-6e63-47ad-a86a-4c25923c0010#, "Dhaka") {Link to Countries.Bangladesh};
+  Dongguan        = new(#295e8d7b-8b9f-49e7-879c-764ab40ae7d9#, "Dongguan") {Link to Countries.China};
+  Durham          = new(#af0f11e2-85ae-433d-b276-ac04be262b87#, "Durham") {Link to USStates.NorthCarolina};
+  ElPaso          = new(#770debed-aeef-4618-9cd3-9771bc89e1b1#, "El Paso")  {Link to USStates.Texas};
+  Fayetteville    = new(#dc249a6a-ad0b-47bc-8eeb-e0e8104ad827#, "Fayetteville") {Link to USStates.NorthCarolina};
+  Fontana         = new(#d8a9a06c-8ef1-4591-aaff-afeaf57b61ae#, "Fontana") {Link to USStates.California};
+  FortWayne       = new(#fb6ccb0d-3869-44d0-bb7b-6a4f21d2383c#, "Fort Wayne") {Link to USStates.Indiana};
+  FortWorth       = new(#22cd38d5-63a8-47be-b510-45aa4d3919ff#, "Fort Worth") {Link to USStates.Texas};
+  Foshan          = new(#98adef86-4d2b-45f9-adb6-c1c800d6f758#, "Foshan") {Link to Countries.China};
+  Fremont         = new(#baccf92c-a6b6-4458-876e-cf3a346f396e#, "Fremont") {Link to USStates.California};
+  Fresno          = new(#ede3afbc-e418-4087-baf6-6ad698dfb222#, "Fresno") {Link to USStates.California};
+  Frisco          = new(#0a30bf47-400e-4cf6-b6a8-f682a91d4f84#, "Frisco") {Link to USStates.Texas};
+  Fukuoka         = new(#8cc06ca4-f2da-4e8b-b9c4-c07cd4f8c833#, "Fukuoka") {Link to Countries.Japan};
+  Garland         = new(#b632f2ba-12f9-4155-81f4-c41773f075f1#, "Garland") {Link to USStates.Texas};
+  Gilbert         = new(#f45b65bb-564d-4bb0-89d9-79d84384e254#, "Gilbert") {Link to USStates.Arizona};
+  GigHarbor       = new(#05484dff-bfba-4bea-89f1-ddfe0eaa8e9e#, "Gig Harbor") {Link to USStates.Washington};
+  Glendale        = new(#59c38619-0774-42da-aa17-364e6c6039e6#, "Glendale") {Link to USStates.Arizona};
+  GrandPrairie    = new(#492bbf8a-8bbe-457b-9179-4232ef1d9201#, "Grand Prairie") {Link to USStates.Texas};
+  Greensboro      = new(#5a61a459-3287-4e80-a6b2-07b0cc3d4712#, "Greensboro") {Link to USStates.NorthCarolina};
+  Guadalajara     = new(#98b2defa-819a-4f69-bbfa-16185083e76c#, "Guadalajara") {Link to Countries.Mexico};
+  Guangzhou       = new(#52a83188-91b8-49ce-b986-3ac617f71a84#, "Guangzhou") {Link to Countries.China};
+  Hangzhou        = new(#3c0804c9-9074-4bd8-91d9-b7d420830819#, "Hangzhou") {Link to Countries.China};
+  Harbin          = new(#e0c04497-2d8e-4d7a-9a1f-9319fdd0329e#, "Harbin") {Link to Countries.China};
+  Henderson       = new(#cae2e56f-cd1e-4066-8802-b949f8c67c31#, "Henderson") {Link to USStates.Nevada};
+  Hialeah         = new(#0524fe43-120e-43e7-b18a-d4a463b8b0e9#, "Hialeah") {Link to USStates.Florida};
+  HoChiMinhCity   = new(#9fed2d51-858c-4a4f-9f3e-3958549fed16#, "Ho Chi Minh City") {Link to Countries.Vietnam};
+  HongKong        = new(#1f2cf4d5-cf91-4c97-b7c5-f7e30029eed2#, "Hong Kong") {Link to Countries.HongKong};
+  Honolulu        = new(#0098096f-0ef3-4bcb-88f3-f5830bf2a1bc#, "Honolulu") {Link to USStates.Hawaii};
+  Houston         = new(#51bbdea3-da24-4275-b984-47e7b78a83c0#, "Houston") {Link to USStates.Texas};
+  Huntsville      = new(#bede6dbd-3980-463c-ad45-22e9e8de733d#, "Huntsville") {Link to USStates.Alabama};
+  Hyderabad       = new(#1d3c69a9-7e0a-492e-a173-6c916ae97d6b#, "Hyderabad") {Link to Countries.India};
+  Indianapolis    = new(#9a1c13fe-5a51-4a5e-be07-818a0f948590#, "Indianapolis") {Link to USStates.Indiana};
+  Irvine          = new(#5016e4e8-ce94-4a4b-b1c0-6fbe4d9049a5#, "Irvine") {Link to USStates.California};
+  Irving          = new(#ee2cc8ec-a5e8-4b01-9a30-4e1436a8c75f#, "Irving") {Link to USStates.Texas};
+  Istanbul        = new(#856c1ac1-1d43-4df3-95f3-f53dbb09df01#, "Istanbul") {Link to Countries.Turkey};
+  Jacksonville    = new(#5c12a78c-21f6-4280-b665-e760941139b6#, "Jacksonville") {Link to USStates.Florida};
+  Jakarta         = new(#ffced7b6-9745-4728-abd7-aac5ed830d3b#, "Jakarta") {Link to Countries.Indonesia};
+  Jena            = new(#648fecca-7089-4ebb-8f6c-2c4b2ccb79ee#, "Jena") {Link to Countries.Germany};
+  JerseyCity      = new(#bbce45cf-43ae-4c58-88ca-a201f869b66c#, "Jersey City") {Link to USStates.NewJersey};
+  Jinan           = new(#bd3cdf79-645e-439c-a90f-3260b370630e#, "Jinan") {Link to Countries.China};
+  Johannesburg    = new(#bc221ef8-fd0c-4b6f-a883-d42215877a2d#, "Johannesburg") {Link to Countries.SouthAfrica};
+  KansasCity      = new(#cf98f4d7-3f37-4f37-a9b5-d16984ab0711#, "Kansas City") {Link to USStates.Missouri};
+  Karachi         = new(#cd3453b1-35ee-4ac9-9f5d-f04cfe775f3d#, "Karachi") {Link to Countries.Pakistan};
+  Khartoum        = new(#b9806d76-4b4c-40b7-92bd-3401e2c4709b#, "Khartoum") {Link to Countries.Sudan};
+  Kinshasa        = new(#24ddd74c-92cd-4f9d-9d69-075523676190#, "Kinshasa") {Link to Countries.DRC};
+  Knoxville       = new(#6911690a-8d5f-4596-a30d-bb1343b61db2#, "Knoxville") {Link to USStates.Tennessee};
+  Kolkata         = new(#98df62b3-eaf3-4384-b15a-44bf3fb66c8b#, "Kolkata") {Link to Countries.India};
+  KualaLumpur     = new(#ddefa54a-06ba-4caa-b5c4-f12776d87038#, "Kuala Lumpur") {Link to Countries.Malaysia};
+  Lagos           = new(#438ea9a1-a165-4024-a44e-4ae810617da8#, "Lagos") {Link to Countries.Nigeria};
+  Lahore          = new(#af1e7b1c-bfa6-4750-a694-9ff710f31f6c#, "Lahore") {Link to Countries.Pakistan};
+  Laredo          = new(#42e4e217-4ccc-417a-9457-fd07a5340959#, "Laredo ") {Link to USStates.Texas};
+  LasVegas        = new(#c6519790-6df2-4076-a847-fb1ec33254bd#, "Las Vegas") {Link to USStates.Nevada};
+  Lexington       = new(#99fd71bb-29ac-47aa-8686-014ae16348bc#, "Lexington") {Link to USStates.Kentucky};
+  Lima            = new(#3bce0a7d-2c1d-43c7-8acc-9d88b220df60#, "Lima") {Link to Countries.Peru};
+  Lincoln         = new(#9d094e74-f6a5-4b7e-a0b7-3b0bcadb90b8#, "Lincoln") {Link to USStates.Nebraska};
+  LittleRock      = new(#73514fe8-5c49-4945-87f4-0fd75288e039#, "Little Rock") {Link to USStates.Arkansas};
+  London          = new(#6ded51dd-85c5-45ac-bda7-311a41544614#, "London") {Link to Countries.England};
+  LongBeach       = new(#5d0f1996-2664-446b-9203-e83fbbf15fb0#, "Long Beach") {Link to USStates.California};
+  LosAngeles      = new(#39e442f1-f645-4c3d-a262-d5c880e1206f#, "Los Angeles") {Link to USStates.California};
+  Louisville      = new(#3ad884d2-3692-41e5-b955-0b536df63ddc#, "Louisville") {Link to USStates.Kentucky};
+  Luanda          = new(#571d45ee-9f0b-4c07-82f1-d632046559f8#, "Luanda") {Link to Countries.Angola};
+  Lubbock         = new(#335400ee-0293-483b-a5ed-8df74f5601fb#, "Lubbock") {Link to USStates.Texas};
+  Madison         = new(#ade9adbe-217a-4fa0-8f15-5282a81db127#, "Madison") {Link to USStates.Wisconsin};
+  Madrid          = new(#0ff1d160-9ff8-4a2d-899a-1e9e99f84e3b#, "Madrid") {Link to Countries.Spain};
+  Malden          = new(#060a39c9-bae2-4ed1-9fe2-0261b33c182f#, "Malden") {Link to USStates.Massachusetts};
+  Manila          = new(#0ddce10f-7f8b-4fa7-b026-3f0b65148667#, "Manila") {Link to Countries.Philippines};
+  McKinney        = new(#c6b9c0e0-da17-4ce7-8787-6c3bb9500e7d#, "McKinney") {Link to USStates.Texas};
+  Memphis         = new(#6a006803-8a93-4ac4-9280-2e30c1132e71#, "Memphis") {Link to USStates.Tennessee};
+  Mesa            = new(#b93309a1-bd6b-42b9-b7fd-5142015c0b54#, "Mesa") {Link to USStates.Arizona};
+  MexicoCity      = new(#82d8d232-c396-41db-8a62-180de6d8a4c1#, "Mexico City") {Link to Countries.Mexico};
+  Miami           = new(#c9b489ea-3fc9-43a9-aece-429bc3cfcdd4#, "Miami") {Link to USStates.Florida};
+  Milwaukee       = new(#2f413fd7-a545-4892-983e-abae8896811d#, "Milwaukee") {Link to USStates.Wisconsin};
+  Minneapolis     = new(#26f0480b-e7bc-4e36-822b-963f26c1d45c#, "Minneapolis") {Link to USStates.Minnesota};
+  Modesto         = new(#7c90d25d-6ff4-41e3-a6b5-302cfc5aa990#, "Modesto") {Link to USStates.California};
+  MorenoValley    = new(#9d35210d-c7c2-4e5a-bdbf-3b9dd9b161a2#, "Moreno Valley") {Link to USStates.California};
+  Moscow          = new(#68314592-9638-4504-a911-ffba40029f8b#, "Moscow") {Link to Countries.Russia};
+  Mumbai          = new(#4a9bba15-4d69-46f9-a9d0-9086ff4bb28e#, "Mumbai") {Link to Countries.India};
+  Munich          = new(#25d07f87-9ab7-4ca6-aa60-0a46b642f73a#, "Munich") {Link to Countries.Germany};
+  Nagoya          = new(#34dd03ae-f90c-4b5e-a925-ca15a6094bdc#, "Nagoya") {Link to Countries.Japan};
+  Nancy           = new(#05b9afc0-cb17-4027-8ec9-5885e9a7f888#, "Nancy") {Link to Countries.France};
+  Nanjing         = new(#9dd55a06-6e95-4468-90b4-be91de386cc9#, "Nanjing") {Link to Countries.China};
+  Nashville       = new(#162f5dff-3d06-48a2-9ea6-e1bc496522b4#, "Nashville") { Link to USStates.Tennessee};
+  Newark          = new(#9211fb95-2fb7-426c-99df-027b12372840#, "Newark") {Link to USStates.NewJersey};
+  NewOrleans      = new(#2800061a-1dea-4805-8cb3-9e9685f90c14#, "New Orleans") {Link to USStates.Louisiana};
+  NewYork         = new(#a9577cf6-ac5b-4c75-b861-140598e1e3ff#, "New York") {Link to USStates.NewYork};
+  Norfolk         = new(#b2d3015a-26aa-4428-96eb-3da4273b64d7#, "Norfolk") {Link to USStates.Virginia};
+  NorthLasVegas   = new(#081d8522-af15-4187-bd9a-f2353ae668f9#, "North Las Vegas") {Link to USStates.Nevada};
+  Oakland         = new(#4281a8bb-b7dd-4ba5-ac56-90d0b8144ac5#, "Oakland") {Link to USStates.California};
+  OklahomaCity    = new(#df14b542-6ec3-4ef4-932e-27bbac714789#, "Oklahoma City")  {Link to USStates.Oklahoma};
+  Omaha           = new(#2816b694-7881-4590-a1d1-c10e0fa642a8#, "Omaha") {Link to USStates.Nebraska};
+  Orlando         = new(#3d288cc8-6277-473c-9e03-2c36a83ee640#, "Orlando") {Link to USStates.Florida};
+  Osaka           = new(#e52a2a09-4656-4c06-90f1-24d9bf9ba425#, "Osaka") {Link to Countries.Japan};
+  OverlandPark    = new(#b8496eb1-147c-470a-b957-f12b810fc897#, "Overland Park") {Link to USStates.Kansas};
+  Oxford          = new(#d7f4133c-7a64-47d2-9cda-ba52d596e1f8#, "Oxford") {Link to Countries.England};
+  Oxnard          = new(#93026469-979b-4a49-a523-a49472423165#, "Oxnard") {Link to USStates.California};
+  PaloAlto        = new(#d71fb515-53e1-44c9-a239-24b9e73cf6b9#, "Palo Alto") {Link to USStates.California};
+  Paris           = new(#bb7307c9-0329-47dc-a976-07d5e9beb55b#, "Paris") {Link to Countries.France};
+  Peoria          = new(#a012afbf-8777-4767-b3e8-78cfdc7cb12b#, "Peoria") {Link to USStates.Arizona};
+  Philadelphia    = new(#d0ba468c-663c-4b5e-ad48-891a7f877367#, "Philadelphia") {Link to USStates.Pennsylvania};
+  Phoenix         = new(#98517f94-d2f1-442f-83df-a824cdeb823b#, "Phoenix") {Link to USStates.Arizona};
+  Pittsburgh      = new(#8cac0b57-d395-4804-b3dd-a2ad0f40c80f#, "Pittsburgh") {Link to USStates.Pennsylvania};
+  Plano           = new(#da539210-807c-416a-9854-b2d167707b3f#, "Plano") {Link to USStates.Texas};
+  Portland        = new(#ae6f3b10-5c66-4470-8356-f9f5b8dde2a0#, "Portland") {Link to USStates.Oregon};
+  PortStLucie     = new(#19c3487e-4c69-49a6-ae7c-da07cd36c1c8#, "Port St. Lucie") {Link to USStates.Florida};
+  Prague          = new(#382cf1da-d990-4bb3-99a7-d616ed90f061#, "Prague") {Link to Countries.CzechRepublic};
+  Pune            = new(#acd471fe-7090-41cb-b2dc-2e0b02a8a96a#, "Pune") {Link to Countries.India};
+  Qingdao         = new(#1dc10ca0-b91a-4c4c-a4f4-1a04d8ce5cf2#, "Qingdao") {Link to Countries.China};
+  Raleigh         = new(#78f7bc3c-fa5c-495e-9079-d06270a808cc#, "Raleigh") {Link to USStates.NorthCarolina};
+  Reno            = new(#38412cee-c746-407a-8bf1-024b9cdd23d9#, "Reno") {Link to USStates.Nevada};
+  Richmond        = new(#6e6c2e31-cf8c-46f0-86d7-e72ef8304e4b#, "Richmond") {Link to USStates.Virginia};
+  RioDeJaneiro    = new(#1590ce94-77ed-4951-8c98-c5f041ceb43a#, "Rio de Janeiro") {Link to Countries.Brazil};
+  Riverside       = new(#208ae1c3-ad87-47a3-8e10-d382350d4ce4#, "Riverside") {Link to USStates.California};
+  Riyadh          = new(#ca6ec320-ebca-4714-8ae9-91def5cce4f3#, "Riyadh") {Link to Countries.SaudiArabia};
+  Rochester       = new(#b26e35ba-0de0-4744-98e3-ad23fec95da1#, "Rochester") {Link to USStates.NewYork};
+  Sacramento      = new(#12de3495-df67-4e18-aa5d-4fb10c6cbd2c#, "Sacramento") {Link to USStates.California};
+  SaintPaul       = new(#bc2adf61-ffc2-47df-9237-57b3366e1467#, "Saint Paul") {Link to USStates.Minnesota};
+  SaltLakeCity    = new(#cdaa10d6-f8c1-4a33-9dea-12f58c180fa8#, "Salt Lake City") {Link to USStates.Utah};
+  SanAntonio      = new(#87d10ba8-2ac9-4cc6-9bde-a231f7cca542#, "San Antonio") {Link to USStates.Texas};
+  SanBernardino   = new(#06919524-faaa-4c1a-823d-b6e59bb4893e#, "San Bernardino") {Link to USStates.California};
+  SanDiego        = new(#4bae5f2b-cd92-4aad-815f-de5257d5eee0#, "San Diego") {Link to USStates.California};
+  SanFrancisco    = new(#b2c08b58-91ec-4289-9243-9ff17000788a#, "San Francisco") {Link to USStates.California};
+  SanJose         = new(#b04155c6-70e0-4798-89b3-fad19670e644#, "San Jose") {Link to USStates.California};
+  SantaAna        = new(#0fa01e21-8374-4e89-9f73-1bc17c2de849#, "Santa Ana") {Link to USStates.California};
+  SantaClarita    = new(#156ad03c-5a5d-4ee4-a55f-1f24cdace473#, "Santa Clarita") {Link to USStates.California};
+  Santiago        = new(#e56c83c4-c0a0-4d15-a698-440a420c2e53#, "Santiago") {Link to Countries.Chile};
+  SaoPaulo        = new(#45e06f8b-949a-4050-97f4-09cd9348019c#, "São Paulo") {Link to Countries.Brazil};
+  Scottsdale      = new(#da9df9d2-8e28-4ecb-bdb5-63675b89a6e9#, "Scottsdale") {Link to USStates.Arizona};
+  Seattle         = new(#13830ee3-286a-4452-a52a-af7b31698d9d#, "Seattle") {Link to USStates.Washington};
+  Seoul           = new(#3a800c1c-e49d-452d-b1e3-babaa3cbd78c#, "Seoul") {Link to Countries.SouthKorea};
+  Shanghai        = new(#b93e45e3-98b6-407a-81dc-0eb5f52f4236#, "Shanghai") {Link to Countries.China};
+  Shenyang        = new(#8dea7fb5-1585-4976-b6d2-e73d1c9f0cc6#, "Shenyang") {Link to Countries.China};
+  Shenzhen        = new(#9d16633b-12a7-43df-8af7-76d3636fbee9#, "Shenzhen") {Link to Countries.China};
+  Singapore       = new(#42d2404e-c93f-4b26-af9c-ef970e18fac3#, "Singapore") {Link to Countries.Singapore};
+  SiouxFalls      = new(#c42381f3-f753-4d5f-a4a7-580791ae98f9#, "Sioux Falls") {Link to USStates.SouthDakota};
+  Spokane         = new(#badc6cf6-4294-4544-adad-ce8b18e9eeab#, "Spokane") {Link to USStates.Washington};
+  StLouis         = new(#1e396cad-436f-43e9-8e5d-98503aad8b2b#, "St. Louis[") {Link to USStates.Missouri};
+  Stockholm       = new(#0e620eba-d2ae-437d-b0fb-52b41bb04644#, "Stockholm") {Link to Countries.Sweden};
+  Stockton        = new(#e140a511-f8dd-4147-8447-5233395bc01b#, "Stockton") {Link to USStates.California};
+  Stroudsburg     = new(#a4335259-e592-4f3c-96ba-5571d05a3646#, "Stroudsburg") {Link to USStates.Pennsylvania};
+  StPetersburg    = new(#4145c71e-2457-46b6-a5e2-4ab78ba5c2b6#, "Saint Petersburg") {Link to Countries.Russia};
+  Surat           = new(#1292909d-4bf3-47d7-9521-7b4ca5824ffa#, "Surat") {Link to Countries.India};
+  Suzhou          = new(#57278a92-fc6c-41ef-8361-8ce855d74050#, "Suzhou") {Link to Countries.China};
+  Tacoma          = new(#dc22d393-b49b-4c7a-a85f-ba4fa65877ec#, "Tacoma") {Link to USStates.Washington};
+  Tallahassee     = new(#5c4ffc0b-b481-4b96-832f-4aa55f674c2d#, "Tallahassee") {Link to USStates.Florida};
+  Tampa           = new(#c5d353c9-42e1-4028-83bf-2eee24fa3691#, "Tampa") {Link to USStates.Florida};
+  Tehran          = new(#6cb40e72-25d8-46fb-b2fd-02baa6e9adc0#, "Tehran") {Link to Countries.Iran};
+  Tianjin         = new(#38f31057-e1e7-45b7-93ca-9c6481c79067#, "Tianjin") {Link to Countries.China};
+  Tokyo           = new(#724d8cdc-74ee-4f92-835f-27a720a1fbf9#, "Tokyo") {Link to Countries.Japan};
+  Toledo          = new(#eb323679-80e4-4e15-8d78-5da546f4c1e6#, "Toledo") {Link to USStates.Ohio};
+  Toronto         = new(#c767037e-84d3-447d-bb60-af11625f16d6#, "Toronto") {Link to Countries.Canada};
+  Tucson          = new(#a9856126-59e9-4e19-90ed-607fbddf739c#, "Tucson") {Link to USStates.Arizona};
+  Tulsa           = new(#a420bc93-57e5-4f9f-8b4a-52a501d09083#, "Tulsa") {Link to USStates.Oklahoma};
+  UniversityPark  = new(#362c8524-bcca-4088-ac63-fbfc3befb796#, "University Park") {Link to USStates.Pennsylvania};
+  Vienna          = new(#7fb0ae62-6308-4bc0-ac18-c1cd8a5cd968#, "Vienna") {Link to Countries.Austria};
+  VirginiaBeach   = new(#7d3397c3-d42c-4116-87f8-477864740989#, "Virginia Beach") {Link to USStates.Virginia};
+  WashingtonDC    = new(#5bead749-487e-40ae-8490-9a3174648557#, "Washington") {Link to USTerritories.DC};
+  Wichita         = new(#b790e4b5-9bb9-48a2-b538-df16cdf17b2a#, "Wichita") {Link to USStates.Kansas};
+  WinstonSalem    = new(#4d40b85b-8f2a-415a-bf9d-1b9bf24e62a9#, "Winston-Salem") {Link to USStates.NorthCarolina};
+  Worcester       = new(#742bd2eb-fc91-419d-8e73-83b72d642204#, "Worcester") {Link to USStates.Massachusetts};
+  Wuhan           = new(#8a4970e7-e24e-4a16-bc4a-f198cbf46e2a#, "Wuhan") {Link to Countries.China};
+  Xian            = new(#9eda1274-0d37-4ae9-ad3d-b9cebb761c18#, "Xi'an") {Link to Countries.China};
+  Yangon          = new(#ac95e7b5-afc2-4769-adc2-931ec039524a#, "Yangon") {Link to Countries.Myanmar};
+  Yonkers         = new(#e6b6115f-7485-473e-a53b-c837416b7e7b#, "Yonkers") {Link to USStates.NewYork};
+  Montevideo      = new(#0a88e55e-624f-421a-a7d6-c381bce836e3#, "Montevideo") {Link to Countries.Uruguay};
+}
+
+//=========================================================================
+
+readonly namespace<Organization> Organizations {
+  AcademicPress   = new(#1c5fc589-4924-4ffa-9b8d-430c03fbb00a#, "Academic Press");
+
+  AlmqvistWiksell = new(#d0eabc50-971c-427d-94de-db800043633e#, "Almqvist & Wiksell") {
+    Link to Cities.Stockholm;
+  };
+
+  AperioPress = new(#8884b5f7-eb60-41ee-9f45-f087ca45ca24#, "Aperio Press") {
+    Link to Cities.Charlottesville;
+  };
+
+  CambridgePress = new(#57248374-0738-4f95-b432-b9e24de0843c#, "Cambridge University Press") {
+    Link to Cities.Cambridge;
+  };
+
+  NytrilLLC = new(#d61d8a42-0321-444c-bbf7-5d8363ff0269#, "Nytril LLC") {
+    StreetAddress("2904 Horsehead Bay Dr. NW", Cities.GigHarbor, "98335");
+  };
+
+  Nature          = new(#f6b2ff41-58c5-466d-908d-b87a42a05cb4#, "Nature");
+  PlosOne         = new(#95ae8b30-d1dd-4bac-a443-755163e06624#, "PLoS ONE");
+  PNAS            = new(#2be60534-bb9c-45d7-86df-1856b38160fa#, "Proceedings of the National Academy of Sciences, U.S.A.", "PNAS");
+  Science         = new(#78c1a35e-b3e7-447f-985c-e24c76c5e962#, "Science");
+  SpringerVerlag  = new(#0bfff7d9-371f-484b-b9ab-fb2a63123a1e#, "Springer Verlag");
+  Elsevier        = new(#41883d93-b1b1-4c2b-a8d1-de4462846b99#, "Elsevier") {Link to Cities.NewYork};
+
+  OxfordPress = new(#5377016e-03b6-4528-96f4-f0275a634c6e#, "Oxford University Press", "OUP") {
+    Link to Cities.Oxford;
+  };
+
+  JohnBenjamins = new(#da401b81-8a02-4683-b560-c95554ed878e#, "John Benjamins") {
+    Link to Cities.Amsterdam;
+  };
+
+  Holt = new(#d0f83f37-415b-4e69-912c-d8c97ff69163#, "H. Holt and Company") {
+    Link to Cities.NewYork;
+  };
+
+  PrenticeHall = new(#e8e6822e-63d8-4f70-9172-ac0866627ad7#, "Prentice-Hall") {
+    Link to new City(#b62a56e8-315c-4f11-9945-f8d07035992c#, "Englewood Cliffs");
+  };
+
+  Routledge = new(#3dd59ea1-c539-4c4b-b4ae-6b914cdab837#, "Routledge") {
+    Link to Cities.London;
+  };
+
+  Wikipedia = new(#91ad9fc1-65a7-4d76-9411-19d5d2e0c1fe#, "Wikipedia");
+
+  Wiley = new(#0046ff7e-a236-4a37-95cd-bd54b653829f#, "Wiley");
+  WileyBlackwell = new(#561e710a-466d-45ee-a57f-4d0a94eaa70f#, "Wiley-Blackwell") {
+    Link to Cities.Malden;
+  };
+
+}
+
+//======================================================================
+
+readonly namespace<LegalLicense> Licenses {
+  WikimediaCommons = new(#f4b3c310-781d-4791-a6ac-9123e939fed4#, "Wikimedia Commons", "A work is in the public domain in its country of origin and other countries and areas where the copyright term is the author's life plus 100 years or fewer. ") {
+    Link to new URL("https://commons.wikimedia.org/wiki/Commons");
+  };
+
+  CCBy4 = new(#b02e136d-afc3-4a01-911f-fa4bd13b3afa#, "Creative Commons By 4.0", "This license enables reusers to distribute, remix, adapt, and build upon the material in any medium or format, so long as attribution is given to the creator. The license allows for commercial use. Credit must be given to the creator. ") {
+    Link to new URL("https://creativecommons.org/licenses/by/4.0");
+  };
+
+  CCBySA4 = new(#b1cde531-6fc4-4970-84e7-18ac5417a734#, "Creative Commons By-SA 4.0", "This license enables reusers to distribute, remix, adapt, and build upon the material in any medium or format, so long as attribution is given to the creator. The license allows for commercial use. If you remix, adapt, or build upon the material, you must license the modified material under identical terms. Credit must be given to the creator. Adaptations must be shared under the same terms. ") {
+    Link to new URL("https://creativecommons.org/licenses/by-sa/4.0");
+  };
+
+  CCByNC4 = new(#9bac9fca-27fd-4c0c-82fa-ca4f045214a9#, "Creative Commons By-NC 4.0", "This license enables reusers to distribute, remix, adapt, and build upon the material in any medium or format for noncommercial purposes only, and only so long as attribution is given to the creator. Credit must be given to the creator. Only noncommercial uses of the work are permitted. ") {
+    Link to new URL("https://creativecommons.org/licenses/by-nc/4.0");
+  };
+
+  CCByNCSA4 = new(#0d94899e-8b38-45ce-b1fe-8605bf944d84#, "Creative Commons By-NC-SA 4.0", "This license enables reusers to distribute, remix, adapt, and build upon the material in any medium or format for noncommercial purposes only, and only so long as attribution is given to the creator. If you remix, adapt, or build upon the material, you must license the modified material under identical terms. Credit must be given to the creator. Only noncommercial uses of the work are permitted. Adaptations must be shared under the same terms. ") {
+    Link to new URL("https://creativecommons.org/licenses/by-nc-sa/4.0");
+  };
+
+  CCByND = new(#457bddc9-b902-462c-9d85-4427e07c8e8e#, "Creative Commons By-ND 4.0", "This license enables reusers to distribute, remix, adapt, and build upon the material in any medium or format for noncommercial purposes only, and only so long as attribution is given to the creator. If you remix, adapt, or build upon the material, you must license the modified material under identical terms. Credit must be given to the creator. Only noncommercial uses of the work are permitted. Adaptations must be shared under the same terms. ") {
+    Link to new URL("https://creativecommons.org/licenses/by-nd/4.0");
+  };
+
+  CCByNCND = new(#9e0540e6-23ce-430f-8d07-fadfaddb907a#, "Creative Commons By-NC-ND 4.0", "This license enables reusers to copy and distribute the material in any medium or format in unadapted form only, for noncommercial purposes only, and only so long as attribution is given to the creator. Credit must be given to the creator. Only noncommercial uses of the work are permitted. No derivatives or adaptations of the work are permitted. ") {
+    Link to new URL("https://creativecommons.org/licenses/by-nc-nd/4.0");
+  };
+
+  MIT = new(#882c55c4-b9ad-40f4-b2d5-2ae589351626#, "MIT", "This license enables reusers to copy and distribute the material provided that a specific notice is displayed. ") {
+    Link to new URL("https://opensource.org/license/mit");
+  };
+}
+
+//======================================================================
+

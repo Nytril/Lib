@@ -1,0 +1,386 @@
+using Format;
+
+include "DesignPalette";
+include "TechDesignToolbar";
+
+// ============================
+// Global Styles
+// ============================
+B = Span { Bold };
+I = Span { Italic };
+U = Span { Underline };
+// ==== END
+
+class ActionObj {
+  var string  Name;
+  var Actions Type;
+  var string  Link;
+
+  Constructor(Actions type, string name, string link){
+    Name = name;
+    Type = type;
+    Link = link;
+
+    if (type == Actions.ToLink)
+      Link = new URL(link);
+  }
+}
+
+//=============================================================================
+
+class ContentTipAction: Action {
+  readonly var Content      Content;
+  readonly var TechDesign   Design;
+
+  Constructor(Content content, TechDesign design) {
+    super.Constructor(ToAnchor, content.Name);
+    Content  = content;
+    Design   = design;
+  }
+
+  override GetLayoutTip = Design.GetContentTip(Content);
+}
+
+//=============================================================================
+
+class TechDesign {
+  var string          Name;
+  var Thickness       Margins;
+  var int             SectionIndentation,
+                      SectionIndex;
+  var DesignPalette   Palette;
+
+  Constructor(string name, Thickness margins) {
+    Name                = name;
+    Margins             = margins;
+    SectionIndentation  = 42;
+  }
+
+  private AddBody(Content content) {
+    return content.GetLayout(this);
+  }
+
+  virtual AddMainTitle(AuthoredContent content) = MainTitle {
+    content.Title
+  };
+
+  virtual GetContentTip(Content content) = Frame(6") {
+    content.GetCaption(this) ?? content.Title;
+    Paragraph;
+    AddBody(content);
+  };
+
+  //FullWidth = ExtentWidth;
+  //HalfWidth = ExtentWidth * 0.5;
+  //TexOutput = false;
+  //AddFigure(Content content, FigureOptions options, percentage=100%) = Figure(options.HasFlag(Full) ? FullWidth : HalfWidth, 100%, content, options) {
+  //  var caption = content.GetCaption(this) ?? content.Title;
+  //  var table   = options.HasFlag(FigureOptions.Table);
+  //  if (caption is valid) {
+  //    Caption: Frame {
+  //      Paragraph {
+  //        ParAlignment: Justify;
+  //        if (!TexOutput) {
+  //          Span {
+  //            Bold;
+  //            table ? "Table" : "Fig";
+  //            Tex.nbsp;
+  //            if (table)
+  //              DocFields.TableSequence(content);
+  //            else
+  //              DocFields.FigureSequence(content);
+  //            DotSpace;
+  //          };
+  //        }
+  //        caption;
+  //      };
+  //    };
+  //  }
+  //
+  //  var width = ExtentWidth * percentage;
+  //  PushExtentSize(new(width, ExtentHeight));
+  //  Paragraph {
+  //    DocFields.Anchor(content.AnchorName);
+  //    ParAlignment: Center;
+  //    Frame(width) {
+  //      AddBody(content);
+  //    };
+  //  };
+  //  PopExtent;
+  //};
+
+  virtual AddFigure(Content content, FigureOptions options, width = ExtentWidth, height = null, showCaption = true) = Figure(width, height, content, options) {
+    var caption  = content.GetCaption(this) ?? content.Title;
+    var table   = options.HasFlag(FigureOptions.Table);
+    if (caption is valid) {
+      var cap = Frame {
+        Paragraph {
+          Span {
+            Bold;
+            table ? "Table" : "Figure";
+            Tex.nbsp;
+            if (table)
+              DocFields.TableSequence(content);
+            else
+              DocFields.FigureSequence(content);
+            DotSpace;
+          };
+          caption;
+        };
+      };
+
+      if (showCaption)
+        Caption: cap;
+    }
+
+    PushExtentSize(new(width, ExtentHeight));
+    Paragraph {
+      DocFields.Anchor(content.Name);
+      Frame(width) {
+        AddBody(content);
+      };
+    };
+    PopExtent;
+  };
+
+  virtual SetTextStyle = {
+    TextFamily: TextFamilies.LibertinusSerif;
+    TextHeight: 10pt;
+  };
+
+  virtual SetDocumentOptions(AuthoredContent content) = {
+    if (!ShowDesignControls)
+      Watermark: content.Watermark;
+    SetTextStyle;
+  };
+
+  virtual ShowChild(Content content) = Block {
+    AddBody(content);
+
+    foreach (var c in content.Children)
+      ShowChild(c);
+  };
+
+  virtual ShowContent(AuthoredContent content) = Block {
+    var topNumber = 1;
+
+    foreach (var c in content.Children)
+      topNumber = c.AssignStructuredContent(1, topNumber, Empty, Dot);
+
+    foreach (var c in content.Children)
+      ShowChild(c);
+  };
+
+  virtual GetStyledDocument(AuthoredContent content) {
+    if (ShowDesignControls && !System.IsPublishing) {
+      return DesignToolbar.GetToolbarDocument(0.25") {
+        SectionNextPage(Margins, null, null, null, null, new(8.5", 11")) {
+          Footer: GetFooter(content);
+        };
+
+        SetDocumentOptions(content);
+        GetDocBody(content);
+      };
+    }
+    else {
+      return Document(Margins) {
+        SetDocumentOptions(content);
+        Footer: GetFooter(content);
+        GetDocBody(content);
+      };
+    }
+  }
+
+  private GetDocBody(AuthoredContent content) = Block {
+    AddMainTitle(content);
+
+    //if (content.Authors is valid)
+    //  ShowTitleAuthors(content);
+
+    ShowContent(content);
+  };
+
+
+  virtual GetFooter(AuthoredContent content) = FooterBlock {
+    TextHeight: 8pt;
+    FooterParagraph {
+      DocFields.PageNumber; " of "; DocFields.PageCount;
+    };
+  };
+
+  // -----------------------------
+  // Default Styles - Alphabetical
+  // -----------------------------
+  virtual ActionSpan(ActionObj action) = Span {
+    action.Name;
+    Action: new Action(action.Type, action.Link);
+  };
+
+  virtual B                           = Span              { Bold };
+  virtual CalloutFrame                = Frame(ExtentWidth - SectionIndentation, null, BorderAll(new(1, 4, Palette.Accent4)));
+  virtual CalloutParagraph            = NormalParagraph;
+  virtual CodeParagraph               = NormalParagraph   { ParBackground: Palette.Light2;          };
+  virtual MainTitle                   = Paragraph         { Bold; TextHeight: 19pt;                 };
+  virtual FooterBlock                 = MarginBlock       (0.5");
+  virtual FooterParagraph             = Paragraph         { ParAlignment: Center;                   };
+  virtual HeaderBlock                 = MarginBlock       (0.25");
+  virtual HeaderParagraph             = Paragraph         (null, [6"]);
+  virtual Heading1                    = Paragraph         { Bold; TextHeight: 18pt;                 };
+  virtual Heading2                    = Paragraph         { Bold; TextHeight: 16pt;                 };
+  virtual Heading3                    = Paragraph         { Bold; TextHeight: 14pt;                 };
+  virtual Heading4                    = Paragraph         { TextHeight: 12pt;                       };
+  virtual HyperlinkParagraph          = Paragraph         { Underline; TextColor: Palette.Hyperlink };
+  virtual IndentedBlock               = Block             { LeftIndent: SectionIndentation;         };
+  virtual InLineLink                  = Span              { Underline; TextColor: Palette.Dark2     };
+  virtual NormalParagraph             = Paragraph;
+  virtual SpacedParagraph             = NormalParagraph   { SpaceAfter: 24px;                       };
+  virtual SpanHighlight               = Span              { TextColor: Palette.Dark2                };
+  virtual TightParagraph              = NormalParagraph   { SpaceAfter: 6px;                       };
+
+  virtual NumberedHeading(level, title, anchorText) = Paragraph {
+    SpaceAfter: 6px;
+    NumberedHeadingBadge { level };
+    Tab;
+    NumberedHeadingTitle { title };
+    DocFields.Anchor(anchorText);
+  };
+
+  virtual NumberedHeadingBadge = HBox(null, null, new Border(new Edge(1, 10, Palette.Dark2), new(0, 1), new(0, 10), new(1, 1, Palette.Dark2))) {
+    HAlign:       Center;
+    Background:   Palette.Lighten(Palette.Light2, 80);
+    TextColor:    Palette.Dark2;
+    TextHeight:   13pt;
+    BorderRadius: 4;
+  };
+
+  virtual NumberedHeadingTitle   = Span      { Bold; TextHeight: 14pt; };
+
+  virtual NumberedList           = ListBlock(@Enumerators.NumberDot);
+
+  virtual PrimaryActionParagraph = Paragraph { ParAlignment: Right; TextColor: Palette.Accent1; Underline; };
+
+  virtual QuickRefItem(anchorName, anchorText) = Span {
+    anchorName;
+    Action: new Action(Actions.ToAnchor, anchorText);
+  };
+
+  virtual QuickRefCell         = Cell      { LineHeight: 18px; TextColor: Palette.Hyperlink; };
+  virtual QuickRefHeaderRow    = Row       ( null, null, 25, LineRules.Exact                 );
+  virtual QuickRefTable        = Table     ( null, null, [Column.Expand]                     );
+  virtual SpecialHeading1      = Paragraph { TextColor: Palette.Accent2;                     };
+  virtual SpecialFrame1        = Frame     { TextHeight: 8pt;                                };
+
+
+  virtual FigureCaption(Content figure) = Paragraph {
+    var figRef = FigureReference(figure);
+    Span {figRef DotSpace; Bold};
+    figure.Title;
+    SpaceAfter: 14px;
+  };
+
+  FigureReference(Content content) = Span {
+    "Figure ";
+    DocFields.FigureReference(content);
+    TipAction: new ContentTipAction(content, this);
+  };
+
+  TableReference(Content content) = Span {
+    "Table ";
+    DocFields.TableReference(content);
+    TipAction: new ContentTipAction(content, this);
+  };
+
+  virtual RealtiveHBox = HBox {
+    HRelative: Page;
+    VRelative: Page;
+    Wrapping: BehindText;
+    X: 0;
+    Y: 0;
+    HAlign: Right;
+  };
+}
+
+//=========================================================================
+
+class AuthoredContent: Content {
+  var List<Person>     Authors;
+  var DateTime         Created;
+  var                  Watermark;
+
+
+  Constructor(name) {
+    super.Constructor(name);
+    Authors     = new(8);
+    Created     = DateTime.Now;
+  }
+
+  void AddAuthor(Person author) {
+    Authors.Add(author);
+  }
+
+  override Icon GetIcon = Icons.article;
+}
+
+//=========================================================================
+
+class Content: Anchor {
+  var int           SectionLevel;
+  var List<Content> Children;
+  var bool          NeedsAnchor;
+  var bool          NeedsNumbering;
+
+
+  Constructor(anchorTitle, anchorName=null) {
+    super.Constructor(anchorTitle, anchorName);
+    Children       = new(8);
+    NeedsAnchor    = false;
+    NeedsNumbering = false;
+  }
+
+  AnchorTitle = Title;
+
+  void AddContent(Content content) {
+    Children.Add(content);
+  }
+
+  int AssignStructuredContent(int level, int nextNumber, parentAnchor, delim) {
+    var nextRootNumber  = nextNumber;
+    var nextChildNumber = 1;
+    var anchor          = parentAnchor;
+
+    if (NeedsNumbering) {
+      if (parentAnchor is valid and parentAnchor != Empty)
+        anchor = parentAnchor + delim + nextNumber;
+      else
+        anchor = nextNumber;
+
+      AnchorText   = Name anchor;
+      SectionLevel = nextNumber;
+      NeedsAnchor  = true;
+
+      nextRootNumber = nextNumber + 1;
+    }
+    else if (NeedsAnchor)
+      AnchorText = Name anchor;
+    else
+      AnchorText = null;
+
+    foreach (var c in Children) {
+      if (NeedsNumbering)
+        nextChildNumber = c.AssignStructuredContent(level + 1, nextChildNumber, anchor, delim);
+      else
+        nextRootNumber = c.AssignStructuredContent(level, nextRootNumber, parentAnchor, delim);
+    }
+
+    return nextRootNumber;
+  }
+
+  virtual GetCaption(TechDesign design) = null;
+
+  virtual GetLayout(TechDesign design) = null;
+
+  override Icon GetIcon = Icons.text_format;
+
+  //override GetLayoutTip = TechStyle.GetContentTip(this);
+}
+//=========================================================================

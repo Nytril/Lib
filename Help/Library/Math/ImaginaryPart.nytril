@@ -1,0 +1,15 @@
+include "Help";
+
+using Format;
+
+ShowImaginaryPart(x) = "The imaginary part of of {0} is {1}."(x, Math.ImaginaryPart(x));
+
+Example = Block {
+  ShowImaginaryPart(3 + 5 Math.I);
+  ShowImaginaryPart(Math.I);
+  ShowImaginaryPart(2);
+};
+
+Main.Help = new HelpExample(attribute(Math.ImaginaryPart));
+
+

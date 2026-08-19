@@ -1,0 +1,21 @@
+include "Help";
+
+using Format;
+
+ShowLog10(x) = Span {
+  "Log10({0}) = "(x);
+  Span {
+    TextDigits: 8;
+    Math.Log10(x);
+  }
+};
+
+Example = Block {
+  ShowLog10(10);
+  ShowLog10(20);
+  ShowLog10(10_000);
+};
+
+Main.Help = new HelpExample(attribute(Math.Log10));
+
+

@@ -1,0 +1,63 @@
+include "Help";
+
+using Format;
+
+//============================================================
+
+ShowLink(Attribute prop) = Span {
+  TextColor: Colors.Blue;
+  TipAction: new Action(Actions.ToDocument, prop);
+  prop.Prototype;
+};
+
+
+Description = DescriptionBlock {
+  Paragraph {
+    "Combines the control of ";
+    ShowLink(attribute FormatProperties.Tip);
+    " and ";
+    ShowLink(attribute FormatProperties.Action);
+    " into a single object."
+  };
+};
+
+//============================================================
+
+class MessageActionClass: Action {
+  Constructor {
+    super.Constructor(Actions.Execute);
+  }
+
+  override EventResponse Execute {
+    var message = Paragraph {
+      HBox {
+        TextHeight: 24pt;
+        VAlign: Center;
+        Shape(Colors.Red, Colors.Black) {
+          Icons.message;
+        };
+        Space;
+        "Important message";
+      };
+    };
+
+    return EventResponses.MessageTip(message);
+  }
+}
+
+Example = Paragraph {
+  "Click ";
+  Span {
+    TextColor: Colors.Blue;
+    "here";
+    TipAction: new MessageActionClass;
+  };
+  " to see the message.";
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TipAction));
+
+//============================================================
+

@@ -1,0 +1,44 @@
+include "Help";
+
+using Format;
+
+Example = Paragraph {
+  "The current time is ";
+  TimeOnly.Now;
+};
+
+Example2 = Block {
+  var now = TimeOnly.Now;
+  var formats = [
+    "o",
+    "r",
+    "t",
+    "T",
+    "HH:mm",
+    "HH:mm:ss",
+    "HH:mm:ss.fff",
+  ];
+
+  NytrilStyle.Heading3 {
+    "Format Examples";
+  };
+  Table(0.5, PadLR(3), [Column.Fit(2"), 3"]) {
+    Row {
+      Background: NytrilPalette.TableTitleBack;
+      TextColor: NytrilPalette.TableTitleFore;
+      "Formatter"; "Output";
+    };
+    foreach (var format in formats) {
+      NytrilStyle.ListRow(each0) {
+        format;
+        Span {
+          TextFormat: format;
+          now;
+        };
+      }
+    }
+  }
+};
+
+Main.Help = new HelpExample(attribute TimeOnly, 2);
+

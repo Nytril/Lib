@@ -1,0 +1,16 @@
+include "Help";
+
+using Format;
+
+Example = Chart(2", 1.5") {
+  ChartType: ChartTypes.Line;
+  Marker: Markers.Diamond(Colors.Red);
+  XAxis: ChartAxis {
+    "Alpha"; "Beta"; "Gamma"
+  };
+  ChartSeries {
+    10; 15; 12
+  };
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.Marker));

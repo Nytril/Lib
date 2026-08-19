@@ -1,0 +1,32 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  TextHeight: 20pt;
+  Paragraph {
+    "->Normal ";
+  };
+  Paragraph {
+    "->";
+    Span {
+      TextOffset: 7pt;
+      "Down 7 points ";
+    };
+    SpaceAfter: 10pt;
+  };
+  Paragraph {
+    "->";
+    Span {
+      TextOffset: -7pt;
+      "Up 7 points";
+    };
+  };
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextOffset));
+
+//============================================================
+

@@ -1,0 +1,27 @@
+using Format;
+
+readonly MyDocument Main.Documents.MainDocument = new;
+
+class MyDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#00000000-1111-2222-3333-444444444444#, "Quick Calculation");
+  }
+
+  Out(name, value) = Row {
+    Bold name;
+    value;
+  };
+
+  override GetDocument = Document {
+    var x      = 5;
+    var y      = 7;
+    var result = x * y;
+
+    Table(null, PadR(10), [Column.Fit(2")]) {
+      Out("x", x);
+      Out("y", y);
+      Out("Result", result);
+    }
+  };
+}
+

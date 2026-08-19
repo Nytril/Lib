@@ -1,0 +1,26 @@
+include "Help";
+
+using Format;
+
+
+Example = Paragraph {
+  TextHeight: 20pt;
+
+  "None";
+  Span {
+    TextBackground: 80%;
+    "gray";
+  };
+  Span {
+    TextBackground: Colors.Green;
+    TextColor: Colors.White;
+    "green";
+  };
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextBackground));
+
+//============================================================
+

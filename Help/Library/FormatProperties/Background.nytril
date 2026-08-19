@@ -1,0 +1,22 @@
+include "Help";
+
+using Format;
+
+Example = Canvas(1", 1", 2) {
+  Background: Colors.Blue;
+  TextColor: Colors.White;
+  "Solid";
+};
+
+Example2 = Canvas(1", 1", 2) {
+  Background: new RadialGradient(0.25, 0.5, 0.5, 0.75, 1.2, 0.5, [
+    new(0, Colors.Red),
+    new(0.2, Colors.Yellow),
+    new(1, Colors.Green)
+  ]);
+
+  TextColor: Colors.White;
+  "Radial Gradient";
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.Background), 2);

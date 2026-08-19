@@ -1,0 +1,184 @@
+using Format;
+
+include "Data";
+include "DocumentStyles";
+
+namespace Main {
+  Documents = [
+    new ExampleDocument(#2a9639ab-20bb-4c08-b20c-610e6b119440#, new ChicagoStyle),
+    new ExampleDocument(#b35a864b-fca0-4fab-97b9-675141577aa6#, new MLAStyle),
+    new ExampleDocument(#1212da6e-c9ac-4e10-93d5-a467cea381f4#, new APAStyle),
+    new ExampleDocument(#943efc94-a8bb-4a72-bb35-7d3dc22ff9c2#, new IEEEStyle),
+  ];
+}
+
+//=========================================================================
+
+class IntroductionSection: Content {
+  Constructor {
+    super.Constructor("Introduction");
+  }
+
+  override GetBody(ContentStyle style) = Block {
+    style.Par {
+      "This references for this document are formatted in ";
+      Span {
+        Bold;
+        Title;
+      };
+      " style. ";
+    };
+  };
+}
+
+//=========================================================================
+
+class RefListSection: Content {
+  Constructor {
+    super.Constructor("Sample Citations");
+  }
+
+  override GetBody(ContentStyle style) = Block {
+    style.Par {
+      "To begin with, ";
+      Cite(CiteOptions.ShowAuthors | CiteOptions.ShowDate | CiteOptions.AddSuffix) {
+        new Citation(References.TechReport, 45);
+        " agree that \"all must do it the right way\"";
+      };
+      " in their famous work. ";
+    };
+
+    style.Par {
+      "In 2018, ";
+      Cite(CiteOptions.ShowAuthors) {
+        References.TechReport;
+        " found that plagerism is a problem. ";
+      };
+    };
+
+    style.Par {
+      "\"Nobody goes to that restaurant anymore. It's too crowded.\"";
+      Footnote {"Attributed to Yogi Berra"};
+      DocFields.IndexEntry("Yogi Berra");
+    };
+
+    style.Par {
+      DocFields.IndexEntry("Things");
+      "Here is a discussion related to several collections";
+      Cite {References.Booklet; References.Inbook; References.MastersThesis};
+      DotSpace;
+    };
+
+    style.Par {
+      "Here is a reference"; Cite {References.TechReport};
+      " and a reference to a different page"; Cite {new Citation(References.TechReport, 23..24)}; DotSpace;
+    };
+
+    style.Par {
+      "Intermediate reference"; Cite {References.Booklet};
+      " followed by reference to a differrent page"; Cite {new Citation(References.TechReport, 50)}; DotSpace;
+    };
+
+    style.Par {
+      DocFields.IndexEntry("Things");
+      "Some collections whose references are mixed.";
+      Cite {
+        References.Inbook;
+        References.Booklet;
+        References.SoundRecording;
+        References.Proceedings;
+        References.Unpublished;
+      };
+    };
+
+    Paragraph {
+      DocFields.IndexEntry("Things");
+      "In this section, I talk about many things related to the books"; Cite {References.Article; References.Book}; DotSpace;
+      "In this section, I cite a reference with page numbers. ";
+      Cite {References.Article.OnPage(1..3, "Here are my notes")};
+    };
+    PageBreak;
+
+    style.Par {
+      DocFields.IndexEntry(["Things", "Second pass"]);
+      "In this section, I talk about many things again";
+    };
+
+    style.Par {
+      DocFields.IndexEntry(["Things", "First pass"]);
+      "In this section, I talk about many things for the second time.";
+    };
+  };
+}
+
+//=========================================================================
+
+class AllReferencesSection: Content {
+  Constructor {
+    super.Constructor("All References Types");
+  }
+
+  override GetBody(ContentStyle style) = Block {
+    foreach (var rlist in References.ToArray / 6) {
+      foreach (var r in rlist) {
+        Paragraph {
+          KeepWithNext: true;
+          Span {
+            DocFields.IndexEntry([r.Type.Name]);
+            Bold;
+            r.Type;
+          };
+          Cite {r};
+        };
+
+        style.Par {
+          "The title of the work is: ";
+          Span {
+            Bold;
+            r.Title;
+          };
+          DotSpace;
+        };
+      }
+
+      PageBreak;
+    }
+  };
+}
+
+//=========================================================================
+
+readonly DocReference MainReference = new(#85a40569-cebf-4dbb-9fc5-41f924d68eb3#, Article) {
+  Title: "A sample of all the different reference types";
+  Date: DateTime.Now;
+};
+
+readonly ExampleCiteContent MainContent = new;
+
+class ExampleCiteContent: AuthoredContent {
+  Constructor {
+    super.Constructor("Example", MainReference);
+
+    AddContent(new IntroductionSection);
+    AddContent(new RefListSection);
+    AddContent(new AllReferencesSection);
+  }
+}
+
+//=========================================================================
+
+class ExampleDocument: StyleDocument {
+  Constructor(Guid id, ContentStyle style) {
+    super.Constructor(id, style.Name, MainContent, style);
+    Subject     = "References";
+    Description = "A sample of all the different reference types";
+    Revision    = 1;
+    Creator     = "Nytril Team";
+    Created     = DateTime.Now;
+
+    AddReading(new(Reading.Book, 1..100, "I got a lot out of this book"));
+  }
+}
+
+//=========================================================================
+

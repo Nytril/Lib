@@ -1,0 +1,14 @@
+include "Help";
+
+using Format;
+
+Example = Block {
+  ParAlignment: Justify;
+  LoremIpsum(50);
+  Paragraph {
+    RightIndent: 24pt;
+    LoremIpsum(50);
+  };
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.RightIndent));

@@ -1,0 +1,17 @@
+include "Help";
+
+using Format;
+
+ShowRoundEven(x) = "The number {0} rounds to {1}."(x, Math.RoundEven(x));
+
+Example = Block {
+  ShowRoundEven(-1.6);
+  ShowRoundEven(1.4);
+  ShowRoundEven(1.5);
+  ShowRoundEven(2.5);
+  ShowRoundEven(3.5);
+};
+
+Main.Help = new HelpExample(attribute(Math.RoundEven));
+
+

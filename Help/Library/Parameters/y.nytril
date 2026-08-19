@@ -1,0 +1,38 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  "The y offset of the object can be specified in the following ways:";
+};
+
+MakeExample(y) = Canvas(1", 0.6", BorderTB(0.25)) {
+  Separation: 10;
+  HBox {
+    Y: y;
+    HBox(4, 4) {
+      BorderRadius: 2;
+      Background: Colors.Red;
+    };
+    " Y = ";
+    y;
+  };
+};
+
+readonly namespace Example {
+  Header = MeasureText.UseNumber;
+  Body = MakeExample(10);
+}
+
+readonly namespace Example2 {
+  Header = MeasureText.UseMeasure;
+  Body = MakeExample(0.125");
+}
+
+readonly namespace Example3 {
+  Header = MeasureText.UsePercentHeight;
+  Body = MakeExample(5%);
+}
+
+Main.Help = new HelpExample(null, 3, "y");
+

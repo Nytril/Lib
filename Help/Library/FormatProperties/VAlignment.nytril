@@ -1,0 +1,29 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  "This setting overrides the any HAlign setting from the parent object";
+};
+
+Example = Canvas(170, 1.6", 1) {
+  Span {
+    TextHeight: 96pt;
+    VAlignment: VAligns.Baseline;
+    "xj";
+  };
+
+  var shape = Canvas(null, null, 0.25) {
+    TextHeight: 12pt;
+    HAlignment: HAligns.Right;
+  };
+
+  shape {"Top"; VAlignment: VAligns.Top};
+  shape {"Center"; VAlignment: VAligns.Center};
+  shape {"Baseline"; VAlignment: VAligns.Baseline};
+  shape {"Bottom"; VAlignment: VAligns.Bottom};
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.VAlignment));
+
+

@@ -1,0 +1,18 @@
+include "Help";
+
+using Format, Units;
+
+Example = Block {
+  TextHeight: 20pt;
+
+  Paragraph {1 over 6; TextDiagonal: false};
+  Paragraph {1 over 6; TextDiagonal: true};
+  Paragraph {2 feet per second; TextDiagonal: true};
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextDiagonal));
+
+//============================================================
+

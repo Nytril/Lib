@@ -1,0 +1,18 @@
+include "Help";
+
+using Format;
+
+Func(x) {
+  if (x > 0)
+    return x + 1;
+  else
+    return x - 1;
+}
+
+Example = ListBlock {
+  Func(3);
+  Func(-5);
+};
+
+Main.Help = new HelpExample(attribute return);
+

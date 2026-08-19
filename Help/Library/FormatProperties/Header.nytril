@@ -1,0 +1,35 @@
+include "Help";
+
+using Format;
+
+SampleCode = Document {
+  Header: MarginBlock(0.25") {
+    Paragraph(null, [5"]) {
+      "Document Title";
+      Tab;
+      DocFields.PageNumber;
+      " of ";
+      DocFields.PageCount;
+    };
+  };
+};
+
+Example = Block {
+  VBox(4", null, 1) {
+    HBox(100%, 0.5") {
+      Justify: SpaceAround;
+      VAlign: Center;
+      "Document Title";
+      "Page 1 of 10";
+    };
+    HBox(100%, 1", BorderTB(0.1)) {
+      HAlign: Center;
+      Background: 95%;
+      HAlign: Center;
+      VAlign: Center;
+      "...";
+    };
+  }
+};
+
+Main.Help = new HelpExample(attribute(FormatProperties.Header), 0);

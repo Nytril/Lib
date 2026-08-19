@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" width="512px" height="400px" viewBox="0 0 1024 768" enable-background="new 0 0 1024 768" xml:space="preserve">
+<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="127.5" y1="146.5" x2="236.5" y2="146.5">
+	<stop offset="0" style="stop-color:#FFFFFF"/>
+	<stop offset="0.956" style="stop-color:#2D292A"/>
+	<stop offset="1" style="stop-color:#000000"/>
+</linearGradient>
+<path fill="url(#SVGID_1_)" stroke="#FF00FF" stroke-miterlimit="10" d="M209.633,167.163C193.94,182.065,127.5,194.5,127.5,194.5  v-96h109C236.5,98.5,222.999,154.47,209.633,167.163z"/>
+
+<text transform="matrix(1 0 0 1 338.6123 149.6123)" font-family="Arial" font-size="22">Test</text>
+</svg>

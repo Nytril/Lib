@@ -1,0 +1,37 @@
+include "Help";
+
+using Format;
+
+Range = -1..1;
+
+Description = DescriptionBlock {
+  Lang.NumberBetween(-1, 1);
+
+  Chart(100%, 2") {
+    ChartType: ChartTypes.Line;
+    XAxis: ChartAxis {
+      Range step 0.25;
+    };
+    ValueAxis: ChartAxis;
+
+    ChartSeries {
+      foreach (var x in Range step 0.01)
+        new DataPoint(x, Math.Asin(x));
+    };
+  };
+};
+
+ShowAsin(x) = Span {
+  "The arc sine of {0} is {1}."(x, Math.Asin(x));
+};
+
+Example = Block {
+  ShowAsin(1);
+  ShowAsin(Math.Sqrt(2)/2.0);
+  ShowAsin(0);
+  ShowAsin(-1);
+};
+
+Main.Help = new HelpExample(attribute(Math.Asin));
+
+

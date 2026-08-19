@@ -1,0 +1,601 @@
+using Format, LinkTypes, Subjects, People;
+
+include "Basic Facts";
+include "DocumentStyles";
+
+readonly Main.Facts = [
+  Subjects,
+  Couples,
+  PublicOffices,
+  Comments,
+  References,
+  David_McCullum,
+  Isabel_Allen
+];
+
+//======================================================================
+
+URL WikiLink(url) = new("https://en.wikipedia.org/wiki/" + url);
+URL WikiFile(url) = new("https://en.wikipedia.org/wiki/File:" + url);
+
+DocReference WikiReference(id, name, title) = new(id, ReferenceTypes.InternetSite) {
+  Title: title;
+  Key: "Wikipedia: " title;
+  Link to WikiLink(name);
+};
+
+//======================================================================
+
+readonly namespace<Organization> Organizations {
+  JOHistory = new(#c7aa65fb-321f-4ea3-83ec-90614e3a6d02#, "Journal of History", "JOH");
+}
+
+//======================================================================
+
+readonly namespace<Person> People {
+  David_McCullum = new(#879e836f-d446-4d4f-8a54-e19577a3ce7a#, "David", null, "McCullum") {
+    WorkEmailLink to new Email("david.mccullum@gmail.com");
+  };
+
+  Isabel_Allen   = new(#cc993bcb-6b33-43ab-ae38-e4bb0728b654#, "Isabel", null, "Allen");
+
+  GilbertStewart = new(#f6f6d071-4da0-40f0-a435-4ade17784f8d#, "Gilbert", null, "Stuart");
+  RembrandtPeale = new(#5ad0a4cc-8a01-4b89-b6f2-a879a23ad5c8#, "Rembrandt", null, "Peale");
+  MathewBrady    = new(#88aec5f8-f98b-49a6-86dd-85d935e0e7ca#, "Mathew", null, "Brady");
+  JohnWollaston  = new(#609e8635-2021-40c6-8e97-66df9c609bce#, "John", null, "Wollaston");
+  BenjaminBlyth  = new(#a51885fc-04b7-42cf-8c18-2bb8ffe49afb#, "Benjamin", null, "Blyth");
+}
+
+//======================================================================
+
+
+readonly namespace<DocReference> References {
+  GeorgeWashingtonPortrait = new(#9a84e454-6b5b-40cd-bced-353ac45311e1#, ReferenceTypes.Art) {
+    Date: #1796#;
+    Note: "Oil on Canvas. Based on the unfinished Athenaeum Portrait";
+    Image: new Image(res "George Washington Portrait.jpg", "Gilbert Stuart Williamstown portrait of George Washington");
+    ArtistLink to GilbertStewart;
+    PortraitLink to Subjects.GeorgeWashington;
+    Link to WikiFile("Gilbert_Stuart_Williamstown_Portrait_of_George_Washington.jpg");
+    Link to Licenses.WikimediaCommons;
+    Number: 2731;
+  };
+
+  JohnAdamsPortrait = new(#ffb82d80-c287-40dd-bd54-3d9f218fb301#, ReferenceTypes.Art) {
+    Date: #1800#;
+    Note: "Oil on Canvas";
+    Image: new Image(res "John Adams Portrait.jpg", "Portrait of John Adams");
+    ArtistLink to GilbertStewart;
+    PortraitLink to Subjects.JohnAdams;
+    Link to WikiFile("John_Adams_Portrait.jpg");
+    Link to Licenses.WikimediaCommons;
+    Number: 2730;
+  };
+
+  ThomasJeffersonPortrait = new(#b5076709-11a9-4c94-867a-7b20110d1686#, ReferenceTypes.Art) {
+    Date: #1800#;
+    Note: "Oil on Canvas";
+    Image: new Image(res "Thomas Jefferson Portrait.jpg", "Official Presidential portrait of Thomas Jefferson");
+    ArtistLink to RembrandtPeale;
+    PortraitLink to Subjects.ThomasJefferson;
+    Link to WikiFile("Official_Presidential_portrait_of_Thomas_Jefferson_(by_Rembrandt_Peale,_1800).jpg");
+    Link to Licenses.WikimediaCommons;
+    Number: 2725;
+  };
+
+  JohnQuincyAdamsPortrait = new(#6f4d1be6-9f41-4877-80ed-b28a17a9c56d#, ReferenceTypes.Art) {
+    Date: #1843#;
+    Note: "Daguerreotype";
+    Image: new Image(res "John Quincy Adams Portrait.jpg", "Portrait of John Quincy Adams");
+    ArtistLink to MathewBrady;
+    PortraitLink to Subjects.JohnQuincyAdams;
+    Link to WikiFile("John_Q._Adams.jpg");
+    Link to Licenses.WikimediaCommons;
+    Number: 2720;
+  };
+
+  MarthaWashingtonPortrait = new(#b5a11762-be6c-4a35-ba25-f3bc18052992#, ReferenceTypes.Art) {
+    Date: #1757#;
+    Image: new Image(res "Martha Washington Portrait.jpg", "Portrait of Martha Dandridge Custis (Martha Washington)");
+    ArtistLink to JohnWollaston;
+    PortraitLink to Subjects.MarthaWashington;
+    Link to WikiFile("Martha_Dandridge_Custis.jpg");
+    Link to Licenses.WikimediaCommons;
+    Number: 2700;
+  };
+
+  AbigailAdamsPortrait = new(#7b69db90-3ef0-4741-96f5-773377984005#, ReferenceTypes.Art) {
+    Date: #1766#;
+    Image: new Image(res "Abigail Adams Portrait.jpg", "Portrait of Abigail Adams");
+    ArtistLink to BenjaminBlyth;
+    PortraitLink to Subjects.AbigailAdams;
+    Link to WikiFile("Abigail_Adams.jpg");
+    Link to Licenses.WikimediaCommons;
+    Number: 2713;
+  };
+
+  ThomasJefferson = WikiReference(#161aaef5-d646-4390-b6eb-ef5704074932#, "Thomas_Jefferson", "Thomas Jefferson");
+
+  JohnQuincyAdams = WikiReference(#cd9aef08-c1a7-46ed-858a-4c414b97d831#, "John_Quincy_Adams", "John Quincy Adams");
+
+  JohnAdams = WikiReference(#23fc9836-12e8-4833-92e8-9c50bb203cea#, "John_Adams", "John Adams");
+
+  GeorgeWashington = WikiReference(#a08f8197-e4b2-4c57-84b6-a91f554e2958#, "George_Washington", "George Washington");
+
+  WarForIndependance = WikiReference(#fd234978-c343-4764-a419-b74c2c2743d7#, "American_Revolutionary_War", "American Revolutionary War");
+
+  DeclarationOfIndependance = WikiReference(#60031b28-ca65-4c61-b248-c4c0d575a3e7#, "United_States_Declaration_of_Independence", "United States Declaration of Independence");
+}
+
+//=====================================================================
+
+readonly namespace<PublicOffice> PublicOffices {
+  USPresident = new(#cdd14969-4b75-4a64-b35b-7c57e6888d46#, "U.S. President") {
+    Link to Countries.USA;
+  };
+
+  USVicePresident = new(#767cfaeb-b25a-4849-b98b-b28562251820#, "U.S. Vice-President") {
+    Link to Countries.USA;
+  };
+
+  SecretaryOfState = new(#298d3f59-b525-400d-b025-4d43e47ac1c7#, "Secretary of State") {
+    Link to Countries.USA;
+  };
+
+  ArmyCommander = new(#6c36bf6e-ca48-470b-b9e5-118d4eef9ff2#, "Commander of the Continental Army") {
+    Military: true;
+    Link to Countries.USA;
+  };
+}
+
+//=====================================================================
+
+readonly namespace<Subject> Subjects {
+  MarthaWashington = new(#7cc66fc7-c8b8-45bb-b1ae-196fa0d1be2c#, "Martha", "Dandridge", "Washington", #1731-6-2#, #1802-5-22#);
+
+  GeorgeWashington = new(#2e6b5ee9-9a1c-4ad7-be37-719fb9781bd7#, "George", null, "Washington", #1732-2-22#, #1799-12-14#) {
+    OfficeLink to PublicOffices.USPresident with new TenurePeriod(#c9286577-40a4-4057-ac1d-5c5c159e3b72#, #1789-4-30#, #1797-3-3#);
+    OfficeLink to PublicOffices.ArmyCommander with new TenurePeriod(#9af4fe17-99e4-4079-9fe3-100e9022b93f#, #1775-7-19#, #1783-12-3#);
+  };
+
+  AbigailAdams = new(#5f5ad330-4601-4994-bbdc-3f071206451b#, "Abigail", null, "Adams", #1744-11-22#, #1818-10-28#);
+
+  JohnAdams = new(#d54592aa-dfc6-49f2-b172-3169b2125069#, "John", null, "Adams", #1735-10-30#, #1826-7-4#) {
+    OfficeLink to PublicOffices.USVicePresident with new TenurePeriod(#95bcfb2c-ea03-49c4-9978-d46e2334b770#, #1789-4-30#, #1797-3-3#);
+    OfficeLink to PublicOffices.USPresident with new TenurePeriod(#faa9da85-d9b2-46a7-bb05-c5d07375e437#, #1797-3-4#, #1801-3-4#);
+  };
+
+  JohnQuincyAdams = new(#f2a53d1d-6a3b-4575-a3b0-8967cc187682#, "John", "Quincy", "Adams", #1767-7-11#, #1848-2-23#, Couples.AbigailJohnAdams) {
+    OfficeLink to PublicOffices.USPresident with new TenurePeriod(#4091634e-41a5-45ea-a554-b838be4943e6#, #1825-3-4#, #1829-3-3#);
+    OfficeLink to PublicOffices.SecretaryOfState with new TenurePeriod(#66c14168-303b-494d-a86e-711bde389d73#, #1817#, #1825#);
+  };
+
+  MarthaJefferson = new(#c0959d5e-ed89-4ba6-a684-6a97b5efd5a1#, "Martha", "Skelton", "Jefferson", #1748-10-30#, #1782-9-6#);
+
+  ThomasJefferson = new(#bd342029-b93c-443e-b42c-08eeb177aa25#, "Thomas", null, "Jefferson", #1743-4-13#, #1826-7-4#) {
+    OfficeLink to PublicOffices.USVicePresident with new TenurePeriod(#2e57020a-a8ae-4904-b43d-a24dd72e2696#, #1797-3-4#, #1801-3-4#);
+    OfficeLink to PublicOffices.USPresident with new TenurePeriod(#7f0a9781-ff89-47b0-b9bc-922e8005ef80#, #1801-3-4#, #1809-3-4#);
+  };
+}
+
+//=====================================================================
+
+readonly namespace<Couple> Couples {
+  MarthaGeorgeWashington = new(#2d2b6993-544b-477b-b77d-f335fc721e93#, #1759#, MarthaWashington, GeorgeWashington);
+  AbigailJohnAdams       = new(#52124130-8cd2-44aa-b51d-5d254e7878d8#, #1764#, AbigailAdams, JohnAdams);
+  MarthThomasJefferson   = new(#13d3e217-e90a-4f50-80f4-322713f43a1f#, #1772-1-1#, MarthaJefferson, ThomasJefferson);
+}
+
+//=====================================================================
+
+readonly namespace<Comment> Comments {
+  GWIntro = new(#214f5caa-6775-4817-8a18-14bc43a5fe9d#, Comment.Properties.Introduction Comment.Properties.Important) {
+    Link to GeorgeWashington;
+    Reference: References.GeorgeWashington;
+    Text: Span {
+      "An American soldier, statesman, and Founding Father who served as the first President of the United States from 1789 to 1797. ";
+      "Appointed by the Continental Congress as commander of the Continental Army, Washington led the Patriot forces to victory in the American Revolutionary War, and presided at the Constitutional Convention of 1787, which established the Constitution of the United States and a federal government. ";
+      "Washington has been called the \"Father of the Nation\" for his manifold leadership in the formative days of the country.";
+    }
+  };
+
+  TJIntro = new(#decf8b35-731a-45a1-aa91-9cf325ed622a#, Comment.Properties.Introduction) {
+    Link to ThomasJefferson;
+    Reference: References.ThomasJefferson;
+    Text: Span {
+      "An American statesman, diplomat, lawyer, architect, philosopher, and Founding Father who served as the third president of the United States from 1801 to 1809. ";
+      "He had previously served as the second vice president of the United States under John Adams and as the first United States Secretary of State under George Washington. ";
+      "The principal author of the Declaration of Independence, Jefferson was a proponent of democracy, republicanism, and individual rights, motivating American colonists to break from the Kingdom of Great Britain and form a new nation; ";
+      "he produced formative documents and decisions at both the state and national levels.";
+    };
+  };
+
+  JAIntro = new(#332e19c4-737d-4548-852e-51b47916f5ff#, Comment.Properties.Introduction) {
+    Link to JohnAdams;
+    Reference: References.JohnAdams;
+    Text: Span {
+      "An American statesman, attorney, diplomat, writer, and Founding Father who was the second president of the United States. ";
+      "Before his presidency, he was a leader of the American Revolution that achieved independence from Great Britain. ";
+      "Adams was a dedicated diarist and regularly corresponded with many important figures in early American history, including his wife and adviser Abigail Adams and Thomas Jefferson";
+    };
+  };
+
+  JQAIntro = new(#0918a681-4f99-407e-b3e2-43ecdb3e6a4d#, Comment.Properties.Introduction) {
+    Link to JohnQuincyAdams;
+    Reference: References.JohnQuincyAdams;
+    Text: Span {
+      "An American statesman, diplomat, lawyer, and diarist, who served as the 6th president of the United States from 1825 to 1829. ";
+      "He previously served as the 8th United States Secretary of State from 1817 to 1825.";
+    };
+  };
+
+  WarForIndependance = new(#9488d1d3-0935-4d99-ae1e-f4cffd79093f#, Comment.Properties.Introduction) {
+    Link to Events.WarForIndependance;
+    Reference: References.WarForIndependance;
+    Text: Span {
+      "Also known as the Revolutionary War or American War of Independence. It secured a United States of America independent from Great Britain. ";
+      "The American Patriots were supported by France and Spain, conflict taking place in North America, the Caribbean, and Atlantic Ocean. ";
+      "It ended when Britain accepted American independence in the Treaty of Paris, while the Treaties of Versailles resolved separate conflicts with France and Spain.";
+    };
+  };
+
+  DeclarationOfIndependance = new(#27c5c3e1-e184-4e66-8499-dd2d626fa878#, Comment.Properties.Important) {
+    Link to Events.DeclarationOfIndependance;
+    Reference: References.DeclarationOfIndependance;
+    Text: Span {
+      "The United States Declaration of Independence is the pronouncement adopted by the Second Continental Congress meeting in Philadelphia, Pennsylvania, on July 4, 1776. ";
+      "Enacted during the American Revolution, the Declaration explains why the Thirteen Colonies at war with the Kingdom of Great Britain regarded themselves as thirteen independent sovereign states, no longer under British rule. ";
+      "With the Declaration, these new states took a collective first step in forming the United States of America. ";
+      "The declaration was signed by 56 of America's Founding Fathers, congressional representatives from New Hampshire, Massachusetts Bay, Rhode Island and Providence Plantations, Connecticut, New York, New Jersey, Pennsylvania, Maryland, Delaware, Virginia, North Carolina, South Carolina, and Georgia.";
+    };
+  };
+}
+
+//=====================================================================
+
+readonly namespace<Event> Events {
+  WarForIndependance        = new(#c0a52a86-9372-4553-887f-f509de16b786#, #1775-4-19#, "American Revolutionary War");
+  DeclarationOfIndependance = new(#372e2b2e-a25d-46ee-b46d-b23f2a5b5420#, #1776-7-4#, "Declaration of Independance");
+}
+
+//=====================================================================
+
+class TimelineEvent {
+  var DateTime Date;
+  var          Text;
+
+  Constructor(DateTime d, text) {
+    Date = d;
+    Text = text;
+  }
+
+  override int Compare(TimelineEvent e) {
+    return Date.Compare(e.Date);
+  }
+}
+
+//=====================================================================
+
+class TimelineClass: Content {
+  var Person Person;
+
+  Constructor(ContentStyle style, Person person) {
+    super.Constructor("Life events of " + style.GetFullName(person), person.FactId);
+    Person = person;
+  }
+
+  override GetCaption(ContentStyle style) = Span {
+    "Events in the life of " + style.GetFullName(Person);
+    DotSpace;
+  };
+
+  override GetBody(ContentStyle style) = ShowEventTable(Person);
+}
+
+//=====================================================================
+
+class IntroductionClass: Content {
+  Constructor{
+    super.Constructor("Introduction");
+  }
+
+  override GetBody(ContentStyle style) = Block {
+    style.Par {
+      revu "History is a tale told by the winners. ";
+      LoremIpsum(50);
+    };
+
+    // Random sized fake text
+    foreach (var i in 100..200 step 60) {
+      style.Par {
+        LoremIpsum(i);
+      };
+    }
+  };
+}
+
+//=====================================================================
+
+class PersonIntro: Content {
+  readonly var Person          Person;
+  readonly var PortraitContent Portrait;
+
+  Constructor(DocReference reference) {
+    super.Constructor(null, reference.FactId);
+    Person   = reference.FindFirstFact(PortraitLink) as Person;
+    Portrait = new PortraitContent(reference);
+    Name     = Person.FactId;
+    Title    = ContentStyle.GetFullName(Person);
+  }
+
+  override GetBody(ContentStyle style) = Block {
+    bool first = true;
+    foreach (var comment in Person.FindFacts(Comment) as Comment[]) {
+      style.Par {
+        comment.TextReference;
+      };
+
+      if (first)
+        style.AddFigure(Portrait, FigureOptions.Top | FigureOptions.Bottom);
+
+      first = false;
+    }
+  };
+}
+
+//=====================================================================
+
+class PersonEvents: Content {
+  readonly var Person Person;
+
+  Constructor(Person person) {
+    super.Constructor("Events", person.FactId);
+    Person = person;
+  }
+
+  override GetBody(ContentStyle style) = Block {
+    var table = new TimelineClass(style, Person);
+    style.Par {
+      style.TableReference(table);
+      " shows a list of the major events in the life of ";
+      style.GetFullName(Person); DotSpace;
+    };
+    style.AddTable(table, FigureOptions.Here);
+
+    History.ShowRelations(style, Person);
+  };
+}
+
+//=====================================================================
+
+class PersonChapter: PersonIntro {
+  Constructor(DocReference reference) {
+    super.Constructor(reference);
+    AddContent(new PersonEvents(Person));
+  }
+
+  override GetBody(ContentStyle style) = Block {
+    style.TitlePar {
+      SpaceBefore: 1";
+      TextHeight: 32pt;
+      Title;
+      DocFields.Anchor(Person.FactId);
+    };
+
+    style.AddFigure(Portrait, FigureOptions.Here);
+
+    var comment = Person.FindFirstFact(Comment) as Comment;
+    if (comment is valid) {
+      style.Par {
+        comment.TextReference;
+      };
+    }
+  };
+}
+
+//=====================================================================
+
+class PersonSection: Content {
+  Constructor(DocReference reference) {
+    super.Constructor(null);
+    var intro = new PersonIntro(reference);
+    Title       = intro.Title;
+    intro.Title = "Overview";
+    AddContent(intro);
+    AddContent(new PersonEvents(intro.Person));
+  }
+}
+
+//=====================================================================
+
+readonly DocReference PaperReference = new(#7038de1c-1d87-4edc-8eb8-a2f2f841e189#, Article) {
+  Title: "History of the Early United States";
+  Subtitle: "The first four presidents";
+  AuthorLink to [People.David_McCullum, People.Isabel_Allen];
+};
+
+class HistoryContentClass: AuthoredContent {
+  Constructor(DocReference reference) {
+    super.Constructor(reference.Title, reference);
+    Correspondant = People.David_McCullum;
+    Keywords = ["United States", "History"];
+  }
+}
+
+//=====================================================================
+
+class PaperContent: HistoryContentClass {
+  Constructor {
+    super.Constructor(PaperReference);
+
+    AddContent(new IntroductionClass);
+    AddContent(new PersonSection(References.GeorgeWashingtonPortrait));
+    AddContent(new PersonSection(References.JohnAdamsPortrait));
+    AddContent(new PersonSection(References.ThomasJeffersonPortrait));
+    AddContent(new PersonSection(References.JohnQuincyAdamsPortrait));
+  }
+}
+
+//=====================================================================
+
+readonly DocReference BookReference = new(#b60b7e59-904c-4d4b-8013-def4dc7dddd7#, Book) {
+  Title: "History of the United States";
+  Subtitle: "The early years";
+  AuthorLink to People.David_McCullum;
+};
+
+class BookContent: HistoryContentClass {
+  Constructor {
+    super.Constructor(BookReference);
+
+    AddContent(new PersonChapter(References.GeorgeWashingtonPortrait));
+    AddContent(new PersonChapter(References.JohnAdamsPortrait));
+    AddContent(new PersonChapter(References.ThomasJeffersonPortrait));
+    AddContent(new PersonChapter(References.JohnQuincyAdamsPortrait));
+  }
+}
+
+//=====================================================================
+
+class PersonTip: Action {
+  var Person Person;
+
+  Constructor(Person person) {
+    super.Constructor(Actions.RunQuery, person);
+    Person = person;
+  }
+
+  override GetLayoutTip = Block {
+    Person;
+    (Person.FindFirstFact(PortraitLink) as DocReference)?.Image;
+  };
+
+  override GetQuery = MatchAny(Person) {
+    Person;
+  };
+}
+
+//=====================================================================
+
+namespace History {
+  readonly Subject[] Presidents {
+    var presidents = System.GetLocalRealm.Query(MatchAny(Person) {MatchAny(PublicOffices.USPresident)}) as Subject[];
+    var tenures    = (new OfficeTenure(each presidents, PublicOffices.USPresident)).ToSortedArray(false);
+    return (each tenures).Subject;
+  }
+
+  ShowRelations(ContentStyle style, Person person) = Block {
+    var unions = person.FindFacts(CoupleLink) as Couple[];
+    foreach (var union in unions) {
+      var other = union.Partner1;
+      if (other == person)
+        other = union.Partner2;
+
+      Table(null, PadLR(10pt), [Column.Fit(5")]) {
+        SpaceBefore: 10pt;
+        Row {
+          VAlign: Top;
+          ShowPortrait(other, 0.75");
+          style.Par {
+            ShowDate(null, union.Married);
+            ": married to ";
+            other;
+            if (union.Divorced is valid) {
+              " divorced on ";
+              union.Divorced;
+            }
+          };
+        };
+
+        var children = union.FindFacts(ParentsLink) as Subject[];
+        if (children is valid) {
+          foreach (var child in children) {
+            Row {
+              ShowPortrait(child, 0.75");
+              style.Par {
+                ShowDate(null, child.Born);
+                ": ";
+                child;
+                " was born";
+              };
+            };
+          }
+        }
+      };
+    }
+  };
+
+  ShowPortrait(Person person, height=1") = HBox(null, height, new Edge(0, 3pt)) {
+    HAlign: Center;
+    VAlign: Top;
+
+    var p = person.FindFirstFact(PortraitLink) as DocReference;
+    if (p is valid) {
+      HBox {
+        VAlign: Bottom;
+        Canvas(null, null, new Edge(2pt, 0, Colors.LightGray)) {
+          BorderRadius: 10pt;
+          BorderClip: true;
+          FitBox(p.Image, null, height - 10pt);
+          Tip: p;
+        };
+        var r = p.FindFirstFact(DocReference) as DocReference;
+        if (r is valid)
+          Paragraph {Cite {r}};
+      };
+    }
+    else
+      Span {Icons.portrait; TextHeight: 66pt; TextColor: Colors.LightGray};
+  };
+
+  ShowPerson(Subject person) = Block {
+    Paragraph(BorderB(0.5pt), [2.5", 4.8"]) {
+      person;
+      Tab;
+      ShowDates("Born ", FindOccurrenceDate(person, BornLink), "\tDied ", FindOccurrenceDate(person, DiedLink));
+    };
+
+    var comments = person.FindFacts(Comment) as Comment[];
+    if (comments is valid) {
+      Table(null, null, [1", Column.Expand]) {
+        Row {
+          VAlign: Top;
+
+          ShowPortrait(person);
+          Cell {
+            ParAlignment: Justify;
+            (each comments).TextReference;
+          };
+        };
+      };
+    }
+
+    var offices = person.FindFacts(PublicOffice) as PublicOffice[];
+    if (offices is valid) {
+      Paragraph {
+        LeftIndent: 10pt;
+        Bold;
+        "Offices:"
+      };
+      ListBlock {
+        var officetenures = (new OfficeTenure(person, each offices)).ToSortedArray(false);
+        (each officetenures).Show;
+      };
+    }
+  };
+
+  ShowEvent(ContentStyle style, Event event) = Block {
+    Paragraph(BorderB(0.5pt), [3", 5"]) {
+      Span {
+        Bold;
+        event.Description;
+      };
+      Tab;
+      ShowDate(null, event.Date);
+    };
+    event.ShowComments(style, 12pt);
+  };
+}
+
+//=====================================================================
+

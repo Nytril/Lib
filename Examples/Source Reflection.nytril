@@ -1,0 +1,51 @@
+using Format, Math, IO;
+//======================================================================
+
+Main.Documents = new MainDocumentClass;
+
+class MainDocumentClass: DocumentEntry {
+  Constructor {
+    super.Constructor(#cd9cef2d-4f77-4082-bc00-9865881382d4#, "Source Reflection");
+  }
+
+  override GetDocument = Document {
+    ViewCode([attribute Square, attribute PiSquared, attribute Sixteen], [attribute PiSquared, attribute Sixteen]);
+  };
+}
+//======================================================================
+
+Square(x) = x^2;
+PiSquared = Square(PI);
+Sixteen   = Square(4);
+
+
+RunCode(Attribute code) = Paragraph {
+  LeftIndent: 0.25";
+  code.Name;
+  " = ";
+  code.Value;
+};
+
+ViewCode(Attribute[] lines, Attribute[] execute) = Block {
+  Paragraph {
+    Bold;
+    "The code is:"
+  };
+  Paragraph {
+    LeftIndent: 0.25";
+    TextFace: Mono;
+    TextHeight: 12pt;
+    ParBackground: 94%;
+    Separator: LineBreak;
+    SourceSelection(each lines);
+  };
+  Paragraph {
+    SpaceBefore: 8pt;
+    Bold;
+    "And the result is:"
+  };
+  each RunCode(each execute);
+};
+//======================================================================
+
+

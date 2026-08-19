@@ -1,0 +1,19 @@
+include "Help";
+
+using Format, Units;
+
+Example = Block {
+  TextHeight: 20pt;
+  var g = 9.8 meters per second^2;
+
+  Paragraph {TextAbbreviate: false; g};
+  Paragraph {TextAbbreviate: true; g};
+  Paragraph {TextAbbreviate: true; TextDiagonal: true; g};
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextAbbreviate));
+
+//============================================================
+

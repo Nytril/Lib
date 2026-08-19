@@ -1,0 +1,74 @@
+using Format;
+
+include "Style";
+
+readonly Main.Documents = [
+  new ProductCatalogClass(#0de66af4-18f0-4fad-97e1-b0ecea4624f9#, new TraditionalStyleClass),
+  new ProductCatalogClass(#2eba98ae-faf0-4d92-ac4d-d842b057a6fb#, new ModernStyleClass)
+];
+
+//=============================================================
+
+class IntroductionClass: CatalogContentClass {
+  Constructor {
+    super.Constructor("Introduction");
+  }
+
+  override Body(CatalogStyleClass style) = Block {
+    style.Par {
+      "Introducing our main product line";
+    };
+  };
+}
+
+//=============================================================
+
+class FeaturesClass: CatalogContentClass {
+  Constructor {
+    super.Constructor("Features");
+  }
+
+  override Body(CatalogStyleClass style) = Block {
+    style.Par {
+      "Our product has the following features:";
+    };
+
+    style.BulletList {
+      "Stylish";
+      "Durable";
+    };
+
+    style.LastPar {
+      "End";
+    };
+  };
+}
+
+//=============================================================
+
+class ProductCatalogClass: DocumentEntry {
+  var ContentStyle  Style;
+  var Content[]     Content;
+
+  Constructor(Guid id, ContentStyle style) {
+    super.Constructor(id, "Product Catalog {0}"(style.Name));
+    Style   = style;
+    Content = [
+      new IntroductionClass,
+      new FeaturesClass
+    ];
+  }
+
+  override GetDocument = Document(Style.Margins) {
+    Header: MarginBlock { "Header" };
+
+    foreach (var c in Content) {
+      Style.HeadingPar(0) {
+        c.Title;
+      };
+      c.GetBody(Style);
+    }
+  };
+}
+
+//=============================================================

@@ -1,0 +1,13 @@
+include "Help";
+
+using Format;
+
+Example = ListBlock {
+  Paragraph { "Min value "; sbyte.MinValue};
+  Paragraph { "Max value "; sbyte.MaxValue};
+};
+
+Main.Help = new HelpExample(attribute sbyte);
+
+
+

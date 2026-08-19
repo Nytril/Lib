@@ -1,0 +1,264 @@
+using EquationSymbols, Format;
+
+include "Citations";
+include "Site";
+
+readonly EquationDocument Main.Documents.Equations = new;
+
+readonly NytrilIconSite Main.Site = new("Nytril.Examples.Equations", Icons.superscript);
+
+readonly Main.Facts = [EquationSymbols, Equations];
+
+//======================================================================
+
+class EquationDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#9291faec-3d9d-4d6e-af4d-e65b11825678#, "Equations");
+    Title       = Name;
+    Description = "Advanced formatting examples of real equations from math and physics";
+  }
+
+  override GetDocument = Document {
+    NytrilStyle.Heading1 {
+      Name;
+    };
+    NytrilStyle.SubHeader {
+      Description;
+    };
+    (each Equations).Explain;
+  };
+}
+
+//======================================================================
+
+VectorSymbol(x) = HBox {
+  Bracket: Brackets.RightArrow.Over;
+  x;
+};
+
+readonly namespace<EquationSymbol> EquationSymbols {
+  Imaginary           = new(#11c6bfeb-a6d0-4752-ae43-b0561a0f2ee9#, Symbol("i"), "Imaginary Unit", Span {"Where "; Symbol("i")^2; Tex.Equals; -1});
+  ElectricFieldVector = new(#c34fd586-8d3b-49a2-8f9c-464d1cf835ff#, VectorSymbol("E"), "Electric Field Vector");
+  SurfaceAreaVector   = new(#4720f490-7bd6-438e-9d07-757c4459c47e#, VectorSymbol("A"), "Spherical surface tangent vector");
+  SphereRadius        = new(#e9f760d9-a98b-4b24-bc3a-342c50ff5599#, "R", "Sphere radius");
+  ElectricCharge      = new(#58c7a83c-493e-4ce6-a067-b6c969db7abf#, "E", "Electric charge");
+  SurfaceGravity      = new(#8b684ca2-2e56-46e8-8504-eb150884ded0#, Symbol("g"), "Gravitation acceleration at the surface of the earth");
+  Energy              = new(#d24c7c1d-2316-4931-9d22-3dc95f26f9e5#, "E", "Energy");
+  PotentialEnergy     = new(#ebf23a83-f4e9-48d9-bd93-9b7ac1ce5749#, "V", "Potential energy");
+  LorentzFactor       = new(#f02e9d53-df88-4cea-a2a2-04098e5a1d44#, Tex.gamma, "Lorentz factor");
+  Hbar                = new(#c0f1e5c5-a2cf-4559-9d0e-9a760dabba52#, Tex.hbar, "Reduced Planck constant", Span {TextFace: Math; "Where "; Tex.hbar; Tex.Equals; Tex.planck; Tex.Divide; Symbolic.PI2});
+  Time                = new(#69268dbe-2f8f-45aa-8fde-c5ceb1411520#, Symbol("t"), "Time");
+  StartingTime        = new(#3e1e9595-23d8-452b-9b39-fea08e4b9d83#, Symbol("t") sub 0, "Initial time");
+  TimeObserver        = new(#28f3383e-f832-4183-b221-80c288ba8f7a#, Symbol("t") Tex.prime, "Observer time");
+  Mass                = new(#e79c24ed-691a-4cbe-9019-93621ee3fe45#, Symbol("m"), "Mass");
+  RestMass            = new(#982318e4-da25-4244-a62b-81dfc8081956#, Symbol("m") sub 0, "Rest mass");
+  RelativisticMass    = new(#44ff0808-3162-4a1e-8ebd-377de6a1dbcf#, Symbol("m"), "Relativistic Mass");
+  LightSpeed          = new(#5ee25e45-74b4-4dab-94b0-cd351c31f2aa#, Symbol("c"), "The speed of light in a vacuum");
+  Velocity            = new(#d748d95f-f924-46a3-b129-e6ec38288b08#, Symbol("v"), "Velocity");
+  Vx                  = new(#b10d692a-474f-411f-9327-fee83f0b3cbf#, Symbol("v") sub "x", "Velocity in the x direction");
+  Vy                  = new(#836052dd-868b-4978-a322-33c772c28857#, Symbol("v") sub "y", "Velocity in the y direction");
+  Vx0                 = new(#a5abaf48-20e3-4ab7-980d-39c1b1b26ca4#, Symbol("v") sub "x0", "Velocity in the x direction");
+  Vy0                 = new(#e75fa691-3fd3-4ea2-a24c-38e116a09004#, Symbol("v") sub "y0", "Velocity in the y direction");
+  Xc                  = new(#9fd686b0-d3fd-4e99-8471-4ef190c12332#, Symbol("x"), "x-coordinate");
+  X0                  = new(#eb8fb5b3-da08-4bbe-bb78-8c72496faf7a#, Symbol("x") sub "0", "Initial x position");
+  Yc                  = new(#fa018328-c1a0-46cc-80fb-189676f15f2e#, Symbol("y"), "y-coordinate");
+  Y0                  = new(#026e0080-074a-4bed-834c-7a29e24b2fb7#, Symbol("y") sub 0, "Initail y position");
+  Zc                  = new(#848f0f42-542d-4bed-8af1-3fdb43e259fb#, Symbol("z"), "z-coordinate");
+  Xv                  = new(#73532e46-36d3-4657-84f5-a78809565c72#, Symbol("x"), "Independant variable x");
+  Yv                  = new(#97259246-6929-48e7-a8f8-2cb9b1f8c8ba#, Symbol("y"), "Independant variable y");
+  Xaverage            = new(#f8350292-d93f-46be-b342-096e56739732#, Span {TextOverline: true; Symbol("x")}, "Average over all x");
+  Yaverage            = new(#88a4561c-b09a-4ffe-9ac7-3ce1484b0a15#, Span {TextOverline: true; Symbol("y")}, "Average over all y");
+  XObserver           = new(#ea5f073f-7f29-43bd-b97c-25efd250db22#, Symbol("x") Tex.prime, "Observer x");
+  SumIndex            = new(#481fcf4e-7c61-4987-9a2c-ad2314d1badb#, Symbol("i"), "Summation index");
+  TotalNumber         = new(#58a4f8f8-5f45-4aaa-a701-577f480dfcba#, Symbol("n"), "Total number");
+  ChiSquareTest       = new(#1a989e38-847b-4c31-9175-252f75d78569#, Tex.chi sup 2, "Chi Square test", "Measures the degree of association between categorical variables");
+  WaveFunction        = new(#09b02192-431e-4362-9a97-1dd171d59ac0#, Tex.Psi, "Schrodinger wave function");
+
+}
+
+//======================================================================
+
+readonly namespace<Equation> Equations {
+  MassEnergyRelation = new(#03c250e4-5f33-4be3-8c13-044234238b53#, "Mass-Energy Relation") {
+    Formula: EqSpan {
+      Energy;
+      Tex.Equals;
+      RelativisticMass * LightSpeed^2
+    };
+    DefinitionLink to Energy;
+    EquationLink to [RelativisticMass, LightSpeed];
+  };
+
+  LorentzRelation = new(#475505cf-f24c-41e3-b5be-e21a3ca61a90#, "Lorentz Factor Definition") {
+    Formula: EqSpan {
+      LorentzFactor;
+      Tex.Equals;
+      Fraction {
+        1;
+        Radical {
+          1 - Velocity^2 / LightSpeed^2;
+        };
+      };
+    };
+    DefinitionLink to LorentzFactor;
+    EquationLink to [Velocity, LightSpeed];
+ };
+
+ RelativisticMassRelation = new(#7a3347a0-7e0e-40b7-bcea-d687124aa5d4#, "Relativistic Mass Relation") {
+    Formula: EqSpan {
+      RelativisticMass;
+      Tex.Equals;
+      LorentzFactor * RestMass
+    };
+    DefinitionLink to RelativisticMass;
+    EquationLink to [RelativisticMass, RestMass, LorentzFactor];
+  };
+
+  TimeObserverX = new(#9a6ec1c2-8557-4a38-8e46-8a624f28a3e2#, "Observer time") {
+    Formula: EqSpan {
+      TimeObserver;
+      Tex.Equals;
+      LorentzFactor * (Time -  (Vx * Xc) / LightSpeed^2)
+    };
+    DefinitionLink to TimeObserver;
+    EquationLink to [LorentzFactor, Time, Vx, Xc, LightSpeed];
+  };
+
+  LengthContraction = new(#a87936e4-1150-4d9c-aad9-7499503010f1#, "Observer x") {
+    Formula: EqSpan {
+      XObserver;
+      Tex.Equals;
+      LorentzFactor * (Xc - Vx* Time)
+    };
+    DefinitionLink to XObserver;
+    EquationLink to [LorentzFactor, Time, Vx, Xc];
+  };
+
+  Schrodinger = new(#09b02192-431e-4362-9a97-1dd171d59ac0#,  "Schrodinger Equation in one dimension") {
+    Formula: EqSpan {
+      var args = Span {"("; Xc; CommaSpace; Time; ")"};
+
+      Imaginary;
+      Hbar;
+      Fraction {
+        Tex.partial;
+        Tex.partial;
+        Time;
+      };
+      WaveFunction;
+      args;
+      Tex.Equals;
+      HBox {
+        VAlign: Center;
+        Bracket: Brackets.Square;
+        Tex.Negative;
+        Fraction {
+          Hbar^2;
+          2; Mass;
+        };
+        Space;
+        Fraction {
+          Tex.partial^2;
+          Tex.partial;
+          Xc^2;
+        };
+        Tex.Plus;
+        PotentialEnergy; args;
+       };
+       WaveFunction;
+       args;
+    };
+    DefinitionLink to WaveFunction;
+    EquationLink to [Imaginary, Time, WaveFunction, Hbar, Xc, PotentialEnergy];
+  };
+
+  CorrelationFormula = new(#ab9bb3bf-11af-46cc-9c19-c50112d8b978#, "Correlation Test") {
+    Formula: EqSpan {
+      var sum = Nary {
+        Operator: Tex.sum;
+        Lower: SumIndex Tex.Equals 1;
+        Upper: TotalNumber;
+      };
+
+      var xi = Xv sub SumIndex;
+      var yi = Yv sub SumIndex;
+
+      ChiSquareTest;
+      Tex.Equals;
+      Fraction {
+        sum {
+          (xi - Xaverage) * (yi - Yaverage);
+        };
+
+        Radical {
+          HBox {
+            Bracket: Brackets.Round;
+            sum {
+              (xi - Xaverage)^2;
+            }
+          };
+
+          HBox {
+            Bracket: Brackets.Round;
+            sum {
+              (yi - Yaverage)^2;
+            }
+          }
+        }
+      };
+    };
+
+    DefinitionLink to ChiSquareTest;
+    EquationLink to [SumIndex, Xv, Yv, Xaverage, Yaverage];
+  };
+
+  SphericalElectricField = new(#867a8ae0-608d-44e3-93c3-40c457089db3#, "Spherical Electric Field") {
+    Formula: EqSpan {
+      Nary {
+        Operator: Tex.PathIntegral1;
+      };
+      ElectricFieldVector;
+      Tex.cdot;
+      Tex.derivative;
+      SurfaceAreaVector;
+      Tex.Equals;
+      Symbolic.PI2;
+      SphereRadius^2;
+      ElectricCharge;
+    };
+
+    EquationLink to [ElectricFieldVector, SurfaceAreaVector, SphereRadius, ElectricCharge];
+  };
+
+  ProjectileMotion = new(#104aac48-69b4-4f5a-bb86-60946f000ae9#, "Falling in constant gravity with no air resistance") {
+    Formula: EqSpan {
+      Yc; "("; Time; ")";
+      Tex.Equals;
+      Nary {
+        Lower: 0;
+        Upper: Y0;
+        Operator: Tex.Integral1;
+      };
+      HBox {
+        Bracket: Brackets.FlatRound;
+        Nary {
+          Lower: 0;
+          Upper: Vy0;
+          Operator: Tex.Integral1;
+        };
+        SurfaceGravity;
+        Space;
+        Tex.derivative;
+        Time;
+      };
+      Tex.derivative;
+      Time;
+      Tex.Equals;
+      Vy0; Time; Tex.Plus; Y0; Tex.Minus; 1 over 2; SurfaceGravity; Time^2;
+    };
+
+    EquationLink to [Time, StartingTime, Yc, Vy0, Y0, SurfaceGravity];
+  };
+}
+
+//======================================================================

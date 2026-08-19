@@ -1,0 +1,98 @@
+using Format, Syms, Units, Styles, Tex;
+
+namespace HomeworkSets.ProblemSet3 {
+  namespace Problem1 {
+    Title = "Regular and Bipartite Graphs A";
+    Problem = ProblemPar {
+      "Give an example of a graph which is connected and 5 regular on 8 vertexes."
+    };
+  }
+
+  namespace Problem2 {
+    Title = "Regular and Bipartite Graphs B";
+    Problem = Span {
+      "How many simple connected graphs bipartite graphs are there with four vertexes in one part and two in the other."
+    };
+  }
+
+  namespace Problem3 {
+    Title = "Supremum and Infimum A";
+    Problem = ProblemPar {
+      "Consider the set"; Inline{Set}; ". What are the supremum and infimum of this set?"};
+
+    Set = Bigcup {
+      TextStacked: true;
+      Lower: n Tex.In SetN sup Plus;
+      Parens{Fraction{n; n sup 2 Plus 1}; Comma; Fraction{1; n}};
+     }
+    }
+  }
+
+  namespace Problem4 {
+    Title = "Supremum and Infimum B";
+    Problem = ProblemPar {
+      "Write a proof that the infimum of the set ";
+      Inline{e sup (Negative n sup 2)};
+      " is 0. You must address both defining properties of the infimum."
+    };
+  }
+
+  namespace Problem5 {
+    Title = "Induction A";
+    Problem = ProblemPar {
+      "Prove using induction that";
+      Inline {
+        11 sup n Minus 6
+      };
+      " is a multiple of 5 for all n."
+    };
+
+    Answer = AnswerBlock {
+      LeftIndent: 0.25";
+      Paragraph {
+        "We must first show that this is true for ";
+        n Equals 0;
+        " which is";
+      };
+      InPar {
+        11 sup 0 Minus 6 Equals 1 Minus 6 Equals Negative 5
+      };
+      Paragraph {
+        "Which is a multiple of 5. ";
+        "Next we suppose that ";
+        11 sup (n Plus 1) Minus 6;
+        ". Then"
+      };
+
+      InPar {
+        11 sup (n Plus 1) Minus 6;
+        Equals 11 Tex.cdot 11 sup n Minus 6;
+        Equals 10 Tex.cdot 11 sup n Plus;
+        11 sup n Minus 6 Equals 5;
+        Parens{2 Tex.cdot 11 sup n}; Plus 5 k
+      };
+      Paragraph {
+        "Which is a multiple of 5. ";
+        "Since it is true for 0 and it being true for n implies its true for n + 1, we can get that it is true for all n."
+      };
+    };
+  }
+
+  namespace Problem6 {
+    Title = "Induction B";
+    Problem = ProblemPar {
+      "Prove using induction that ";
+      f sub leti;
+      " is the ";
+      leti sup "th";
+      " term of the fibonacci sequence, then ";
+      Sigma {
+        Lower: (leti Equals 1);
+        Upper: n;
+        f sub 2 sup n;Equals; f sub n Tex.cdot f sub (n Plus 1);
+      };
+    };
+  }
+
+}
+

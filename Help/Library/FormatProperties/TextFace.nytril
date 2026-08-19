@@ -1,0 +1,39 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  "By default the fixed font is \"Consolas\". To change this, place this line of code at the global level:";
+  Paragraph {
+    TextFace: Mono;
+    LeftIndent: 16pt;
+    "Main.TextFamily.Fixed = TextFamilies.CourierNew;";
+  };
+};
+
+FaceText(TextFaces face, text) = Paragraph(null, [2"]) {
+  face.Name;
+  Tab;
+  Span {
+    TextFace: face;
+    text;
+  }
+};
+
+Example = Block {
+  TextHeight: 14pt;
+  FaceText(TextFaces.Mono, "for (var i = 0; i < 10 ; ++i)");
+  FaceText(TextFaces.Equation, "()/+-");
+  FaceText(TextFaces.Greek, Tex.alpha Tex.beta Tex.gamma);
+  FaceText(TextFaces.SansSerif, "Sans serif font for headers");
+  FaceText(TextFaces.Serif, "Serif font for body text");
+  FaceText(TextFaces.Math, "E = \u210E\u03BD");
+  FaceText(TextFaces.Symbol, "f(x) = x + 1");
+};
+
+//============================================================
+
+Main.Help = new HelpExample(attribute(FormatProperties.TextFace));
+
+//============================================================
+
