@@ -3,36 +3,37 @@ using Format;
 //======================================================================
 
 readonly namespace NytrilData {
-  WebSite      = "www.nytril.com";
-  RedditSite   = new URL("www.reddit.com/r/nytril");
-  YouTubeSite  = new URL("www.youtube.com/@Nytril");
-  SupportEMail = new Email("support@nytril.com");
+      WebSite      = "www.nytril.com";
+      SupportEMail = new Email("support@nytril.com");
+  URL RedditSite   = new("www.reddit.com/r/nytril"),
+      GitHubSite   = new URL("www.github.com/Nytril/Lib"),
+      YouTubeSite  = new URL("www.youtube.com/@Nytril");
 }
 
 readonly namespace NytrilPalette {
-  Color          Hyperlink      = #7D2AE8#;
-  Color          EmailLink      = #0000C8#;
-  Color          Logo1          = #4A6D9D#; // powder blue
-  Color          Charcoal       = #505050#;
-  Color          Logo2          = Logo1.Scale(75%);
-  Color          LogoVideo      = Logo1;
-  Color          LogoVideo2     = Logo2.Scale(80%);
-  Color          Title          = Logo1.Scale(75%);
-  Color          TagLine        = #C0A3B0#;
-  Color          IconText       = TagLine;
-  Color          Icon           = Logo1;
-  Color          Arrow          = Title;
-  Color          Bullet         = Title;
-  Color          ChapterBack    = Color.GrayScale(90%);
-  Color          ChapterFore    = Title;
-  Color          SectionBack    = Logo1.Scale(70%);
-  Color          TableTitleBack = Logo1;
-  Color          TableTitleFore = Colors.White;
-  Color          SourceBack     = Color.GrayScale(97%);
-  Color          ListOdd        = Color.GrayScale(96%);
-  Color          IconLine       = #DCC7AA#;
-  RadialGradient IconBack       = SphericalFill(Logo1);
-  RadialGradient IconFore       = LightFill(Logo1);
+  Color          Hyperlink      = #7D2AE8#,
+                 EmailLink      = #0000C8#,
+                 Logo1          = #4A6D9D#, // powder blue
+                 Charcoal       = #505050#,
+                 Logo2          = Logo1.Scale(75%),
+                 LogoVideo      = Logo1,
+                 LogoVideo2     = Logo2.Scale(80%),
+                 Title          = Logo1.Scale(75%),
+                 TagLine        = #C0A3B0#,
+                 IconText       = TagLine,
+                 Icon           = Logo1,
+                 Arrow          = Title,
+                 Bullet         = Title,
+                 ChapterBack    = Color.GrayScale(90%),
+                 ChapterFore    = Title,
+                 SectionBack    = Logo1.Scale(70%),
+                 TableTitleBack = Logo1,
+                 TableTitleFore = Colors.White,
+                 SourceBack     = Color.GrayScale(97%),
+                 ListOdd        = Color.GrayScale(96%),
+                 IconLine       = #DCC7AA#;
+  RadialGradient IconBack       = SphericalFill(Logo1),
+                 IconFore       = LightFill(Logo1);
 
   RadialGradient TitlePageBack = new(0.5, 0.5, 0.5, 0.5, 1.2, 1.2, [
     new(0.2, Logo1),
@@ -310,79 +311,31 @@ readonly namespace NytrilStyle {
 
 //======================================================================
 
-class CheckMarkClass {
-  var double Scale;
+NytrilGlyphs.CheckMark(height, fill=Colors.Black, line=null, ratio=1.2) = Canvas(height * ratio, height) {
+  Baseline: 85%;
 
-  var int LeftMost   = 20,
-          TopMost    = 8,
-          BaseWidth  = 272,
-          BaseHeight = 203;
-
- Constructor(double height) {
-   Scale = height / BaseHeight;
- }
-
-  X(value) = (value - LeftMost) * Scale;
-
-  Y(value) = (value - TopMost) * Scale;
-
-  Fill = new LinearGradient(0.0, 0.0, 1.0, 1.0,
-    [new(0.0,  #B8FF62#),
-     new(0.35, #45E315#),
-     new(0.70, #10A909#),
-     new(1.0,  #047A08#)]
-  );
-
-  Get = Shape(Fill) {
-    ClosedPath(X(20), Y(105)) {
+  Shape(fill, line) {
+    ClosedPath(1%, 50%) {
       // Upper edge of the short arm
-      CurveTo(
-        new(X(30), Y(96)),
-        new(X(46), Y(90)),
-        new(X(58), Y(86))
-      );
+      CurveTo(new(0, 48%), new(18%, 40%), new(20%, 43%));
 
       // Curve down into the inside corner
-      CurveTo(
-        new(X(76),  Y(94)),
-        new(X(94),  Y(116)),
-        new(X(108), Y(140))
-      );
+      CurveTo(new(25%, 47%), new(33%, 58%), new(36%, 69%));
 
       // Upper edge of the long sweeping arm
-      CurveTo(
-        new(X(142), Y(80)),
-        new(X(202), Y(34)),
-        new(X(292), Y(8))
-      );
+      CurveTo(new(53%, 40%), new(75%, 17%), new(99%, 5%));
 
       // Sharp pointed tip
-      CurveTo(
-        new(X(285), Y(10)),
-        new(X(260), Y(27)),
-        new(X(252), Y(32))
-      );
+      CurveTo(new(97%, 6%), new(87%, 14%), new(85%, 17%));
 
       // Lower edge of the long arm
-      CurveTo(
-        new(X(185), Y(78)),
-        new(X(150), Y(142)),
-        new(X(108), Y(204))
-      );
+      CurveTo(new(63%, 39%), new(48%, 71%), new(37%, 98%));
 
       // Rounded bottom point
-      CurveTo(
-        new(X(104), Y(211)),
-        new(X(98),  Y(211)),
-        new(X(93),  Y(204))
-      );
+      CurveTo(new(35%, 100%), new(34%, 100%), new(32%, 98%));
 
       // Lower edge of the short arm
-      CurveTo(
-        new(X(86), Y(196)),
-        new(X(40), Y(118)),
-        new(X(20), Y(105))
-      );
+      CurveTo(new(29%, 94%), new(14%, 54%), new(1%, 50%));
     };
   };
-}
+};
