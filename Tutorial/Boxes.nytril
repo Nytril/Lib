@@ -3,37 +3,43 @@ using Format;
 
 namespace Chapters.Formatting.Sections.Boxes;
 
-readonly TutorialLesson Lesson = new(#07a879bb-7d48-45ff-9d4b-3a3a51c80b2a#, "Boxes", "Boxes", "box") {
+readonly TutorialLesson Lesson = new(#07a879bb-7d48-45ff-9d4b-3a3a51c80b2a#, "Box Formatting", "Boxes", "box") {
   Description: Span {
     "Boxes are rectangular containers with optional borders and padding. ";
-    "They can have horizontal or vertical alignment, and justify their content in flexible ways.";
+    "They align their content either horizontally or vertically, and can justify that content in flexible ways.";
   };
 };
 //======================================================================
 
-RedBox(i) = HBox(20pt, null, new Edge(0.25pt, 0, Colors.Red)) {
+Gap      = LessonExample.FontHeight * 0.5;
+OutColor = Colors.LightBlue;
+Outline  = new Edge(Gap*0.5, 0, OutColor);
+
+DigitBox(i) = HBox(null, null, new Edge(0, Gap)) {
+  Background: Colors.Green;
+  TextColor: Colors.White;
   HAlign: Center;
-  i;
+  Space; i; Space;
 };
 
-HBoxSet(width=null) = HBox(width, null, new Edge(3, 4, Colors.LightGray)) {
+HBoxSet = HBox(null, null, Outline) {
   VAlign: Center;
-  RedBox(each 1..3);
+  DigitBox(each 'A'..'C');
 };
 
 readonly LessonExample Content.ShowHBoxEx = new(#0e1f9d98-8edd-4d4f-ac16-4a05ec65dd86#, "HBoxes") {
   Text: Span {
     "Enclose content in a horizontally aligned box using the {0} formatter. "(NytrilStyle.Formatter(attribute HBox));
   };
-  Code: [attribute RedBox, attribute HBoxSet];
-  Sel: new(5, 22, 4);
+  Code: [attribute Outline, attribute DigitBox, attribute HBoxSet];
+  Sel: new(9, 10, 4);
 };
 
 //======================================================================
 
-VBoxSet(height=null) = VBox(null, height, new Edge(3, 4, Colors.LightGray)) {
+VBoxSet = VBox(null, null, Outline) {
   HAlign: Center;
-  RedBox(each 1..3);
+  DigitBox(each 1..3);
 };
 
 readonly LessonExample Content.ShowVBoxEx = new(#5bdd32f6-7425-417a-872f-f6d3e2919dde#, "VBoxes") {
@@ -41,25 +47,25 @@ readonly LessonExample Content.ShowVBoxEx = new(#5bdd32f6-7425-417a-872f-f6d3e29
     "Enclose content in a vertically aligned box using the {0} formatter. "(NytrilStyle.Formatter(attribute VBox));
   };
   Code: [attribute VBoxSet];
-  Sel: new(0, 23, 4);
+  Sel: new(0, 10, 4);
 };
 
 //======================================================================
 
 BoxesWithSeparation = Paragraph {
   HBoxSet {
-    Separation: 5pt;
+    Separation: Gap;
   };
   Space;
   VBoxSet {
-    Separation: 5pt;
+    Separation: Gap;
   };
 };
 
 readonly LessonExample Content.BoxSeparationEx = new(#bb3bf40d-76ce-4c37-b8a9-6f05156e9c14#, "Separation") {
   Text: "Space between each element can be added with the {0} property. "(NytrilStyle.PropName(attribute FormatProperties.Separation));
   Code: [attribute BoxesWithSeparation];
-  Sel: new(2, 4, 16);
+  Sel: new(2, 4, 17);
 };
 
 //======================================================================
@@ -77,36 +83,37 @@ BoxesWithSeparators = Paragraph {
 
 readonly LessonExample Content.BoxSeparatorsEx = new(#0e30af9c-8bbf-4566-92f5-8b7bf47a4b78#, "Separators") {
   Text: Span {
-    "New elements can be automatically added between each element of the box using {0} property. "(NytrilStyle.PropName(attribute FormatProperties.Separator));
-    "Notice that the same revision is used to modify two differnt formatters. ";
+    "New separator elements can be automatically added between each existing element of the box by using the {0} property. "(NytrilStyle.PropName(attribute FormatProperties.Separator));
+    "Notice that the same separator revision is used to modify two different box formatters. ";
   };
   Code: [attribute PlusEquals, attribute BoxesWithSeparators];
   Sel: new(1, 0, 43);
+  Options: NoShort;
 };
 
 //======================================================================
 
-JustifiedBox = HBox(50%, null, 1) {
+JustifiedBox = HBox(50%, null, Outline) {
   Justify: Justifiers.SpaceBetween;
   1..5 step 1;
 };
 
 readonly LessonExample Content.JustifyBoxEx = new(#259c96ba-c6fd-4f03-a86b-f159f87b4790#, "Justification") {
   Text: Span {
-    "Change the justification of items inside the box using {0} property. "(NytrilStyle.PropName(attribute FormatProperties.Justify));
+    "Change the justification of items inside the box using the {0} property. "(NytrilStyle.PropName(attribute FormatProperties.Justify));
   };
   Code: [attribute JustifiedBox];
-  Sel: new(1, 2, 31);
+  Sel: new(1, 2, 33);
 };
 
 //======================================================================
 
 JustifiedBoxes = VBox {
-  Separation: 3;
+  Separation: 1%;
   foreach (var j in Justifiers) {
     HBox {
-      HBox(20%) {HAlign: Right; Margin: PadR(5); j};
-      HBox(50%, null, 0.5) {
+      HBox(20%) {HAlign: Right; Margin: PadR(2%); j};
+      HBox(50%, null, Outline) {
         Justify: j;
         1..5 step 1;
       };
@@ -120,28 +127,28 @@ readonly LessonExample Content.JustifyBoxesEx = new(#ea7c755b-479f-4c3a-9816-a27
   };
   Code: [attribute JustifiedBoxes];
   Sel: new(2, 2, 29);
+  Options: NoShort;
 };
 
 //======================================================================
 
-MarginPadding = HBox(null, null, new Edge(1, 0)) {
+MarginPadding = HBox(null, null, new Edge(0.5%, 0, OutColor)) {
   HBox {
-    Margin: 10;
+    Margin: Gap;
     Background: 90%;
     " Inner box with outside margin ";
   };
 };
 
 readonly LessonExample Content.MarginPaddingEx = new(#0f81a262-d341-4ec4-b610-585cdba0e3e8#, "Margins") {
-  Text: "Use the {0} property to put distance between the box and ajacent content. "(NytrilStyle.PropName(attribute FormatProperties.Margin));
+  Text: "Use the {0} property to put distance between the box and adjacent content. "(NytrilStyle.PropName(attribute FormatProperties.Margin));
   Code: [attribute MarginPadding];
-  Sel: new(2, 4, 10);
-  Tip: [LessonTip(8, 2.25, "Space around box", 17 degrees, 5)];
+  Sel: new(2, 4, 12);
 };
 
 //======================================================================
 
-MarginBox(name, l, t, r, b) = HBox(null, null, new Edge(1, 0)) {
+MarginBox(name, l, t, r, b) = HBox(null, null, new Edge(0.5%, 0, OutColor)) {
   HBox {
     Margin: new Thickness(l, t, r, b);
     Background: 90%;
@@ -151,35 +158,35 @@ MarginBox(name, l, t, r, b) = HBox(null, null, new Edge(1, 0)) {
 
 BoxesWithMargins = Paragraph {
   Separator: Space*4;
-  MarginBox("LTRB", 8, 8, 8, 8);
-  MarginBox("T",    0, 8, 0, 0);
-  MarginBox("B",    0, 0, 0, 8);
-  MarginBox("L",    8, 0, 0, 0);
-  MarginBox("R",    0, 0, 8, 0);
-  MarginBox("LR",   8, 0, 8, 0);
-  MarginBox("TB",   0, 8, 0, 8);
+  MarginBox("LTRB", Gap, Gap, Gap, Gap);
+  MarginBox("T",    0,   Gap, 0,   0);
+  MarginBox("B",    0,   0,   0,   Gap);
+  MarginBox("L",    Gap, 0,   0,   0);
+  MarginBox("R",    0,   0,   Gap, 0);
+  MarginBox("LR",   Gap, 0,   Gap, 0);
+  MarginBox("TB",   0,   Gap, 0,   Gap);
 };
 
 readonly LessonExample Content.ShowBoxMarginEx = new(#16530a61-236b-43c4-aab2-b7d6a5b6a795#, "Margin Examples") {
   Text: "Here are some examples of different combinations of {0} settings. "(NytrilStyle.PropName(attribute FormatProperties.Margin));
   Code: [attribute MarginBox, attribute BoxesWithMargins];
   Sel: new(2, 4, 34);
+  Options: NoShort;
 };
 
 //======================================================================
 
-EdgePadding = HBox(null, null, new Edge(1, 10)) {
-  "Edge Padding";
+EdgePadding = HBox(null, null, new Edge(0.5%, Gap, OutColor)) {
+  "Padding between content and edge";
 };
 
 readonly LessonExample Content.EdgePaddingEx = new(#6c099766-632b-4b49-8384-3603adaac1b9#, "Padding") {
   Text: Span {
-    "Set the border padding with the padding parameter of the {0} constructor. "(NytrilStyle.Class(attribute Edge));
+    "Set the border padding using the Padding parameter of the {0} constructor. "(NytrilStyle.Class(attribute Edge));
     "This puts distance between the border and its contents. ";
   };
   Code: [attribute EdgePadding];
-  Sel: new(0, 43, 1);
-  Tip: [LessonTip(6, 2.25, "Space around the edges", 17 degrees, 5)];
+  Sel: new(0, 46, 3);
 };
 
 //======================================================================
@@ -193,25 +200,26 @@ PaddingBox(n, l, t, r, b) = HBox(null, null, new(new(1, l),new(1, t),new(1, r),n
 
 BoxesWithPadding = Paragraph {
   Separator: Space*4;
-  PaddingBox("LTRB", 8, 8, 8, 8);
-  PaddingBox("T",    0, 8, 0, 0);
-  PaddingBox("B",    0, 0, 0, 8);
-  PaddingBox("L",    8, 0, 0, 0);
-  PaddingBox("R",    0, 0, 8, 0);
-  PaddingBox("LR",   8, 0, 8, 0);
-  PaddingBox("TB",   0, 8, 0, 8);
+  PaddingBox("LTRB", Gap, Gap, Gap, Gap);
+  PaddingBox("T",    0,   Gap, 0,   0);
+  PaddingBox("B",    0,   0,   0,   Gap);
+  PaddingBox("L",    Gap, 0,   0,   0);
+  PaddingBox("R",    0,   0,   Gap, 0);
+  PaddingBox("LR",   Gap, 0,   Gap, 0);
+  PaddingBox("TB",   0,   Gap, 0,   Gap);
 };
 
 readonly LessonExample Content.ShowBoxPaddingEx = new(#2fddd963-1968-4297-9c8e-c14791854559#, "Padding Examples") {
   Text: "Here are some examples of {0} padding applied in different combinations. "(NytrilStyle.Class(attribute Border));
   Code: [attribute PaddingBox, attribute BoxesWithPadding];
   Sel: new(0, 49, 39);
+  Options: NoShort;
 };
 
 //======================================================================
 
-RoundedBorders = HBox(null, null, new Edge(2, 5, Colors.Blue)) {
-  BorderRadius: 10;
+RoundedBorders = HBox(null, null, new Edge(1%, 3%, Colors.Blue)) {
+  BorderRadius: Gap*2;
   TextHeight: 200%;
   HAlign: Center;
   "Rounded Corners";
@@ -220,12 +228,12 @@ RoundedBorders = HBox(null, null, new Edge(2, 5, Colors.Blue)) {
 readonly LessonExample Content.RoundedBordersEx = new(#0b84470c-3c3e-4a2d-a62d-ccb626829e64#, "Border Radius") {
   Text: "Rounded corners can be specified using the {0} property."(NytrilStyle.PropName(attribute FormatProperties.BorderRadius));
   Code: [attribute RoundedBorders];
-  Sel: new(1, 2, 16);
+  Sel: new(1, 2, 20);
 };
 
 //======================================================================
 
-Chicklet(text) = HBox(null, null, new Edge(2, 0, Colors.Blue)) {
+Chicklet(text) = HBox(null, null, new Edge(0.5%, 0, Colors.Blue)) {
   TextHeight: 200%;
   HAlign: Center;
   Background: Colors.AliceBlue;
@@ -234,17 +242,18 @@ Chicklet(text) = HBox(null, null, new Edge(2, 0, Colors.Blue)) {
 
 AllChicklets = Paragraph {
   Separator: Space*3;
-  Chicklet("Rounded") {BorderRadius: 10};
-  Chicklet("Flat") {BorderRadius: new Size(20, 10)};
-  Chicklet("TL-BR") {BorderRadius: new BorderRadius(6, 0, 6, 0)};
-  Chicklet("Top") {BorderRadius: new BorderRadius(20, 20, 0, 0)};
-  Chicklet("Right") {BorderRadius: new BorderRadius(0, new Size(10, 20), new Size(10, 20), 0)};
+  Chicklet("Rounded") {BorderRadius: Gap};
+  Chicklet("Flat") {BorderRadius: new Size(2 Gap, Gap)};
+  Chicklet("TL-BR") {BorderRadius: new BorderRadius(Gap, 0, Gap, 0)};
+  Chicklet("Top") {BorderRadius: new BorderRadius(Gap, Gap, 0, 0)};
+  Chicklet("Right") {BorderRadius: new BorderRadius(0, new Size(Gap, 2 Gap), new Size(Gap, 2 Gap), 0)};
 };
 
 readonly LessonExample Content.ShowChickletEx = new(#b082fa44-f38d-4124-8547-bcd49e486b28#, "Border Radius Examples") {
   Text: "Here are some examples of rounded corners with different values for each corner. ";
   Code: [attribute Chicklet, attribute AllChicklets];
-  Sel: new(13, 35, 58);
+  Sel: new(11, 21, 46);
+  Options: NoShort;
 };
 
 //======================================================================
@@ -253,10 +262,11 @@ Back = new RadialGradient(20%, 30%, 20%, 30%, 20%, 40%,
   [new(0, Colors.White), new(100%, Colors.LightGreen)]
 );
 
-BoxWithBackground = HBox(null, null, new Edge(1, 5)) {
+BoxWithBackground = HBox(null, null, new Edge(0.5%, 1%)) {
   Background: Back;
-  BorderRadius: 5;
-  "Start";
+  BorderRadius: Gap;
+  TextHeight: 150%;
+  " Start ";
 };
 
 readonly LessonExample Content.BoxWithBackgroundEx = new(#8eace74e-81cf-4348-962e-2ef004a16fb0#, "Background") {
@@ -268,13 +278,13 @@ readonly LessonExample Content.BoxWithBackgroundEx = new(#8eace74e-81cf-4348-962
 //======================================================================
 
 ShadowBox = BoxWithBackground {
-  Shadow: new Edge(2, 0, Colors.DarkGray);
+  Shadow: new Edge(0.4%, 0, Colors.DarkGray);
 };
 
 readonly LessonExample Content.ShowShadowEx = new(#eb3cdc3a-a07f-4e48-844a-9674d6fc5c83#, "Shadows") {
   Text: "Use the {0} property to add a raised look to a box."(NytrilStyle.PropName(attribute FormatProperties.Shadow));
   Code: [attribute ShadowBox];
-  Sel: new(1, 2, 40);
+  Sel: new(1, 2, 43);
 };
 
 //======================================================================
