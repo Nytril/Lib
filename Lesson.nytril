@@ -142,6 +142,8 @@ class LessonExample: Fact {
     NoFormat,
   }
 
+  static var double FontHeight = 16;
+
   field string          Name;
   field                 Text,
                         Text2;
@@ -306,6 +308,7 @@ class LessonExample: Fact {
   }
 
   GetContent(in Size size, ShowOptions options, margin, th) = VBox(size.Width, null, PadAll(margin)) {
+    FontHeight = th;
     TextHeight: th;
     Separation: 8pt;
 
