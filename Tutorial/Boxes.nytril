@@ -3,7 +3,7 @@ using Format;
 
 namespace Chapters.Formatting.Sections.Boxes;
 
-readonly TutorialLesson Lesson = new(#07a879bb-7d48-45ff-9d4b-3a3a51c80b2a#, "Box Formatting", "Boxes", "box") {
+readonly TutorialLesson Lesson = new(#07a879bb-7d48-45ff-9d4b-3a3a51c80b2a#, "Box Formatting", "Boxes", "box", "https://youtu.be/wYZVTJ7-Vs0") {
   Description: Span {
     "Boxes are rectangular containers with optional borders and padding. ";
     "They align their content either horizontally or vertically, and can justify that content in flexible ways.";
