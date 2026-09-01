@@ -2,7 +2,7 @@ include "Help";
 
 using Format;
 
-ArgString = "This is a {0} with {1} arguments";
+S2 ArgString = "This is a {0} with {1} arguments";
 
 readonly Example = ListBlock {
   "Plain string";

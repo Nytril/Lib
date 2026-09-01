@@ -140,10 +140,7 @@ ParabolaChart = VBox {
   Chart(90%, 2") {
     ChartType: ChartTypes.Line;
     Marker: Markers.Square;
-    XAxis: ChartAxis {
-      Start: -15;
-      Stop: 15;
-    };
+    XAxis: ChartAxis {Start: -15; Stop: 15};
     ChartSeries {
       foreach (var x in -10..10)
         new DataPoint(x, Quadratic(x)) {Reference: x};
