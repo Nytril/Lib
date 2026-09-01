@@ -42,7 +42,7 @@ readonly LessonExample Content.DirectSequenceEx = new(#cc46f653-d7ef-4a50-8ef2-1
 
 //======================================================================
 
-DNAFunc = dna"AC{0}TG";
+S1 DNAFunc = dna"AC{0}TG";
 Call    = DNAFunc(Dna.N);
 Iterate = DNAFunc(each [dna"-AA-", dna"-CC-", dna"-TT-", dna"-GG-"]);
 

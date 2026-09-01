@@ -35,8 +35,8 @@ readonly LessonExample Content.Join = new(#a76ff739-795f-4ad4-888b-ad98e9595038#
 
 //======================================================================
 
-Message   = "There is an error in \"{0}\"";
-FileError = Message("file.txt");
+S1 Message = "There is an error in \"{0}\"";
+FileError  = Message("file.txt");
 
 readonly LessonExample Content.Arguments = new(#951cff2a-18fd-4cde-b500-b407b04c5644#, "String Arguments") {
   Text: "Strings can contain numbered sections that allow for substitutions supplied by arguments to the string";
@@ -45,7 +45,7 @@ readonly LessonExample Content.Arguments = new(#951cff2a-18fd-4cde-b500-b407b04c
 
 //======================================================================
 
-Warning     = "Please wait {1} seconds for {0}";
+S2 Warning  = "Please wait {1} seconds for {0}";
 WaitWarning = Warning("the report to generate", 5);
 
 readonly LessonExample Content.ArgumentOrder = new(#14ba0069-d5c9-4c4f-8b81-5f101728c23e#) {
@@ -55,7 +55,7 @@ readonly LessonExample Content.ArgumentOrder = new(#14ba0069-d5c9-4c4f-8b81-5f10
 
 //======================================================================
 
-RootFormat      = "The inverse square root of {0} is {1}";
+S2 RootFormat   = "The inverse square root of {0} is {1}";
 RootFunction(x) = RootFormat(x, 1 / Symbolic.Sqrt(x));
 RootArray       = Span {Separator: ", "; RootFunction(each [2, Symbol("x"), "two"])};
 
