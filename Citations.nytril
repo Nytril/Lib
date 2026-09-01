@@ -449,13 +449,11 @@ class ReviewComment: Fact {
               case ContentStyle.ReviewModes.MarkupAll:
               case ContentStyle.ReviewModes.MarkupRevised:
               case ContentStyle.ReviewModes.MarkupOriginal:
-                Paragraph {
-                  Tab;
-                  Span {
-                    TextColor: Colors.Blue;
-                    "View changes";
-                    Action: new Action(Actions.ToAnchor, FactId);
-                  };
+                Tab;
+                Span {
+                  TextColor: Colors.Blue;
+                  "View changes";
+                  Action: new Action(Actions.ToAnchor, FactId);
                 };
                 break;
             }
