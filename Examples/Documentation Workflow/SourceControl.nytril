@@ -84,9 +84,12 @@ class GitConnectStepsSection: Content {
       "Connect GIT";
     };
 
-    var gitDialogRef = design.FigureReference(GitConnectDialogFig);
     design.SpacedParagraph {
-      "To connect GIT, select "; design.SpanHighlight { "Git => Clone from Git" }; ", to reveal the connection dialog, as Shown in " gitDialogRef ". ";
+      "To connect GIT, select ";
+      design.SpanHighlight { "Git => Clone from Git" };
+      ", to reveal the connection dialog, as shown in ";
+       design.FigureReference(GitConnectDialogFig);
+       DotSpace;
     };
 
     design.TightParagraph {
