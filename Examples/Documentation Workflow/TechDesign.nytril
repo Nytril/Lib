@@ -272,8 +272,7 @@ class TechDesign {
 
 
   virtual FigureCaption(Content figure) = Paragraph {
-    var figRef = FigureReference(figure);
-    Span {figRef DotSpace; Bold};
+    Span {FigureReference(figure) DotSpace; Bold};
     figure.Title;
     SpaceAfter: 14px;
   };

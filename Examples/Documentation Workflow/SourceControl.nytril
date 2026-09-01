@@ -21,6 +21,7 @@ class SourceControlConcept: AuthoredContent {
 // ============================================================================
 
 readonly GitPurposeSection GitPurpose = new;
+
 class GitPurposeSection: Content {
   Constructor() {
     super.Constructor(null);
@@ -117,6 +118,7 @@ class GitConnectStepsSection: Content {
 // ============================================================================
 
 readonly GitAuthenticationSection GitAuthentication = new;
+
 class GitAuthenticationSection: Content {
   Constructor() {
     super.Constructor(null);
@@ -143,6 +145,7 @@ class GitAuthenticationSection: Content {
 // ============================================================================
 
 readonly GitTroubleshootingSection GitTroubleshooting = new;
+
 class GitTroubleshootingSection: Content {
   Constructor() {
     super.Constructor(null);
@@ -174,6 +177,7 @@ class GitTroubleshootingSection: Content {
 // ============================================================================
 
 readonly GitResourcesSection GitResources = new;
+
 class GitResourcesSection: Content {
   Constructor() {
     super.Constructor(null);
@@ -193,6 +197,7 @@ class GitResourcesSection: Content {
 // ============================================================================
 
 readonly GitConnectDialogFigure GitConnectDialogFig = new;
+
 class GitConnectDialogFigure: Content {
   Constructor() {
     super.Constructor("Git Repository Connection");
