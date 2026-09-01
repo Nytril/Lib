@@ -62,6 +62,8 @@ readonly namespace Main.Documents {
   TutorialShowDocument TutorialShow = new;
 }
 
+Attribute GetSections(Attribute chapter) = chapter.FindChild("Sections");
+
 //======================================================================
 
 class TutorialShowDocument: SlideShow {
@@ -82,11 +84,16 @@ class TutorialShowDocument: SlideShow {
   };
 
   override void CreateSlides {
-    foreach (var chapter in Chapters) {
-      foreach (var section in chapter.Sections) {
-        foreach (var content in section.Content) {
-          if (content.?Slide is valid)
-            AddSlide(new FigureSlide(new LessonContent(content as LessonExample), Left));
+    var chapters = attribute(Chapters).Children;
+    foreach (var chapter in chapters) {
+      var sections = GetSections(chapter);
+      if (sections is valid) {
+        foreach (var block in sections.Children) {
+          var video  = new VideoLesson(block);
+          foreach (var example in video.Examples) {
+            if (example.Title is valid)
+              AddSlide(new FigureSlide(new LessonContent(example), Left));
+          }
         }
       }
     }
@@ -110,8 +117,6 @@ class TutorialDocument: DocumentEntry {
     Bold;
     name;
   };
-
-  Attribute GetSections(Attribute chapter) = chapter.FindChild("Sections");
 
   override GetDocument = Document(0.75") {
     Paragraph {
