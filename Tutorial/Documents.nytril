@@ -20,7 +20,7 @@ class HelloDocClass: DocumentEntry {
 MyDocument = new HelloDocClass().GetDocument;
 
 readonly LessonExample Content.ShowSimpleDocument = new(#be153198-ccbe-4c22-9c0a-a5f686710a77#) {
-  Form: Paragraph {
+  Text: Paragraph {
     "A document is made by creating a new class that inherits {0}. "(NytrilStyle.Class(attribute DocumentEntry));
     "Overload the function {0} and add new content. "(NytrilStyle.PropName(attribute DocumentEntry.GetDocument));
   };

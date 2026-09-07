@@ -132,7 +132,7 @@ readonly LessonExample Content.FunctionsEx = new(#abe4a52b-aa35-4477-bae9-0236ca
 
 //======================================================================
 
-RandomNumber = Math.Random(1..100);  // Function taking no parameters
+RandomNumber = Math.Random(1..100);  // Takes no parameters and returns a ramdom number
 
 ShowRandom = Paragraph {
   Separator: CommaSpace;
@@ -174,7 +174,7 @@ readonly LessonExample Content.ShowMeasurementsEx = new(#949b7acc-9b2e-4d70-beb8
 
 //======================================================================
 
-const g = 9.8m per second^2; // Can be calculated at compile time
+const g = 9.8m per second^2; // Calculated at compile time
 
 ShowGravity = Paragraph {
   TextAbbreviate: true;
@@ -239,7 +239,7 @@ ShowAffinity = Block {
 readonly LessonExample Content.ShowAffinityEx = new(#5e2bc342-0395-4da5-8d99-0df29ef02e67#) {
   Text: Span {
     "A feature called 'affinity' allows for more natural and compact expression of common pairs of values. ";
-    "Values placed side-by-side without an operator in-between them are combined using an implied (binary) affinity operator. ";
+    "Values placed side-by-side without an operator in-between them are combined using an implied binary affinity operator. ";
     "Each pair of values will be joined based on their actual types at runtime. ";
     "As shown below, the first line shows a normal expression using the '+' operator. ";
     "Here, as you would expect, the '4' and '1000' are added together. ";

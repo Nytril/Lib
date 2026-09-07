@@ -35,20 +35,20 @@ readonly LessonExample Content.MultiplyEx = new(#852212ac-011d-41bc-b15c-801326a
 
 //======================================================================
 
-Ratio = 3 over 5;
-
-readonly LessonExample Content.RationalDivisionEx = new(#38d760d2-d539-4ba4-be5d-fd1f29ca8259#) {
-  Text: "Rational division is carried out {0}"(NytrilStyle.OpAttribute(attribute over));
-  Code: [attribute Ratio];
-};
-
-//======================================================================
-
 RealDivision = 3 / 5;
 
 readonly LessonExample Content.FloatingPointDivisionEx = new(#138f0e02-457c-4a7d-9370-17261c608b44#) {
   Text: "Floating point division is carried out {0}, the result is a floating point number."(NytrilStyle.OpAttribute(attribute /));
   Code: [attribute RealDivision];
+};
+
+//======================================================================
+
+Ratio = 3 over 5;
+
+readonly LessonExample Content.RationalDivisionEx = new(#38d760d2-d539-4ba4-be5d-fd1f29ca8259#) {
+  Text: "Rational division is carried out {0}"(NytrilStyle.OpAttribute(attribute over));
+  Code: [attribute Ratio];
 };
 
 //======================================================================
@@ -88,7 +88,7 @@ c          = Symbol("c");
 Polynomial = a x^2 + b x + c;
 
 readonly LessonExample Content.AlgebraEx = new(#4f49bde2-9ed6-47fa-a3b6-b6fe161a5474#) {
-  Text: "Symbols obey the rules of algebra when combined with other symbols and numbers";
+  Text: "Symbols obey the rules of algebra when combined with other symbols and numbers. ";
   Code: [attribute Polynomial];
 };
 
@@ -97,7 +97,7 @@ readonly LessonExample Content.AlgebraEx = new(#4f49bde2-9ed6-47fa-a3b6-b6fe161a
 AddX = 2 x + 5 x + 3;
 
 readonly LessonExample Content.Symbols= new(#0d38b5c5-b95a-4d4c-9d59-d2dd1a300f6e#, "Algebra") {
-  Text: "Basic algebra is performed automatically when symbols are multipled or added";
+  Text: "Basic algebra is performed automatically when symbols are multipled or added. ";
   Code: [attribute AddX];
 };
 
@@ -118,7 +118,7 @@ CompareAll = [
 ];
 
 readonly LessonExample Content.ExpressionEx = new(#79b06a51-7abb-4cfd-937b-90d80e2aced7#) {
-  Form: NytrilStyle.Function(attribute(object.GetExpandedTerms), "Combined terms can be expanded ");
+  Text: NytrilStyle.Function(attribute(object.GetExpandedTerms), "Combined terms can be expanded");
   Code: [attribute CompareAll];
 };
 
@@ -140,7 +140,7 @@ CheckMin1 = Math.Min(-5, 2);
 CheckMin2 = Math.Min(Symbolic.PI, 4);
 
 readonly LessonExample Content.MinFunctionEx = new(#b56e7294-f1af-40a8-a317-5170eed9e47f#) {
-  Form: NytrilStyle.Function(attribute Math.Min, "Get the minimum of two values");
+  Text: NytrilStyle.Function(attribute Math.Min, "Get the minimum of two values");
   Code: [attribute CheckMin1, attribute CheckMin2];
   Show: [CheckMin1, CheckMin2];
 };
@@ -163,7 +163,7 @@ CheckAbs2  = Math.Abs(-10);
 CheckAbs3  = Math.Abs(-x);
 
 readonly LessonExample Content.AbsFunctionEx = new(#230b4d2b-1977-437b-8f4f-9af7ae6cd29d#) {
-  Form: NytrilStyle.Function(attribute Math.Abs, "Get the absolute value of a number");
+  Text: NytrilStyle.Function(attribute Math.Abs, "Get the absolute value of a number");
   Code: [attribute CheckAbs1, attribute CheckAbs2, attribute CheckAbs3];
   Show: [CheckAbs1, CheckAbs2, CheckAbs3];
 };
@@ -177,7 +177,7 @@ CheckLog4  = Math.Log(1000, 10);
 CheckLog5  = Math.Log(16, 2);
 
 readonly LessonExample Content.LogFunctionEx = new(#cc198484-ebe9-42d6-845b-933ccf4c903c#) {
-  Form: NytrilStyle.Function(attribute Math.Log, "Get the logarithm of a number");
+  Text: NytrilStyle.Function(attribute Math.Log, "Get the logarithm of a number");
   Code: [attribute CheckLog1, attribute CheckLog2, attribute CheckLog3, attribute CheckLog4, attribute CheckLog5];
   Show: [CheckLog1, CheckLog2, CheckLog3, CheckLog4, CheckLog5];
 };
@@ -187,7 +187,7 @@ readonly LessonExample Content.LogFunctionEx = new(#cc198484-ebe9-42d6-845b-933c
 FactArray = Span {Separator: ", "; Math.Factorial(each 1..6)};
 
 readonly LessonExample Content.FactorialFunctionEx = new(#db69a26a-58fb-449e-aa43-99417a268094#) {
-  Form: NytrilStyle.Function(attribute Math.Factorial, "Get the factorial of a number");
+  Text: NytrilStyle.Function(attribute Math.Factorial, "Get the factorial of a number");
   Code: [attribute FactArray];
   Show: [FactArray];
 };

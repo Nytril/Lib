@@ -146,7 +146,7 @@ readonly LessonExample Content.ComplexMultiplicationEx = new(#89eb8fce-11fe-40fb
 Real2 = Math.RealPart(Complex2);
 
 readonly LessonExample Content.GetRealPartEx = new(#10d67d14-7c7f-4125-8377-d29083546a5c#) {
-  Form: NytrilStyle.Function(attribute Math.RealPart, "Get the real part of a complex number");
+  Text: NytrilStyle.Function(attribute Math.RealPart, "Get the real part of a complex number");
   Code: [attribute Real2];
 };
 
@@ -155,7 +155,7 @@ readonly LessonExample Content.GetRealPartEx = new(#10d67d14-7c7f-4125-8377-d290
 Imaginary3 = Math.ImaginaryPart(Complex2);
 
 readonly LessonExample Content.GetImaginaryPartEx = new(#492e0c43-6985-407f-9dd0-8c5146eb28ec#) {
-  Form: NytrilStyle.Function(attribute Math.ImaginaryPart, "Get the imaginary part of a complex number");
+  Text: NytrilStyle.Function(attribute Math.ImaginaryPart, "Get the imaginary part of a complex number");
   Code: [attribute Imaginary3];
 };
 
@@ -164,7 +164,7 @@ readonly LessonExample Content.GetImaginaryPartEx = new(#492e0c43-6985-407f-9dd0
 ComplexModulus = Math.Abs(Complex2);
 
 readonly LessonExample Content.GetComplexModulusEx = new(#5867a1fa-e844-44dd-9b30-3a79f3ee8845#) {
-  Form: NytrilStyle.Function(attribute Math.Abs, "Get the modulus of a complex number");
+  Text: NytrilStyle.Function(attribute Math.Abs, "Get the modulus of a complex number");
   Code: [attribute ComplexModulus];
 };
 

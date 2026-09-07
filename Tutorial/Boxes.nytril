@@ -9,6 +9,7 @@ readonly TutorialLesson Lesson = new(#07a879bb-7d48-45ff-9d4b-3a3a51c80b2a#, "Bo
     "They align their content either horizontally or vertically, and can justify that content in flexible ways.";
   };
 };
+
 //======================================================================
 
 Gap      = LessonExample.FontHeight * 0.5;

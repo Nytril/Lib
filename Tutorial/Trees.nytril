@@ -123,7 +123,7 @@ ShowEquation = HBox(null, null, new Edge(0.5, 8pt)) {
 };
 
 readonly LessonExample Content.ShowExpressionTreeEx = new(#d6154434-6e2a-4401-b9f9-61280cffaacb#) {
-  Form: NytrilStyle.Function(attribute (object.GetExpressionTree), "The structure of a math expression may be shown");
+  Text: NytrilStyle.Function(attribute (object.GetExpressionTree), "The structure of a math expression may be shown");
   Code: [attribute Equation, attribute ShowEquation];
 };
 

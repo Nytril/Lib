@@ -62,7 +62,7 @@ VDot = V1.Dot(V2);
 NDot = N1.Dot(N2);
 
 readonly LessonExample Content.DotProductEx = new(#4cf079f7-036e-49c0-ba7f-1ec517ac501c#) {
-  Form: NytrilStyle.Function(attribute Vector.Dot, "The dot product of two vectors is calculated");
+  Text: NytrilStyle.Function(attribute Vector.Dot, "The dot product of two vectors is calculated");
   Code: [attribute VDot, attribute NDot];
   Show: [VDot, NDot];
 };
@@ -73,7 +73,7 @@ VCross = Vector.Convert([a, b, c]).Cross([x, y, z]);
 NCross = Vector.Convert([1.0, 2.0, 3.0]).Cross([4.0, 5.0, 6.0]);
 
 readonly LessonExample Content.CrossProductEx = new(#407bca8b-65ac-4760-a51a-2364589eeac3#, "Vector math") {
-  Form: NytrilStyle.Function(attribute Vector.Cross, "The cross product of two 3-vectors is calculated");
+  Text: NytrilStyle.Function(attribute Vector.Cross, "The cross product of two 3-vectors is calculated");
   Code: [attribute VCross, attribute NCross];
   Show: [VCross, NCross];
 };
@@ -84,7 +84,7 @@ VNorm = V1.Norm;
 NNorm = N1.Norm;
 
 readonly LessonExample Content.ShowNormEx = new(#970230ef-0f6c-45da-84e1-a8cf95149502#) {
-  Form: NytrilStyle.Function(attribute Vector.Norm, "The norm of a vector is calculated");
+  Text: NytrilStyle.Function(attribute Vector.Norm, "The norm of a vector is calculated");
   Code: [attribute VNorm, attribute NNorm];
   Show: [VNorm, NNorm];
 };
@@ -95,7 +95,7 @@ VNormalize = V1.Normalize;
 NNormalize = N1.Normalize;
 
 readonly LessonExample Content.ShowNormalizeEx = new(#f5c40de1-143c-406d-8563-c8aeefcc1134#) {
-  Form: NytrilStyle.Function(attribute Vector.Normalize, "The normalize form of a vector is calculated");
+  Text: NytrilStyle.Function(attribute Vector.Normalize, "The normalize form of a vector is calculated");
   Code: [attribute VNormalize, attribute NNormalize];
   Show: [VNormalize, NNormalize];
 };

@@ -29,7 +29,7 @@ RainfallTable = Table(new Edge(1, 0, Colors.LightGray), PadLR(3), [0.8", 1", 1"]
 };
 
 readonly LessonExample Content.RainfallEx = new(#3647be77-2684-4369-b9ee-132a8913352c#, "Tables") {
-  Form: NytrilStyle.ObjectType(attribute Table, "A table can be created from a fixed set of values");
+  Text: "A table can be created from a fixed set of values using the {0} formatter. "(NytrilStyle.Formatter(attribute Table));
   Code: [attribute RainfallTable];
 };
 //======================================================================

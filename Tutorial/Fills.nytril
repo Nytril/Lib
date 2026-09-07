@@ -84,7 +84,7 @@ ShowHSLA = HBox {
 };
 
 readonly LessonExample Content.ShowHSLAColorEx = new(#93029ba0-323a-4446-8822-a0488fb9c210#) {
-  Form: NytrilStyle.Function(attribute Color.FromHSLA, "Colors can also be constructed from HSLA values");
+  Text: NytrilStyle.Function(attribute Color.FromHSLA, "Colors can also be constructed from HSLA values");
   Code: [attribute ShowHSLA];
 };
 
@@ -97,7 +97,7 @@ ShowHeatmap = HBox(200, 20) {
 };
 
 readonly LessonExample Content.ShowHeatmapBoxEx = new(#2ece957b-204a-4811-91a5-9493ea2c863f#) {
-  Form: NytrilStyle.Function(attribute LinearGradient.FromColorArray, "An even color gradient can be formed");
+  Text: NytrilStyle.Function(attribute LinearGradient.FromColorArray, "An even color gradient can be formed");
   Code: [attribute Heatmap, attribute ShowHeatmap];
 };
 
@@ -112,7 +112,7 @@ ShowHeatmap2 = HBox {
 };
 
 readonly LessonExample Content.Heatmap2Ex = new(#b6452b27-6f3c-444e-b7be-944eee672bbc#) {
-  Form: NytrilStyle.Function(attribute LinearGradient.InterpolateColor, "An interpolated color can be formed from a percentge");
+  Text: NytrilStyle.Function(attribute LinearGradient.InterpolateColor, "An interpolated color can be formed from a percentge");
   Code: [attribute ShowHeatmap2];
 };
 
@@ -136,7 +136,7 @@ GetMapImage {
 }
 
 readonly LessonExample Content.Heatmap3Ex = new(#b5aef55d-cac5-4ce5-b7cf-910904694f32#) {
-  Form: NytrilStyle.Function(attribute Matrix.GetImage, "A 2-dimensional color image can be created from values in a matrix");
+  Text: NytrilStyle.Function(attribute Matrix.GetImage, "A 2-dimensional color image can be created from values in a matrix");
   Code: [attribute HeatColor, attribute GetMapImage];
 };
 
@@ -152,7 +152,7 @@ ShowChartColors = HBox {
 };
 
 readonly LessonExample Content.ChartColorsEx = new(#991c48cf-c7ce-4efa-ba71-cace9ff3b506#) {
-  Form: NytrilStyle.Function(attribute Color.ChartColor, "Get the bar colors used in charts");
+  Text: NytrilStyle.Function(attribute Color.ChartColor, "Get the bar colors used in charts");
   Code: [attribute ShowChartColors];
 };
 

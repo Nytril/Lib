@@ -102,7 +102,7 @@ RainChart = VBox {
 };
 
 readonly LessonExample Content.RainfallChartEx = new(#578d4d87-162a-4712-a824-bb418dd63203#) {
-  Form: NytrilStyle.ObjectType(attribute Chart, "A chart can be created from a series of data points");
+  Text: "A chart can be created from a series of data points with the {0} formatter. "(NytrilStyle.Formatter(attribute Chart));
   Code: [attribute RainPoint, attribute RainChart];
 };
 
@@ -123,7 +123,7 @@ PieChart = Chart(5", 2.5") {
 };
 
 readonly LessonExample Content.RainfallPieChartEx = new(#b5124031-0d62-4bba-a324-af3b94bdd8f1#) {
-  Text: "A pie chart can be created by changing the chart type";
+  Text: "A pie chart can be created by changing the {0} property. "(NytrilStyle.PropName(attribute FormatProperties.ChartType));
   Code: [attribute PieChart];
 };
 
@@ -180,7 +180,7 @@ ScatterChart = VBox {
 };
 
 readonly LessonExample Content.ScatterEx = new(#59951694-a575-4e08-818b-d0e341f4a852#) {
-  Text: "Use the X field of the datapoint to set a specific x coordinate for a scatter plot";
+  Text: "Use the {0} property of the datapoint to set a specific x coordinate for a scatter plot"(NytrilStyle.PropName(attribute DataPoint.X));
   Code: [attribute RandomNumber, attribute ScatterChart];
 };
 
@@ -217,7 +217,7 @@ TrigChart = VBox {
 };
 
 readonly LessonExample Content.TrigEx = new(#c64ec751-6e26-43fc-b9f0-aa33b0058a4b#) {
-  Text: "More than one series can be specified in the same chart";
+  Text: "More than one series can be specified in the same chart by adding more than one {0} element to the Chart formatter. "(NytrilStyle.Formatter(attribute ChartSeries));
   Code: [attribute AngleRange, attribute TrigChart];
 };
 

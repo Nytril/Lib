@@ -35,10 +35,15 @@ G    = Symbol("G");
 Z    = Symbol("Z");
 r    = Symbol("r");
 C2   = Tex.chi^2;
+
 ArrayText(op) = "The {0} of an array is defined as:"(Bold op);
+
 ArrayOp(Attribute prop, name) = NytrilStyle.Function(prop, "The {0} of an array can be computed"(Bold name));
+
 Computed(Attribute prop) = NytrilStyle.Function(prop, "It can be computed");
+
 BinaryText(op) = "The {0} of two datasets is defined as:"(Bold op);
+
 NaryComp(Attribute prop) = Block {
   Paragraph {
     "where ";
@@ -147,7 +152,7 @@ readonly LessonExample Content.GeometricMeanDefinedEx = new(#12a1547c-d995-42e4-
 MedianData = Math.Median(NumberSet);
 
 readonly LessonExample Content.MedianDefinedEx = new(#4ff0ec36-9094-438d-986a-cbc6f4d21f98#) {
-  Form: ArrayOp(attribute Math.Median, "median");
+  Text: ArrayOp(attribute Math.Median, "median");
   CodeArray: [attribute MedianData];
 };
 
@@ -156,7 +161,7 @@ readonly LessonExample Content.MedianDefinedEx = new(#4ff0ec36-9094-438d-986a-cb
 DoubleData = Math.Mode([1.0, 2.0, 3.0, 2.0, 4.0]);
 
 readonly LessonExample Content.ModeDefinedEx = new(#51f63189-ecc2-4ac8-8c2a-e95264c1108e#) {
-  Form: ArrayOp(attribute Math.Mode, "mode");
+  Text: ArrayOp(attribute Math.Mode, "mode");
   Code: [attribute DoubleData];
   Show: [DoubleData];
 };
@@ -216,7 +221,7 @@ readonly LessonExample Content.StandardScoresDefined = new(#10f53c8c-1f42-465a-9
 QuantilesData = Math.Quantiles(NumberSet, 50%);
 
 readonly LessonExample Content.QuantilesDefinedEx = new(#5fc89a36-fd79-46c1-b323-7a8d93a73517#) {
-  Form: ArrayOp(attribute Math.Quantiles, "Quantiles");
+  Text: ArrayOp(attribute Math.Quantiles, "Quantiles");
   CodeArray: [attribute QuantilesData, attribute QuantilesData];
 };
 
@@ -251,7 +256,7 @@ ChirpsPerSec = [20, 16, 19.8, 18.4, 17.1, 15.5, 14.7, 17.1, 15.4, 16.2, 15, 17.2
 Math.LinearRegression Regression = new Math.LinearRegression(Temperature, ChirpsPerSec);
 
 readonly LessonExample Content.RegressionDefinedEx = new(#8fb499ef-f3cb-463d-bb47-c40b332e0f37#) {
-  Form: NytrilStyle.ObjectType(attribute Math.LinearRegression, "You can perform a simple regression analysis on two datasets");
+  Text: "You can perform a simple regression analysis on two datasets using the {0} class. "(NytrilStyle.Class(attribute Math.LinearRegression));
   Code: [attribute Temperature, attribute ChirpsPerSec, attribute Regression];
   Show: Regression;
 };

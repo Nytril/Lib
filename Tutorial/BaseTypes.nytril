@@ -134,7 +134,7 @@ ShowGene = Block {
 };
 
 readonly LessonExample Content.FileInputEx = new(#99e192cf-ccc3-4790-aa37-9057ac8e448c#) {
-  Form:  NytrilStyle.Function(attribute IO.ReadDocument, "Sequences can also be read from files");
+  Text:  NytrilStyle.Function(attribute IO.ReadDocument, "Sequences can also be read from files");
   Code:  [attribute GeneFile, attribute ShowGene];
 };
 
@@ -157,7 +157,7 @@ GeneStained1 = GeneSlice.Revise([3..11, 72..74], Stain1);
 GeneStained  = GeneStained1.Revise(18..20, Stain2);
 
 readonly LessonExample Content.StainingEx = new(#3bd076b2-3551-446a-9f57-6f07025e7faf#) {
-  Form: NytrilStyle.Function(attribute Array.Revise, "Sections of a sequence can be formatted");
+  Text: NytrilStyle.Function(attribute Array.Revise, "Sections of a sequence can be formatted");
   Code: [attribute GeneStained1, attribute GeneStained];
 };
 

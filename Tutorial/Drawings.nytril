@@ -3,21 +3,81 @@ using Format;
 
 namespace Chapters.Formatting.Sections.Drawings;
 
-readonly TutorialLesson Lesson = new(#7d95b214-b935-43d5-861d-b20bef12c39d#, "Shapes");
+readonly TutorialLesson Lesson = new(#7d95b214-b935-43d5-861d-b20bef12c39d#, "Drawings", "Drawings", "drw") {
+  Description: Span {
+    "You can create drawings of arbitrary complexity using Canvases and Shapes. ";
+  };
+};
 
 //======================================================================
 
-ZigZag = Shape(null, new(3pt, Colors.Black, LineStyles.Solid, LineCaps.Round, LineJoins.Round)) {
-  OpenPath(0) {
-    LineTo(20, 20);
-    LineTo(40, 0);
-    LineTo(60, 20);
-  }
+readonly LineSize       = LessonExample.FontHeight * 0.5;
+readonly Stroke Stroke1 = new(LineSize);
+
+ZigZag(Stroke stroke) = Canvas(ExtentWidth * 50%, ExtentWidth * 10%) {
+  Margin: LineSize;
+  Shape(null, stroke) {
+    OpenPath(0, 0) {
+      LineTo(33%, 100%);
+      LineTo(66%, 0);
+      LineTo(100%, 100%);
+    }
+  };
 };
 
+BlackZigZag = ZigZag(Stroke1);
+
 readonly LessonExample Content.SimpleLineShapeEx = new(#bd5d2dae-3738-488e-856c-b1262434f7ff#, "Shapes") {
-  Form: NytrilStyle.ObjectType(attribute Shape, "Create a self-contained shape");
-  Code: [attribute ZigZag];
+  Text: "Create a shape with paths using the {0} formatter"(NytrilStyle.Formatter(attribute Shape));
+  Code: [attribute LineSize, attribute BlackZigZag];
+  Sel: new(4, 2, 5);
+};
+
+//======================================================================
+
+Stroke Fill1 = new(LineSize, Colors.Red);
+
+Line1 = ZigZag(Fill1);
+
+readonly LessonExample Content.ColorOptionsEx = new(#6f481e80-d600-4ceb-a607-a81dd5fb5a7a#, "Color options") {
+  Text: "Change the color of the line with the first parameter of the {0} class constructor. "(NytrilStyle.Class(attribute Stroke));
+  Code: [attribute Fill1, attribute Line1];
+  Sel: new(0, 29, 10);
+};
+
+//======================================================================
+
+Stroke Fill2 = new(LineSize, Colors.Red, Dotted);
+
+Line2 = ZigZag(Fill2);
+
+readonly LessonExample Content.LineStyleOptionsEx = new(#5939574f-45a5-4609-8a26-097197175f91#, "Line Styles") {
+  Text: "Changed the LineStyles using the 2nd parameter of the {0} constructor. "(NytrilStyle.Class(attribute Stroke));
+  Code: [attribute Fill2, attribute Line2];
+  Sel: new(0, 41, 6);
+};
+
+//======================================================================
+
+Stroke Fill3 = new(LineSize, Colors.Red, Dotted, Round);
+
+Line3 = ZigZag(Fill3);
+
+readonly LessonExample Content.LineCapsOptionsEx = new(#1589afe1-f9c6-4234-a8f5-4c071c740665#, "Line Caps") {
+  Text: "Changed the LineCap style using the 4th parameter of the {0} constructor. "(NytrilStyle.Class(attribute Stroke));
+  Code: [attribute Fill3, attribute Line3];
+  Sel: new(0, 49, 5);
+};
+
+//======================================================================
+
+Stroke Fill4 = new(LineSize*2, Colors.Blue, Solid, Flat, Round);
+Line4 = ZigZag(Fill4);
+
+readonly LessonExample Content.LineJoinEx = new(#df6cf766-9061-454e-8d61-fa84d3de769c#, "Line Joins") {
+  Text: "Changed the LineCap style using the 5th parameter of the {0} constructor. "(NytrilStyle.Class(attribute Stroke));
+  Code: [attribute Fill4, attribute Line4];
+  Sel: new(0, 57, 5);
 };
 
 //======================================================================
@@ -188,7 +248,7 @@ ShowSmileShape = GraphPaper.Show(new(50, 20), new(5))  {
 };
 
 readonly LessonExample Content.CombinedFigureEx = new(#2cdbd9f3-d45f-47e5-b748-8dc858b26c51#) {
-  Form: NytrilStyle.Function(attribute CurveTo, "Add a Bezier curve to the shape");
+  Text: NytrilStyle.Function(attribute CurveTo, "Add a Bezier curve to the shape");
   Code: [attribute Smile, attribute ShowSmileShape];
 };
 
@@ -230,7 +290,7 @@ ShowFace = GraphPaper.Show(new(100, 100), new(5))  {
 };
 
 readonly LessonExample Content.CanvasesEx = new(#dbefe4b2-e3bb-4150-af93-80174ad795f5#) {
-  Form: NytrilStyle.ObjectType(attribute Canvas, "Create a drawing with several shapes at arbitrary locations");
+  Text: "Create a drawing with several shapes at arbitrary locations using the {0} formatter. "(NytrilStyle.Formatter(attribute Canvas));
   Code: [attribute ShowFace];
 };
 

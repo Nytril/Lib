@@ -66,7 +66,7 @@ VDet = V1.Determinant;
 NDet = N1.Determinant;
 
 readonly LessonExample Content.MatrixDeterminantEx = new(#e453eade-2e46-4f2c-b893-e6d2ba041880#) {
-  Form: NytrilStyle.Function(attribute Matrix.Determinant, "The determinant of a matrix is calculated");
+  Text: NytrilStyle.Function(attribute Matrix.Determinant, "The determinant of a matrix is calculated");
   Code: [attribute VDet, attribute NDet];
   Show: [VDet, NDet];
 };
@@ -77,7 +77,7 @@ VInv = V1.Inverse;
 NInv = N1.Inverse;
 
 readonly LessonExample Content.MatrixInverseEx = new(#5879a628-9363-4f89-8965-525e4461d77d#) {
-  Form: NytrilStyle.Function(attribute Matrix.Inverse, "The inverse of a matrix is calculated");
+  Text: NytrilStyle.Function(attribute Matrix.Inverse, "The inverse of a matrix is calculated");
   Code: [attribute VInv, attribute NInv];
   Show: [VInv, NInv];
 };
@@ -88,7 +88,7 @@ VTran = V1.Transpose;
 NTran = N1.Transpose;
 
 readonly LessonExample Content.MatrixTransposeEx = new(#789fb0c1-9002-417a-96cd-b1ddbe555356#) {
-  Form: NytrilStyle.Function(attribute Matrix.Transpose, "The transposition of a matrix is calculated");
+  Text: NytrilStyle.Function(attribute Matrix.Transpose, "The transposition of a matrix is calculated");
   Code: [attribute VTran, attribute NTran];
   Show: [VTran, NTran];
 };
@@ -99,7 +99,7 @@ VNormalize = V1.Normalize;
 NNormalize = N1.Normalize;
 
 readonly LessonExample Content.ShowNormalizeEx = new(#6cf72b42-24b7-4b51-85cb-88a225b715d9#) {
-  Form: NytrilStyle.Function(attribute Matrix.Normalize, "The normalize form of a matrix is calculated");
+  Text: NytrilStyle.Function(attribute Matrix.Normalize, "The normalize form of a matrix is calculated");
   Code: [attribute VNormalize, attribute NNormalize];
   Show: [VNormalize, NNormalize];
 };
@@ -111,7 +111,7 @@ NCofactor = N1.CofactorMatrix;
 TCofactor = Matrix.Convert([[1, 2, 3], [0, 4, 5], [1, 0, 6]]).CofactorMatrix;
 
 readonly LessonExample Content.ShowCofactorEx = new(#a7b88a28-785a-479c-b3d2-6971835ec77a#) {
-  Form: NytrilStyle.Function(attribute Matrix.CofactorMatrix, "The cofactor matrix of a given square matrix is calculated");
+  Text: NytrilStyle.Function(attribute Matrix.CofactorMatrix, "The cofactor matrix of a given square matrix is calculated");
   Code: [attribute VCofactor, attribute NCofactor, attribute TCofactor];
   Show: [VCofactor, NCofactor, TCofactor];
 };

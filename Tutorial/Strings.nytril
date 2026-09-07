@@ -36,11 +36,19 @@ readonly LessonExample Content.Join = new(#a76ff739-795f-4ad4-888b-ad98e9595038#
 //======================================================================
 
 S1 Message = "There is an error in \"{0}\"";
-FileError  = Message("file.txt");
 
-readonly LessonExample Content.Arguments = new(#951cff2a-18fd-4cde-b500-b407b04c5644#, "String Arguments") {
-  Text: "Strings can contain numbered sections that allow for substitutions supplied by arguments to the string";
-  Code: [attribute Message, attribute FileError];
+readonly LessonExample Content.StringArgs = new(#abec1708-c9bc-40e0-b857-bb1b950f5181#, "String Arguments") {
+  Text: "Strings can contain numbered sections that allow for substitutions supplied by arguments to the string. ";
+  Code: [attribute Message];
+};
+
+//======================================================================
+
+FileError = Message("file.txt");
+
+readonly LessonExample Content.Arguments = new(#951cff2a-18fd-4cde-b500-b407b04c5644#, "String Argument Call") {
+  Text: "{0} is not a string, but is instead a function taking 1 argument. "(nameof Message);
+  Code: [attribute FileError];
 };
 
 //======================================================================
