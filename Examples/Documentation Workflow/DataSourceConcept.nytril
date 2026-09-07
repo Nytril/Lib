@@ -53,5 +53,71 @@ class  DataSourceAboutSection: Content {
       "Nytril also has the ability to receive output from externally written code, such as a C# program. ";
       "This document describes the basic process of using these features. ";
     };
+
+    design.Heading2 {
+      "Connecting to a Database";
+    };
+
+    design.Heading3 {
+      "Database types";
+    };
+
+    design.TightParagraph {
+      "Various database platforms can be connected to your project: ";
+    };
+
+    ListBlock {
+      List<string> supportedDatabases = new(12);
+      foreach (Attribute att in attribute(DB).Children) {
+        if (att.AttributeType == AttributeTypes.Class &&
+            att.Name != "DbConnection"                &&
+            att.Name != "DbField"                     &&
+            att.Name != "DbFieldValue"                &&
+            att.Name != "DbRow")
+          supportedDatabases.Add(att.Name);
+      }
+
+      supportedDatabases.Sort;
+      each supportedDatabases;
+    };
+
+    design.TightParagraph {
+      "Where the the database type is instantiated with either a path or a connection string, depending on the type. ";
+    };
+
+    design.Heading3 {
+      "Establishing a connection";
+    };
+
+    design.SpacedParagraph {
+      "Connecting to a database source is simple. ";
+    };
+
+    design.AddFigure(DbConnFig, Here);
+    var dbConnRef = design.FigureReference(DbConnFig);
   };
 }
+// ============================================================================
+
+readonly  DbConnFigure  DbConnFig = new;
+class  DbConnFigure: Content {
+  Constructor() {
+    super.Constructor("Basic Database Connection");
+  }
+
+  private void SampleConn {
+    var dBServerAddress          = "nytril-db-server.database.windows.net";
+    var dbName                   = "NytrilDB-Dev";
+    var nytrilStoredCreds        = "NytrilDB Dev Creds";
+    var connectionString         = "Server={0};Database={1};"(dBServerAddress, dbName);
+    var connection = new DB.SQLServer(connectionString, nytrilStoredCreds);
+  }
+
+  override GetLayout(TechDesign design)  = design.CodeParagraph {
+    SourceSelectionLines(null, 113, 1);
+  };
+
+  override GetCaption(TechDesign design) = Span { "Basic Database Connection" };
+}
+
+// ============================================================================

@@ -341,7 +341,7 @@ class Phase2Sec: Content {
 
     design.SpacedParagraph {
       "In this phase, you will set up the environment, create the project, design the layout, and insert the content. ";
-      "At the completation of this phase, you will have completed documents ready for review, translations, or distribution. ";
+      "At the completation of this phase, you will have documents ready for review, translations, or distribution. ";
     };
   };
 }
@@ -357,21 +357,21 @@ class RepoAndSource: StepStyler {
 
   override GetBody(TechDesign design) = Block {
     design.TightParagraph {
-      "Determine whether to use the default repository, an existing repository, or a new repository. Connect source control.";
+      "Determine whether to use the default repository, an existing repository, or a new repository. Connect source control to the chosen repository.";
     };
 
     design.TightParagraph {
-      "If using and existing repository with established source control, "; B{"skip this step"} ". ";
+      "If using and existing repository, "; B{"skip this step"} ". ";
     };
 
     design.TightParagraph {
       "Otherwise, create a new repository and select the required languages to include. ";
-      "If only using one language, it is best to still select that single language since that will cause Nytril to scaffold the Configuration system and enable advanced language features. ";
+      "If only using one language, it is best to select that single language since that will cause Nytril to scaffold the Configuration system and enable advanced language features. ";
     };
 
     design.TightParagraph {
-      "If you use source control, be sure to connect it to the Nytril code repository. ";
-      "If you use Git, you can connect it to Nytril for use inside the IDE (see Source Control concept).";
+      "If you use source control, be sure to connect it to the chosen repository. ";
+      "If using Git, you can connect it to Nytril for use inside the IDE (see Source Control concept).";
     };
   };
 
@@ -463,8 +463,8 @@ class DocumentArchitecture: StepStyler {
     };
 
     design.TightParagraph {
-      "If your purpose is to produce a single document, regalrdless of the variations, then create a Nytril project for a single document. ";
-      "If your goal is multiple documents, then set the project up to produce multiple documents. ";
+      "If your purpose is to produce a single document, even if the document will be produced in more than one configuration (see prior step), then create a Nytril project for a single document. ";
+      "If your objective is to produce multiple documents, then select the option to scaffold a multi-document project. ";
     };
   };
 
@@ -496,7 +496,7 @@ class ImplementLayout: StepStyler {
     };
 
     design.TightParagraph {
-      "Set up the document taking note the margins and size, amongst other properties, are set as parameters to the Document formatter. ";
+      "Set up the document taking note that the margins and size, amongst other properties, are set as parameters to the Document formatter. ";
       "If you use a provided design template, refer to the documentation on how to set up the document for that system.";
     };
 
@@ -544,7 +544,7 @@ class InsertContent: StepStyler {
 
     design.TightParagraph {
       "If adding structured data from a data source, insert it now into an appropriate formatter revision. ";
-      "Press "; B{"F5"} " After changes to see the result in the document. ";
+      "Press "; B{"F5"} " after changes to see the result in the document. ";
     };
   };
 

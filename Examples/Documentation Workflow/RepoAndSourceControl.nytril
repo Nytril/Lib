@@ -62,7 +62,13 @@ class RepoAndSourceAboutSection: Content {
     };
 
     design.SpacedParagraph {
-      "A source control system, such as Git, should target the repository root. ";
+      "An important concept to understand is that a repository is intended to be a place were one would store a single or multiple Nytril projects and their common resources. ";
+      "Such projects, however, are not limited to resources stored inside the repo, the project can use resources located outside the repository. ";
+      "It is sometimes necessary to access a resource outside the repo with the understanding that the external resource may be beyond the reach of source control, depending on how the source control system is setup.";
+    };
+
+    design.SpacedParagraph {
+      "A source control system, such as Git, normally targets the repository root. ";
     };
   };
 }
@@ -106,7 +112,7 @@ class RepoAndSourceCreateSection: Content {
     design.SpacedParagraph {
       "During repository creation, Nytril prompts for a new project. ";
       "Enter a project name, the path defaults to the repository. ";
-      "Nytril creates the repository, creates the project within it, and generates any required configuration files in the repository root. ";
+      "Nytril creates the repository and the project within it, then generates any required configuration files in the repository root. ";
       "Nytril includes generated configuration files in the project code. ";
     };
   };

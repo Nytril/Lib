@@ -59,7 +59,7 @@ class  PublishingAboutSection: Content {
       "Publishing builds and exports all documents in a project to a selected file type, the Nytril hosting site, or both. ";
       "Nytril publishes to PDF, Word, or an HTML page that displays all documents (HtmlDoc). ";
       "Nytril also publishes to the Nytril.com hosting site, placing documents in your private or public realm. ";
-      "he publish process builds and produces one document per configuration, which can generate multiple language versions, such as English and French. ";
+      "The publish process builds and produces one document per configuration, which can generate multiple language versions, such as English and French. ";
     };
   };
 }
@@ -194,8 +194,8 @@ class  PublishingRemoteSection: Content {
         Cell {
           var mainSiteRef = design.FigureReference(MainSiteFig);
           design.NormalParagraph {
-            "The project must define the required code to publish online, as shown in " mainSiteRef;
-            "The project establishes "; design.SpanHighlight {"Main.Site"}; " and instantiates it with a "; design.SpanHighlight {"RealmSite"}; "object. ";
+            "The project must define the required code to publish online, as shown in " mainSiteRef ". ";
+            "The project establishes "; design.SpanHighlight {"Main.Site"}; " and instantiates it with a "; design.SpanHighlight {"RealmSite"}; " object. ";
             "RealmSite is a built-in class designed for this purpose. ";
             mainSiteRef " shows a simple class that inherits from RealmSite and sets the realm in the base constructor. ";
             "This code typically resides in the Main project file. ";
@@ -212,7 +212,7 @@ class  PublishingRemoteSection: Content {
     design.IndentedBlock {
       design.CalloutFrame {
         design.NormalParagraph {
-          "Publishing online preserves key actions and keeps them functional on the web platform."
+          "Publishing online preserves key actions and keeps them functional on the web platform. "
           "Tip popups, action buttons, links, anchors, document open links, searches, and other dynamic elements continue to operate in hosted documents. ";
           "This capability provides a richer experience for users viewing content such as user manuals, research papers, or technical specification sheets.";
         };
