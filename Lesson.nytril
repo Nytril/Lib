@@ -152,7 +152,6 @@ class LessonExample: Fact {
   var                   Other,
                         Show,
                         Output,
-                        Form,
                         Formula,
                         FrameSize,
                         Doc,
@@ -195,8 +194,6 @@ class LessonExample: Fact {
         Text;
       };
     }
-    else
-      Form;
 
     bool tc = Tip is valid;
 
