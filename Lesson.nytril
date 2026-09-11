@@ -29,7 +29,7 @@ class VideoLesson {
   var Size            VideoSize;
   var bool            Full;
 
-  Constructor(Attribute lesson, in Size size=null, bool full=true) {
+  Constructor(Attribute lesson, in Size size=null, bool full=true, bool includeall=true) {
     Lesson      = lesson.FindChildValue("Lesson") as TutorialLesson;
     Full        = full;
     VideoSize   = size ?? new Size(1024, 768);
@@ -37,8 +37,12 @@ class VideoLesson {
     var content = lesson.FindChildValue("Content");
     var list    = new List<LessonExample>(16);
     foreach (var c in content) {
-      if (c is LessonExample e and (full or e.Options.NotFlag(NoShort)))
-        list.Add(e);
+      if (c is LessonExample e) {
+        if (includeall or e.IncludeSlide) {
+          if (full or e.Options.NotFlag(NoShort))
+            list.Add(e);
+        }
+      }
     }
     Examples = list.ToArray;
   }
@@ -170,6 +174,8 @@ class LessonExample: Fact {
   }
 
   string Caption = Text as string;
+
+  bool IncludeSlide = Title is valid;
 
   FormatSection(textsize, codesize, resultsize, indent) = Block {
     if (Formula is valid) {

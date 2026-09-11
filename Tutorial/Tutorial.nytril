@@ -91,7 +91,7 @@ class TutorialShowDocument: SlideShow {
         foreach (var block in sections.Children) {
           var video  = new VideoLesson(block);
           foreach (var example in video.Examples) {
-            if (example.Title is valid)
+            if (example.IncludeSlide)
               AddSlide(new FigureSlide(new LessonContent(example), Left));
           }
         }

@@ -578,7 +578,7 @@ class LessonBuilder: VideoBuilder {
               Paragraph {
                 LeftIndent: indent;
                 FirstIndent: -indent;
-                Span {TextColor: Colors.White; Tex.bullet}; 
+                Span {TextColor: Colors.White; Tex.bullet};
                 Tab;
                 t.Title;
               };
