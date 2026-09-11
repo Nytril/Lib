@@ -1,0 +1,293 @@
+using Format;
+
+namespace NytrilGlyphs;
+
+//======================================================================
+
+CheckMark(height, fill=Colors.Black, line=null, ratio=1.2) = Canvas(height * ratio, height) {
+  Baseline: 85%;
+
+  Shape(fill, line) {
+    ClosedPath(1%, 50%) {
+      QuadTo(new(9%, 44%), new(20%, 43%));
+      QuadTo(new(31%, 52%), new(36%, 69%));
+      QuadTo(new(60%, 28%), new(99%, 5%));
+      QuadTo(new(55%, 39%), new(36%, 96%));
+      QuadTo(new(34.5%, 100%), new(33%, 96%));
+      QuadTo(new(21%, 60%), new(1%, 50%));
+    };
+  };
+};
+
+//======================================================================
+
+DrawDot(x, y) = EllipsePath(new(new(x, y), new(8%, 8%)));
+
+PocketWatch(height, fill=Colors.Black, line=null) = Canvas(height, height) {
+  Shape(fill, line) {
+    ClosedPath(40%, 0) {
+      LineTo(60%, 0);
+      LineTo(60%, 6%);
+      LineTo(53%, 6%);
+      LineTo(53%, 12%);
+      ArcTo(new(47%, 12%), new(44%), 0, true, true);
+      LineTo(47%, 6%);
+      LineTo(40%, 6%);
+      LineTo(40%, 0%);
+    };
+    EllipsePath(new(new(11.5%, 17.5%), new(77%)));
+    DrawDot(46%, 23%); // top
+    DrawDot(16%, 53%); // left
+    DrawDot(46%, 83%); // bottom
+    DrawDot(76%, 53%); // right
+
+    ClosedPath(50%, 40%) {
+      LineTo(53%, 57%);
+      LineTo(73%, 77%);
+      LineTo(46%, 57%);
+    };
+  };
+  Shape(fill) {
+    DrawDot(68%, 13%); // button
+  };
+};
+
+//====================================================================================
+
+QuestionMark(height, fill=Colors.Black, line=null, ratio=0.53) = Canvas(height * ratio, height) {
+  Baseline: 85%;
+
+  Shape(fill, line) {
+    ClosedPath(11.6%, 18.5%) {
+      CurveTo(new(11%, 9%), new(29%, 1.5%), new(49.5%, 0.6%));
+      CurveTo(new(55%, 0.5%), new(68%, 0%), new(79.5%, 3.5%));
+
+      CurveTo(new(88.5%, 5.5%), new(108%, 16.5%), new(92%, 31%));
+      CurveTo(new(87%, 34.5%), new(85%, 36.5%), new(69.3%, 42%));
+
+      CurveTo(new(68.5%, 42.5%), new(54.5%, 46.5%), new(54.1%, 54.5%));
+      CurveTo(new(54%, 55.5%), new(53.6%, 58.5%), new(53.8%, 64%));
+
+      CurveTo(new(53.8%, 64.3%), new(53%, 65.5%), new(48%, 65.1%));      //bottom right corner
+      CurveTo(new(46.5%, 65%), new(45.7%, 64.5%), new(45.5%, 64%));      //bottom left corner
+
+      CurveTo(new(45.6%, 58.5%), new(45.2%, 53.5%), new(46.7%, 50.5%));
+      CurveTo(new(48%, 46.9%), new(54%, 40.3%), new(63%, 36.3%));
+
+      CurveTo(new(69%, 33.5%), new(85.5%, 25%), new(71.5%, 10.5%));
+      CurveTo(new(68.8%, 8.5%), new(63%, 2.5%), new(40%, 5.9%));
+
+      CurveTo(new(35%, 6.7%), new(30%, 9%), new(29.2%, 10.5%));
+      CurveTo(new(28%, 12%), new(28.8%, 14.5%), new(30%, 15.5%));
+
+      CurveTo(new(31%, 15.8%), new(35.5%, 21.6%), new(24.5%, 23.3%));
+      CurveTo(new(23%, 23.3%), new(13%, 24.5%), new(11.6%, 18.5%));
+    };
+
+    EllipsePath(new(new(36%, 75.5%), new(27%, 14%)));
+  };
+};
+
+//====================================================================================
+
+ProductMachine(height, lineColor=Colors.Black, ratio=1.35) = Canvas(height * ratio, height) {
+  Baseline: 90%;
+
+  var line = new Stroke(3pt, lineColor, LineStyles.Solid, LineCaps.Round, LineJoins.Round);
+
+  Shape(null, line) {                                                  // Base
+    ClosedPath(13%, 87%) {
+      LineTo(87%, 87%);
+      LineTo(87%, 95%);
+      LineTo(13%, 95%);
+      LineTo(13%, 87%);
+    };
+  };
+
+  Shape(null, line) {                                                  // Left support
+    OpenPath(29%, 77%) {
+      LineTo(29%, 87%);
+      LineTo(39%, 87%);
+      LineTo(39%, 77%);
+    };
+  };
+
+  Shape(null, line) {                                                 // Right support
+    OpenPath(70%, 77%) {
+      LineTo(70%, 87%);
+      LineTo(80%, 87%);
+      LineTo(80%, 77%);
+    };
+  };
+
+  Shape(null, line) {                                                 // Left rear rounded housing
+    ClosedPath(20%, 40%) {
+      CurveTo(new(14%, 40%), new(10%, 45%), new(10%, 53%));
+      LineTo(10%, 68%);
+      CurveTo(new(10%, 76%), new(14%, 80%), new(20%, 80%));
+      LineTo(25%, 80%);
+      LineTo(25%, 40%);
+      LineTo(20%, 40%);
+    };
+  };
+
+  Shape(null, line) {                                                // Main motor housing
+    ClosedPath(25%, 40%) {
+      CurveTo(new(25%, 37%), new(27%, 36%), new(30%, 36%));
+      LineTo(55%, 36%);
+      CurveTo(new(58%, 36%), new(60%, 38%), new(60%, 41%));
+      LineTo(60%, 75%);
+      CurveTo(new(60%, 78%), new(58%, 80%), new(55%, 80%));
+      LineTo(30%, 80%);
+      CurveTo(new(27%, 80%), new(25%, 78%), new(25%, 75%));
+      LineTo(25%, 40%);
+    };
+  };
+
+  Shape(null, line) {                                                // Small box top of motor
+    ClosedPath(31%, 29%) {
+      CurveTo(new(31%, 27%), new(32%, 26%), new(34%, 26%));
+      LineTo(49%, 26%);
+      CurveTo(new(51%, 26%), new(52%, 27%), new(52%, 29%));
+      LineTo(52%, 36%);
+      LineTo(31%, 36%);
+      LineTo(31%, 29%);
+    };
+  };
+
+  Shape(null, line) {                                                // Connection between motor and right housing
+    ClosedPath(60%, 45%) {
+      LineTo(68%, 45%);
+      LineTo(68%, 72%);
+      LineTo(60%, 72%);
+      LineTo(60%, 45%);
+    };
+  };
+
+  Shape(null, line) {                                                // Right square housing
+    ClosedPath(68%, 39%) {
+      CurveTo(new(68%, 36%), new(70%, 35%), new(73%, 35%));
+      LineTo(84%, 35%);
+      CurveTo(new(87%, 35%), new(89%, 37%), new(89%, 40%));
+      LineTo(89%, 75%);
+      CurveTo(new(89%, 78%), new(87%, 80%), new(84%, 80%));
+      LineTo(73%, 80%);
+      CurveTo(new(70%, 80%), new(68%, 78%), new(68%, 75%));
+      LineTo(68%, 39%);
+    };
+  };
+
+  Shape(lineColor) {                                                 // Four bolt heads
+    EllipsePath(new(new(73%, 42%), new(2.5%, 2.5%)));
+    EllipsePath(new(new(83%, 42%), new(2.5%, 2.5%)));
+    EllipsePath(new(new(73%, 69%), new(2.5%, 2.5%)));
+    EllipsePath(new(new(83%, 69%), new(2.5%, 2.5%)));
+  };
+
+  Shape(null, line) {                                                // Vertical risers to upper tank
+    OpenPath(75%, 35%) {
+      LineTo(75%, 27%);
+    };
+    OpenPath(80%, 35%) {
+      LineTo(80%, 27%);
+    };
+  };
+
+  Shape(null, line) {                                               // Upper tank
+    ClosedPath(69%, 7%) {
+      CurveTo(new(69%, 4%), new(71%, 3%), new(74%, 3%));
+      LineTo(88%, 3%);
+      CurveTo(new(91%, 3%), new(93%, 5%), new(93%, 8%));
+      LineTo(93%, 24%);
+      CurveTo(new(93%, 27%), new(91%, 29%), new(88%, 29%));
+      LineTo(74%, 29%);
+      CurveTo(new(71%, 29%), new(69%, 27%), new(69%, 24%));
+      LineTo(69%, 7%);
+    };
+
+    OpenPath(69%, 16%) {
+      LineTo(93%, 16%);
+    };
+  };
+
+  Shape(null, line) {                                              // Pipe from motor top to tank
+    OpenPath(41%, 26%) {
+      LineTo(41%, 16%);
+      CurveTo(new(41%, 12%), new(44%, 11%), new(47%, 11%));
+      LineTo(65%, 11%);
+    };
+  };
+
+  Shape(null, line) {                                              // Small connector before tank
+    ClosedPath(65%, 8%) {
+      LineTo(69%, 8%);
+      LineTo(69%, 19%);
+      LineTo(65%, 19%);
+      LineTo(65%, 8%);
+    };
+  };
+};
+
+//====================================================================================
+
+ProductInfoSource(height, lineColor=Colors.Black, ratio=1.0) = Canvas(height * ratio, height) {
+  Baseline: 90%;
+
+  var line = new Stroke(3pt, lineColor, LineStyles.Solid, LineCaps.Round, LineJoins.Round);
+
+  Shape(null, line) {                                            // Outer source container
+    ClosedPath(16%, 10%) {
+      CurveTo(new(16%, 7%), new(18%, 6%), new(21%, 6%));
+      LineTo(79%, 6%);
+      CurveTo(new(82%, 6%), new(84%, 8%), new(84%, 11%));
+      LineTo(84%, 89%);
+      CurveTo(new(84%, 92%), new(82%, 94%), new(79%, 94%));
+      LineTo(21%, 94%);
+      CurveTo(new(18%, 94%), new(16%, 92%), new(16%, 89%));
+      LineTo(16%, 10%);
+    };
+  };
+
+  Shape(lineColor) {                                            // Image / visual element
+    ClosedPath(28%, 24%) {
+      LineTo(42%, 24%);
+      LineTo(42%, 42%);
+      LineTo(28%, 42%);
+      LineTo(28%, 24%);
+    };
+  };
+
+  Shape(null, line) {                                           // Product title / description lines
+    OpenPath(50%, 27%) {
+      LineTo(72%, 27%);
+    };
+
+    OpenPath(50%, 36%) {
+      LineTo(68%, 36%);
+    };
+
+    OpenPath(28%, 54%) {
+      LineTo(72%, 54%);
+    };
+
+    OpenPath(28%, 64%) {
+      LineTo(63%, 64%);
+    };
+  };
+
+  Shape(null, line) {                                           // Small structured/specification symbol
+    ClosedPath(66%, 70%) {
+      LineTo(73%, 82%);
+      LineTo(59%, 82%);
+      LineTo(66%, 70%);
+    };
+  };
+
+  Shape(null, line) {                                           // Final short data line
+    OpenPath(28%, 78%) {
+      LineTo(51%, 78%);
+    };
+  };
+};
+
+//====================================================================================
