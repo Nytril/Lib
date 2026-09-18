@@ -1,3 +1,5 @@
+
+/*
 using Format;
 //======================================================================
 
@@ -86,6 +88,6 @@ readonly LessonExample Content.ShowStainedEx = new(#a9445d64-2d6c-46c5-ad9c-4c95
   Text: "Search each item for a matching pattern, and highlight the results";
   Code: [attribute Highlight, attribute ShowHighlights];
 };
-
+*/
 //======================================================================
 

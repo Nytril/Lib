@@ -43,7 +43,7 @@ readonly LessonExample Content.SubstitutionsEx = new(#b6b3a1e5-1ada-47b2-98dc-9f
 
 //======================================================================
 
-S1 AluElement = dna"GCCGGGCGCGGTGGCGCGTGCCTGTAGTCCC{0}ACTCGGGAGGCTGAGGCTGGAGGATCGCTTGAGTCCAGGAGTTCTGGGCTGTAGTGCGCTATGCCGATCGGAATAGCCACTGCACTCCAGCCTGGGCAACATAGCGAGACCCCGTCTC";
+S1 AluElement = dna"GCCGGGCGCGGTGGCGCGTGCCTGTAGTCCC{0}ACTCGGGAGGCTGAGGCTGGAGGATCGCTTGAGTCCAGGAGTTCTGGGCTG";
 Stain         = {TextColor: Colors.White; TextBackground: Colors.Red};
 AluExample    = AluElement(Stain dna"AGCT") * 5;
 

@@ -3,16 +3,16 @@ using Format;
 
 namespace Chapters.Formatting.Sections.Drawings;
 
-readonly TutorialLesson Lesson = new(#7d95b214-b935-43d5-861d-b20bef12c39d#, "Drawings", "Drawings", "drw") {
+readonly TutorialLesson Lesson = new(#7d95b214-b935-43d5-861d-b20bef12c39d#, "Drawings", "Drawings", "drw", "https://youtu.be/iy-4S5-Jlk8") {
   Description: Span {
-    "You can create drawings using canvases and shapes. ";
-    "Combine lines and curves with fill patterns and line shapes in a variety of colors and styles. ";
+    "Create drawings using canvases and shapes. ";
+    "You can combine lines and curves with fill patterns using a variety of colors and styles. ";
   };
 };
 
 //======================================================================
 
-readonly LineSize       = LessonExample.FontHeight * 0.5;
+LineSize = LessonExample.FontHeight * 0.5;
 readonly Stroke Stroke1 = new(LineSize);
 
 LineSeg = Canvas(ExtentWidth * 50%, ExtentWidth * 10%) {
@@ -25,7 +25,10 @@ LineSeg = Canvas(ExtentWidth * 50%, ExtentWidth * 10%) {
 };
 
 readonly LessonExample Content.SimpleLineShapeEx = new(#a2f85e0f-46bb-4d96-9b85-67280596a379#, "Shapes") {
-  Text: "A {0} formatter holds a group of open or closed paths. "(NytrilStyle.Formatter(attribute Shape));
+  Text: Span {
+    "A {0} formatter holds a group of open or closed paths. "(NytrilStyle.Formatter(attribute Shape));
+    "Here the path is a simple line segment. ";
+  };
   Code: [attribute LineSize, attribute LineSeg];
   Sel: new(5, 2, 5);
 };
@@ -46,7 +49,10 @@ ZigZag(Stroke stroke) = Canvas(ExtentWidth * 50%, ExtentWidth * 10%) {
 BlackZigZag = ZigZag(Stroke1);
 
 readonly LessonExample Content.OpenPathsEx = new(#bd5d2dae-3738-488e-856c-b1262434f7ff#, "Open Paths") {
-  Text: "Make an open line path using the {0} formatter"(NytrilStyle.Formatter(attribute OpenPath));
+  Text: Span {
+    "Make an open line path using the {0} formatter"(NytrilStyle.Formatter(attribute OpenPath));
+    "The arguments are the starting point of the shape. ";
+  };
   Code: [attribute  ZigZag, attribute BlackZigZag];
   Sel: new(3, 4, 8);
 };
@@ -58,7 +64,7 @@ Stroke LS1 = new(LineSize, Colors.Red);
 Line1 = ZigZag(LS1);
 
 readonly LessonExample Content.ColorOptionsEx = new(#6f481e80-d600-4ceb-a607-a81dd5fb5a7a#, "Color options") {
-  Text: "Change the color of the shape with the 2nd parameter of the {0} class constructor. "(NytrilStyle.Class(attribute Stroke));
+  Text: "Change the color of the line with the 2nd parameter of the {0} constructor. "(NytrilStyle.Class(attribute Stroke));
   Code: [attribute LS1, attribute Line1];
   Sel: new(0, 27, 10);
   Options: NoShort;
@@ -71,7 +77,7 @@ Stroke LS2 = new(LineSize, Colors.Red, Dotted);
 Line2 = ZigZag(LS2);
 
 readonly LessonExample Content.LineStyleOptionsEx = new(#5939574f-45a5-4609-8a26-097197175f91#, "Line Styles") {
-  Text: "Changed the LineStyles using the 3rd parameter of the {0} constructor. "(NytrilStyle.Class(attribute Stroke));
+  Text: "Change the style of the line using LineStyles, the 3rd parameter of the {0} constructor. "(NytrilStyle.Class(attribute Stroke));
   Code: [attribute LS2, attribute Line2];
   Sel: new(0, 39, 6);
   Options: NoShort;
@@ -181,12 +187,12 @@ DrawMiterJoin(miter) = Canvas(6%, LessonExample.FontHeight*1.5) {
 
 MiterTable = TwoColumTable {
   Row {Bold; "Miter Limit"; "Effect"};
-  foreach (var m in [LineSize*2, LineSize*0.25])
+  foreach (var m in [50, 1])
     Row {TextDigits: 0; m; DrawMiterJoin(m)};
 };
 
 readonly LessonExample Content.MiterListEx = new(#18d90f7f-7bdf-47ca-aae0-9efb19e70370#, "Miter limit") {
-  Text: "Use the miterlimit parameter to limit ratio of the extent of a miter to the stroke size (default: 4.0).";
+  Text: "Use the miterlimit parameter to limit the ratio of the extent of a miter join to the stroke size (default: 4.0).";
   Code: [attribute DrawMiterJoin, attribute MiterTable];
   Sel: new(2, 67, 5);
   Options: NoShort;
@@ -278,6 +284,27 @@ readonly LessonExample Content.PolygonsEx = new(#c0339f84-f0f6-4c5c-a7c7-5894ec7
 
 //======================================================================
 
+CheckMark = Canvas(LessonExample.FontHeight*7, LessonExample.FontHeight*5) {
+  Shape(Colors.LightGreen, Colors.DarkGreen) {
+    ClosedPath(1%, 50%) {
+      QuadTo(new(9%, 44%), new(20%, 43%));
+      QuadTo(new(31%, 52%), new(36%, 69%));
+      QuadTo(new(60%, 28%), new(99%, 5%));
+      QuadTo(new(55%, 39%), new(36%, 96%));
+      QuadTo(new(34.5%, 100%), new(33%, 96%));
+      QuadTo(new(21%, 60%), new(1%, 50%));
+    };
+  };
+};
+
+readonly LessonExample Content.CombinedFigureEx = new(#2cdbd9f3-d45f-47e5-b748-8dc858b26c51#, "QuadTo formatter") {
+  Text: "Make a quadratic curve with two endpoints and a control point using the {0} function. "(NytrilStyle.Formatter(attribute QuadTo));
+  Code: [attribute CheckMark];
+  Sel: new(3, 6, 6);
+};
+
+//======================================================================
+
 Dots(Point[] points) = {
   foreach (var p in points) {
     Shape(each0 > 0 and each1 < points.Length ? Colors.Blue : Colors.Green) {
@@ -321,18 +348,31 @@ ShowQuads = Canvas {
   ShowQExample(each QuadExamples);
 };
 
-readonly LessonExample Content.ShowQuadraticFiguresEx = new(#d6f69534-6e22-4dc7-a169-1c769abb2dce#, "Quadratic Curves") {
-  Text: Span {
-    "Make a quadratic curve with two endpoints and a control point using the {0} formatter. "(NytrilStyle.Formatter(attribute QuadTo));
-    "Here are some examples of how the position of the control point affects the shape of the curve. ";
-  };
+readonly LessonExample Content.QuadraticExamplesEx = new(#d6f69534-6e22-4dc7-a169-1c769abb2dce#, "Quadratic Examples") {
+  Text: "Here are some examples of how the position of the control point affects the shape of a quadratic curve. ";
   Code: [attribute ShowQuads];
 };
 
 //======================================================================
 
+BowTie = Canvas(LessonExample.FontHeight*5, LessonExample.FontHeight*5) {
+  Shape(null, LS1) {
+    OpenPath(33%, 10%) {
+      CurveTo(new(100%, 100%), new(0, 100%), new(65%, 10%));
+    };
+  };
+};
+
+readonly LessonExample Content.CurveToEx = new(#d1d7a367-94e0-4dcb-9ac4-ee4cee63b2dd#, "Cubic curves") {
+  Text: "Make a cubic curve with two endpoints and two control points, using the {0} function. "(NytrilStyle.Formatter(attribute CurveTo));
+  Code: [attribute BowTie];
+  Sel: new(3, 6, 7);
+};
+
+//======================================================================
+
 //Each array holds four points: the two ends of the arc, and the two control points
-Point[][] BezierExamples = [
+Point[][] CubicExamples = [
   [new(10,  10),  new(20,  30),  new(40,  30),  new(50,  10)],
   [new(70,  10),  new(70,  30),  new(110, 30),  new(110, 10)],
   [new(140, 10),  new(130, 30),  new(150, 30),  new(200, 10)],
@@ -363,38 +403,14 @@ ShowCurve(Point[] p) = Canvas {
   Dots(p);
 };
 
-ShowBezier = Canvas {
+ShowCubics = Canvas {
   Margin: LineSize;
-  ShowCurve(each BezierExamples);
+  ShowCurve(each CubicExamples);
 };
 
-readonly LessonExample Content.ShowBezierFiguresEx = new(#d1d7a367-94e0-4dcb-9ac4-ee4cee63b2dd#, "Bezier curves") {
-  Text: Span {
-    "Make a cubic curve with two endpoints and two control points, using the {0} formatter. "(NytrilStyle.Formatter(attribute CurveTo));
-    "The following examples show how the control points bend the curve.";
-  };
-  Code: [attribute ShowBezier];
-};
-
-//======================================================================
-
-CheckMark = Canvas(LessonExample.FontHeight*7, LessonExample.FontHeight*5) {
-  Shape(Colors.LightGreen, Colors.DarkGreen) {
-    ClosedPath(1%, 50%) {
-      QuadTo(new(9%, 44%), new(20%, 43%));
-      QuadTo(new(31%, 52%), new(36%, 69%));
-      QuadTo(new(60%, 28%), new(99%, 5%));
-      QuadTo(new(55%, 39%), new(36%, 96%));
-      QuadTo(new(34.5%, 100%), new(33%, 96%));
-      QuadTo(new(21%, 60%), new(1%, 50%));
-    };
-  };
-};
-
-readonly LessonExample Content.CombinedFigureEx = new(#2cdbd9f3-d45f-47e5-b748-8dc858b26c51#, "Combined curves") {
-  Text: "Combine several curves together to create elaborate shapes. ";
-  Code: [attribute CheckMark];
-  Sel: new(3, 6, 6);
+readonly LessonExample Content.CubicExamplesEx = new(#52b3ccda-b146-4c20-9b25-7f9709c93038#, "Cubic Examples") {
+  Text: "The following examples show how the control points bend the curve.";
+  Code: [attribute ShowCubics];
 };
 
 //======================================================================
@@ -410,7 +426,7 @@ GlyphBox(text, angle=0) = Canvas(null, null, new Edge(0, LineSize*2)) {
   Background: AgedWood;
   BorderRadius: LineSize;
   Transform: Transform.Rotate(angle); TransformFit: true;
-  Shape(null, new(LineSize*0.2, Colors.Black, Dotted, Round)) {
+  Shape(null, new(LineSize*0.25, Colors.Black, Dotted, Round)) {
     text;
   };
 };

@@ -476,8 +476,10 @@ class ShortLessonDocument: SlideShow {
   };
 
   override void CreateSlides {
-    foreach (var e in Video.Examples)
-      AddSlide(new FigureSlide(new LessonContent(e), Left));
+    foreach (var e in Video.Examples) {
+      if (e.IncludeSlide)
+        AddSlide(new FigureSlide(new LessonContent(e), Left));
+    }
   }
 }
 

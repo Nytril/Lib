@@ -238,7 +238,7 @@ class PrivacyDocument: LegalDocument {
     Description = Lang.HandleInformation;
   }
 
-  readonly DPO = NytrilStyle.EmailLink(Lang.DataProtectionOfficer, new Email("support@nytril.com"));
+  readonly DPO = NytrilStyle.EmailLink(Lang.DataProtectionOfficer, NytrilData.SupportEMail);
   readonly StripeSite = new URL("https://stripe.com/privacy");
 
   override GetBody = Block {
