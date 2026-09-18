@@ -2,46 +2,38 @@ using Format;
 
 include "DesignPalette";
 include "TechDesignToolbar";
+include "TechDesignReqs";
 
-// ============================
-// Global Styles
-// ============================
-B = Span { Bold };
-I = Span { Italic };
-U = Span { Underline };
-// ==== END
+/* ======================================================================================
+   Tech Design Template
 
-class ActionObj {
-  var string  Name;
-  var Actions Type;
-  var string  Link;
+   This template provides for information to be arranged in a combination of phases,
+   titled sections, subtitled content, and badge-numbered sections.
 
-  Constructor(Actions type, string name, string link){
-    Name = name;
-    Type = type;
-    Link = link;
+   This template includes a toolbar for selecting the overridden designs and available color pallets.
+   To use the toolbar, insert "readonly ShowDesignControls    = true;" near the top of your main file.
 
-    if (type == Actions.ToLink)
-      Link = new URL(link);
-  }
-}
+   This design template includes all the basic formatters including these assignments and /or functionality:
 
-//=============================================================================
+   Header1            PHASE
+   Header2            Section Title
+   Header3            SubTitle
+   Header4            Header1 with no spacing
+   NumberedHeading    Numbered Section            Number badge, Indented, Bold, Anchored, Space Before.
+   NormalParagraph    Body Text                   LibertinusSans, 11pt.
 
-class ContentTipAction: Action {
-  readonly var Content      Content;
-  readonly var TechDesign   Design;
+   Numbered sections are autonumbered.
+   Figures are auto captioned and autonumbered.
+   Figure References contain tip popups.
 
-  Constructor(Content content, TechDesign design) {
-    super.Constructor(ToAnchor, content.Name);
-    Content  = content;
-    Design   = design;
-  }
+   Callouts and Code Blocks.
+   Quick reference table.
 
-  override GetLayoutTip = Design.GetContentTip(Content);
-}
+   All styles and settings are virtual and thus can be and are overridden in the inhereting
+   TechDesigns. See the TechDesigns file for more.
 
-//=============================================================================
+   ======================================================================================
+*/
 
 class TechDesign {
   var string          Name;
@@ -69,45 +61,6 @@ class TechDesign {
     Paragraph;
     AddBody(content);
   };
-
-  //FullWidth = ExtentWidth;
-  //HalfWidth = ExtentWidth * 0.5;
-  //TexOutput = false;
-  //AddFigure(Content content, FigureOptions options, percentage=100%) = Figure(options.HasFlag(Full) ? FullWidth : HalfWidth, 100%, content, options) {
-  //  var caption = content.GetCaption(this) ?? content.Title;
-  //  var table   = options.HasFlag(FigureOptions.Table);
-  //  if (caption is valid) {
-  //    Caption: Frame {
-  //      Paragraph {
-  //        ParAlignment: Justify;
-  //        if (!TexOutput) {
-  //          Span {
-  //            Bold;
-  //            table ? "Table" : "Fig";
-  //            Tex.nbsp;
-  //            if (table)
-  //              DocFields.TableSequence(content);
-  //            else
-  //              DocFields.FigureSequence(content);
-  //            DotSpace;
-  //          };
-  //        }
-  //        caption;
-  //      };
-  //    };
-  //  }
-  //
-  //  var width = ExtentWidth * percentage;
-  //  PushExtentSize(new(width, ExtentHeight));
-  //  Paragraph {
-  //    DocFields.Anchor(content.AnchorName);
-  //    ParAlignment: Center;
-  //    Frame(width) {
-  //      AddBody(content);
-  //    };
-  //  };
-  //  PopExtent;
-  //};
 
   virtual AddFigure(Content content, FigureOptions options, width = ExtentWidth, height = null, showCaption = true) = Figure(width, height, content, options) {
     var caption  = content.GetCaption(this) ?? content.Title;
@@ -146,6 +99,7 @@ class TechDesign {
   virtual SetTextStyle = {
     TextFamily: TextFamilies.LibertinusSerif;
     TextHeight: 10pt;
+    TextColor: Palette.Dark1
   };
 
   virtual SetDocumentOptions(AuthoredContent content) = {
@@ -194,51 +148,60 @@ class TechDesign {
   private GetDocBody(AuthoredContent content) = Block {
     AddMainTitle(content);
 
-    //if (content.Authors is valid)
-    //  ShowTitleAuthors(content);
-
     ShowContent(content);
   };
 
-
   virtual GetFooter(AuthoredContent content) = FooterBlock {
-    TextHeight: 8pt;
     FooterParagraph {
-      DocFields.PageNumber; " of "; DocFields.PageCount;
+      "Created in Nytril";
+    };
+    FooterParagraph {
+      Tex.copyright 2026 " Nytril LLC";
     };
   };
 
   // -----------------------------
   // Default Styles - Alphabetical
   // -----------------------------
-  virtual ActionSpan(ActionObj action) = Span {
-    action.Name;
-    Action: new Action(action.Type, action.Link);
+  virtual ActionSpan(ActionObj action) = Span { action.Name; Action: new Action(action.Type, action.Link); };
+
+  virtual CalloutFrame                = Frame(ExtentWidth - SectionIndentation, null, BorderAll(new(1, 4, Palette.Accent4))) {
+    Margin: new Thickness(0, 12, 0, 5);
+    Background: Palette.Lighten(Palette.Light2, 80);
+    BorderRadius: 3;
   };
 
-  virtual B                           = Span              { Bold };
-  virtual CalloutFrame                = Frame(ExtentWidth - SectionIndentation, null, BorderAll(new(1, 4, Palette.Accent4)));
-  virtual CalloutParagraph            = NormalParagraph;
-  virtual CodeParagraph               = NormalParagraph   { ParBackground: Palette.Light2;          };
-  virtual MainTitle                   = Paragraph         { Bold; TextHeight: 19pt;                 };
+  virtual CalloutParagraph            = NormalParagraph   { TextColor: Palette.Dark2; TextHeight: 8pt; SpaceAfter: 6px; };
+  virtual CodeParagraph               = NormalParagraph   { ParBackground: Palette.Dark1; TextHeight: 11px; };
+
+  virtual FigureCaption(Content figure) = Paragraph {
+    Span {FigureReference(figure) DotSpace; Bold};
+    figure.Title;
+    SpaceAfter: 14px;
+  };
+
+  FigureReference(Content content) = Span {
+    "Figure ";
+    DocFields.FigureReference(content);
+    TipAction: new ContentTipAction(content, this);
+  };
+
   virtual FooterBlock                 = MarginBlock       (0.5");
-  virtual FooterParagraph             = Paragraph         { ParAlignment: Center;                   };
-  virtual HeaderBlock                 = MarginBlock       (0.25");
-  virtual HeaderParagraph             = Paragraph         (null, [6"]);
-  virtual Heading1                    = Paragraph         { Bold; TextHeight: 18pt;                 };
-  virtual Heading2                    = Paragraph         { Bold; TextHeight: 16pt;                 };
-  virtual Heading3                    = Paragraph         { Bold; TextHeight: 14pt;                 };
-  virtual Heading4                    = Paragraph         { TextHeight: 12pt;                       };
-  virtual HyperlinkParagraph          = Paragraph         { Underline; TextColor: Palette.Hyperlink };
-  virtual IndentedBlock               = Block             { LeftIndent: SectionIndentation;         };
-  virtual InLineLink                  = Span              { Underline; TextColor: Palette.Dark2     };
-  virtual NormalParagraph             = Paragraph;
-  virtual SpacedParagraph             = NormalParagraph   { SpaceAfter: 24px;                       };
-  virtual SpanHighlight               = Span              { TextColor: Palette.Dark2                };
-  virtual TightParagraph              = NormalParagraph   { SpaceAfter: 6px;                       };
+  virtual FooterParagraph             = Paragraph         { ParAlignment: Center; TextHeight: 12px; TextColor: Palette.Lighten(Palette.Dark1, 75); };
+  virtual Heading1                    = Paragraph         { Bold; TextHeight: 18pt; SpaceBefore: 36; };
+  virtual Heading2                    = Paragraph         { Bold; TextHeight: 16pt;                  };
+  virtual Heading3                    = Paragraph         { Bold; TextHeight: 14pt;                  };
+  virtual Heading4                    = Heading1          { SpaceBefore: 0;                          };
+  virtual HyperlinkParagraph          = Paragraph         { Underline; TextColor: Palette.Hyperlink  };
+  virtual IndentedBlock               = Block             { LeftIndent: SectionIndentation;          };
+  virtual InLineLink                  = Span              { Underline; TextColor: Palette.Dark2      };
+  virtual MainTitle                   = Paragraph         { TextFamily: TextFamilies.LibertinusSerif; Bold; TextHeight: 19pt; };
+  virtual NormalParagraph             = Paragraph         { TextFamily: TextFamilies.LibertinusSerif; TextHeight: 11pt; };
 
   virtual NumberedHeading(level, title, anchorText) = Paragraph {
+    SpaceBefore: 28;
     SpaceAfter: 6px;
+    LeftIndent: SectionIndentation;
     NumberedHeadingBadge { level };
     Tab;
     NumberedHeadingTitle { title };
@@ -253,41 +216,13 @@ class TechDesign {
     BorderRadius: 4;
   };
 
-  virtual NumberedHeadingTitle   = Span      { Bold; TextHeight: 14pt; };
-
-  virtual NumberedList           = ListBlock(@Enumerators.NumberDot);
-
-  virtual PrimaryActionParagraph = Paragraph { ParAlignment: Right; TextColor: Palette.Accent1; Underline; };
-
-  virtual QuickRefItem(anchorName, anchorText) = Span {
-    anchorName;
-    Action: new Action(Actions.ToAnchor, anchorText);
-  };
-
-  virtual QuickRefCell         = Cell      { LineHeight: 18px; TextColor: Palette.Hyperlink; };
-  virtual QuickRefHeaderRow    = Row       ( null, null, 25, LineRules.Exact                 );
-  virtual QuickRefTable        = Table     ( null, null, [Column.Expand]                     );
-  virtual SpecialHeading1      = Paragraph { TextColor: Palette.Accent2;                     };
-  virtual SpecialFrame1        = Frame     { TextHeight: 8pt;                                };
-
-
-  virtual FigureCaption(Content figure) = Paragraph {
-    Span {FigureReference(figure) DotSpace; Bold};
-    figure.Title;
-    SpaceAfter: 14px;
-  };
-
-  FigureReference(Content content) = Span {
-    "Figure ";
-    DocFields.FigureReference(content);
-    TipAction: new ContentTipAction(content, this);
-  };
-
-  TableReference(Content content) = Span {
-    "Table ";
-    DocFields.TableReference(content);
-    TipAction: new ContentTipAction(content, this);
-  };
+  virtual NumberedHeadingTitle                 = Span            { TextFamily: TextFamilies.LibertinusSans; Bold; TextHeight: 14pt;                          };
+  virtual NumberedList                         = ListBlock       ( @Enumerators.NumberDot                                                                    );
+  virtual PrimaryActionParagraph               = Paragraph       { ParAlignment: Right; TextColor: Palette.Accent1; Underline;                               };
+  virtual QuickRefCell                         = Cell            { LineHeight: 18px; TextColor: Palette.Hyperlink; TextHeight: 12px; TextLetterSpace: -0.15  };
+  virtual QuickRefHeaderRow                    = Row             ( null, null, 25, LineRules.Exact) { TextHeight: 17px;                                      };
+  virtual QuickRefItem(anchorName, anchorText) = Span            { anchorName; Action: new Action(Actions.ToAnchor, anchorText);                             };
+  virtual QuickRefTable                        = Table           ( null, null, [Column.Expand, Column.Expand, Column.Expand]                                 );
 
   virtual RealtiveHBox = HBox {
     HRelative: Page;
@@ -297,89 +232,17 @@ class TechDesign {
     Y: 0;
     HAlign: Right;
   };
+
+  virtual SpacedParagraph                      = NormalParagraph { SpaceAfter: 24px;                                                                         };
+  virtual SpanHighlight                        = Span            { TextColor: Palette.Accent5                                                                  };
+  virtual SpecialHeading1                      = Paragraph       { TextColor: Palette.Accent2; TextHeight: 10pt;                                             };
+  virtual SpecialFrame1                        = Frame           { Margin: new Thickness(14, 0, 0, 0); TextHeight: 8pt; TextColor: Palette.Accent2;          };
+
+  TableReference(Content content) = Span {
+    "Table ";
+    DocFields.TableReference(content);
+    TipAction: new ContentTipAction(content, this);
+  };
+
+  virtual TightParagraph = NormalParagraph { SpaceAfter: 6px; };
 }
-
-//=========================================================================
-
-class AuthoredContent: Content {
-  var List<Person>     Authors;
-  var DateTime         Created;
-  var                  Watermark;
-
-
-  Constructor(name) {
-    super.Constructor(name);
-    Authors     = new(8);
-    Created     = DateTime.Now;
-  }
-
-  void AddAuthor(Person author) {
-    Authors.Add(author);
-  }
-
-  override Icon GetIcon = Icons.article;
-}
-
-//=========================================================================
-
-class Content: Anchor {
-  var int           SectionLevel;
-  var List<Content> Children;
-  var bool          NeedsAnchor;
-  var bool          NeedsNumbering;
-
-
-  Constructor(anchorTitle, anchorName=null) {
-    super.Constructor(anchorTitle, anchorName);
-    Children       = new(8);
-    NeedsAnchor    = false;
-    NeedsNumbering = false;
-  }
-
-  AnchorTitle = Title;
-
-  void AddContent(Content content) {
-    Children.Add(content);
-  }
-
-  int AssignStructuredContent(int level, int nextNumber, parentAnchor, delim) {
-    var nextRootNumber  = nextNumber;
-    var nextChildNumber = 1;
-    var anchor          = parentAnchor;
-
-    if (NeedsNumbering) {
-      if (parentAnchor is valid and parentAnchor != Empty)
-        anchor = parentAnchor + delim + nextNumber;
-      else
-        anchor = nextNumber;
-
-      AnchorText   = Name anchor;
-      SectionLevel = nextNumber;
-      NeedsAnchor  = true;
-
-      nextRootNumber = nextNumber + 1;
-    }
-    else if (NeedsAnchor)
-      AnchorText = Name anchor;
-    else
-      AnchorText = null;
-
-    foreach (var c in Children) {
-      if (NeedsNumbering)
-        nextChildNumber = c.AssignStructuredContent(level + 1, nextChildNumber, anchor, delim);
-      else
-        nextRootNumber = c.AssignStructuredContent(level, nextRootNumber, parentAnchor, delim);
-    }
-
-    return nextRootNumber;
-  }
-
-  virtual GetCaption(TechDesign design) = null;
-
-  virtual GetLayout(TechDesign design) = null;
-
-  override Icon GetIcon = Icons.text_format;
-
-  //override GetLayoutTip = TechStyle.GetContentTip(this);
-}
-//=========================================================================

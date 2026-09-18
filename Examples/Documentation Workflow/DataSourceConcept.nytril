@@ -1,4 +1,6 @@
-using Format, HelpConcepts;
+using Format;
+
+include "DbConfig";
 
 class DataSourceConcept: AuthoredContent {
   Constructor {
@@ -54,7 +56,7 @@ class  DataSourceAboutSection: Content {
       "This document describes the basic process of using these features. ";
     };
 
-    design.Heading2 {
+    design.Heading4 {
       "Connecting to a Database";
     };
 
@@ -91,33 +93,41 @@ class  DataSourceAboutSection: Content {
 
     design.SpacedParagraph {
       "Connecting to a database source is simple. ";
+      "Use the built in DB namespace to access database connection methods. ";
+      "All connection methods, assuming correct connection strings and credentials, return a DbConnection.";
     };
 
     design.AddFigure(DbConnFig, Here);
-    var dbConnRef = design.FigureReference(DbConnFig);
+
+    design.Heading3 {
+      "Securing credentials";
+    };
+
+    design.SpacedParagraph {
+      "Each database connection method includes an optional parameter for credentials. ";
+      "The parameter can be omitted as credentials may be supplied in the connection string. ";
+      "Of course, if the credentials are placed inside the conenction string, those credentials will likely be pushed to your source control. ";
+      "Moreover, anyone with access to the source code can see those credentials.";
+    };
+
+    design.SpacedParagraph {
+      "To ameliorate that concern, Nytril includes a \"User Credentials\" feature that stores credentials securely. ";
+      "The credential set is named and thereafter is referenced by that name. ";
+      "The named credentials will not be included in source control and are not visible to other developers. ";
+      "This is the recommended method for connecting to databases, APIs, or other external systems that require credentials. ";
+    };
+
+    design.Heading3 {
+      "Querying the Connection";
+    };
+
+    design.SpacedParagraph {
+      "Once a DbConnection has been established, the database can be queried using the RunQuery method. ";
+      "The only parameter for the method is the query command.  ";
+      "Pass in the query command and the method will return an array of DbRows following the structure returned from the query.";
+    };
+
+    design.AddFigure(DbQueryFig, Here);
   };
 }
-// ============================================================================
-
-readonly  DbConnFigure  DbConnFig = new;
-class  DbConnFigure: Content {
-  Constructor() {
-    super.Constructor("Basic Database Connection");
-  }
-
-  private void SampleConn {
-    var dBServerAddress          = "nytril-db-server.database.windows.net";
-    var dbName                   = "NytrilDB-Dev";
-    var nytrilStoredCreds        = "NytrilDB Dev Creds";
-    var connectionString         = "Server={0};Database={1};"(dBServerAddress, dbName);
-    var connection = new DB.SQLServer(connectionString, nytrilStoredCreds);
-  }
-
-  override GetLayout(TechDesign design)  = design.CodeParagraph {
-    SourceSelectionLines(null, 113, 1);
-  };
-
-  override GetCaption(TechDesign design) = Span { "Basic Database Connection" };
-}
-
 // ============================================================================

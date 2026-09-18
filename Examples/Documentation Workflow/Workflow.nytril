@@ -155,7 +155,7 @@ class Phase1Sec: Content {
     super.Constructor(null);
 
     AddContent(AudienceEnvironmentStep);
-    AddContent(PageBreakSection);
+    //AddContent(PageBreakSection);
     AddContent(OutputStrategyStep);
     AddContent(IdContentAndDataStep);
     AddContent(DesignFrameworkStep);
@@ -207,25 +207,6 @@ class AudienceEnvironment: StepStyler {
     design.CalloutParagraph {
       "Not every project can benefit from using common configurations, a fresh start may be a better stategy. ";
       "Nytril allows for full control over how you deploy and use configuration metrics and you can configure them at any time. ";
-    };
-  };
-}
-
-// =======================================================
-
-readonly PageBreakDocSection PageBreakSection = new;
-class PageBreakDocSection: Content {
-  Constructor {
-    super.Constructor(null);
-  }
-
-  override GetLayout(TechDesign design) = SectionNextPage {
-    Header: design.HeaderBlock {
-      design.HeaderParagraph {
-        WorkflowContent.Title;
-        Tab;
-        "Page " DocFields.PageNumber;
-      };
     };
   };
 }
@@ -453,8 +434,6 @@ readonly DocumentArchitecture DocumentArchitectureStep = new;
 class DocumentArchitecture: StepStyler {
   Constructor() {
     super.Constructor("Create Basic Document Architecture");
-    PageBreakBefore = true;
-    StepConcepts = [DocumentsSetup];
   }
 
   override GetBody(TechDesign design) = Block {
@@ -571,8 +550,6 @@ class Phase3Sec: Content {
   }
 
   override GetLayout(TechDesign design) = Block {
-    PageBreak;
-
     design.Heading4 {
       "Phase III";
     };

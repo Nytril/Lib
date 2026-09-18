@@ -1,0 +1,45 @@
+using Format;
+
+readonly  DbConnFigure  DbConnFig = new;
+class  DbConnFigure: Content {
+  Constructor() {
+    super.Constructor("Basic Database Connection");
+  }
+
+  private void SampleConn {
+    var dBServerAddress          = "nytril-db-server.database.windows.net";
+    var dbName                   = "NytrilDB-Dev";
+    var nytrilStoredCreds        = "NytrilDB Dev Creds";
+    var connectionString         = "Server={0};Database={1};"(dBServerAddress, dbName);
+
+    var connection = new DB.SQLServer(connectionString, nytrilStoredCreds);
+
+  }
+
+  override GetLayout(TechDesign design)  = design.CodeParagraph {
+    SourceSelectionLines(null, 14, 15);
+  };
+
+  override GetCaption(TechDesign design) = Span { "Basic Database Connection" };
+}
+
+//========================================================================================
+
+readonly  DbQueryFigure  DbQueryFig = new;
+class  DbQueryFigure: Content {
+  Constructor() {
+    super.Constructor("Simple Database Query");
+  }
+
+  private void SampleConn {
+    var connection = new DB.DbConnection("");
+
+    var results = connection.RunQuery("Select * from People");
+  }
+
+  override GetLayout(TechDesign design)  = design.CodeParagraph {
+    SourceSelectionLines(null, 36, 37);
+  };
+
+  override GetCaption(TechDesign design) = Span { "Basic Database Connection" };
+}

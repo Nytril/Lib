@@ -7,7 +7,6 @@ include "Publishing";
 include "SourceControl";
 include "DataSourceConcept";
 include "MeasuresConcept";
-include "DocumentSetup";
 include "DesignTemplateConcept";
 include "HeadersAndFooters";
 include "Translations";
@@ -15,7 +14,7 @@ include "Lang";
 include "People";
 
 readonly ShowDesignControls    = true;
-readonly PublishDesignDefault  = AllDesigns.FindElementIndex(BasicNumbered4);
+readonly PublishDesignDefault  = AllDesigns.FindElementIndex(TechDesignVar4);
 readonly PublishPaletteDefault = AllPalettes.FindElementIndex(DesignPalettes.Office_20072010);
 
 readonly TechDocWorkflowContent   WorkflowContent             = new;
@@ -25,7 +24,6 @@ readonly PublishingConcept        PublishingContent           = new;
 readonly SourceControlConcept     SourceControlContent        = new;
 readonly DataSourceConcept        DataSourceContent           = new;
 readonly MeasuresHelpConcept      MeasuresContent             = new;
-readonly DocumentSetupConcept     DocumentSetupContent        = new;
 readonly DesignTemplateConcept    DesignTemplateContent       = new;
 readonly HeadersAndFootersConcept HeadersAndFootersContent    = new;
 readonly TranslationsHelpConcept  TranslationsContent         = new;
@@ -38,7 +36,6 @@ readonly namespace Main.Documents {
   StyledDocument       SourceControlDoc         = new(#45083a11-3f92-492b-a9a6-85798ee8b0fc#, "Source Control Concept"      , SourceControlContent    );
   StyledDocument       DataSourceDoc            = new(#a34109d3-22cc-4e95-8701-e7bde71dd19e#, "Data Source Concept"         , DataSourceContent       );
   StyledDocument       MeasuresDoc              = new(#03972ec2-987f-40b5-9f90-88e2fe14cd22#, "Measures Concept"            , MeasuresContent         );
-  StyledDocument       DocumentSetupDoc         = new(#1ee8d25a-3a33-43e7-bf5d-1f7e2c3b5801#, "Document Setup Concept"      , DocumentSetupContent    );
   StyledDocument       DesignTemplatesDoc       = new(#67851cf1-1aeb-4f63-a7cc-b9bf68c4a785#, "Design Template Concept"     , DesignTemplateContent   );
   StyledDocument       HeadersAndFootersDoc     = new(#992f9959-ff6d-4349-ae8d-c479693d4a7a#, "Headers and Footers Concept" , HeadersAndFootersContent);
   StyledDocument       TranslationsDoc          = new(#6a286f11-bd5c-4055-8968-a0f5b74b119d#, "Translations Concept"        , TranslationsContent     );

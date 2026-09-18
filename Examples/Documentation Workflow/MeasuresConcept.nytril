@@ -1,7 +1,173 @@
-using Format, HelpConcepts;
+using Format, HelpConcepts, Units;
+
+readonly namespace Measure if (UnitSystem == UnitSystems.Metric) {
+  Length(len) = LengthSpan(len toscale kilometers, "kilometer", "kilometers");
+}
+
+readonly namespace Measure if (UnitSystem == UnitSystems.Imperial) {
+  Length(len) = LengthSpan(len toscale miles, "mile", "miles");
+}
+
+LengthSpan(double value, string singleSymbol, string pluralSymbol) = Span {
+  var symbol = value <= 1 ? singleSymbol : pluralSymbol;
+  value;
+  Space;
+  symbol;
+};
+
+SampleUse = Span {
+
+  "The signal can reach " Measure.Length(5 miles);
+};
 
 class MeasuresHelpConcept: AuthoredContent {
   Constructor {
     super.Constructor("Unit Variations through Measures");
+
+    Watermark = "DRAFT";
+
+    AddAuthor(People.ColbertAuthor);
+    AddAuthor(People.McCreightAuthor);
+
+    AddContent(MeasuresPurpose);
+    AddContent(MeasuresAbout);
+    AddContent(MeasuresImplementation);
   }
+}
+
+readonly MeasuresPurposeSection MeasuresPurpose = new;
+  class MeasuresPurposeSection: Content {
+    Constructor() {
+      super.Constructor(null);
+    }
+
+    override GetLayout(TechDesign design) = Block {
+      design.Heading3 {
+        "Purpose";
+      };
+
+      design.SpacedParagraph {
+        "This document describes the process of using the Configurations option for units of measure, imperial or metric.";
+      };
+
+      design.SpacedParagraph {
+        "To implement the automatic production of documents in both imperial and metric units, you must first create two configurations, one for imperial and one for metric. ";
+        "See the Configurations concept for help on setting up configurations. ";
+        "With those two configuration in place, Nytril will generate two version of each document using the options in each configuration. ";
+        "In the source code, for units, the developver must tell the compiler how to render the content. ";
+        "This document explains that process.";
+      };
+
+      design.SpecialHeading1 { "Concepts" };
+      design.SpecialFrame1 {
+        ConfigsConcept;
+      };
+    };
+  }
+
+readonly MeasuresAboutSection MeasuresAbout = new;
+class MeasuresAboutSection : Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading1 {
+      "Coding for Unit Systems Configurations";
+    };
+
+    design.Heading3 {
+      "Understanding the Configuration Build Environment";
+    };
+
+    design.SpacedParagraph {
+      "There are two key places where configurations are used by Nytril. ";
+      "The first is the configuraiton used when working in the IDE. ";
+      "At the top of the Documents menu, developers can select the configuration they want Nytril to use when building and rendering documents in the IDE. ";
+    };
+
+    design.SpacedParagraph {
+      "The second, and probably the more important concept to grasp, to that Nytril uses Configurations during document publishing. ";
+      "Nytril will build each document once per unique configuration. ";
+      "During that build process, Nytril sets the environment variables for the current configuration so the developer can tell Nytril how to handle the different options. ";
+    };
+
+    design.SpacedParagraph {
+      "For Unit Systems, the \"UnitSystem\" build environment variable will be either an \"Imperial\" or \"Metric\" enumeration. ";
+      "Thus, the condition can be checked by comparing \"UnitSystem\" to the UnitSystems enumeration. ";
+      "With that understanding, we can review a simple implementation.";
+    };
+  };
+}
+
+readonly MeasuresImplementationSection MeasuresImplementation = new;
+class MeasuresImplementationSection: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    PageBreak;
+    design.Heading3 {
+      "Implemention";
+    };
+
+    design.AddFigure(MeasuresFig, Here);
+
+    design.SpacedParagraph {
+      "Figure 1 depictsthe recommended implementation of a system for formatting content relative to the current unit system. ";
+      "This process sets a compiler condition by applying the \"if\" statement directly after a namespace declaration (similar to an if def in C#). ";
+      "This tells the compiler to use the methods in this namespace when the compiler condition is true. ";
+      "Note that the inactive version is grayed out, making it easy to know which version is currently being compiled. ";
+    };
+
+    design.TightParagraph {
+      "The process is thereafter simple, apply the converstion and get the formatted span from the LengthSpan method. ";
+      "The \"toscale\" keyword will convert the incoming measure to the specified units. ";
+      "Add the necessary converters for your applicaiton, such as temperature, millimeters, or fractions, so that they appear as you want them to for your documents.";
+    };
+
+    design.CalloutFrame {
+      design.CalloutParagraph {
+        "IMPORTANT - the incoming value to the \"toscale\" keyword must include the units to be converted. ";
+        "For example: 5 miles will be converted into 8.04672 kilometers; however, the number 5 without units will simply become 5 kilometers. ";
+      };
+    };
+
+    LineBreak;
+    design.SpacedParagraph {
+      "To use this process, call Measure.Length and pass in the value as shown in Figure 2. ";
+      "The result of Figure 2 depends on the current configuration. ";
+      "For the current build of this document, which is " System.Configuration.UnitSystem ", the result is: "; SampleUse { Italic } ".";
+    };
+
+    design.AddFigure(MeasuresUseFig, Here);
+  };
+}
+
+
+readonly MeasuresFigure  MeasuresFig = new;
+class  MeasuresFigure: Content {
+  Constructor() {
+    super.Constructor("Simple Measures Setup");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(null, 3, 16);
+  };
+}
+
+readonly MeasuresUseFigure  MeasuresUseFig = new;
+class  MeasuresUseFigure: Content {
+  Constructor() {
+    super.Constructor("Using the Simple Measures Setup");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(null, 19, 20);
+  };
 }

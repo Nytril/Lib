@@ -24,18 +24,13 @@ SourceControl = Span {
 };
 
 DataSource = Span {
-  "Connecting Datasource";
+  "Connecting a Datasource";
   Action: new Action(Actions.ToDocument, DataSourceDoc.FactId);
 };
 
 MeasuresConcept = Span {
   "Measures";
-  Action: new Action(Actions.ToDocument, DataSourceDoc.FactId);
-};
-
-DocumentsSetup = Span {
-  "Document Set Up";
-  Action: new Action(Actions.ToDocument, DocumentSetupDoc.FactId);
+  Action: new Action(Actions.ToDocument, MeasuresDoc.FactId);
 };
 
 DesignTemplates = Span {

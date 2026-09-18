@@ -1,0 +1,122 @@
+using Format;
+
+// ============================
+// Global Styles
+// ============================
+B = Span { Bold };
+I = Span { Italic };
+U = Span { Underline };
+// ==== END
+
+class ActionObj {
+  var string  Name;
+  var Actions Type;
+  var string  Link;
+
+  Constructor(Actions type, string name, string link){
+    Name = name;
+    Type = type;
+    Link = link;
+
+    if (type == Actions.ToLink)
+      Link = new URL(link);
+  }
+}
+
+//=============================================================================
+
+class ContentTipAction: Action {
+  readonly var Content      Content;
+  readonly var TechDesign   Design;
+
+  Constructor(Content content, TechDesign design) {
+    super.Constructor(ToAnchor, content.Name);
+    Content  = content;
+    Design   = design;
+  }
+
+  override GetLayoutTip = Design.GetContentTip(Content);
+}
+
+//=============================================================================
+
+class AuthoredContent: Content {
+  var List<Person>     Authors;
+  var DateTime         Created;
+  var                  Watermark;
+
+
+  Constructor(name) {
+    super.Constructor(name);
+    Authors     = new(8);
+    Created     = DateTime.Now;
+  }
+
+  void AddAuthor(Person author) {
+    Authors.Add(author);
+  }
+
+  override Icon GetIcon = Icons.article;
+}
+
+//=========================================================================
+
+class Content: Anchor {
+  var int           SectionLevel;
+  var List<Content> Children;
+  var bool          NeedsAnchor;
+  var bool          NeedsNumbering;
+
+
+  Constructor(anchorTitle, anchorName=null) {
+    super.Constructor(anchorTitle, anchorName);
+    Children       = new(8);
+    NeedsAnchor    = false;
+    NeedsNumbering = false;
+  }
+
+  AnchorTitle = Title;
+
+  void AddContent(Content content) {
+    Children.Add(content);
+  }
+
+  int AssignStructuredContent(int level, int nextNumber, parentAnchor, delim) {
+    var nextRootNumber  = nextNumber;
+    var nextChildNumber = 1;
+    var anchor          = parentAnchor;
+
+    if (NeedsNumbering) {
+      if (parentAnchor is valid and parentAnchor != Empty)
+        anchor = parentAnchor + delim + nextNumber;
+      else
+        anchor = nextNumber;
+
+      AnchorText   = Name anchor;
+      SectionLevel = nextNumber;
+      NeedsAnchor  = true;
+
+      nextRootNumber = nextNumber + 1;
+    }
+    else if (NeedsAnchor)
+      AnchorText = Name anchor;
+    else
+      AnchorText = null;
+
+    foreach (var c in Children) {
+      if (NeedsNumbering)
+        nextChildNumber = c.AssignStructuredContent(level + 1, nextChildNumber, anchor, delim);
+      else
+        nextRootNumber = c.AssignStructuredContent(level, nextRootNumber, parentAnchor, delim);
+    }
+
+    return nextRootNumber;
+  }
+
+  virtual GetCaption(TechDesign design) = null;
+
+  virtual GetLayout(TechDesign design) = null;
+
+  override Icon GetIcon = Icons.text_format;
+}
+//=========================================================================

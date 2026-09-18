@@ -1,5 +1,12 @@
 using Format;
 
+var AllDesigns = [
+   TechDesignVar1,
+   TechDesignVar2,
+   TechDesignVar3,
+   TechDesignVar4
+];
+
 class DesignToolbar {
 
   static GetToolbarDocument(height) = Document(0.1, null, null, null, null, new(8.5", height)) {

@@ -2,6 +2,67 @@ using Format, HelpConcepts;
 
 class DesignTemplateConcept: AuthoredContent {
   Constructor {
-    super.Constructor("Understanding Design Templates");
+    super.Constructor("Style Design Concepts");
+
+    Watermark = "DRAFT";
+
+    AddAuthor(People.ColbertAuthor);
+    AddAuthor(People.McCreightAuthor);
+
+    AddContent(DesignTemplatePurpose);
+    AddContent(DesignTemplateAbout);
+    //AddContent(MeasuresImplementation);
   }
+}
+
+readonly DesignTemplatePurposeSection DesignTemplatePurpose = new;
+class DesignTemplatePurposeSection: Content {
+  Constructor {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Purpose";
+    };
+
+    design.SpacedParagraph {
+      "Implementing styling templates is a fundamental part of maintaining an effective recurring documentation system. ";
+      "This document describes how styling templates work, how to use a sample Styling template, and how to create your own.";
+    };
+  };
+}
+
+readonly DesignTemplateAboutSection DesignTemplateAbout = new;
+class DesignTemplateAboutSection: Content {
+  Constructor {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading1 {
+      "How Styling Templates Work";
+    };
+
+    design.SpacedParagraph {
+      "Simply stated, a style method is reusable code that formats document bound content. ";
+      "Such code can be as simple as a paragraph that sets text color, or as complicated as a table or chart that lays out content in a complex view. ";
+    };
+
+    design.SpacedParagraph {
+      "A style template is a grouping of one or more style methods designed to work together in formatting document content. ";
+      "In Nytril, such an arrangement could be designed in either a "; design.SpanHighlight { "namespace" }; " or a "; design.SpanHighlight { "class" }; ". ";
+      "A robust system, is best designed using a class architecture to take advantage of object oriented programming. ";
+    };
+
+    design.SpacedParagraph {
+      "With a set of styling methods established, document content is then generated using those styling methods, rather than raw Nytril formatters. ";
+      "You can imagine, then, that having two or more styling templates using methods with the same names would allow the entire document to be restyled by simply changing the style reference. ";
+    };
+
+    design.SpacedParagraph {
+      "Styles in Nytril are very much like styles in Word. ";
+      "If you take the time to assign styles to all the content, then formatting the content into another style is a simple task. ";
+    };
+  };
 }
