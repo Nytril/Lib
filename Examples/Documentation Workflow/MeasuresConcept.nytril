@@ -36,34 +36,34 @@ class MeasuresHelpConcept: AuthoredContent {
 }
 
 readonly MeasuresPurposeSection MeasuresPurpose = new;
-  class MeasuresPurposeSection: Content {
-    Constructor() {
-      super.Constructor(null);
-    }
-
-    override GetLayout(TechDesign design) = Block {
-      design.Heading3 {
-        "Purpose";
-      };
-
-      design.SpacedParagraph {
-        "This document describes the process of using the Configurations option for units of measure, imperial or metric.";
-      };
-
-      design.SpacedParagraph {
-        "To implement the automatic production of documents in both imperial and metric units, you must first create two configurations, one for imperial and one for metric. ";
-        "See the Configurations concept for help on setting up configurations. ";
-        "With those two configuration in place, Nytril will generate two version of each document using the options in each configuration. ";
-        "In the source code, for units, the developver must tell the compiler how to render the content. ";
-        "This document explains that process.";
-      };
-
-      design.SpecialHeading1 { "Concepts" };
-      design.SpecialFrame1 {
-        ConfigsConcept;
-      };
-    };
+class MeasuresPurposeSection: Content {
+  Constructor() {
+    super.Constructor(null);
   }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      "Purpose";
+    };
+
+    design.SpacedParagraph {
+      "This document describes the process of using the Configurations option for units of measure, imperial or metric.";
+    };
+
+    design.SpacedParagraph {
+      "To implement the automatic production of documents in both imperial and metric units, you must first create two configurations, one for imperial and one for metric. ";
+      "See the Configurations concept for help on setting up configurations. ";
+      "With those two configuration in place, Nytril will generate two version of each document using the options in each configuration. ";
+      "In the source code, for units, the developver must tell the compiler how to render the content. ";
+      "This document explains that process.";
+    };
+
+    design.SpecialHeading1 { "Concepts" };
+    design.SpecialFrame1 {
+      ConfigsConcept;
+    };
+  };
+}
 
 readonly MeasuresAboutSection MeasuresAbout = new;
 class MeasuresAboutSection : Content {

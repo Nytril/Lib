@@ -1,0 +1,429 @@
+using Format, LinkTypes;
+
+include "Basic Facts";
+include "DocumentStyles";
+include "Slideshow";
+include "Site";
+
+readonly PaperContentClass PaperContent = new;
+
+readonly namespace Main.Documents {
+  HomePage          Home  = new;
+  StyleDocument     Paper = new(#00000000-1111-2222-3333-444444444444#, "Paper", PaperContent, new OUPStyle(Organizations.OxfordPress, TwoColumn LineNumbers SectionNumbers));
+  IntroPresentation Intro = new(#01000000-1111-2222-3333-444444444444#);
+}
+
+//=====================================================================
+
+readonly NytrilIconSite Main.Site = new("MyRealm.WhitePaper", Icons.article);
+
+//===============================================================
+
+class HomePage: SitePage {
+  Constructor {
+    super.Constructor(Main.Site, #02000000-1111-2222-3333-444444444444#, "Home", PaperContent.Reference.Subtitle);
+    Description = "Create a report or a scientific white-paper";
+
+    Tiles = [
+      new DocTile(Main.Documents.Paper, Icons.assessment, "Paper"),
+      new DocTile(Main.Documents.Intro, Icons.tour, "Introduction"),
+    ];
+  }
+
+  override GetHeader = Block {
+    Paragraph {
+      TextHeight: 40pt;
+      NytrilStyle.SiteIcon(Icons.article);
+      Space;
+      Name;
+    };
+    Paragraph {
+      SpaceAfter: 30;
+      TextHeight: 20pt;
+      Description;
+    };
+  };
+}
+
+//======================================================================
+
+readonly namespace<Organization> Organizations {
+  GSS = new(#03000000-1111-2222-3333-444444444444#, "Golf Strategy Center", "GSS") {
+    Link to Cities.Orlando;
+  };
+
+  OTL = new(#04000000-1111-2222-3333-444444444444#, "Old-Timer League", "OTL") {
+    Link to Cities.Phoenix;
+  };
+
+  JOGE = new(#05000000-1111-2222-3333-444444444444#, "Journal of Golf Evolution", "JOGE") {
+    Link to Cities.Edinburgh;
+  };
+}
+
+//======================================================================
+
+readonly namespace<Person> People {
+  WhiffMulligan = new(#06000000-1111-2222-3333-444444444444#, "Whiff", null, "Mulligan") {
+    DepartmentLink to Organizations.OTL;
+    WorkEmailLink to new Email("whiff.mulligan@gmail.com");
+  };
+
+  HarryPutter = new(#07000000-1111-2222-3333-444444444444#, "Harry", null, "Putter") {
+    WorkEmailLink to new Email("harry.putter@gmail.com");
+    DepartmentLink to Organizations.GSS;
+  };
+
+  JohnFeinstein = new(#08000000-1111-2222-3333-444444444444#, "John", null, "Feinstein");
+
+  SamuelClemens = new(#09000000-1111-2222-3333-444444444444#, "Samuel", null, "Clemens");
+}
+
+//======================================================================
+
+readonly namespace<DocReference> References {
+ AGoodWalk = new(#0A000000-1111-2222-3333-444444444444#, Book) {
+    Title   : "A Good Walk Spoiled";
+    Subtitle: "Days and Nights on the PGA Tour";
+    Date    : #1996-6#;
+    Pages   : 100;
+    AuthorLink to People.JohnFeinstein;
+  };
+
+  MarkTwainMuseum = new(#0B000000-1111-2222-3333-444444444444#, InternetSite) {
+    Title: "Famous Twain Quotes";
+    AuthorLink to People.SamuelClemens;
+    Link to new URL("https://marktwainhouse.org/about/mark-twain/famous-twain-quotes/");
+  };
+}
+
+//======================================================================
+
+readonly DocReference MP26 = new(#0C000000-1111-2222-3333-444444444444#, Article) {
+  Title    : "The Affect of Golf on the Human Psyche";
+  Subtitle : "The ups and downs of the game of golf";
+  Date     : #2026-1#;
+  Volume   : 1;
+  Number   : 2;
+  Pages    : "1234";
+  Abstract : "How a simple game can crush egos and ruin friendships.";
+  ISSN     : "0000-123X";
+  DOI      : "01.1234/joge/1234";
+
+  Link to new URL("doi.org/01.1234/joge/1234");
+  AuthorLink to [People.WhiffMulligan, People.HarryPutter];
+  JournalLink to Organizations.GSS;
+};
+
+//======================================================================
+
+class PaperContentClass: AuthoredContent {
+  Constructor {
+    super.Constructor("White Paper", MP26);
+
+    Watermark             = "DRAFT";
+    SignificanceStatement = PaperSections.Significance;
+    Abstract              = PaperSections.Abstract;
+    Acknowledgements      = PaperSections.Acknowledgements;
+
+    Keywords = ["Frustation", "Anxiety", "Cost"];
+
+    SetCorrespondant(People.WhiffMulligan);
+
+    AddContent(PaperSections.Introduction);
+    AddContent(PaperSections.Methods);
+    AddContent(PaperSections.Results);
+    AddContent(PaperSections.Conclusion);
+  }
+}
+
+//======================================================================
+
+class IntroPresentation: SlideShow {
+  Constructor(Guid id) {
+    super.Constructor(id, "Intro", new FancyDesign, new OUPStyle(Organizations.OxfordPress, None), [People.WhiffMulligan]);
+    Title = PaperContent.Title;
+  }
+
+  override InitDocument = {
+    Style.SansSerif;
+    TextHeight: 16pt;
+    Link to References;
+  };
+
+  override void CreateSlides {
+    AddFigureSlide(PaperSections.Abstract);
+    AddFigureSlide(PaperSections.Introduction);
+    AddFigureSlide(PaperSections.Walking);
+    AddFigureSlide(TableFigures.HandicapTable);
+    AddFigureSlide(TableFigures.HandicapChart);
+    AddFigureSlide(PaperSections.Conclusion);
+    AddSlide(new EndSlide("Questions"));
+    AddFigureSlide(PaperSections.Acknowledgements);
+    AddSlide(new ReferenceSlide);
+  }
+}
+
+//======================================================================
+
+readonly AbstractSection PaperSections.Abstract = new;
+
+class AbstractSection: Content {
+  Constructor {
+    super.Constructor("Abstract");
+  }
+
+  override GetBody(ContentStyle style) = Block {
+    style.Par {
+      "The most important shot in golf is the next one. ";
+      LoremIpsum(200); DotSpace;
+    };
+  };
+}
+
+//======================================================================
+
+readonly SignificanceSection PaperSections.Significance = new;
+
+class SignificanceSection: Content {
+  Constructor {
+    super.Constructor("Significance Statement");
+  }
+
+  override GetBody(ContentStyle style) = Block {
+    style.Par {
+      "These findings are very significant. ";
+      LoremIpsum(200); DotSpace;
+    };
+   };
+}
+
+//======================================================================
+
+readonly IntroductionSection PaperSections.Introduction = new;
+
+class IntroductionSection: Content {
+  Constructor {
+    super.Constructor("Introduction");
+  }
+
+  override GetBody(ContentStyle style) = Block {
+    style.Par {
+      "Experts have concluded that you should \"drive for show, putt for dough, \""; Cite {References.AGoodWalk};
+      " but is that assertion supported by the data? ";
+      LoremIpsum(200); DotSpace;
+    };
+  };
+}
+
+//======================================================================
+
+readonly WalkingSection PaperSections.Walking = new;
+
+class WalkingSection: Content {
+  Constructor {
+    super.Constructor("Walking");
+  }
+
+  override GetBody(ContentStyle style) = Block {
+    style.Par {
+      "Golf is a good walk spoiled"; Cite {References.MarkTwainMuseum}; DotSpace;
+      LoremIpsum(200); DotSpace;
+    };
+  };
+}
+
+//======================================================================
+
+readonly CountingSection PaperSections.Counting = new;
+
+class CountingSection: Content {
+  Constructor {
+    super.Constructor("Counting");
+  }
+
+  override GetBody(ContentStyle style) = Block {
+    style.Par {
+      "Count the strokes ";
+      Span {Separator: CommaSpace; 1..10 step 1};
+      Tex.ellipsis;
+
+      LoremIpsum(200); DotSpace;
+    };
+  };
+}
+
+//======================================================================
+
+readonly MethodsSection PaperSections.Methods = new;
+
+class MethodsSection: Content {
+  Constructor {
+    super.Constructor("Methods");
+    AddContent(PaperSections.Walking);
+    AddContent(PaperSections.Counting);
+  }
+
+  override GetBody(ContentStyle style) = Block {
+    style.Par {
+      "By any means necessary. ";
+      LoremIpsum(200); DotSpace;
+    };
+  };
+}
+
+//======================================================================
+
+readonly ResultsSection PaperSections.Results = new;
+
+class ResultsSection: Content {
+  Constructor {
+    super.Constructor("Results");
+  }
+
+  override GetBody(ContentStyle style) = Block {
+    style.AddTable(TableFigures.HandicapTable, Top | Bottom);
+    style.Par {
+      "As you can see in "; style.TableReference(TableFigures.HandicapTable);
+      " the proof of the pudding is in the eating"; Cite {References.AGoodWalk}; DotSpace;
+    };
+
+    style.AddFigure(TableFigures.HandicapChart, Top | Bottom);
+    style.Par {
+      "The chart in "; style.FigureReference(TableFigures.HandicapChart); " clearly shows the data. ";
+      LoremIpsum(200); DotSpace;
+    };
+  };
+}
+
+//======================================================================
+
+readonly ConclusionSection PaperSections.Conclusion = new;
+
+class ConclusionSection: Content {
+  Constructor {
+    super.Constructor("Conclusion");
+  }
+
+  override GetBody(ContentStyle style) = Block {
+    style.Par {
+      "Run out and buy a more expensive set of clubs. ";
+      LoremIpsum(100); DotSpace;
+    };
+  };
+}
+
+//======================================================================
+
+readonly AcknowledgementsSection PaperSections.Acknowledgements = new;
+
+class AcknowledgementsSection: Content {
+  Constructor {
+    super.Constructor("Acknowledgements");
+  }
+
+  override GetBody(ContentStyle style) = Block {
+    style.Par {
+      style.ShowInitials(People.HarryPutter); " was supported through a generous grant from the PGA.";
+      LoremIpsum(100); DotSpace;
+    };
+  };
+}
+
+//======================================================================
+
+class GolfScore {
+  var int    Handicap;
+  var double Average,
+             FairwayHit;
+
+  Constructor(int handicap, double ave, double hit) {
+    Handicap   = handicap;
+    Average    = ave;
+    FairwayHit = hit;
+  }
+}
+
+readonly GolfScore[] Scores = [
+  new(0, 4.2, 50%),
+  new(5, 4.5, 48%),
+  new(10, 4.8, 45%),
+  new(15, 5.1, 43%),
+];
+
+//======================================================================
+
+readonly HandicapTable TableFigures.HandicapTable = new;
+
+class HandicapTable: Content {
+  Constructor {
+    super.Constructor("Handicap Table");
+  }
+
+  override GetCaption(ContentStyle style) = Span {
+    "Correlation between handicap and hit percentage.";
+  };
+
+  override GetBody(ContentStyle style) = Table(0.5, PadAll(2) + PadLR(4), [Column.Fit(2.5")]*3) {
+    ParAlignment: Center;
+    Row(BorderB(0.25)) {
+      VAlign: Center;
+      Background: Colors.Navy;
+      TextColor: Colors.White;
+      Bold;
+      style.SansSerif;
+      "Handicap"; "Average\nPar-4 Score"; "Fairway Hit %";
+    };
+    foreach (var score in Scores) {
+      Row {
+        if (each0 mod 2 == 1)
+          Background: 95%;
+        score.Handicap;
+        score.Average;
+        score.FairwayHit;
+      };
+    }
+  };
+}
+
+//======================================================================
+
+readonly HandicapChart TableFigures.HandicapChart = new;
+
+class HandicapChart: Content {
+  Constructor {
+    super.Constructor("Handicap Chart");
+  }
+
+  override GetCaption(ContentStyle style) = Span {
+    "Handicap versus average par-4 score.";
+  };
+
+  override GetBody(ContentStyle style) = Chart(100%, 2") {
+    XLabel: "Handicap";
+    XAxis: ChartAxis {
+      (each (each (each Scores).Handicap)) as string;
+    };
+
+    ValueAxis: ChartAxis {
+      MinorTics: true;
+    };
+
+    ValueLabel: HBox {
+      Transform: Transform.Rotate(90 degrees);
+      TransformFit: true;
+      "Hit %";
+    };
+
+    ChartSeries {
+      ChartType: Line;
+      Marker: Markers.Circle(Colors.White, 3);
+
+      foreach (var score in Scores)
+        score.Average;
+    }
+  };
+}
+
+//======================================================================
+

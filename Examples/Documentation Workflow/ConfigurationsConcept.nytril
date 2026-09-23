@@ -118,7 +118,7 @@ class  ConfigurationOptionsSection: Content {
     };
 
     design.SpacedParagraph {
-      "The "; B{"Lang"}; " file contains the configuration data. ";
+      "The "; design.Emphasis{"Lang"}; " file contains the configuration data. ";
       "The project Main file normally includes the Lang file, such as "; design.SpanHighlight { "\"include \"Lang\"\". " };
       "If the project does not include a Lang file, then Nytril produces documents using its default configuration. ";
       "Please review the remaining sections of this document for information on setting up the configuration environment. ";

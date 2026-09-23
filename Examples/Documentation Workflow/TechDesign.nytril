@@ -32,6 +32,9 @@ include "TechDesignReqs";
    All styles and settings are virtual and thus can be and are overridden in the inhereting
    TechDesigns. See the TechDesigns file for more.
 
+   To implement this style, copy all associated files to your repository
+   and add  "include "TechDesign";" without the outer quotes to your Main project file.
+
    ======================================================================================
 */
 
@@ -41,11 +44,13 @@ class TechDesign {
   var int             SectionIndentation,
                       SectionIndex;
   var DesignPalette   Palette;
+  var bool            ShowDesignControls;
 
   Constructor(string name, Thickness margins) {
     Name                = name;
     Margins             = margins;
     SectionIndentation  = 42;
+    ShowDesignControls  = true;
   }
 
   private AddBody(Content content) {
@@ -102,12 +107,6 @@ class TechDesign {
     TextColor: Palette.Dark1
   };
 
-  virtual SetDocumentOptions(AuthoredContent content) = {
-    if (!ShowDesignControls)
-      Watermark: content.Watermark;
-    SetTextStyle;
-  };
-
   virtual ShowChild(Content content) = Block {
     AddBody(content);
 
@@ -130,15 +129,15 @@ class TechDesign {
       return DesignToolbar.GetToolbarDocument(0.25") {
         SectionNextPage(Margins, null, null, null, null, new(8.5", 11")) {
           Footer: GetFooter(content);
+          Watermark: content.Watermark;
         };
 
-        SetDocumentOptions(content);
         GetDocBody(content);
       };
     }
     else {
       return Document(Margins) {
-        SetDocumentOptions(content);
+        SetTextStyle;
         Footer: GetFooter(content);
         GetDocBody(content);
       };
@@ -173,6 +172,7 @@ class TechDesign {
 
   virtual CalloutParagraph            = NormalParagraph   { TextColor: Palette.Dark2; TextHeight: 8pt; SpaceAfter: 6px; };
   virtual CodeParagraph               = NormalParagraph   { ParBackground: Palette.Dark1; TextHeight: 11px; };
+  virtual Emphasis                    = Span { Bold };
 
   virtual FigureCaption(Content figure) = Paragraph {
     Span {FigureReference(figure) DotSpace; Bold};
@@ -180,7 +180,7 @@ class TechDesign {
     SpaceAfter: 14px;
   };
 
-  FigureReference(Content content) = Span {
+  virtual FigureReference(Content content) = Span {
     "Figure ";
     DocFields.FigureReference(content);
     TipAction: new ContentTipAction(content, this);
@@ -234,11 +234,11 @@ class TechDesign {
   };
 
   virtual SpacedParagraph                      = NormalParagraph { SpaceAfter: 24px;                                                                         };
-  virtual SpanHighlight                        = Span            { TextColor: Palette.Accent5                                                                  };
+  virtual SpanHighlight                        = Span            { TextColor: Palette.Accent5                                                                };
   virtual SpecialHeading1                      = Paragraph       { TextColor: Palette.Accent2; TextHeight: 10pt;                                             };
   virtual SpecialFrame1                        = Frame           { Margin: new Thickness(14, 0, 0, 0); TextHeight: 8pt; TextColor: Palette.Accent2;          };
 
-  TableReference(Content content) = Span {
+  virtual TableReference(Content content) = Span {
     "Table ";
     DocFields.TableReference(content);
     TipAction: new ContentTipAction(content, this);

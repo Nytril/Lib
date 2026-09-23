@@ -1,6 +1,14 @@
 using Format;
 include "TechDesign";
 
+//Used by the toolbar
+var AllDesigns = [
+   TechDesignVar1,
+   TechDesignVar2,
+   TechDesignVar3,
+   TechDesignVar4
+];
+
 /* ======================================================================================
    Tech Design Variation 1
 

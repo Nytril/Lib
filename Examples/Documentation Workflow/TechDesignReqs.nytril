@@ -1,12 +1,52 @@
 using Format;
 
-// ============================
-// Global Styles
-// ============================
-B = Span { Bold };
-I = Span { Italic };
-U = Span { Underline };
-// ==== END
+readonly PublishDesignDefault  = AllDesigns.FindElementIndex(TechDesignVar4);
+readonly PublishPaletteDefault = AllPalettes.FindElementIndex(DesignPalettes.Office_20072010);
+
+//=============================================================================
+class StyledDocument: DocumentEntry {
+  var TechDesign       Design;
+  var AuthoredContent  Content;
+
+  Constructor(Guid id, string name, AuthoredContent content) {
+    super.Constructor(id, name);
+
+    Content            = content;
+    Title              = content.Title;
+    Design             = GetDesign(ToolbarSelections.DesignSlideIndex, AllDesigns);
+    Design.Palette     = GetPalette(ToolbarSelections.PaletteSlideIndex, AllPalettes);
+    ContentType        = ContentTypes.Article;
+  }
+
+  override GetDocument = Design.GetStyledDocument(Content);
+
+  TechDesign GetDesign(int index, Array designs) {
+    if (index > designs.Length)
+      return designs[designs.Length - 1];
+    return designs[index];
+  }
+
+  DesignPalette GetPalette(int index, DesignPalette[] palettes) {
+    if (index > palettes.Length)
+      return palettes[palettes.Length - 1];
+    return palettes[index];
+  }
+}
+//=============================================================================
+
+class UserToolbarSelections: Fact {
+  field int  DesignSlideIndex,
+             PaletteSlideIndex;
+
+  Constructor(Guid id) {
+    super.Constructor(id);
+    DesignSlideIndex  = PublishDesignDefault;
+    PaletteSlideIndex = PublishPaletteDefault;
+    if (!System.IsPublishing)
+      ReadFromStorage;
+  }
+}
+//=============================================================================
 
 class ActionObj {
   var string  Name;
@@ -22,7 +62,6 @@ class ActionObj {
       Link = new URL(link);
   }
 }
-
 //=============================================================================
 
 class ContentTipAction: Action {

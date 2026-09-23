@@ -21,7 +21,7 @@ class Type1Document: DocumentEntry {
 
 class Type2Document: DocumentEntry {
   Constructor {
-    super.Constructor(#10000000-1111-2222-3333-444444444444#, "Document 2");
+    super.Constructor(#01000000-1111-2222-3333-444444444444#, "Document 2");
   }
 
   override GetDocument = Document {

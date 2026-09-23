@@ -155,7 +155,6 @@ class Phase1Sec: Content {
     super.Constructor(null);
 
     AddContent(AudienceEnvironmentStep);
-    //AddContent(PageBreakSection);
     AddContent(OutputStrategyStep);
     AddContent(IdContentAndDataStep);
     AddContent(DesignFrameworkStep);
@@ -232,7 +231,7 @@ class OutputStrategy: StepStyler {
 
     design.TightParagraph {
       "Understanding the intended method of distrubtion helps in scaffolding the project, though one can always configure these options later. ";
-      "For instance, using Nytril's hosting environment for a rich and interactive user experience requires the creation of a "; B{"Site"} " in the code (see the Publishing concept). ";
+      "For instance, using Nytril's hosting environment for a rich and interactive user experience requires the creation of a "; design.Emphasis{"Site"}; " in the code (see the Publishing concept). ";
       "All other forms of output, other than writing your own output files, require no special setup. ";
     };
   };
@@ -240,7 +239,7 @@ class OutputStrategy: StepStyler {
   override GetDescription(TechDesign design) = design.CalloutFrame {
     design.CalloutParagraph {
       "As discussed in step 1, the output may require modification for local considerations, such as the paper-size system and the units of measure. ";
-      "Producing output in these variations, requires modifications to the Configurations in the "; B{"Lang"} " file. ";
+      "Producing output in these variations, requires modifications to the Configurations in the "; design.Emphasis{"Lang"} " file. ";
     };
   };
 }
@@ -342,7 +341,7 @@ class RepoAndSource: StepStyler {
     };
 
     design.TightParagraph {
-      "If using and existing repository, "; B{"skip this step"} ". ";
+      "If using and existing repository, "; design.Emphasis{"skip this step"} ". ";
     };
 
     design.TightParagraph {
@@ -379,11 +378,11 @@ class CreateProject: StepStyler {
     };
 
     design.TightParagraph {
-      "If you already created the project in the prior step, "; B{"skip this step"} ". ";
+      "If you already created the project in the prior step, "; design.Emphasis{"skip this step"} ". ";
     };
 
     design.TightParagraph {
-      "Be sure to select the repository using the "; B{"Repo"} " menu option before creating the project. ";
+      "Be sure to select the repository using the "; design.Emphasis{"Repo"} " menu option before creating the project. ";
       "Doing so ensures Nytril creates the project under the intended repository.";
     };
   };
@@ -406,7 +405,7 @@ class Localization: StepStyler {
     };
 
     design.TightParagraph {
-      "Key points from the "; I{"Configurations concept"};
+      "Key points from the "; Italic "Configurations concept";
     };
 
     design.NumberedList {
@@ -523,7 +522,7 @@ class InsertContent: StepStyler {
 
     design.TightParagraph {
       "If adding structured data from a data source, insert it now into an appropriate formatter revision. ";
-      "Press "; B{"F5"} " after changes to see the result in the document. ";
+      "Press "; design.Emphasis{"F5"} " after changes to see the result in the document. ";
     };
   };
 
@@ -583,7 +582,7 @@ class Translations: StepStyler {
     };
 
     design.NumberedList {
-      Span {"Moving strings into the language file using Ctrl-Shift-V or the "; B{"Text to Lang Symbol"} " feature. " };
+      Span {"Moving strings into the language file using Ctrl-Shift-V or the "; design.Emphasis{"Text to Lang Symbol"} " feature. " };
       Span {"Right clicking on that language file and selecting "; design.SpanHighlight{"Advanced => Translate Language Strings"} ". " };
       "Use the \"revu\" keyword on translated text and follow the dialog to translate the text. ";
       "Validating the translations and removing the revu keywords ";

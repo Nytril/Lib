@@ -51,7 +51,7 @@ class RepoAndSourceAboutSection: Content {
     design.SpacedParagraph {
         "A repository in Nytril is a required structural component for all documents. ";
         "Nytril maintains a default repository for projects created without selecting or creating another repository. ";
-        "The current repository appears under "; B{"Repo"}; " in the main menu bar. ";
+        "The current repository appears under "; design.Emphasis{"Repo"}; " in the main menu bar. ";
         "Nytril creates new projects in the selected repository.";
       };
 

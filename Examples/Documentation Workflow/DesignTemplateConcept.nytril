@@ -1,5 +1,55 @@
 using Format, HelpConcepts;
 
+//==================================================================================
+// Sample Figure Class - Used with show code so if moved, check the document.
+
+readonly SampleFigure  SampleFig = new;
+
+class  SampleFigure: Content {
+  Constructor() {
+    super.Constructor("Sample figure.");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = HBox { "Sample figure contents" };
+}
+
+NotImplemented(TechDesign design) = {
+
+  design.AddFigure(SampleFig, Here);          //Adds to other figure numbering
+  design.AddFigure(SampleFig, Here | Table);  //Adds to table figure numbering
+
+  "Refer to "; design.FigureReference(SampleFig); " for more information.";
+};
+
+SampleQuickRef(TechDesign design) = {
+  design.Heading3 {
+    "Quick Reference";
+  };
+
+  design.QuickRefTable {
+    design.QuickRefHeaderRow {
+      "PHASE I";
+      "PHASE II";
+      "PHASE III";
+    };
+    Row {
+      design.QuickRefCell {
+        design.QuickRefItem("Title1", "UniqueAnchor1");
+      };
+      design.QuickRefCell {
+        design.QuickRefItem("Title2", "UniqueAnchor2");
+      };
+      design.QuickRefCell {
+        design.QuickRefItem("Title3", "UniqueAnchor3");
+      };
+    };
+  };
+};
+
+//==================================================================================
+
 class DesignTemplateConcept: AuthoredContent {
   Constructor {
     super.Constructor("Style Design Concepts");
@@ -11,19 +61,21 @@ class DesignTemplateConcept: AuthoredContent {
 
     AddContent(DesignTemplatePurpose);
     AddContent(DesignTemplateAbout);
-    //AddContent(MeasuresImplementation);
+    AddContent(DesignTemplateImplementation);
+    AddContent(DesignTemplateFeatures);
   }
 }
+//==================================================================================
 
 readonly DesignTemplatePurposeSection DesignTemplatePurpose = new;
 class DesignTemplatePurposeSection: Content {
   Constructor {
-    super.Constructor(null);
+    super.Constructor("Purpose");
   }
 
   override GetLayout(TechDesign design) = Block {
     design.Heading3 {
-      "Purpose";
+      Title;
     };
 
     design.SpacedParagraph {
@@ -32,20 +84,21 @@ class DesignTemplatePurposeSection: Content {
     };
   };
 }
+//==================================================================================
 
 readonly DesignTemplateAboutSection DesignTemplateAbout = new;
 class DesignTemplateAboutSection: Content {
   Constructor {
-    super.Constructor(null);
+    super.Constructor("How Styling Templates Work");
   }
 
   override GetLayout(TechDesign design) = Block {
     design.Heading1 {
-      "How Styling Templates Work";
+      Title;
     };
 
     design.SpacedParagraph {
-      "Simply stated, a style method is reusable code that formats document bound content. ";
+      "Simply stated, a style method is reusable code that formats document content. ";
       "Such code can be as simple as a paragraph that sets text color, or as complicated as a table or chart that lays out content in a complex view. ";
     };
 
@@ -64,5 +117,355 @@ class DesignTemplateAboutSection: Content {
       "Styles in Nytril are very much like styles in Word. ";
       "If you take the time to assign styles to all the content, then formatting the content into another style is a simple task. ";
     };
+  };
+}
+//==================================================================================
+
+readonly DesignTemplateImplementationSection DesignTemplateImplementation = new;
+class DesignTemplateImplementationSection: Content {
+  Constructor {
+    super.Constructor("Implement Tech Design Template");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading1 {
+      Title;
+    };
+
+    design.Heading2 {
+      "Setup";
+    };
+
+    design.SpacedParagraph {
+      "Setting up an existing Nytril provided style template system is easy. ";
+      "Simply copy the files into the root of your repository, or into another folder of your choice, then include the necessary files in your project. ";
+    };
+
+    design.SpacedParagraph {
+      "For the TechDesign Style Template, download the template files from Git, and copy them into the root of your project repository. ";
+      "As shown in "; design.FigureReference(TechDesignImplementationFig); " include the TechDesigns file in your Main.nytril file, or another file in your project.";
+    };
+
+    design.AddFigure(TechDesignImplementationFig, Here);
+
+    design.Heading2 {
+      "Optional Styles Toolbar";
+    };
+
+    design.SpacedParagraph {
+      "The Tech Design style template comes with an options toolbar (see "; design.FigureReference(TechDesignToolbarPicFig); ") that provides slider controls for style variants and color palettes. ";
+      "Once content is setup using the Tech Design styles, then moving the toolbar controls will reformat the content. ";
+      "If you wish to deploy the toolbar, ensure the option is set to true in the TechDesign class constructor: ShowDesignControls  = true; ";
+      "The toolbar will not appear in your published content. ";
+    };
+
+    design.AddFigure(TechDesignToolbarPicFig, Here);
+  };
+}
+//==================================================================================
+
+readonly DesignTemplateFeaturesSection DesignTemplateFeatures = new;
+class DesignTemplateFeaturesSection: Content {
+  Constructor {
+    super.Constructor("Tech Design Template Features");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading1 {
+      Title;
+    };
+
+    TechDesignPalette.GetLayout(design);
+    TechDesignVariations.GetLayout(design);
+    TechDesignFigures.GetLayout(design);
+    TechDesignQuickRef.GetLayout(design);
+  };
+}
+//==================================================================================
+
+readonly TechDesignPaletteFeature TechDesignPalette = new;
+class TechDesignPaletteFeature: Content {
+  Constructor {
+    super.Constructor("Color Palette");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "After implemention, Build the project (Ctrl-Shift-B), then check the "; design.SpanHighlight { "Documents" }; " folder. ";
+      "Click on the \"Design Palette Samples\" document. ";
+      "These are the built-in, named color palettes available to this template. ";
+    };
+
+    design.SpacedParagraph {
+      "All of the color themes displayed in the sample palettes are customizable, and additional palettes can be added. ";
+      "Open the \"DesignPalette.nytril\" file and scroll down. ";
+      "You will find all the color themes, where you can change the values or add additional custom themes. ";
+    };
+  };
+}
+//==================================================================================
+
+readonly TechDesignVariationsFeature TechDesignVariations = new;
+class TechDesignVariationsFeature: Content {
+  Constructor {
+    super.Constructor("Base Style and Variations");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "Before beginning to work with the styles, it is necessary to understand the styles you have to work with. ";
+      "Open the \"TechDesign.nytril\" file. ";
+      "Scroll down until you find the commented section entitled "; design.SpanHighlight { "\"Default Styles - Alphabetical\"" }; ". ";
+    };
+
+    design.SpacedParagraph {
+      "All the sytles located here are preceeded by the "; design.SpanHighlight { "virtual" }; " keyword. ";
+      "Of course, you can add more or customize what is already there. ";
+      "These are the default base styles, that can be, and in some cases are, overridden by style variations. ";
+    };
+
+    design.SpacedParagraph {
+      "Open the \"TechDesigns.nytril\" file. ";
+      "In this file you will find four classes that inheret the base TechDesign class. ";
+      "Each of these four classes override the default styles creating variations of the base style. ";
+      "You can modify these variations or create additional variations. ";
+      "If you add an another variation, be sure to add it to the array at the top of the file so it will be added to the toolbar control. ";
+    };
+
+    design.SpacedParagraph {
+      "In summary, all the base styles are listed in the "; design.Emphasis { "TechDesign" } "; class. ";
+      "The style variations are listed in the "; design.Emphasis {"TechDesigns" }; " file where certain base styles are overridden. ";
+    };
+  };
+}
+//==================================================================================
+
+readonly TechDesignFiguresFeature TechDesignFigures = new;
+class TechDesignFiguresFeature: Content {
+  Constructor {
+    super.Constructor("Figures");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "This template utilizes Nytril's buit-in capability to auto number figures within a document. ";
+      "There are two figure types that are tracked independently, tables and other types. ";
+      "Tables will start at 1 and progress, and other types will also start at 1 and progress. ";
+    };
+
+    design.SpacedParagraph {
+      "The template method that adds a figure to the document is "; design.SpanHighlight { "AddFigure" } ", which builds and returns the built-in Figure formatter. ";
+      "The two required parameters of the AddFigure method include a content object and figure options. ";
+    };
+
+    TechDesignFigContent.GetLayout(design);
+    TechDesignFigOptions.GetLayout(design);
+    TechDesignFigureRef.GetLayout(design);
+  };
+}
+//==================================================================================
+
+readonly TechDesignFigureContent TechDesignFigContent = new;
+class TechDesignFigureContent: Content {
+  Constructor {
+    super.Constructor("Figure Content");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "The simplest way to add a figure is to create a simple class that inherets the content object, and then overrides the GetCaption and GetLayout methods. ";
+      "The value in the constructor sets the Title, which is then passed into GetCaption and the design will be whatever content you want. ";
+      "The sample in "; design.FigureReference(TechDesignFigureContentFig); " would add a simple Box with text inside. ";
+      "Instantiate that class, as shown in "; design.FigureReference(TechDesignFigureContentInstFig); ", and you have the content object for the AddFigure method. ";
+    };
+
+    design.AddFigure(TechDesignFigureContentFig, Here);
+    LineBreak;
+    design.AddFigure(TechDesignFigureContentInstFig, Here);
+  };
+}
+//==================================================================================
+
+readonly TechDesignFigureOptions TechDesignFigOptions = new;
+class TechDesignFigureOptions: Content {
+  Constructor {
+    super.Constructor("Figure Options");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "The second required parameter is the figure options. ";
+      "Refer to " design.FigureReference(TechDesignFigureOptionsFig); " for the available options. ";
+      "In most cases, you want the figure to be placed in the document where you are defining it. ";
+      "In that case simply use the \""; design.SpanHighlight{"Here"}; "\" option. ";
+    };
+
+    design.SpacedParagraph {
+      "If Top or Bottom is selected, then Nytril will place it on a page where it fits well, without regard to the location of the declaration. ";
+      "This auto placement feature is commonly used for journal articles or scientific papers. ";
+    };
+
+    design.SpacedParagraph {
+      "For tables, just add the table to the options, for example \""; design.SpanHighlight {"Here | Table"};  "\". ";
+      "This will align numbering with table figures and will change the caption reference. ";
+      "Declare and place a figure in your content by using one of the samples shown in "; design.FigureReference(TechDesignAddfigureImpFig); ".";
+    };
+
+    design.AddFigure(TechDesignAddfigureImpFig, Here);
+    design.AddFigure(TechDesignFigureOptionsFig, Here);
+  };
+}
+//==================================================================================
+
+readonly TechDesignFigureReference TechDesignFigureRef = new;
+class TechDesignFigureReference: Content {
+  Constructor {
+    super.Constructor("Figure Reference");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "To refer to a figure somewhere in your document, it is important to use the template feature to ensure that the figure numbering remains accurate. ";
+      "Moreover, figure references automatically anchor to the figure, making it easier for users to find the referenced figure. ";
+    };
+
+    design.SpacedParagraph {
+      "To refer to a figure use the "; design.SpanHighlight{"FigureReference"}; " template method. ";
+      "See "; design.FigureReference(TechDesignFigureRefFig); " for an example on inserting a figure reference into your text. ";
+      "This process will keep your figures and references properly connected as you build out and modify your document. ";
+    };
+    design.AddFigure(TechDesignFigureRefFig, Here);
+  };
+}
+//==================================================================================
+// FIGURES
+//==================================================================================
+readonly TechDesignQuickRefFeature TechDesignQuickRef = new;
+class TechDesignQuickRefFeature: Content {
+  Constructor {
+    super.Constructor("Quick Reference");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+    };
+
+    design.SpacedParagraph {
+    };
+  };
+}
+
+readonly TechDesignImplementationFigure  TechDesignImplementationFig = new;
+class  TechDesignImplementationFigure: Content {
+  Constructor() {
+    super.Constructor("Implement Tech Design Styles");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(res "Main.nytril", 2, 3);
+  };
+}
+
+readonly TechDesignToolbarPicFigure  TechDesignToolbarPicFig = new;
+class  TechDesignToolbarPicFigure: Content {
+  Constructor() {
+    super.Constructor("Tech Styles Toolbar.");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = FitBox(new Image(res "StylesToolbar.png"), ExtentWidth - 8, null, new Edge(1, 3));
+}
+
+readonly TechDesignFigureContentFigure  TechDesignFigureContentFig = new;
+class  TechDesignFigureContentFigure: Content {
+  Constructor() {
+    super.Constructor("Figure Content Object");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(null, 7, 16);
+  };
+}
+
+readonly TechDesignFigureContentInstFigure  TechDesignFigureContentInstFig = new;
+class  TechDesignFigureContentInstFigure: Content {
+  Constructor() {
+    super.Constructor("Figure Content Instantiated");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(null, 5, 6);
+  };
+}
+
+readonly TechDesignFigureOptionsFigure  TechDesignFigureOptionsFig = new;
+class  TechDesignFigureOptionsFigure: Content {
+  Constructor() {
+    super.Constructor("Figure Options.");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = FitBox(new Image(res "FigureOptions.png"), ExtentWidth - 8, null, new Edge(1, 3));
+}
+
+readonly TechDesignAddfigureImpFigure  TechDesignAddfigureImpFig = new;
+class  TechDesignAddfigureImpFigure: Content {
+  Constructor() {
+    super.Constructor("Add Figure Implementation");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(null, 19, 21);
+  };
+}
+
+readonly TechDesignFigureRefFigure  TechDesignFigureRefFig = new;
+class  TechDesignFigureRefFigure: Content {
+  Constructor() {
+    super.Constructor("Figure Reference");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(null, 22, 23);
   };
 }

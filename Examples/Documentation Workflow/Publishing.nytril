@@ -248,7 +248,7 @@ class  PublishStagesSection: Content {
     };
 
     design.SpacedParagraph {
-      "Only the "; B{"Main"}; " stage serves live content for a public realm. ";
+      "Only the "; design.Emphasis{"Main"}; " stage serves live content for a public realm. ";
       "Any other stage name keeps the content private. ";
       "Online tools allow users to move staged content to the Main stage for public release. ";
       "Users with publish permissions can also view and manage stages.";

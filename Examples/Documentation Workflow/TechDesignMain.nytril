@@ -1,0 +1,104 @@
+using Format;
+
+/*
+Required Docs
+TechDesigns
+TechDesign
+TechDesignReqs
+TechDesignToolbar
+DesignPalette
+DesignPaletteSamples
+StylesToolbar.png
+*/
+
+include "TechDesigns";
+
+readonly MyStyledDocument MyStyledDoc = new;
+
+readonly namespace Main.Documents {
+  StyledDocument myDoc = new StyledDocument(#00000000-1111-2222-3333-444444444444#, "Blank Document", MyStyledDoc);
+  DesignPaletteSamples PaletteSamples = new;
+}
+
+readonly UserToolbarSelections ToolbarSelections = new(#01000000-1111-2222-3333-444444444444#);
+
+//======================================================================
+class MyStyledDocument: AuthoredContent {
+  Constructor {
+    super.Constructor("Styled Document");
+    Watermark = "DRAFT";
+    AddContent(StyledContent);
+  }
+}
+//======================================================================
+readonly MyStyledContent StyledContent = new;
+class MyStyledContent: Content {
+  Constructor() {
+    super.Constructor(null);
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    var section1Title = "Numered Section Title";
+    var section1Anchor = "UniqueAnchorText";
+    design.Heading3 {
+      "Quick Reference";
+    };
+
+    design.QuickRefTable {
+      design.QuickRefHeaderRow {
+        "PHASE I";
+        "PHASE II";
+        "PHASE III";
+      };
+      Row {
+        design.QuickRefCell {
+          design.QuickRefItem(section1Title, section1Anchor);
+        };
+        design.QuickRefCell {
+        };
+        design.QuickRefCell {
+        };
+      };
+    };
+
+    design.Heading1 {
+      "Heading 1";
+    };
+
+    design.SpacedParagraph {
+      LoremIpsum(50);
+    };
+
+    design.NumberedHeading(1, section1Title, section1Anchor) {
+      design.IndentedBlock {
+        design.SpacedParagraph { "Spaced Paragraph."; };
+        design.TightParagraph  { "Tight Paragraph.";  };
+        design.TightParagraph  { "Tight Paragraph.";  };
+        design.SpacedParagraph { "Spaced Paragraph."; };
+      };
+    };
+
+    design.Heading2 {
+      "Heading 2";
+    };
+
+    design.SpacedParagraph {
+      design.FigureReference(SampleFig);
+      Space;
+      LoremIpsum(50);
+    };
+
+    design.AddFigure(SampleFig, Here);
+  };
+}
+//======================================================================
+readonly SampleFigure  SampleFig = new;
+class  SampleFigure: Content {
+  Constructor() {
+    super.Constructor("Sample Figure.");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = FitBox(new Image(res "StylesToolbar.png"), ExtentWidth - 8, null, new Edge(1, 3));
+}

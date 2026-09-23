@@ -1,3 +1,5 @@
+//Tech Design is included in code capture.  If line pos changes, check docs.
+
 include "TechDesigns";
 include "HelpConcepts";
 include "Workflow";
@@ -12,10 +14,6 @@ include "HeadersAndFooters";
 include "Translations";
 include "Lang";
 include "People";
-
-readonly ShowDesignControls    = true;
-readonly PublishDesignDefault  = AllDesigns.FindElementIndex(TechDesignVar4);
-readonly PublishPaletteDefault = AllPalettes.FindElementIndex(DesignPalettes.Office_20072010);
 
 readonly TechDocWorkflowContent   WorkflowContent             = new;
 readonly RepoAndSourceControl     RepoAndSourceContent        = new;
@@ -42,6 +40,8 @@ readonly namespace Main.Documents {
   DesignPaletteSamples PaletteSamples           = new;
 }
 
+readonly UserToolbarSelections ToolbarSelections = new(#24bd458a-29d9-4391-ad80-77a82f3e5b22#);
+
 readonly NytrilHelpDocsSite Main.Site = new;
 
 class NytrilHelpDocsSite: RealmSite {
@@ -50,49 +50,5 @@ class NytrilHelpDocsSite: RealmSite {
   }
 }
 
-//=============================================================================
-readonly UserOptions UserOps = new;
-class UserOptions: Fact {
-  field int  DesignSlideIndex,
-             PaletteSlideIndex;
 
-  Constructor {
-    super.Constructor(#52b2bf9c-b7d6-46fa-8f5e-b2c1daaf4811#);
-    DesignSlideIndex  = PublishDesignDefault;
-    PaletteSlideIndex = PublishPaletteDefault;
-    if (!System.IsPublishing)
-      ReadFromStorage;
-  }
-}
-
-//=============================================================================
-
-class StyledDocument: DocumentEntry {
-  var TechDesign       Design;
-  var AuthoredContent  Content;
-
-  Constructor(Guid id, string name, AuthoredContent content) {
-    super.Constructor(id, name);
-
-    Content            = content;
-    Title              = content.Title;
-    Design             = GetDesign(UserOps.DesignSlideIndex, AllDesigns);
-    Design.Palette     = GetPalette(UserOps.PaletteSlideIndex, AllPalettes);
-    ContentType        = ContentTypes.Article;
-  }
-
-  override GetDocument = Design.GetStyledDocument(Content);
-
-  TechDesign GetDesign(int index, Array designs) {
-    if (index > designs.Length)
-      return designs[designs.Length - 1];
-    return designs[index];
-  }
-
-  DesignPalette GetPalette(int index, DesignPalette[] palettes) {
-    if (index > palettes.Length)
-      return palettes[palettes.Length - 1];
-    return palettes[index];
-  }
-}
 

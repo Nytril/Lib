@@ -1,12 +1,5 @@
 using Format;
 
-var AllDesigns = [
-   TechDesignVar1,
-   TechDesignVar2,
-   TechDesignVar3,
-   TechDesignVar4
-];
-
 class DesignToolbar {
 
   static GetToolbarDocument(height) = Document(0.1, null, null, null, null, new(8.5", height)) {
@@ -16,20 +9,20 @@ class DesignToolbar {
         VAlign: Center;
         Cell {
           HBox {
-            SliderControl(new (ref UserOps.DesignSlideIndex), 100, 20, null, 0..<AllDesigns.Length step 1) {
+            SliderControl(new (ref ToolbarSelections.DesignSlideIndex), 100, 20, null, 0..<AllDesigns.Length step 1) {
               "Design";
               Action: Actions.Rebuild;
             };
-            AllDesigns[UserOps.DesignSlideIndex].Name;
+            AllDesigns[ToolbarSelections.DesignSlideIndex].Name;
           };
         };
         Cell {
           HBox {
-            SliderControl(new (ref UserOps.PaletteSlideIndex), 200, 20, null, 0..<AllPalettes.Length step 1) {
+            SliderControl(new (ref ToolbarSelections.PaletteSlideIndex), 200, 20, null, 0..<AllPalettes.Length step 1) {
               "Palette";
               Action: Actions.Rebuild;
             };
-            AllPalettes[UserOps.PaletteSlideIndex].Name;
+            AllPalettes[ToolbarSelections.PaletteSlideIndex].Name;
           };
         };
       };
