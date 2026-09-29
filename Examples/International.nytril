@@ -47,6 +47,8 @@ class MainSiteClass: RealmSite {
   override GetLayoutSiteLogo = GetLayoutLogo;
 }
 
+//=====================================================================
+
 class InternationalDocument: DocumentEntry {
   Constructor {
     super.Constructor(#edcbea52-ddd2-4f00-be7a-96b9386d37f7#, "International Document");

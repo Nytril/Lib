@@ -1,18 +1,26 @@
 include "Help";
-include "Citations";
 
-using Format, LinkTypes;
+using Format;
 
-class MyDocument: DocumentEntry {
-  Constructor {
-    super.Constructor(#feecc21e-c0c0-485a-a663-6f43fd0965b1#, "My Document");
-  }
-
-  override GetDocument = Document {
-    "Hello World";
+Description = DescriptionBlock {
+  Paragraph {
+    "Documents are created by first defining a {0} object "(NytrilStyle.Class(attribute DocumentEntry));
+    "which overrides the {0} function. "(NytrilStyle.PropName(attribute DocumentEntry.GetDocument));
   };
-}
+};
 
-Example = (new MyDocument).GetDocument;
+SampleCode = Document {
+  "Hello World";
+};
 
-Main.Help = new HelpExample(attribute(Format.Document));
+Example = Block {
+  Empty;
+  VBox(2", 2.3", 1) {
+    HBox(null, null, PadLT(0.25")) {
+      "Hello World";
+    };
+  };
+};
+
+
+Main.Help = new HelpExample(attribute Document, 0);

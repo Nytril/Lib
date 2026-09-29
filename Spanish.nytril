@@ -141,6 +141,7 @@ S1 ProgrammingLang          = "El lenguaje de programación {0}";
    RecentVersionsOf         = "Versiones recientes de Nytril Desktop";
    SafeWindows              = "El programa de instalación de Nytril ha sido firmado con nuestra clave certificada de firma de código de Nytril LLC. Es posible que su navegador y/o su software antivirus aún marquen este archivo como una descarga sospechosa. Por favor, permita que finalice el análisis antes de ejecutar el programa de instalación. ";
    SafeMac                  = "Nytril LLC es un desarrollador certificado por Apple. Cada paquete de instalación ha sido verificado en busca de virus y firmado por Apple, y se abrirá de inmediato desde su navegador. ";
+   SafeLinux                = "Descarga el paquete de instalación y haz doble clic en él, o bien pega el comando anterior en una terminal. ";
    Science                  = "Ciencia";
    Search                   = "Buscar";
 S1 SelectTheMenu            = "Seleccione el menú {0}. ";

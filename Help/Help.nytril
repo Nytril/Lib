@@ -77,13 +77,6 @@ class HelpExample: HelpSystem {
     Parameter = name is valid;
   }
 
-  ShowCode(selection) = Paragraph {
-    ParBackground: NytrilPalette.SourceBack;
-    TextFace: Mono;
-    TextHeight: 9pt;
-    selection;
-  };
-
   ShowHeader(bool all) = Block {
     TextHeight: 12pt;
     ParAlignment: Justify;
@@ -161,7 +154,7 @@ class HelpExample: HelpSystem {
         };
       }
 
-      ShowCode(NytrilStyle.CodeSelection([value]));
+      NytrilStyle.ShowCode(NytrilStyle.CodeSelection([value]));
       Yields;
       if (block)
         value.Value;
@@ -229,7 +222,7 @@ class HelpExample: HelpSystem {
   ShowSample = Block {
     var sample = System.ProgramNameSpace.GetField("SampleCode");
     if (sample is valid) {
-      ShowCode(NytrilStyle.CodeSelection([sample]));
+      NytrilStyle.ShowCode(NytrilStyle.CodeSelection([sample]));
       var value = System.ProgramNameSpace.GetField("Example");
       if (value is valid)
         value.Value;

@@ -34,7 +34,7 @@ readonly namespace NytrilPalette {
                  IconLine       = #DCC7AA#;
   RadialGradient IconBack       = SphericalFill(Logo1),
                  IconFore       = LightFill(Logo1);
-
+  
   RadialGradient TitlePageBack = new(0.5, 0.5, 0.5, 0.5, 1.2, 1.2, [
     new(0.2, Logo1),
     new(1, Logo1.Scale(2))
@@ -271,6 +271,13 @@ readonly namespace NytrilStyle {
     TextHeight: 14pt;
     SpaceAfter: 4pt;
     KeepWithNext: true;
+  };
+
+  ShowCode(selection) = Paragraph {
+    ParBackground: NytrilPalette.SourceBack;
+    TextFace: Mono;
+    TextHeight: 9pt;
+    selection;
   };
 
   CodeSelection(code, SourceSelectOptions options=null) {

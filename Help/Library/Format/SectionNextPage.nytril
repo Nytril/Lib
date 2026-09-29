@@ -1,0 +1,55 @@
+include "Help";
+
+using Format;
+
+Description = DescriptionBlock {
+  Paragraph {
+    "The page metrics are determined by the parameters to the function. ";
+    "The {0} and {1} of the new section are set using properties. "(
+      NytrilStyle.PropName(attribute FormatProperties.Header),
+      NytrilStyle.PropName(attribute FormatProperties.Footer)
+    );
+  };
+};
+
+SampleCode = Document {
+  Bold "Title Page";
+  SectionNextPage(0.5", false, 1) {
+    Header: MarginBlock {
+      "Title";
+    };
+    Footer: MarginBlock {
+      "Page "; DocFields.PageNumber; " of "; DocFields.PageCount;
+    };
+    PageNumberStart: 3;
+  };
+  "Chapter 1";
+};
+
+Example = Block {
+  Empty;
+  VBox {
+    HAlign: Center;
+    VBox(2", null, 1) {
+      HBox(100%, 1.5", PadL(0.5")) {
+        VAlign: Center;
+        Bold "Title Page";
+      };
+    };
+    Tex.downarrow;
+    VBox(2", null, 1) {
+      HBox(100%, 0.25", PadL(0.5")) {
+        "Title";
+      };
+      HBox(100%, 1", PadL(0.5")) {
+        VAlign: Top;
+        "Chapter 1";
+      };
+      HBox(100%, 0.25", PadL(0.5")) {
+        "Page 3 of 3";
+      }
+    }
+  };
+};
+
+Main.Help = new HelpExample(attribute SectionNextPage, 0);
