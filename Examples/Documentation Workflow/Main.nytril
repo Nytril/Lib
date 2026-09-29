@@ -3,15 +3,6 @@
 include "TechDesigns";
 include "HelpConcepts";
 include "Workflow";
-include "RepoAndSourceControl";
-include "ConfigurationsConcept";
-include "Publishing";
-include "SourceControl";
-include "DataSourceConcept";
-include "MeasuresConcept";
-include "DesignTemplateConcept";
-include "HeadersAndFooters";
-include "Translations";
 include "Lang";
 include "People";
 

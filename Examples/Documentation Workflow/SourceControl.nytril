@@ -17,19 +17,18 @@ class SourceControlConcept: AuthoredContent {
     AddContent(GitResources);
   }
 }
-
 // ============================================================================
 
 readonly GitPurposeSection GitPurpose = new;
 
 class GitPurposeSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Purpose");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Purpose";
+    design.Heading2 {
+      Title;
     };
 
     design.SpacedParagraph {
@@ -40,18 +39,17 @@ class GitPurposeSection: Content {
     design.FigureCaption(GitConnectDialogFig);
   };
 }
-
 // ============================================================================
 
 readonly GitRequirementsSection GitRequirements = new;
 class GitRequirementsSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Requirements");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Requirements";
+    design.Heading2 {
+      Title;
     };
 
     design.SpacedParagraph {
@@ -71,18 +69,18 @@ class GitRequirementsSection: Content {
     };
   };
 }
-
 // ============================================================================
 
 readonly GitConnectStepsSection GitConnectSteps = new;
 class GitConnectStepsSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Connect GIT");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Connect GIT";
+    design.Heading2 {
+      SpaceBefore: 20px;
+      Title;
     };
 
     design.SpacedParagraph {
@@ -114,19 +112,18 @@ class GitConnectStepsSection: Content {
     };
   };
 }
-
 // ============================================================================
 
 readonly GitAuthenticationSection GitAuthentication = new;
 
 class GitAuthenticationSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Authentication");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Authentication";
+    design.Heading2 {
+      Title;
     };
 
     design.SpacedParagraph {
@@ -141,19 +138,18 @@ class GitAuthenticationSection: Content {
     };
   };
 }
-
 // ============================================================================
 
 readonly GitTroubleshootingSection GitTroubleshooting = new;
 
 class GitTroubleshootingSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Common Issues");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Common Issues";
+    design.Heading2 {
+      Title;
     };
 
     design.TightParagraph {
@@ -173,19 +169,20 @@ class GitTroubleshootingSection: Content {
     };
   };
 }
-
+// ============================================================================
+// Resources
 // ============================================================================
 
 readonly GitResourcesSection GitResources = new;
 
 class GitResourcesSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Resources");
   }
 
   override GetLayout(TechDesign design) = Block {
     design.Heading3 {
-      "Resources";
+      Title;
     };
 
     design.HyperlinkParagraph {
@@ -193,7 +190,8 @@ class GitResourcesSection: Content {
     };
   };
 }
-
+// ============================================================================
+// Figures
 // ============================================================================
 
 readonly GitConnectDialogFigure GitConnectDialogFig = new;

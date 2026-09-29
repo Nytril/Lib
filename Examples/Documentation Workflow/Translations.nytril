@@ -1,7 +1,503 @@
 using Format, HelpConcepts;
 
+//======================================================================
+// Sample code that is placed in doc.  If moved, revised source lines.
+//======================================================================
+
+UnusedMethodBefore = {
+  Paragraph {
+    "Insert strings into the language file. ";
+    "Review the results. ";
+    "Select Translate and choose the language. ";
+    "Using the translation feature is easy. ";
+  };
+};
+
+UnusedMethodAfter = {
+  Paragraph {
+    Lang.UsingTheTranslation;
+    Lang.InsertStringsInto;
+    Lang.SelectTranslateAnd;
+    Lang.ReviewTheResults;
+  };
+};
+
+//======================================================================
+// End Sample Code
+//======================================================================
+
 class TranslationsHelpConcept: AuthoredContent {
   Constructor {
     super.Constructor("Translations");
+
+    Watermark = "DRAFT";
+
+    AddAuthor(People.ColbertAuthor);
+    AddAuthor(People.McCreightAuthor);
+
+    AddContent(TransPurpose);
+    AddContent(TransSummary);
+    AddContent(TransTextOrg);
+    AddContent(TransExecute);
+    AddContent(TransReview);
+    AddContent(TransPublish);
   }
+}
+//======================================================================
+
+readonly TransPurposeSection TransPurpose = new;
+class TransPurposeSection: Content {
+  Constructor() {
+    super.Constructor("Purpose");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "This document describes the strategy of text management for the purpose of translating the text into additional languages. ";
+      "It will also describe the process of translating text and reviewing the translations. ";
+      "An understanding and implementation of Nytril Configurations is required. ";
+      "There must be at least two configurations with each being a different language to translate text. ";
+    };
+
+    design.SpecialHeading1 { "Concepts" };
+    design.SpecialFrame1 {
+      ConfigsConcept;
+    };
+  };
+}
+//======================================================================
+
+readonly TransSummarySection TransSummary = new;
+class TransSummarySection: Content {
+  Constructor() {
+    super.Constructor("Summary");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      SpaceBefore: 20px;
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "The translation process involves first organizing all text into a single primary language file. ";
+      "Next, running a translation on that file generating the translated text into an additional language file. ";
+      "Reviewning the translated text, and lastly, opening the document in the new language and verifying the layout. ";
+    };
+
+    design.SpacedParagraph {
+      "Nytril has special tools to make certain steps easier, those will be discussed in the relevant areas. ";
+    };
+  };
+}
+//======================================================================
+// Text Organization
+//======================================================================
+readonly TransTextOrgSection TransTextOrg = new;
+class TransTextOrgSection: Content {
+  Constructor() {
+    super.Constructor("Text Organization");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading4 {
+      Title;
+    };
+
+    TransTextStrategy.GetLayout(design);
+    //HFImplement.GetLayout(design);
+  };
+}
+//======================================================================
+
+readonly TransTextStrategySections TransTextStrategy = new;
+class TransTextStrategySections: Content {
+  Constructor() {
+    super.Constructor("Text Strategy");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "Knowing ahead of time that the goal is to translate text is beneficial, but not critical. ";
+      "The key reason for this is that it is better to hold off on certain types of text normalization that may break sentences or construct sentences programatically. ";
+      "A MadLibs type document is not great for translations. ";
+      "Some text normalization or construction may be required, but do so with the knowledge that the text will need to be translated, where the meaning / tense / plurality / grammatical gender / usage must still work after the translation.";
+    };
+
+    design.SpacedParagraph {
+      "Since translating text requires moving text into a single file, for which there are tools to aid in that process, it is a good practice to hold off on that abstration until the project is ready for translation. ";
+      "It is simply easier to review text and build the document with the text in place. ";
+    };
+
+    TransTextToLangSect.GetLayout(design);
+  };
+}
+//======================================================================
+
+readonly TransTextToLangSection TransTextToLangSect = new;
+class TransTextToLangSection: Content {
+  Constructor() {
+    super.Constructor("Moving Text To Language File");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading3 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "When ready, text can be moved into the active language file. ";
+      "To confirm the active language file, open the "; design.SpanHighlight{"Documents"}; " menu and locate the selected configuration. ";
+      "The language of that configuration will be the active language file. ";
+    };
+
+    design.SpacedParagraph {
+      "Navigate to the top of a document with text content. ";
+      "Place the cursor anywhere on that first string. ";
+      "Select "; design.Emphasis{"Ctrl-Shift-L"}; ". ";
+      "A dialog, as shown in figure "; design.FigureReference(TransTextToLangFig); ", will appear. ";
+    };
+
+    design.SpacedParagraph {
+      "The dialog will automatically create a unique varible name for the text. ";
+      "Nytril will have looked for an exact match or a close match to other strings in the language file. ";
+      "The purpose of that is to avoid entering duplicate text and to find text that is similarly stated where it may be best to state it in one way. ";
+    };
+
+    design.SpacedParagraph {
+      "Finally, the dialog allows you to search for exising symbols given the chance that you want to use an existing string rather than the one being generated. ";
+    };
+
+    design.SpacedParagraph {
+      "The common choice is to just select the provided variable name and select "; design.Emphasis{"Add Symbol"}; ".";
+    };
+
+    design.SpacedParagraph {
+      "Nytril will move the string to the language file inserting it in alphabetical order by the variable name, and automatically replace the text in code with the variable name. ";
+      "The dialog remains open while Nytril finds the next string in the file, creates a variable name and displays it for review. ";
+      "Continue to review each variable name, selecting "; design.Emphasis{"Add Symbol"}; " until there are no more strings to add. ";
+      "See these figures to review the progression: "; design.FigureReference(TransCodeBeforeFig); CommaSpace; design.FigureReference(TransLangResultsFig); CommaSpace; design.FigureReference(TransCodeResultsFig); ".";
+    };
+
+    design.SpacedParagraph {
+      "If a string is skipped, the dialog will move on to the next string. ";
+    };
+
+    design.AddFigure(TransTextToLangFig, Here);
+    design.AddFigure(TransCodeBeforeFig, Here);
+    design.AddFigure(TransLangResultsFig, Here);
+    design.AddFigure(TransCodeResultsFig, Here);
+  };
+}
+//======================================================================
+// Translate Language
+//======================================================================
+readonly TransExecuteSection TransExecute = new;
+class TransExecuteSection: Content {
+  Constructor() {
+    super.Constructor("Translate Language");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading1 {
+      Title;
+    };
+
+    TransSignIn.GetLayout(design);
+    TransPerformTransSect.GetLayout(design);
+  };
+}
+//======================================================================
+
+readonly TransSignInSections TransSignIn = new;
+class TransSignInSections: Content {
+  Constructor() {
+    super.Constructor("Sign In");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "To use the text translation feature, Nytril needs access to the Internel and a signed in Nytril Professional account. ";
+      "A Nytril professional account is required to use this feature. ";
+      "Visit the Nytril website to sign up for a professional account (";
+      design.HyperlinkSpan {
+        "Nytril.com";
+        Action: new Action(Actions.ToLink, "https://www.nytril.com");
+      };
+      ").";
+    };
+  };
+}
+//======================================================================
+
+readonly TransPerformTransSection TransPerformTransSect = new;
+class TransPerformTransSection: Content {
+  Constructor() {
+    super.Constructor("Translate the Text");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "Navigate to the primary language file. ";
+      "This can easily be done by finding \"include Lang\" in the Main file and pressing F12 on Lang. ";
+      "In the Lang file, Press F12 on the includes statement primary language name, i.e. English. ";
+      "That will open the English Language file. ";
+    };
+
+    design.SpacedParagraph {
+      "Inside the primary language file, right-click and select "; design.SpanHighlight{"Advanced"}; " from the context menu. ";
+      "You will find the menu option for translating strings in the Advanced sub-context menu, as shown in "; design.FigureReference(TransMenuFig); ".";
+    };
+
+    design.SpacedParagraph {
+      "After selecting the "; design.Emphasis{"Translate Language Strings"}; " option, in the dialog ("; design.FigureReference(TransMenuFig); ") select only the languages you wish to translate into. ";
+      "If you wish to use the review feature, check the box to add the \"revu\" marker. ";
+      "Click "; design.Emphasis{"Translate"}; ".";
+    };
+
+    design.SpacedParagraph {
+      "Nytril will report the number of characters translated in the bottom toolbar of the app, and the dialog will disappear. ";
+      "You are now ready to review the translations. ";
+    };
+
+    design.AddFigure(TransMenuFig, Here);
+  };
+}
+//======================================================================
+// Review Translations
+//======================================================================
+readonly TransReviewSection TransReview = new;
+class TransReviewSection: Content {
+  Constructor() {
+    super.Constructor("Review Translations");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading1 {
+      Title;
+    };
+    design.AddFigure(TransResultsFig, Here);
+
+    TransReviewFileSect.GetLayout(design);
+    TransReviewDocSect.GetLayout(design);
+  };
+}
+//======================================================================
+
+readonly TransReviewFileSection TransReviewFileSect = new;
+class TransReviewFileSection: Content {
+  Constructor() {
+    super.Constructor("Review Translated Strings");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "Navigate to the language file of the target language, in this case the target language is French, so that file is \"French.nytril.\" ";
+      "This file also exists as an include in the Lang file configurations. ";
+      "Open the file. ";
+    };
+
+    design.SpacedParagraph {
+      "As shown in "; design.FigureReference(TransResultsFig); ", Nytril generates a copy of the source language file contents keeping the variable names the same, but translating the strings. ";
+      "If including the "; design.SpanHighlight{"revu"}; " keyword was selected, then the results will appear as they do here in "; design.FigureReference(TransResultsFig); " where the results are purple. ";
+      "Excluding the revu keyword will result in a normal colored response.";
+    };
+
+    design.SpacedParagraph {
+      "Nytril provides an informational comment that this file should not be editted. ";
+      "That warning means that new variables and text strings should be added to this file. ";
+      "Editing this file is proper and necessary for the review process. ";
+    };
+  };
+}
+//======================================================================
+readonly TransReviewDocSection TransReviewDocSect = new;
+class TransReviewDocSection: Content {
+  Constructor() {
+    super.Constructor("Review Translated Document");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      Title;
+    };
+
+    design.Heading3 {
+      "Opening Documents and Review Considerations";
+    };
+
+    design.SpacedParagraph {
+      "It is now time to review the document in the translated language where it can be easily compared to the original language version. ";
+      "First, check the "; design.SpanHighlight{"Document"} " menu, ensure that the original language is selected, then open the document if it is not already open. ";
+      "Next, go back to the "; design.SpanHighlight{"Document"} " menu and select the translated language, then open the document again. ";
+    };
+
+    design.SpacedParagraph {
+      "Two document tabs will now be open, one in the source language and one in the translated language. ";
+      "Select the translated language version. ";
+      "If the \"revu\" keyword is set, the translated language strings are purple in document, as they are in the language file. ";
+    };
+
+    design.SpacedParagraph {
+      "There are two key considerations for translation review. ";
+      "One is to ensure the language was translated correctly, that requires someone fluent in the language. ";
+      "The other is to ensure that the space now required for the text did not cause a display issue in the document. ";
+    };
+
+    design.SpacedParagraph {
+      "If both cannot be done at the same time, it is best to the translation accuracy check first, as changes to the translations may also change the layout. ";
+    };
+
+    design.Heading3 {
+      "Making Changes and Navigating";
+    };
+
+    design.SpacedParagraph {
+      "There are two critical navigating features that will help considerable through the review process. ";
+      design.SpanHighlight{"Ctrl-Shift-D"}; " and "; design.SpanHighlight{"Ctrl-Click"}; ".";
+    };
+
+    design.SpacedParagraph {
+      design.SpanHighlight{"Ctrl-Shift-D"}; " - is the \"Find in Document\" feature. ";
+      "It is used to navigate from a code-side string to the location in the document. ";
+      "Place the curson on the string, press Ctrl-Shift-D, then location will be highlighted in the document. ";
+    };
+
+    design.SpacedParagraph {
+      design.SpanHighlight{"Ctrl-Click"}; " - is the \"Find in Code\" feature. ";
+      "It is used to navigate from a document-side item to the location in the code where it is declared. ";
+      "This is for any displayed item, not just strings. ";
+    };
+
+    design.SpacedParagraph {
+      "This allows a reviewer to read and review the text string in the language file, but also see them in context by pressing Ctrl-Shift-D. ";
+      "Once the language has been validated, the reviewer simply removed the revu keywork and the colors return to normal, identifying that string as complete. ";
+    };
+
+    design.SpacedParagraph {
+      "If the language reviewer is external and unable to review the file in place, the file can be sent to the reviewer and the replaced by the revised version. ";
+      "In that case, using the revu keyword is still a good idea as a developer will need to confirm that the new strings format correctly in the document layout. ";
+    };
+  };
+}
+//======================================================================
+// Publishing
+//======================================================================
+readonly TransPublishSection TransPublish = new;
+class TransPublishSection: Content {
+  Constructor() {
+    super.Constructor("Publishing");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading4 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "Nytril will automatically publish each document in all of it's configurations. ";
+      "Two configurations (or two languages) will mean two versions of each document will be produced when using the publish feature. ";
+    };
+  };
+}
+//======================================================================
+// Figures
+//======================================================================
+readonly TransTextToLangFigure  TransTextToLangFig = new;
+class  TransTextToLangFigure: Content {
+  Constructor() {
+    super.Constructor("Text To Lang Feature");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = FitBox(new Image(res "TextToLang.png"), 100%, null, 1);
+}
+
+readonly TransCodeBeforeFigure  TransCodeBeforeFig = new;
+class  TransCodeBeforeFigure: Content {
+  Constructor() {
+    super.Constructor("Paragrph before using Text To Lang");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(null, 8, 13);
+  };
+}
+
+readonly TransLangResultsFigure  TransLangResultsFig = new;
+class  TransLangResultsFigure: Content {
+  Constructor() {
+    super.Constructor("Language File After using Text To Lang");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(res "English.nytril", 1, 6);
+  };
+}
+
+readonly TransCodeResultsFigure  TransCodeResultsFig = new;
+class  TransCodeResultsFigure: Content {
+  Constructor() {
+    super.Constructor("Paragraph After using Text To Lang");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(null, 17, 22);
+  };
+}
+
+readonly TransMenuFigure  TransMenuFig = new;
+class  TransMenuFigure: Content {
+  Constructor() {
+    super.Constructor("Translate Menu Option & Dialog");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = HBox(100%, null, new Edge(2, 2)) {
+    Justify: SpaceBetween;
+    VAlign: Center;
+    FitBox(new Image(res "Translate.png"), 48%, null, 1);
+    FitBox(new Image(res "TranslateDialog.png"), 48%, null, 1);
+  };
+}
+
+readonly TransResultsFigure  TransResultsFig = new;
+class  TransResultsFigure: Content {
+  Constructor() {
+    super.Constructor("Translation Results, Marked for Review");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(res "French.nytril", 1, 7);
+  };
 }

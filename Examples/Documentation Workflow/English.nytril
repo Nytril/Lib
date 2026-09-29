@@ -1,4 +1,6 @@
 readonly namespace Lang if (Language == Languages.English);
 
-
-
+InsertStringsInto     = "Insert strings into the language file. ";
+ReviewTheResults      = "Review the results. ";
+SelectTranslateAnd    = "Select Translate and choose the language. ";
+UsingTheTranslation   = "Using the translation feature is easy. ";

@@ -12,56 +12,61 @@ class DataSourceConcept: AuthoredContent {
     AddAuthor(People.McCreightAuthor);
 
     AddContent(DataSourcePurpose);
-    AddContent(DataSourceAbout);
+    AddContent(DataSourceConnecting);
+    AddContent(DataSourceQuery);
   }
-
-
 }
-
 // ============================================================================
 
 readonly  DataSourcePurposeSection  DataSourcePurpose = new;
 class  DataSourcePurposeSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Purpose");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Purpose";
+    design.Heading2 {
+      Title;
     };
 
     design.SpacedParagraph {
       "This document describes the process of connecting data sources to the Nytril IDE for use in a project.";
-    };
-  };
-}
-
-// ============================================================================
-
-readonly  DataSourceAboutSection  DataSourceAbout = new;
-class  DataSourceAboutSection: Content {
-  Constructor() {
-    super.Constructor(null);
-  }
-
-  override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Connecting Data Sources Feature";
-    };
-
-    design.SpacedParagraph {
       "Nytril can be connected to external data sources such as databases and can make external calls, such as calling an API method. ";
       "Nytril also has the ability to receive output from externally written code, such as a C# program. ";
       "This document describes the basic process of using these features. ";
     };
+  };
+}
+// ============================================================================
+// Connecting Data Sources
+// ============================================================================
 
+readonly  DataSourceConnectingSection  DataSourceConnecting = new;
+class  DataSourceConnectingSection: Content {
+  Constructor() {
+    super.Constructor("Connecting Data Sources Feature");
+  }
+
+  override GetLayout(TechDesign design) = Block {
     design.Heading4 {
-      "Connecting to a Database";
+      Title;
     };
 
-    design.Heading3 {
-      "Database types";
+    DataSourceTypes.GetLayout(design);
+    DataSourceConnect.GetLayout(design);
+  };
+}
+// ============================================================================
+
+readonly  DataSourceTypesSection  DataSourceTypes = new;
+class  DataSourceTypesSection: Content {
+  Constructor() {
+    super.Constructor("Database types");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      Title;
     };
 
     design.TightParagraph {
@@ -86,9 +91,20 @@ class  DataSourceAboutSection: Content {
     design.TightParagraph {
       "Where the the database type is instantiated with either a path or a connection string, depending on the type. ";
     };
+  };
+}
+// ============================================================================
 
-    design.Heading3 {
-      "Establishing a connection";
+readonly  DataSourceConnectSection  DataSourceConnect = new;
+class  DataSourceConnectSection: Content {
+  Constructor() {
+    super.Constructor("Establishing a connection");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      SpaceBefore: 20px;
+      Title;
     };
 
     design.SpacedParagraph {
@@ -99,8 +115,20 @@ class  DataSourceAboutSection: Content {
 
     design.AddFigure(DbConnFig, Here);
 
+    DataSourceCreds.GetLayout(design);
+  };
+}
+// ============================================================================
+
+readonly  DataSourceCredsSection  DataSourceCreds = new;
+class  DataSourceCredsSection: Content {
+  Constructor() {
+    super.Constructor("Securing credentials");
+  }
+
+  override GetLayout(TechDesign design) = Block {
     design.Heading3 {
-      "Securing credentials";
+      Title;
     };
 
     design.SpacedParagraph {
@@ -116,9 +144,21 @@ class  DataSourceAboutSection: Content {
       "The named credentials will not be included in source control and are not visible to other developers. ";
       "This is the recommended method for connecting to databases, APIs, or other external systems that require credentials. ";
     };
+  };
+}
+// ============================================================================
+// Query Data Source
+// ============================================================================
 
-    design.Heading3 {
-      "Querying the Connection";
+readonly DataSourceQuerySection DataSourceQuery = new;
+class DataSourceQuerySection: Content {
+  Constructor() {
+    super.Constructor("Querying the Connection");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading4 {
+      Title;
     };
 
     design.SpacedParagraph {

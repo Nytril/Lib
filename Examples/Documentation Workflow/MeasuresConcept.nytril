@@ -1,5 +1,9 @@
 using Format, HelpConcepts, Units;
 
+//======================================================================
+// Sample code that is placed in doc.  If moved, revised source lines.
+//======================================================================
+
 readonly namespace Measure if (UnitSystem == UnitSystems.Metric) {
   Length(len) = LengthSpan(len toscale kilometers, "kilometer", "kilometers");
 }
@@ -20,6 +24,10 @@ SampleUse = Span {
   "The signal can reach " Measure.Length(5 miles);
 };
 
+//======================================================================
+// End Sample Code
+//======================================================================
+
 class MeasuresHelpConcept: AuthoredContent {
   Constructor {
     super.Constructor("Unit Variations through Measures");
@@ -34,16 +42,17 @@ class MeasuresHelpConcept: AuthoredContent {
     AddContent(MeasuresImplementation);
   }
 }
+//======================================================================
 
 readonly MeasuresPurposeSection MeasuresPurpose = new;
 class MeasuresPurposeSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Purpose");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Purpose";
+    design.Heading2 {
+      Title;
     };
 
     design.SpacedParagraph {
@@ -64,20 +73,36 @@ class MeasuresPurposeSection: Content {
     };
   };
 }
+//======================================================================
+// Coding for Configurations
+//======================================================================
 
 readonly MeasuresAboutSection MeasuresAbout = new;
 class MeasuresAboutSection : Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Coding for Unit Systems Configurations");
   }
 
   override GetLayout(TechDesign design) = Block {
     design.Heading1 {
-      "Coding for Unit Systems Configurations";
+      Title;
     };
 
-    design.Heading3 {
-      "Understanding the Configuration Build Environment";
+    MeasuresEnvironment.GetLayout(design);
+    MeasuresImplementation.GetLayout(design);
+  };
+}
+//======================================================================
+
+readonly MeasuresEnvironmentSection MeasuresEnvironment = new;
+class MeasuresEnvironmentSection : Content {
+  Constructor() {
+    super.Constructor("Understanding the Configuration Build Environment");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      Title;
     };
 
     design.SpacedParagraph {
@@ -97,19 +122,21 @@ class MeasuresAboutSection : Content {
       "Thus, the condition can be checked by comparing \"UnitSystem\" to the UnitSystems enumeration. ";
       "With that understanding, we can review a simple implementation.";
     };
+
   };
 }
+//======================================================================
 
 readonly MeasuresImplementationSection MeasuresImplementation = new;
 class MeasuresImplementationSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Implemention");
   }
 
   override GetLayout(TechDesign design) = Block {
     PageBreak;
-    design.Heading3 {
-      "Implemention";
+    design.Heading2 {
+      Title;
     };
 
     design.AddFigure(MeasuresFig, Here);
@@ -144,7 +171,9 @@ class MeasuresImplementationSection: Content {
     design.AddFigure(MeasuresUseFig, Here);
   };
 }
-
+//======================================================================
+// Figures
+//======================================================================
 
 readonly MeasuresFigure  MeasuresFig = new;
 class  MeasuresFigure: Content {
@@ -155,7 +184,7 @@ class  MeasuresFigure: Content {
   override GetCaption(TechDesign design) = Title;
 
   override GetLayout(TechDesign design) = design.CodeParagraph {
-    SourceSelectionLines(null, 3, 16);
+    SourceSelectionLines(null, 7, 20);
   };
 }
 
@@ -168,6 +197,6 @@ class  MeasuresUseFigure: Content {
   override GetCaption(TechDesign design) = Title;
 
   override GetLayout(TechDesign design) = design.CodeParagraph {
-    SourceSelectionLines(null, 19, 20);
+    SourceSelectionLines(null, 23, 24);
   };
 }

@@ -1,4 +1,3 @@
-
 using Format, HelpConcepts;
 
 class PublishingConcept: AuthoredContent {
@@ -19,18 +18,17 @@ class PublishingConcept: AuthoredContent {
     AddContent(PublishResources);
   }
 }
-
 // ============================================================================
 
 readonly  PublishingPurposeSection  PublishingPurpose = new;
 class  PublishingPurposeSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Purpose");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Purpose";
+    design.Heading2 {
+      Title;
     };
 
     design.SpacedParagraph {
@@ -41,18 +39,17 @@ class  PublishingPurposeSection: Content {
     design.FigureCaption(FullPublishFig);
   };
 }
-
 // ============================================================================
 
 readonly  PublishingAboutSection  PublishingAbout = new;
 class  PublishingAboutSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Publish Feature");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Publish Feature";
+    design.Heading2 {
+      Title;
     };
 
     design.SpacedParagraph {
@@ -63,16 +60,17 @@ class  PublishingAboutSection: Content {
     };
   };
 }
+// ============================================================================
 
 readonly  PublishingExportAboutSection  ExportAbout = new;
 class  PublishingExportAboutSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Export Feature");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Export Feature";
+    design.Heading2 {
+      Title;
     };
 
     design.SpacedParagraph {
@@ -94,16 +92,17 @@ class  PublishingExportAboutSection: Content {
     };
   };
 }
+// ============================================================================
 
 readonly  PublishingLocalSection  PublishingLocal = new;
 class  PublishingLocalSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Publish Locally");
   }
 
   override GetLayout(TechDesign design) = Block {
     design.Heading3 {
-      "Publish Locally";
+      Title;
     };
 
     design.NormalParagraph {
@@ -132,18 +131,18 @@ class  PublishingLocalSection: Content {
     };
   };
 }
+// ============================================================================
 
 readonly  PublishingRemoteSection  PublishingRemote = new;
 class  PublishingRemoteSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Publish To Nytril.com");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Publish To Nytril.com";
+    design.Heading2 {
+      Title;
     };
-
 
     var w = OnlinePublishFig.Width;
     var r = ExtentWidth - w;
@@ -229,16 +228,17 @@ class  PublishingRemoteSection: Content {
     };
   };
 }
+// ============================================================================
 
 readonly PublishStagesSection  PublishStaging = new;
 class  PublishStagesSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Staging");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Staging";
+    design.Heading2 {
+      Title;
     };
 
     design.SpacedParagraph {
@@ -255,18 +255,19 @@ class  PublishStagesSection: Content {
     };
   };
 }
-
+// ============================================================================
+// Resources
 // ============================================================================
 
 readonly PublishResourcesSection PublishResources = new;
 class PublishResourcesSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Resources");
   }
 
   override GetLayout(TechDesign design) = Block {
     design.Heading3 {
-      "Resources";
+      Title;
     };
 
     design.HyperlinkParagraph {
@@ -274,7 +275,8 @@ class PublishResourcesSection: Content {
     };
   };
 }
-
+// ============================================================================
+// Figures
 // ============================================================================
 
 readonly MainSiteFigure  MainSiteFig = new;
@@ -291,7 +293,6 @@ class  MainSiteFigure: Content {
     SourceSelectionLines(res "Main.nytril", line, line + 6);
   };
 }
-
 // ============================================================================
 
 readonly FullPublishFigure  FullPublishFig = new;
@@ -304,7 +305,6 @@ class  FullPublishFigure: Content {
 
   override GetLayout(TechDesign design) = FitBox(new Image(res "FullPublishDialog.png"), ExtentWidth - 4, null, 2);
 }
-
 // ============================================================================
 
 readonly OnlinePublishFigure  OnlinePublishFig = new;

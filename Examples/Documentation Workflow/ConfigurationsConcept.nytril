@@ -10,29 +10,25 @@ class ConfigurationsConcept: AuthoredContent {
     AddAuthor(People.McCreightAuthor);
 
     AddContent(ConfigurationPurpose);
-    AddContent(ConfigurationAbout);
-    AddContent(ConfigurationTranslations);
-    AddContent(ConfigurationOptions);
+    AddContent(ConfigurationUnderstanding);
     AddContent(ConfigurationFromRepo);
     AddContent(ConfigurationCreate);
-    AddContent(ConfigurationManual);
     AddContent(ConfigurationSwitching);
     AddContent(ConfigurationApiRef);
     AddContent(ConfigResources);
   }
 }
-
 // ============================================================================
 
-readonly  ConfigurationPurposeSection  ConfigurationPurpose = new;
-class  ConfigurationPurposeSection: Content {
+readonly ConfigurationPurposeSection ConfigurationPurpose = new;
+class ConfigurationPurposeSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Purpose");
   }
 
   override GetLayout(TechDesign design) = Block {
     design.Heading3 {
-      "Purpose";
+      Title;
     };
 
     design.NormalParagraph {
@@ -40,18 +36,36 @@ class  ConfigurationPurposeSection: Content {
     };
   };
 }
-
 // ============================================================================
 
-readonly  ConfigurationAboutSection  ConfigurationAbout = new;
-class  ConfigurationAboutSection: Content {
+readonly ConfigurationUnderstandingSection ConfigurationUnderstanding = new;
+class ConfigurationUnderstandingSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Understanding Configurations");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Nytril Configurations";
+    design.Heading1 {
+      Title;
+    };
+
+    ConfigurationAbout.GetLayout(design);
+    ConfigurationTranslations.GetLayout(design);
+    ConfigurationOptions.GetLayout(design);
+  };
+}
+// ============================================================================
+
+
+readonly ConfigurationAboutSection ConfigurationAbout = new;
+class ConfigurationAboutSection: Content {
+  Constructor() {
+    super.Constructor("Nytril Configurations");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      Title;
     };
 
     design.SpacedParagraph {
@@ -63,18 +77,17 @@ class  ConfigurationAboutSection: Content {
     };
   };
 }
-
 // ============================================================================
 
 readonly  ConfigurationTranslationsSection  ConfigurationTranslations = new;
 class  ConfigurationTranslationsSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Translations");
   }
 
   override GetLayout(TechDesign design) = Block {
     design.Heading3 {
-      "Translations";
+      Title;
     };
 
     design.SpacedParagraph {
@@ -85,18 +98,17 @@ class  ConfigurationTranslationsSection: Content {
     };
   };
 }
-
 // ============================================================================
 
 readonly  ConfigurationOptionsSection  ConfigurationOptions = new;
 class  ConfigurationOptionsSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Options");
   }
 
   override GetLayout(TechDesign design) = Block {
     design.Heading3 {
-      "Options";
+      Title;
     };
 
     design.AddFigure(OneConfigFig, Here);
@@ -126,46 +138,18 @@ class  ConfigurationOptionsSection: Content {
   };
 }
 // ============================================================================
-
-readonly  OneConfigFigure  OneConfigFig = new;
-class  OneConfigFigure: Content {
-  Constructor() {
-    super.Constructor("Basic Single Configuration");
-  }
-
-  override GetLayout(TechDesign design)  = design.CodeParagraph {
-    SourceSelectionLines(res "Lang.nytril", 1, 7);
-  };
-
-  override GetCaption(TechDesign design) = Span { "Basic Single Configuration" };
-}
-
+// Existing Configuration
 // ============================================================================
 
-readonly  TwoConfigsFigure  TwoConfigsFig = new;
-class  TwoConfigsFigure: Content {
-  Constructor() {
-    super.Constructor("Dual Units Configuration");
-  }
-
-  override GetLayout(TechDesign design)  = design.CodeParagraph {
-    SourceSelectionLines(res "Lang.nytril");
-  };
-
-  override GetCaption(TechDesign design) = Title;
-}
-
-// ============================================================================
-
-readonly  ConfigurationFromRepoSection  ConfigurationFromRepo = new;
+readonly ConfigurationFromRepoSection ConfigurationFromRepo = new;
 class  ConfigurationFromRepoSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Using Configuration from an Existing Repository");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Using Configuration from an Existing Repository";
+    design.Heading4 {
+      Title;
     };
 
     Table(null, null, [new Column(62%), new Column(20), Column.Expand] ) {
@@ -192,33 +176,34 @@ class  ConfigurationFromRepoSection: Content {
     };
   };
 }
-
 // ============================================================================
-
-readonly MainIncludesFigure  MainIncludesFig = new;
-class  MainIncludesFigure: Content {
-  Constructor() {
-    super.Constructor("Including \"Lang\" in Main");
-  }
-
-  override GetCaption(TechDesign design) = Title;
-
-  override GetLayout(TechDesign design) = design.CodeParagraph {
-    SourceSelectionLines(res "Main.nytril", 1, 8);
-  };
-}
-
+// Create Configurations
 // ============================================================================
-
-readonly  ConfigurationCreateSection  ConfigurationCreate = new;
+readonly ConfigurationCreateSection ConfigurationCreate = new;
 class  ConfigurationCreateSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Create Configurations");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Adding Configurations when Creating a Repository";
+    design.Heading4 {
+      Title;
+    };
+
+    ConfigurationCreateWithRepo.GetLayout(design);
+    ConfigurationManual.GetLayout(design);
+  };
+}
+// ============================================================================
+readonly ConfigurationCreateWithRepoSection ConfigurationCreateWithRepo = new;
+class  ConfigurationCreateWithRepoSection: Content {
+  Constructor() {
+    super.Constructor("Adding Configurations when Creating a Repository");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      Title;
     };
 
     design.SpacedParagraph {
@@ -243,18 +228,17 @@ class  ConfigurationCreateSection: Content {
     };
   };
 }
-
 // ============================================================================
 
-readonly  ConfigurationManualSection  ConfigurationManual = new;
-class  ConfigurationManualSection: Content {
+readonly ConfigurationManualSection ConfigurationManual = new;
+class ConfigurationManualSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Manual Configuration Setup");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Manual Configuration Setup";
+    design.Heading2 {
+      Title;
     };
 
     design.SpacedParagraph {
@@ -287,22 +271,23 @@ class  ConfigurationManualSection: Content {
     };
   };
 }
-
+// ============================================================================
+// Switching Configurations
 // ============================================================================
 
-readonly  ConfigurationSwitchingContent  ConfigurationSwitching = new;
-class  ConfigurationSwitchingContent: Content {
+readonly ConfigurationSwitchingContent ConfigurationSwitching = new;
+class ConfigurationSwitchingContent: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Switching & Viewing Configurations");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Viewing Documents in Various Configurations";
+    design.Heading4 {
+      Title;
     };
 
     design.SpacedParagraph {
-      "The Documents menu switches the configuration at runtime and appears only when multiple configurations exist. ";
+      "The "; design.SpanHighlight{"Documents"}; " menu switches the configuration at runtime and appears only when multiple configurations exist. ";
     };
 
     design.SpacedParagraph {
@@ -319,18 +304,19 @@ class  ConfigurationSwitchingContent: Content {
     };
   };
 }
-
+// ============================================================================
+// API Reference
 // ============================================================================
 
-readonly  ConfigurationApiRefSection  ConfigurationApiRef = new;
-class  ConfigurationApiRefSection: Content {
+readonly ConfigurationApiRefSection ConfigurationApiRef = new;
+class ConfigurationApiRefSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("API Reference");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "API Reference";
+    design.Heading4 {
+      Title;
     };
 
     design.SpacedParagraph {
@@ -338,18 +324,19 @@ class  ConfigurationApiRefSection: Content {
     };
   };
 }
-
+//=========================================================================
+// Resources
 //=========================================================================
 
 readonly ConfiResourcesSection ConfigResources = new;
 class ConfiResourcesSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Resources");
   }
 
   override GetLayout(TechDesign design) = Block {
     design.Heading3 {
-      "Resources";
+      Title;
     };
 
     design.HyperlinkParagraph {
@@ -360,5 +347,45 @@ class ConfiResourcesSection: Content {
     design.HyperlinkParagraph {
       Repositories;
     };
+  };
+}
+// ============================================================================
+// Figures
+// ============================================================================
+
+readonly OneConfigFigure OneConfigFig = new;
+class OneConfigFigure: Content {
+  Constructor() {
+    super.Constructor("Basic Single Configuration");
+  }
+
+  override GetLayout(TechDesign design)  = FitBox(new Image(res "OneConfig.png"), 90%);
+
+  override GetCaption(TechDesign design) = Span { "Basic Single Configuration" };
+}
+
+// ============================================================================
+
+readonly  TwoConfigsFigure  TwoConfigsFig = new;
+class  TwoConfigsFigure: Content {
+  Constructor() {
+    super.Constructor("Dual Units Configuration");
+  }
+
+  override GetLayout(TechDesign design)  = FitBox(new Image(res "TwoConfigs.png"), 90%);
+
+  override GetCaption(TechDesign design) = Title;
+}
+
+readonly MainIncludesFigure MainIncludesFig = new;
+class  MainIncludesFigure: Content {
+  Constructor() {
+    super.Constructor("Including \"Lang\" in Main");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(res "Main.nytril", 1, 8);
   };
 }

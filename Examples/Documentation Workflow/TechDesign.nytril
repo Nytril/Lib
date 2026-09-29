@@ -128,6 +128,8 @@ class TechDesign {
     if (ShowDesignControls && !System.IsPublishing) {
       return DesignToolbar.GetToolbarDocument(0.25") {
         SectionNextPage(Margins, null, null, null, null, new(8.5", 11")) {
+          PageNumberStart: 1;
+          Header: GetHeader(content);
           Footer: GetFooter(content);
           Watermark: content.Watermark;
         };
@@ -148,6 +150,13 @@ class TechDesign {
     AddMainTitle(content);
 
     ShowContent(content);
+  };
+
+  virtual GetHeader(AuthoredContent content) = HeaderBlock {
+    NormalParagraph {
+      ParAlignment: Right;
+      DocFields.PageNumber;
+    };
   };
 
   virtual GetFooter(AuthoredContent content) = FooterBlock {
@@ -186,13 +195,15 @@ class TechDesign {
     TipAction: new ContentTipAction(content, this);
   };
 
-  virtual FooterBlock                 = MarginBlock       (0.5");
+  virtual FooterBlock                 = MarginBlock       (0.25");
   virtual FooterParagraph             = Paragraph         { ParAlignment: Center; TextHeight: 12px; TextColor: Palette.Lighten(Palette.Dark1, 75); };
+  virtual HeaderBlock                 = MarginBlock       (0.25");
   virtual Heading1                    = Paragraph         { Bold; TextHeight: 18pt; SpaceBefore: 36; };
   virtual Heading2                    = Paragraph         { Bold; TextHeight: 16pt;                  };
   virtual Heading3                    = Paragraph         { Bold; TextHeight: 14pt;                  };
   virtual Heading4                    = Heading1          { SpaceBefore: 0;                          };
   virtual HyperlinkParagraph          = Paragraph         { Underline; TextColor: Palette.Hyperlink  };
+  virtual HyperlinkSpan               = Span              { Underline; TextColor: Palette.Hyperlink  };
   virtual IndentedBlock               = Block             { LeftIndent: SectionIndentation;          };
   virtual InLineLink                  = Span              { Underline; TextColor: Palette.Dark2      };
   virtual MainTitle                   = Paragraph         { TextFamily: TextFamilies.LibertinusSerif; Bold; TextHeight: 19pt; };

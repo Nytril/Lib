@@ -38,12 +38,12 @@ class RepoAndSourcePurposeSection: Content {
 readonly RepoAndSourceAboutSection RepoAndSourceAbout = new;
 class RepoAndSourceAboutSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Nytril Repository");
   }
 
   override GetLayout(TechDesign design) = Block {
     design.Heading3 {
-      "Nytril Repository";
+      Title;
     };
 
     design.SpacedParagraph {
@@ -75,12 +75,12 @@ class RepoAndSourceAboutSection: Content {
 readonly RepoAndSourceCreateSection RepoAndSourceCreate = new;
 class RepoAndSourceCreateSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Creating a Repository");
   }
 
   override GetLayout(TechDesign design) = Block {
     design.Heading3 {
-      "Creating a Repository";
+      Title;
     };
 
     design.SpacedParagraph {
@@ -115,16 +115,18 @@ class RepoAndSourceCreateSection: Content {
   };
 }
 //=========================================================================
+// Resources
+//=========================================================================
 
 readonly RepoAndSourceResourcesSection RepoResources = new;
 class RepoAndSourceResourcesSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Resources");
   }
 
   override GetLayout(TechDesign design) = Block {
     design.Heading3 {
-      "Resources";
+      Title;
     };
 
     design.HyperlinkParagraph {

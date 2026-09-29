@@ -13,7 +13,6 @@ class  DbConnFigure: Content {
     var connectionString         = "Server={0};Database={1};"(dBServerAddress, dbName);
 
     var connection = new DB.SQLServer(connectionString, nytrilStoredCreds);
-
   }
 
   override GetLayout(TechDesign design)  = design.CodeParagraph {
@@ -38,8 +37,13 @@ class  DbQueryFigure: Content {
   }
 
   override GetLayout(TechDesign design)  = design.CodeParagraph {
-    SourceSelectionLines(null, 36, 37);
+    SourceSelectionLines(null, 35, 36);
   };
 
   override GetCaption(TechDesign design) = Span { "Basic Database Connection" };
 }
+
+
+/*
+  If content in this document is changed, ensure that the SourceSelectionLines and kept up to date.
+*/

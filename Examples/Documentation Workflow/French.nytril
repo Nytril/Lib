@@ -1,0 +1,8 @@
+// This file is rewritten during language translation. Do not edit
+readonly namespace Lang if (Language == Languages.French);
+
+InsertStringsInto     = revu "Insérez des chaînes dans le fichier de langue.";
+ReviewTheResults      = revu "Examinez les résultats.";
+SelectTranslateAnd    = revu "Sélectionnez Traduire et choisissez la langue.";
+UsingTheTranslation   = revu "Utiliser la fonction de traduction est facile.";
+

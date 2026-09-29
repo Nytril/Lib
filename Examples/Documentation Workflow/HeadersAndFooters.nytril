@@ -1,8 +1,247 @@
 using Format, HelpConcepts;
 
-class HeadersAndFootersConcept: AuthoredContent {
+//======================================================================
+// Sample code that is placed in doc.  If moved, revised source lines.
+//======================================================================
+
+class MyDocument: DocumentEntry {
   Constructor {
-    super.Constructor("Headres and Footers");
+    super.Constructor(#5d76f5d8-4fe0-40d7-a9a3-404dc1e3339d#, "Blank Document");
   }
+
+  override GetDocument = Document {
+    "Content";
+  };
 }
 
+class HFDocument: DocumentEntry {
+  Constructor {
+    super.Constructor(#66e8a5a4-331e-4da4-954c-fcd2ee7075b8#, "Blank Document");
+  }
+
+  override GetDocument = Document {
+    Header: MarginBlock(0.25") { TextCase: AllUpper; ParAlignment: Center; "Document Title"; };
+
+    Footer: MarginBlock(0.25") {
+      ParAlignment: Center;
+      "{0} of {1}"(DocFields.PageNumber, DocFields.PageCount);
+    };
+  };
+}
+
+class HFDocument2: DocumentEntry {
+  Constructor {
+    super.Constructor(#8c2e0e93-f0a5-4e45-9d2f-4c8afb347d6f#, "Blank Document");
+  }
+
+  override GetDocument = Document {
+
+    SectionNextPage {
+      Header: MarginBlock(0.25") { TextCase: AllUpper; ParAlignment: Center; "Document Title"; };
+      Footer: MarginBlock(0.25") { ParAlignment: Center; DocFields.PageNumber; }
+    };
+  };
+}
+//======================================================================
+// End Sample Code
+//======================================================================
+
+class HeadersAndFootersConcept: AuthoredContent {
+  Constructor {
+    super.Constructor("Headers and Footers");
+
+    Watermark = "DRAFT";
+
+    AddAuthor(People.ColbertAuthor);
+    AddAuthor(People.McCreightAuthor);
+
+    AddContent(HFPurpose);
+    AddContent(HFAppl);
+    AddContent(HFExtensibility);
+    AddContent(HFAdvanced);
+  }
+}
+//======================================================================
+
+readonly HFPurposeSection HFPurpose = new;
+class HFPurposeSection: Content {
+  Constructor() {
+    super.Constructor("Purpose");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "This document describes the process of setting headers and footers for a document. ";
+    };
+  };
+}
+//======================================================================
+// Application
+//======================================================================
+
+readonly HFApplicationSection HFAppl = new;
+class HFApplicationSection: Content {
+  Constructor() {
+    super.Constructor("Application");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading4 {
+      Title;
+    };
+
+    HFSections.GetLayout(design);
+    HFImplement.GetLayout(design);
+  };
+}
+//======================================================================
+
+readonly HFUnderstandingSections HFSections = new;
+class HFUnderstandingSections: Content {
+  Constructor() {
+    super.Constructor("Understanding Sections");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "Headers and footers are applied to document "; design.Emphasis{"sections"}; ". ";
+      "All Nytril documents contain at least one section. ";
+      "When a Document is created it will contain exactly one section, even though there is no code specifically showing a section. ";
+      "Formatters placed inside a document are being applied to that first section, as is \"Content\" shown in "; design.FigureReference(DocumentExampleFig); ".";
+    };
+
+    design.AddFigure(DocumentExampleFig, Here);
+  };
+}
+//======================================================================
+
+readonly HFImplementationSections HFImplement = new;
+class HFImplementationSections: Content {
+  Constructor() {
+    super.Constructor("Applicable Properties");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading2 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "The Section formatter has the aplty named properties, "; design.SpanHighlight{"Header"}; " and "; design.SpanHighlight{"Footer"}; " for these placements. ";
+      "Note the usage of these properties in "; design.FigureReference(DocumentHFExampleFig); ". ";
+      "Both header and footer properties take a MarginBlock, which is special to this application.  ";
+      "The MarginBlock takes a distance value parameter, which is the distance from the edge of the page. ";
+      "In "; design.FigureReference(DocumentHFExampleFig); ", the distance from the edge is one quarter of an inch. ";
+    };
+
+    design.SpacedParagraph {
+      "The implemented MarginBlocks can now be revised with content. ";
+       design.FigureReference(DocumentHFExampleFig); " adds an all caps centered title to the header, and the page number of page count to the footer; of course, anything can be placed in these revisions affording full flexibility. ";
+    };
+
+    design.AddFigure(DocumentHFExampleFig, Here);
+  };
+}
+//======================================================================
+
+readonly HFExtensibilitySection HFExtensibility = new;
+class HFExtensibilitySection: Content {
+  Constructor() {
+    super.Constructor("Extensibility");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading4 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "For simple projects, assigning headers and footer directly to the Document formatter is an acceptable application. ";
+      "More involved projects, with styling mechanisms or multiple documents, may be better served by abstracting the header and footer creation to make future document creation or modification, and code maintenance easier. ";
+    };
+  };
+}
+//======================================================================
+
+readonly HFAdvancedApplication HFAdvanced = new;
+class HFAdvancedApplication: Content {
+  Constructor() {
+    super.Constructor("Advanced Applications");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading4 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "Nytril allows documents to contain multiple sections. ";
+      "Each section break can contain its own set of headers and footers with the exception of \"SectionContinuous\", which starts a new section where placed. ";
+      "For the remaining page breaking sections, see "; design.FigureReference(DocumentHFSectionsFig); ", they can be revised with their own headers and footers, as shown in "; design.FigureReference(DocumentHFSectionRevFig); ".";
+    };
+
+    design.AddFigure(DocumentHFSectionRevFig, Here);
+    design.AddFigure(DocumentHFSectionsFig, Here);
+  };
+}
+//======================================================================
+// Figures
+//======================================================================
+
+readonly DocumentExampleFigure  DocumentExampleFig = new;
+class  DocumentExampleFigure: Content {
+  Constructor() {
+    super.Constructor("Basic Document Example");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(null, 6, 15);
+  };
+}
+
+readonly DocumentHFExampleFigure  DocumentHFExampleFig = new;
+class  DocumentHFExampleFigure: Content {
+  Constructor() {
+    super.Constructor("Basic Header and Footer Example");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(null, 16, 30);
+  };
+}
+
+readonly DocumentHFSectionsFigure  DocumentHFSectionsFig = new;
+class  DocumentHFSectionsFigure: Content {
+  Constructor() {
+    super.Constructor("Available Section Types");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = FitBox(new Image(res "Sections.png"), 100%, null, 1);
+}
+
+readonly DocumentHFSectionRevFigure  DocumentHFSectionRevFig = new;
+class  DocumentHFSectionRevFigure: Content {
+  Constructor() {
+    super.Constructor("Section Break Header and Footer Revision");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(null, 38, 42);
+  };
+}

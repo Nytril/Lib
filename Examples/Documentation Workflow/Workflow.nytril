@@ -21,7 +21,6 @@ class TechDocWorkflowContent: AuthoredContent {
     AddContent(Phase3);
   }
 }
-
 // ==================================================================================================================
 
 class StepStyler: Content {
@@ -80,7 +79,6 @@ class StepStyler: Content {
       PageBreak;
   };
 }
-
 // ==================================================================================================================
 
 readonly QuickRefSection QuickRef = new;
@@ -105,13 +103,12 @@ class QuickRefSection: Content {
           design.QuickRefItem(AudienceEnvironmentStep.AnchorTitle , AudienceEnvironmentStep.AnchorText  );
           design.QuickRefItem(OutputStrategyStep.AnchorTitle      , OutputStrategyStep.AnchorText       );
           design.QuickRefItem(IdContentAndDataStep.AnchorTitle    , IdContentAndDataStep.AnchorText     );
+          design.QuickRefItem(DesignFrameworkStep.AnchorTitle     , DesignFrameworkStep.AnchorText      );
         };
         design.QuickRefCell {
           design.QuickRefItem(RepoAndSourceStep.AnchorTitle       , RepoAndSourceStep.AnchorText        );
           design.QuickRefItem(CreateProjectStep.AnchorTitle       , CreateProjectStep.AnchorText        );
           design.QuickRefItem(LocalizationStep.AnchorTitle        , LocalizationStep.AnchorText         );
-          design.QuickRefItem(DesignFrameworkStep.AnchorTitle     , DesignFrameworkStep.AnchorText      );
-          design.QuickRefItem(DocumentArchitectureStep.AnchorTitle, DocumentArchitectureStep.AnchorText );
           design.QuickRefItem(ImplementLayoutStep.AnchorTitle     , ImplementLayoutStep.AnchorText      );
           design.QuickRefItem(InsertContentStep.AnchorTitle       , InsertContentStep.AnchorText        );
         };
@@ -124,35 +121,34 @@ class QuickRefSection: Content {
     };
   };
 }
-
 // =======================================================
 
 readonly PurposeSection Purpose = new;
 class PurposeSection: Content {
   Constructor() {
-    super.Constructor(null);
+    super.Constructor("Purpose");
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading3 {
-      "Purpose";
+    design.Heading2 {
+      Title;
     };
 
-    design.NormalParagraph {
+    design.SpacedParagraph {
       "This document covers creating technical documents in Nytril, from preparation through publishing. ";
       "The steps guide engineers and professionals who design repeatable technical documentation for any purpose. ";
       "Technical documents that require ongoing updates, frequent version changes, language translations, or unit conversions fit well with Nytril and this process.";
     };
   };
 }
-
 // ==================================================================================================================
 // PHASE I
 // ==================================================================================================================
+
 readonly Phase1Sec Phase1 = new;
 class Phase1Sec: Content {
   Constructor {
-    super.Constructor(null);
+    super.Constructor("Phase I");
 
     AddContent(AudienceEnvironmentStep);
     AddContent(OutputStrategyStep);
@@ -161,8 +157,8 @@ class Phase1Sec: Content {
   }
 
   override GetLayout(TechDesign design) = Block {
-    design.Heading1 {
-      "Phase I";
+    design.Heading4 {
+      Title;
     };
 
     design.Heading2 {
@@ -174,7 +170,6 @@ class Phase1Sec: Content {
     };
   };
 }
-
 // =======================================================
 
 readonly AudienceEnvironment AudienceEnvironmentStep = new;
@@ -204,12 +199,12 @@ class AudienceEnvironment: StepStyler {
 
   override GetDescription(TechDesign design) = design.CalloutFrame {
     design.CalloutParagraph {
-      "Not every project can benefit from using common configurations, a fresh start may be a better stategy. ";
+      "Not every project benefits from shared configurations. ";
+      "A fresh start may be a better strategy. ";
       "Nytril allows for full control over how you deploy and use configuration metrics and you can configure them at any time. ";
     };
   };
 }
-
 // =======================================================
 
 readonly OutputStrategy OutputStrategyStep = new;
@@ -230,7 +225,7 @@ class OutputStrategy: StepStyler {
     };
 
     design.TightParagraph {
-      "Understanding the intended method of distrubtion helps in scaffolding the project, though one can always configure these options later. ";
+      "Understanding the intended method of distribution helps in scaffolding the project, though one can always configure these options later. ";
       "For instance, using Nytril's hosting environment for a rich and interactive user experience requires the creation of a "; design.Emphasis{"Site"}; " in the code (see the Publishing concept). ";
       "All other forms of output, other than writing your own output files, require no special setup. ";
     };
@@ -239,11 +234,10 @@ class OutputStrategy: StepStyler {
   override GetDescription(TechDesign design) = design.CalloutFrame {
     design.CalloutParagraph {
       "As discussed in step 1, the output may require modification for local considerations, such as the paper-size system and the units of measure. ";
-      "Producing output in these variations, requires modifications to the Configurations in the "; design.Emphasis{"Lang"} " file. ";
+      "Producing these output variations requires changes to the configurations in the "; design.Emphasis{"Lang"} " file. ";
     };
   };
 }
-
 // =======================================================
 
 readonly IdContentAndData IdContentAndDataStep = new;
@@ -266,7 +260,6 @@ class IdContentAndData: StepStyler {
 
   override GetDescription(TechDesign design) = null;
 }
-
 // =======================================================
 
 readonly DesignFramework DesignFrameworkStep = new;
@@ -286,25 +279,24 @@ class DesignFramework: StepStyler {
     };
 
     design.TightParagraph {
-      "When conferring with a graphical designer, obtain any required complex graphics, color schemes, font sizes, or other formatting metrics necessary to create the document design. ";
+      "When conferring with a graphic designer, obtain any required complex graphics, color schemes, font sizes, or other formatting metrics necessary to create the document design. ";
     };
   };
 
   override GetDescription(TechDesign design) = null;
 }
-
 // ==================================================================================================================
 // PHASE II
 // ==================================================================================================================
+
 readonly Phase2Sec Phase2 = new;
 class Phase2Sec: Content {
   Constructor {
-    super.Constructor(null);
+    super.Constructor("Phase II");
 
     AddContent(RepoAndSourceStep);
     AddContent(CreateProjectStep);
     AddContent(LocalizationStep);
-    AddContent(DocumentArchitectureStep);
     AddContent(ImplementLayoutStep);
     AddContent(InsertContentStep);
   }
@@ -312,7 +304,7 @@ class Phase2Sec: Content {
   override GetLayout(TechDesign design) = Block {
     Paragraph;
     design.Heading4 {                                                                               // Note the change to Heading4
-      "Phase II";
+      Title;
     };
 
     design.Heading2 {
@@ -321,11 +313,10 @@ class Phase2Sec: Content {
 
     design.SpacedParagraph {
       "In this phase, you will set up the environment, create the project, design the layout, and insert the content. ";
-      "At the completation of this phase, you will have documents ready for review, translations, or distribution. ";
+      "At the completion of this phase, you will have documents ready for review, translations, or distribution. ";
     };
   };
 }
-
 // =======================================================
 
 readonly RepoAndSource RepoAndSourceStep = new;
@@ -341,7 +332,7 @@ class RepoAndSource: StepStyler {
     };
 
     design.TightParagraph {
-      "If using and existing repository, "; design.Emphasis{"skip this step"} ". ";
+      "If using an existing repository, skip repository creation and confirm that source control is connected, if applicable. ";
     };
 
     design.TightParagraph {
@@ -357,12 +348,11 @@ class RepoAndSource: StepStyler {
 
   override GetDescription(TechDesign design) = design.CalloutFrame {
     design.CalloutParagraph {
-      "If a new repository is necessary, you can create a new project during that process. ";
-      "In which case, you can skip the next step. ";
+      "If a new repository is necessary, a project can be created during repository setup. ";
+      "If the project is created at this stage, skip the next step. ";
     };
   };
 }
-
 // =======================================================
 
 readonly CreateProject CreateProjectStep = new;
@@ -385,11 +375,21 @@ class CreateProject: StepStyler {
       "Be sure to select the repository using the "; design.Emphasis{"Repo"} " menu option before creating the project. ";
       "Doing so ensures Nytril creates the project under the intended repository.";
     };
+
+    design.TightParagraph {
+      "If your purpose is to produce a single document, even if the document will be produced in more than one configuration, then create a Nytril project for a single document. ";
+      "If your objective is to produce multiple documents, then select the option to scaffold a multi-document project. ";
+    };
   };
 
-  override GetDescription(TechDesign design) = null;
+  override GetDescription(TechDesign design) = design.CalloutFrame {
+    design.CalloutParagraph {
+      "A project created during repository setup starts with a single-document scaffold. ";
+      "Developers can revise it later to support multiple documents. ";
+      "If the project is created during repository setup, skip step 6";
+    };
+  };
 }
-
 // =======================================================
 
 readonly Localization LocalizationStep = new;
@@ -401,7 +401,7 @@ class Localization: StepStyler {
 
   override GetBody(TechDesign design) = Block {
     design.TightParagraph {
-      "If you intend to translate the primary language into other languages, or if you intend to produce documents into more than one unit system or paper system, set up the configuration environment to produce the desired variations.";
+      "If your planned documentation requires translation into other languages or use of multiple unit systems or paper-size systems, then configure the environment to produce the required variations.";
     };
 
     design.TightParagraph {
@@ -410,7 +410,7 @@ class Localization: StepStyler {
 
     design.NumberedList {
       "The Lang file contains the configurations.";
-      "You can modify or create configurations arrangements for your project. ";
+      "You can modify or create configuration arrangements for your project. ";
       "The project must include a reference to the Lang file (i.e., \"include \"Lang\"\").";
     };
 
@@ -426,33 +426,6 @@ class Localization: StepStyler {
     };
   };
 }
-
-// =======================================================
-
-readonly DocumentArchitecture DocumentArchitectureStep = new;
-class DocumentArchitecture: StepStyler {
-  Constructor() {
-    super.Constructor("Create Basic Document Architecture");
-  }
-
-  override GetBody(TechDesign design) = Block {
-    design.TightParagraph {
-      "Set up the document architecture to match production requirements.";
-    };
-
-    design.TightParagraph {
-      "If your purpose is to produce a single document, even if the document will be produced in more than one configuration (see prior step), then create a Nytril project for a single document. ";
-      "If your objective is to produce multiple documents, then select the option to scaffold a multi-document project. ";
-    };
-  };
-
-  override GetDescription(TechDesign design) = design.CalloutFrame {
-    design.CalloutParagraph {
-      "A default project created by Nytril during the new Repository process is set up for a single document.";
-    };
-  };
-}
-
 // =======================================================
 
 readonly ImplementLayout ImplementLayoutStep = new;
@@ -474,7 +447,7 @@ class ImplementLayout: StepStyler {
     };
 
     design.TightParagraph {
-      "Set up the document taking note that the margins and size, amongst other properties, are set as parameters to the Document formatter. ";
+      "Set the document’s margins, size, and other properties using parameters of the Document formatter. ";
       "If you use a provided design template, refer to the documentation on how to set up the document for that system.";
     };
 
@@ -489,7 +462,6 @@ class ImplementLayout: StepStyler {
 
   override GetDescription(TechDesign design) = null;
 }
-
 // =======================================================
 
 readonly InsertContent InsertContentStep = new;
@@ -521,19 +493,18 @@ class InsertContent: StepStyler {
     };
 
     design.TightParagraph {
-      "If adding structured data from a data source, insert it now into an appropriate formatter revision. ";
+      "If adding structured data from a data source, revise the appropriate formatter to include it. ";
       "Press "; design.Emphasis{"F5"} " after changes to see the result in the document. ";
     };
   };
 
   override GetDescription(TechDesign design) = design.CalloutFrame {
     design.CalloutParagraph {
-      "Later in this document is a disucussion on converting text strings into Lang variables, as is necessary for tranlations. ";
+      "Later in this document is a discussion on converting text strings into Lang variables, as is necessary for translations. ";
       "You can insert text directly into Lang variables using the keystroke Ctrl-Shift-V, wherein Nytril places your named variable at the string position and moves the text into the appropriate language file.";
     };
   };
 }
-
 // ==================================================================================================================
 // PHASE III
 // ==================================================================================================================
@@ -541,7 +512,7 @@ class InsertContent: StepStyler {
 readonly Phase3Sec Phase3 = new;
 class Phase3Sec: Content {
   Constructor {
-    super.Constructor(null);
+    super.Constructor("Phase III");
 
     AddContent(TranslationsStep     );
     AddContent(ValidateAndReviewStep);
@@ -550,7 +521,7 @@ class Phase3Sec: Content {
 
   override GetLayout(TechDesign design) = Block {
     design.Heading4 {
-      "Phase III";
+      Title;
     };
 
     design.Heading2 {
@@ -558,7 +529,6 @@ class Phase3Sec: Content {
     };
   };
 }
-
 // =======================================================
 
 readonly Translations TranslationsStep = new;
@@ -570,7 +540,7 @@ class Translations: StepStyler {
 
   override GetBody(TechDesign design) = Block {
     design.TightParagraph {
-      "This step is optional, use this process if you intend to translate the entered text into another language. ";
+      "Complete this optional step if the document requires translation into another language. ";
     };
 
     design.TightParagraph {
@@ -583,9 +553,9 @@ class Translations: StepStyler {
 
     design.NumberedList {
       Span {"Moving strings into the language file using Ctrl-Shift-V or the "; design.Emphasis{"Text to Lang Symbol"} " feature. " };
-      Span {"Right clicking on that language file and selecting "; design.SpanHighlight{"Advanced => Translate Language Strings"} ". " };
-      "Use the \"revu\" keyword on translated text and follow the dialog to translate the text. ";
-      "Validating the translations and removing the revu keywords ";
+      Span {"Right clicking on that language file and selecting "; design.SpanHighlight{"Advanced => Translate Language Strings"} "." };
+      "Selecting the language and translating the text. ";
+      "Validating the translations. ";
       "Fixing any resulting display issues.";
     };
   };
@@ -593,11 +563,9 @@ class Translations: StepStyler {
   override GetDescription(TechDesign design) = design.CalloutFrame {
     design.CalloutParagraph {
       "After translating text, select the alternate language option in the Document menu, then open the document. ";
-      "If you opted to use the \"revu\" keyword, translated text will be purple until reviewed. ";
     };
   };
 }
-
 // =======================================================
 
 readonly ValidateAndReview ValidateAndReviewStep = new;
@@ -608,17 +576,16 @@ class ValidateAndReview: StepStyler {
 
   override GetBody(TechDesign design) = Block {
     design.TightParagraph {
-      "Verify formatting, data accuracy, and localization specifics prior to publish.";
+      "Verify formatting, data accuracy, and localization specifics before publishing.";
     };
 
     design.TightParagraph {
-      "Conduct your organizaiton's internal review process to ensure content is ready for publishing. ";
+      "Conduct your organization's internal review process to ensure content is ready for publishing. ";
     };
   };
 
   override GetDescription(TechDesign design) = null;
 }
-
 // =======================================================
 
 readonly Publish PublishStep = new;
@@ -640,5 +607,4 @@ class Publish: StepStyler {
 
   override GetDescription(TechDesign design) = null;
 }
-
 // =======================================================

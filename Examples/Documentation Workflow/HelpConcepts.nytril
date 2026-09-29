@@ -1,6 +1,16 @@
 namespace HelpConcepts;
 using Format, Main.Documents;
 
+include "NytrilRepo";
+include "ConfigurationsConcept";
+include "Publishing";
+include "SourceControl";
+include "DataSourceConcept";
+include "MeasuresConcept";
+include "DesignTemplateConcept";
+include "HeadersAndFooters";
+include "Translations";
+
 
 Repositories = Span {
   "Repositories";
