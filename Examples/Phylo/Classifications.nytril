@@ -228,14 +228,14 @@ class Taxon: Fact {
 //================================================================
 
 class TaxonNode: Node {
-  var Taxon Taxon;
+  var Taxon Tax;
 
-  Constructor(Taxon taxon) {
-    super.Constructor(taxon.Name, taxon.Rank <= Taxon.RankTypes.Class ? 0.4 : 1.0);
-    Taxon = taxon;
+  Constructor(Taxon t) {
+    super.Constructor(t.Name, t.Rank <= Taxon.RankTypes.Class ? 0.4 : 1.0);
+    Tax = t;
   }
 
-  override GetLayoutTip = Taxon.GetLayoutTip;
+  override GetLayoutTip = Tax.GetLayoutTip;
 }
 
 //================================================================
