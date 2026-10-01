@@ -2108,7 +2108,7 @@ class ContentStyle: ReferenceStyle {
         return Span {DocLang.Volume; Space; reference.Volume};
     }
     else if (reference.Number is valid)
-      Span {"("; reference.Number; ")"};
+      return Span {"("; reference.Number; ")"};
     return null;
   }
 
