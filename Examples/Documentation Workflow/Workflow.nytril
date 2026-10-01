@@ -501,7 +501,7 @@ class InsertContent: StepStyler {
   override GetDescription(TechDesign design) = design.CalloutFrame {
     design.CalloutParagraph {
       "Later in this document is a discussion on converting text strings into Lang variables, as is necessary for translations. ";
-      "You can insert text directly into Lang variables using the keystroke Ctrl-Shift-V, wherein Nytril places your named variable at the string position and moves the text into the appropriate language file.";
+      "You can insert text directly into Lang variables using the keystroke Ctrl-Shift-L, wherein Nytril places your named variable at the string position and moves the text into the appropriate language file.";
     };
   };
 }
@@ -552,7 +552,7 @@ class Translations: StepStyler {
     };
 
     design.NumberedList {
-      Span {"Moving strings into the language file using Ctrl-Shift-V or the "; design.Emphasis{"Text to Lang Symbol"} " feature. " };
+      Span {"Moving strings into the language file using Ctrl-Shift-L or the "; design.Emphasis{"Text to Lang Symbol"} " feature. " };
       Span {"Right clicking on that language file and selecting "; design.SpanHighlight{"Advanced => Translate Language Strings"} "." };
       "Selecting the language and translating the text. ";
       "Validating the translations. ";
@@ -562,7 +562,7 @@ class Translations: StepStyler {
 
   override GetDescription(TechDesign design) = design.CalloutFrame {
     design.CalloutParagraph {
-      "After translating text, select the alternate language option in the Document menu, then open the document. ";
+      "After translating text, select the alternate language option in the Documents menu, then open the document. ";
     };
   };
 }

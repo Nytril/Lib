@@ -30,7 +30,7 @@ class  DataSourcePurposeSection: Content {
     };
 
     design.SpacedParagraph {
-      "This document describes the process of connecting data sources to the Nytril IDE for use in a project.";
+      "This document describes the process of connecting data sources to the Nytril IDE for use in a project. ";
       "Nytril can be connected to external data sources such as databases and can make external calls, such as calling an API method. ";
       "Nytril also has the ability to receive output from externally written code, such as a C# program. ";
       "This document describes the basic process of using these features. ";
@@ -70,7 +70,7 @@ class  DataSourceTypesSection: Content {
     };
 
     design.TightParagraph {
-      "Various database platforms can be connected to your project: ";
+      "The DB namespace provides the following database types: ";
     };
 
     ListBlock {
@@ -89,7 +89,7 @@ class  DataSourceTypesSection: Content {
     };
 
     design.TightParagraph {
-      "Where the the database type is instantiated with either a path or a connection string, depending on the type. ";
+      "Instantiate the appropriate database type using a file path or connection string, depending on the type. ";
     };
   };
 }
@@ -109,7 +109,7 @@ class  DataSourceConnectSection: Content {
 
     design.SpacedParagraph {
       "Connecting to a database source is simple. ";
-      "Use the built in DB namespace to access database connection methods. ";
+      "Use the built-in DB namespace to access database connection methods. ";
       "All connection methods, assuming correct connection strings and credentials, return a DbConnection.";
     };
 
@@ -134,8 +134,7 @@ class  DataSourceCredsSection: Content {
     design.SpacedParagraph {
       "Each database connection method includes an optional parameter for credentials. ";
       "The parameter can be omitted as credentials may be supplied in the connection string. ";
-      "Of course, if the credentials are placed inside the conenction string, those credentials will likely be pushed to your source control. ";
-      "Moreover, anyone with access to the source code can see those credentials.";
+      "If credentials are embedded in a connection string stored in source code, anyone with access to that code can read them, and they may be committed to source control. ";
     };
 
     design.SpacedParagraph {
@@ -164,7 +163,8 @@ class DataSourceQuerySection: Content {
     design.SpacedParagraph {
       "Once a DbConnection has been established, the database can be queried using the RunQuery method. ";
       "The only parameter for the method is the query command.  ";
-      "Pass in the query command and the method will return an array of DbRows following the structure returned from the query.";
+      "Pass the query command to RunQuery. ";
+      "The method returns an array of DbRows containing the query results.";
     };
 
     design.AddFigure(DbQueryFig, Here);

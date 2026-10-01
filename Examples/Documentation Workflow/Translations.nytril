@@ -15,10 +15,10 @@ UnusedMethodBefore = {
 
 UnusedMethodAfter = {
   Paragraph {
-    Lang.UsingTheTranslation;
     Lang.InsertStringsInto;
-    Lang.SelectTranslateAnd;
     Lang.ReviewTheResults;
+    Lang.SelectTranslateAnd;
+    Lang.UsingTheTranslation;
   };
 };
 
@@ -84,13 +84,13 @@ class TransSummarySection: Content {
     };
 
     design.SpacedParagraph {
-      "The translation process involves first organizing all text into a single primary language file. ";
-      "Next, running a translation on that file generating the translated text into an additional language file. ";
-      "Reviewning the translated text, and lastly, opening the document in the new language and verifying the layout. ";
+      "First, organize the text into a single primary language file. ";
+      "Translate that file to generate text in the target language file, then review the translations. ";
+      "Finally, open the document in the target language and verify the layout. ";
     };
 
     design.SpacedParagraph {
-      "Nytril has special tools to make certain steps easier, those will be discussed in the relevant areas. ";
+      "Nytril provides tools to simplify these steps, as described in the relevant sections. ";
     };
   };
 }
@@ -127,13 +127,13 @@ class TransTextStrategySections: Content {
 
     design.SpacedParagraph {
       "Knowing ahead of time that the goal is to translate text is beneficial, but not critical. ";
-      "The key reason for this is that it is better to hold off on certain types of text normalization that may break sentences or construct sentences programatically. ";
+      "The key reason for this is that it is better to hold off on certain types of text normalization that may break sentences or construct sentences programmatically. ";
       "A MadLibs type document is not great for translations. ";
       "Some text normalization or construction may be required, but do so with the knowledge that the text will need to be translated, where the meaning / tense / plurality / grammatical gender / usage must still work after the translation.";
     };
 
     design.SpacedParagraph {
-      "Since translating text requires moving text into a single file, for which there are tools to aid in that process, it is a good practice to hold off on that abstration until the project is ready for translation. ";
+      "Since translating text requires moving text into a single file, for which there are tools to aid in that process, it is a good practice to hold off on that abstraction until the project is ready for translation. ";
       "It is simply easier to review text and build the document with the text in place. ";
     };
 
@@ -163,17 +163,17 @@ class TransTextToLangSection: Content {
       "Navigate to the top of a document with text content. ";
       "Place the cursor anywhere on that first string. ";
       "Select "; design.Emphasis{"Ctrl-Shift-L"}; ". ";
-      "A dialog, as shown in figure "; design.FigureReference(TransTextToLangFig); ", will appear. ";
+      "A dialog, as shown in "; design.FigureReference(TransTextToLangFig); ", will appear. ";
     };
 
     design.SpacedParagraph {
-      "The dialog will automatically create a unique varible name for the text. ";
+      "The dialog will automatically create a unique variable name for the text. ";
       "Nytril will have looked for an exact match or a close match to other strings in the language file. ";
       "The purpose of that is to avoid entering duplicate text and to find text that is similarly stated where it may be best to state it in one way. ";
     };
 
     design.SpacedParagraph {
-      "Finally, the dialog allows you to search for exising symbols given the chance that you want to use an existing string rather than the one being generated. ";
+      "Finally, the dialog allows you to search for existing symbols given the chance that you want to use an existing string rather than the one being generated. ";
     };
 
     design.SpacedParagraph {
@@ -229,9 +229,8 @@ class TransSignInSections: Content {
     };
 
     design.SpacedParagraph {
-      "To use the text translation feature, Nytril needs access to the Internel and a signed in Nytril Professional account. ";
-      "A Nytril professional account is required to use this feature. ";
-      "Visit the Nytril website to sign up for a professional account (";
+      "To use the text translation feature, Nytril requires Internet access and a signed-in Nytril Professional account. ";
+      "Visit Nytril.com to create an account (";
       design.HyperlinkSpan {
         "Nytril.com";
         Action: new Action(Actions.ToLink, "https://www.nytril.com");
@@ -256,8 +255,7 @@ class TransPerformTransSection: Content {
     design.SpacedParagraph {
       "Navigate to the primary language file. ";
       "This can easily be done by finding \"include Lang\" in the Main file and pressing F12 on Lang. ";
-      "In the Lang file, Press F12 on the includes statement primary language name, i.e. English. ";
-      "That will open the English Language file. ";
+      "In the Lang file, place the cursor on the primary language name in its include statement--for example, English--and press F12 to open that language file. ";
     };
 
     design.SpacedParagraph {
@@ -312,9 +310,8 @@ class TransReviewFileSection: Content {
     };
 
     design.SpacedParagraph {
-      "Navigate to the language file of the target language, in this case the target language is French, so that file is \"French.nytril.\" ";
-      "This file also exists as an include in the Lang file configurations. ";
-      "Open the file. ";
+      "Open the target language file. ";
+      "In this example, the target language is French, so the file is French.nytril. ";
     };
 
     design.SpacedParagraph {
@@ -324,9 +321,11 @@ class TransReviewFileSection: Content {
     };
 
     design.SpacedParagraph {
-      "Nytril provides an informational comment that this file should not be editted. ";
-      "That warning means that new variables and text strings should be added to this file. ";
-      "Editing this file is proper and necessary for the review process. ";
+      "The generated comment warns that translation rewrites this file. ";
+      "Add new variables and source text to the primary language file, not the translated file. ";
+      "Existing translations can and should be corrected during review. ";
+      "Complete the source-language content before translating, then review the translations and commit the reviewed files to source control. ";
+      "Running translation again overwrites the target language file, including any manual corrections. ";
     };
   };
 }
@@ -348,24 +347,19 @@ class TransReviewDocSection: Content {
 
     design.SpacedParagraph {
       "It is now time to review the document in the translated language where it can be easily compared to the original language version. ";
-      "First, check the "; design.SpanHighlight{"Document"} " menu, ensure that the original language is selected, then open the document if it is not already open. ";
-      "Next, go back to the "; design.SpanHighlight{"Document"} " menu and select the translated language, then open the document again. ";
+      "First, check the "; design.SpanHighlight{"Documents"} " menu, ensure that the original language is selected, then open the document if it is not already open. ";
+      "Next, go back to the "; design.SpanHighlight{"Documents"} " menu and select the translated language, then open the document again. ";
     };
 
     design.SpacedParagraph {
       "Two document tabs will now be open, one in the source language and one in the translated language. ";
       "Select the translated language version. ";
-      "If the \"revu\" keyword is set, the translated language strings are purple in document, as they are in the language file. ";
+      "If the \"revu\" keyword is set, the translated language strings are purple in the document, as they are in the language file. ";
     };
 
     design.SpacedParagraph {
-      "There are two key considerations for translation review. ";
-      "One is to ensure the language was translated correctly, that requires someone fluent in the language. ";
-      "The other is to ensure that the space now required for the text did not cause a display issue in the document. ";
-    };
-
-    design.SpacedParagraph {
-      "If both cannot be done at the same time, it is best to the translation accuracy check first, as changes to the translations may also change the layout. ";
+      "Translation review has two goals: checking accuracy, which requires someone fluent in the target language, and checking whether changes in text length cause layout problems. ";
+      "If these checks cannot be completed together, review translation accuracy first, since corrections may also affect the layout. ";
     };
 
     design.Heading3 {
@@ -373,14 +367,14 @@ class TransReviewDocSection: Content {
     };
 
     design.SpacedParagraph {
-      "There are two critical navigating features that will help considerable through the review process. ";
+      "Two navigation features help with the review process: ";
       design.SpanHighlight{"Ctrl-Shift-D"}; " and "; design.SpanHighlight{"Ctrl-Click"}; ".";
     };
 
     design.SpacedParagraph {
       design.SpanHighlight{"Ctrl-Shift-D"}; " - is the \"Find in Document\" feature. ";
       "It is used to navigate from a code-side string to the location in the document. ";
-      "Place the curson on the string, press Ctrl-Shift-D, then location will be highlighted in the document. ";
+      "Place the cursor on the string and press Ctrl-Shift-D to highlight its location in the document. ";
     };
 
     design.SpacedParagraph {
@@ -391,11 +385,11 @@ class TransReviewDocSection: Content {
 
     design.SpacedParagraph {
       "This allows a reviewer to read and review the text string in the language file, but also see them in context by pressing Ctrl-Shift-D. ";
-      "Once the language has been validated, the reviewer simply removed the revu keywork and the colors return to normal, identifying that string as complete. ";
+      "Once the language has been validated, the reviewer simply removes the revu keyword and the colors return to normal, identifying that string as complete. ";
     };
 
     design.SpacedParagraph {
-      "If the language reviewer is external and unable to review the file in place, the file can be sent to the reviewer and the replaced by the revised version. ";
+      "If the language reviewer is external and unable to review the file in place, the file can be sent to the reviewer and then replaced by the revised version. ";
       "In that case, using the revu keyword is still a good idea as a developer will need to confirm that the new strings format correctly in the document layout. ";
     };
   };
@@ -415,7 +409,7 @@ class TransPublishSection: Content {
     };
 
     design.SpacedParagraph {
-      "Nytril will automatically publish each document in all of it's configurations. ";
+      "Nytril will automatically publish each document in all of its configurations. ";
       "Two configurations (or two languages) will mean two versions of each document will be produced when using the publish feature. ";
     };
   };
@@ -437,7 +431,7 @@ class  TransTextToLangFigure: Content {
 readonly TransCodeBeforeFigure  TransCodeBeforeFig = new;
 class  TransCodeBeforeFigure: Content {
   Constructor() {
-    super.Constructor("Paragrph before using Text To Lang");
+    super.Constructor("Paragraph before using Text To Lang");
   }
 
   override GetCaption(TechDesign design) = Title;
@@ -463,7 +457,7 @@ class  TransLangResultsFigure: Content {
 readonly TransCodeResultsFigure  TransCodeResultsFig = new;
 class  TransCodeResultsFigure: Content {
   Constructor() {
-    super.Constructor("Paragraph After using Text To Lang");
+    super.Constructor("Paragraph After Using Text To Lang.");
   }
 
   override GetCaption(TechDesign design) = Title;

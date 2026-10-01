@@ -19,7 +19,7 @@ class  DbConnFigure: Content {
     SourceSelectionLines(null, 14, 15);
   };
 
-  override GetCaption(TechDesign design) = Span { "Basic Database Connection" };
+  override GetCaption(TechDesign design) = Span { "Database Connection Using Named Credentials" };
 }
 
 //========================================================================================
@@ -40,7 +40,7 @@ class  DbQueryFigure: Content {
     SourceSelectionLines(null, 35, 36);
   };
 
-  override GetCaption(TechDesign design) = Span { "Basic Database Connection" };
+  override GetCaption(TechDesign design) = Span { "Basic Database Query" };
 }
 
 

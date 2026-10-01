@@ -3,8 +3,8 @@ using Format;
 class DesignPaletteSamples: DocumentEntry {
   Constructor {
     super.Constructor(#a2797726-21b9-46e5-a2c6-6e96707b61ee#, "Design Palette Samples");
-    NoCrawl;
-    NoPublish;
+    NoCrawl   = true;
+    NoPublish = true;
   }
 
   override GetDocument = Document(1") {

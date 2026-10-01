@@ -133,7 +133,7 @@ class TechDesign {
           Footer: GetFooter(content);
           Watermark: content.Watermark;
         };
-
+        SetTextStyle;
         GetDocBody(content);
       };
     }
@@ -230,7 +230,7 @@ class TechDesign {
   virtual NumberedHeadingTitle                 = Span            { TextFamily: TextFamilies.LibertinusSans; Bold; TextHeight: 14pt;                          };
   virtual NumberedList                         = ListBlock       ( @Enumerators.NumberDot                                                                    );
   virtual PrimaryActionParagraph               = Paragraph       { ParAlignment: Right; TextColor: Palette.Accent1; Underline;                               };
-  virtual QuickRefCell                         = Cell            { LineHeight: 18px; TextColor: Palette.Hyperlink; TextHeight: 12px; TextLetterSpace: -0.15  };
+  virtual QuickRefCell                         = Cell            { LineHeight: 18px; TextColor: Palette.Hyperlink; TextHeight: 12px; TextLetterSpace: -0.5   };
   virtual QuickRefHeaderRow                    = Row             ( null, null, 25, LineRules.Exact) { TextHeight: 17px;                                      };
   virtual QuickRefItem(anchorName, anchorText) = Span            { anchorName; Action: new Action(Actions.ToAnchor, anchorText);                             };
   virtual QuickRefTable                        = Table           ( null, null, [Column.Expand, Column.Expand, Column.Expand]                                 );

@@ -54,9 +54,9 @@ class  PublishingAboutSection: Content {
 
     design.SpacedParagraph {
       "Publishing builds and exports all documents in a project to a selected file type, the Nytril hosting site, or both. ";
-      "Nytril publishes to PDF, Word, or an HTML page that displays all documents (HtmlDoc). ";
+      "Nytril publishes to PDF, Word, or HTML. ";
       "Nytril also publishes to the Nytril.com hosting site, placing documents in your private or public realm. ";
-      "The publish process builds and produces one document per configuration, which can generate multiple language versions, such as English and French. ";
+      "The publish process produces one version of each document per configuration, allowing output in multiple languages, such as English and French. ";
     };
   };
 }
@@ -86,7 +86,7 @@ class  PublishingExportAboutSection: Content {
 
     design.SpacedParagraph {
       "When a document contains volatile data that changes with each build, export captures the content exactly as displayed. ";
-      "The export process does not execute document code; it creates a type-formatted snapshot of the current view. ";
+      "The export process does not execute document code; it converts the currently displayed content into the selected output format. ";
       "In contrast, publishing rebuilds each document and resolves dynamic content at build time. ";
       "This distinction defines the primary difference between export and publish operations. ";
     };
@@ -126,7 +126,7 @@ class  PublishingLocalSection: Content {
     design.SpacedParagraph {
       "PDF is the most common output format and works well for distribution or website downloads. ";
       "When exporting to Word, Nytril maps most document elements directly to Word features, except for certain advanced elements such as charts or complex graphics. ";
-      "Ensure the operating system includes the required fonts, or Word will substitute defaults and alter the document’s appearance. ";
+      "If the computer used to open the document in Word does not have the required fonts installed, Word will substitute default fonts, which may alter the document’s appearance. ";
       "The HtmlDoc option outputs each document as a separate HTML file. ";
     };
   };
@@ -169,16 +169,17 @@ class  PublishingRemoteSection: Content {
       "A realm is a uniquely named container for IDE-developed content. ";
       "Users can configure a realm as private or public. ";
       "Private realms support controlled sharing, while public realms allow general access. ";
-      "Each realm requires a home (landing) page; if none exist, Nytril assigns the first document in the list as the home page. ";
+      "Each realm requires a home (landing) page. ";
+      "If none is specified, Nytril uses the first document in the list. ";
     };
 
     design.TightParagraph {
-      "The Publish dialog enables online publishing upon the following conditions: ";
+      "The Publish dialog enables online publishing when all of the following conditions are met: ";
     };
 
     design.NumberedList {
       "Nytril has internet access. ";
-      "The user signed in and has permission to publish to the target realm. ";
+      "The user is signed in and has permission to publish to the target realm. ";
       "The project defines a Site and specifies the realm. ";
     };
 
@@ -221,10 +222,8 @@ class  PublishingRemoteSection: Content {
     Paragraph;
 
     design.SpacedParagraph {
-      onlineOptionsRef " also shows the option to include PDF files in the publish. ";
-      "When enabled, Nytril builds both the rich online version of the documents and the PDF version, then uploads both. ";
-      "Users can view the hosted version online and download the PDF from the site. ";
-      "When Nytril uploads the PDF, it automatically makes it available for download. ";
+      onlineOptionsRef " also shows the Enable PDF download option. ";
+      "When selected, Nytril generates and uploads both the hosted documents and their PDF versions, allowing users to view the documents online or download the PDFs. ";
     };
   };
 }
@@ -248,10 +247,14 @@ class  PublishStagesSection: Content {
     };
 
     design.SpacedParagraph {
-      "Only the "; design.Emphasis{"Main"}; " stage serves live content for a public realm. ";
-      "Any other stage name keeps the content private. ";
-      "Online tools allow users to move staged content to the Main stage for public release. ";
-      "Users with publish permissions can also view and manage stages.";
+      "Only the "; design.Emphasis{"Main"}; " stage of a public realm is publicly accessible. ";
+      "All other stages remain private. ";
+      "In a private realm, all stages remain private, including Main. ";
+    };
+
+    design.SpacedParagraph {
+      "Users with appropriate permissions can view private staged content. ";
+      "Online tools allow users to move content to the Main stage; in a public realm, this makes the content publicly accessible. ";
     };
   };
 }
@@ -298,7 +301,7 @@ class  MainSiteFigure: Content {
 readonly FullPublishFigure  FullPublishFig = new;
 class  FullPublishFigure: Content {
   Constructor() {
-    super.Constructor("Online Publish Options");
+    super.Constructor("Publish Options");
   }
 
   override GetCaption(TechDesign design) = Title;

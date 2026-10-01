@@ -135,7 +135,7 @@ class HFImplementationSections: Content {
     };
 
     design.SpacedParagraph {
-      "The Section formatter has the aplty named properties, "; design.SpanHighlight{"Header"}; " and "; design.SpanHighlight{"Footer"}; " for these placements. ";
+      "The Section formatter has the aptly named properties, "; design.SpanHighlight{"Header"}; " and "; design.SpanHighlight{"Footer"}; " for these placements. ";
       "Note the usage of these properties in "; design.FigureReference(DocumentHFExampleFig); ". ";
       "Both header and footer properties take a MarginBlock, which is special to this application.  ";
       "The MarginBlock takes a distance value parameter, which is the distance from the edge of the page. ";
@@ -144,7 +144,7 @@ class HFImplementationSections: Content {
 
     design.SpacedParagraph {
       "The implemented MarginBlocks can now be revised with content. ";
-       design.FigureReference(DocumentHFExampleFig); " adds an all caps centered title to the header, and the page number of page count to the footer; of course, anything can be placed in these revisions affording full flexibility. ";
+       design.FigureReference(DocumentHFExampleFig); " adds a centered, uppercase title to the header and the current page number and total page count to the footer, displayed as ‘1 of 5’, for example. ";
     };
 
     design.AddFigure(DocumentHFExampleFig, Here);
@@ -164,8 +164,8 @@ class HFExtensibilitySection: Content {
     };
 
     design.SpacedParagraph {
-      "For simple projects, assigning headers and footer directly to the Document formatter is an acceptable application. ";
-      "More involved projects, with styling mechanisms or multiple documents, may be better served by abstracting the header and footer creation to make future document creation or modification, and code maintenance easier. ";
+      "For simple projects, headers and footers can be assigned directly to the Document formatter. ";
+      "For more involved projects with styling systems or multiple documents, placing header and footer creation in reusable methods can simplify document creation, modification, and code maintenance. ";
     };
   };
 }
@@ -183,9 +183,9 @@ class HFAdvancedApplication: Content {
     };
 
     design.SpacedParagraph {
-      "Nytril allows documents to contain multiple sections. ";
-      "Each section break can contain its own set of headers and footers with the exception of \"SectionContinuous\", which starts a new section where placed. ";
-      "For the remaining page breaking sections, see "; design.FigureReference(DocumentHFSectionsFig); ", they can be revised with their own headers and footers, as shown in "; design.FigureReference(DocumentHFSectionRevFig); ".";
+      "Nytril supports documents with multiple sections. ";
+      "SectionContinuous starts a new section at the current position without a page break and does not support its own headers and footers. ";
+      "The other section types shown in "; design.FigureReference(DocumentHFSectionsFig); " start a new page and can be revised with their own headers and footers, as shown in "; design.FigureReference(DocumentHFSectionRevFig); ".";
     };
 
     design.AddFigure(DocumentHFSectionRevFig, Here);

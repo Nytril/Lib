@@ -153,7 +153,7 @@ class ImplementationPurpose: Content {
     };
 
     design.SpacedParagraph {
-      "The Tech Design styling template is a free simple set of styles that can be used to not only style documents, but also and more importantly as a template to establish a styling system for your organization. ";
+      "The Tech Design styling template provides a free, simple set of styles for formatting documents and a starting point for developing an organization’s own styling system. ";
       "This style template includes four variations of the base template type and comes with a toolbar design that allows the templates to be changed via a slider. ";
 
     };
@@ -178,12 +178,12 @@ class ImplementationSetup: Content {
 
     design.SpacedParagraph {
       "Setting up an existing Nytril provided style template system is easy. ";
-      "The best way is the create a new probject using the provided \"Tech Design Template\". ";
+      "The best way is to create a new project using the provided \"Tech Design Template\". ";
       "Launching this template will copy all the necessary files into the folder where you create the project and will scaffold the project with a few sample styles. ";
     };
 
     design.SpacedParagraph {
-      "Once created, use the slider at the top to witness how the syles change dynamically. ";
+      "Once created, use the slider at the top to witness how the styles change dynamically. ";
       "This toolbar (see "; design.FigureReference(TechDesignToolbarPicFig); ") is optional and can be turned off by setting \"ShowDesignControls\" to false in the \"TechDesign\" class. ";
     };
 
@@ -230,8 +230,7 @@ class TechDesignPaletteFeature: Content {
     };
 
     design.SpacedParagraph {
-      "After building the project (Ctrl-Shift-B), check the "; design.SpanHighlight { "Documents" }; " folder. ";
-      "Click on the \"Design Palette Samples\" document. ";
+      "After building the project (Ctrl-Shift-B), open the "; design.SpanHighlight { "Documents" }; " menu and select \"Design Palette Samples.\" ";
       "These are the built-in, named color palettes available to this template. ";
     };
 
@@ -262,21 +261,22 @@ class TechDesignVariationsFeature: Content {
     };
 
     design.SpacedParagraph {
-      "All the sytles located here are preceeded by the "; design.SpanHighlight { "virtual" }; " keyword. ";
+      "All the styles located here are preceded by the "; design.SpanHighlight { "virtual" }; " keyword. ";
       "Of course, you can add more or customize what is already there. ";
-      "These are the "; Underline "default"; " base styles, that can be, and in some cases are, overridden by style variations. ";
+      "These are the "; Underline "default"; " base styles. ";
+      "Style variations can override them, and the supplied variations demonstrate this. ";
     };
 
     design.SpacedParagraph {
       "Open the \"TechDesigns.nytril\" file. ";
-      "In this file you will find four classes that inheret the base TechDesign class. ";
-      "Each of these four classes override the default styles creating variations of the base style. ";
+      "In this file you will find four classes that inherit the base TechDesign class. ";
+      "Each of these four classes overrides the default styles creating variations of the base style. ";
       "You can modify these variations or create additional variations. ";
       "If you add another variation, be sure to include it in the array at the top of the file so it will be added to the toolbar control. ";
     };
 
     design.SpacedParagraph {
-      "In summary, the base style methods are listed in the "; design.Emphasis { "TechDesign" } "; class. ";
+      "In summary, the base style methods are listed in the "; design.Emphasis { "TechDesign" }; " class. ";
       "The style variations are listed in the "; design.Emphasis {"TechDesigns" }; " file where certain base styles are overridden. ";
     };
   };
@@ -297,8 +297,8 @@ class TechDesignFiguresFeature: Content {
     };
 
     design.SpacedParagraph {
-      "This template utilizes Nytril's buit-in capability to auto number figures within a document. ";
-      "There are two figure types that can be tracked independently, tables and other types. ";
+      "This template utilizes Nytril's built-in capability to auto number figures within a document. ";
+      "Nytril maintains separate numbering sequences for tables and other figures. ";
     };
 
     design.SpacedParagraph {
@@ -325,10 +325,9 @@ class TechDesignFigureContent: Content {
     };
 
     design.SpacedParagraph {
-      "The simplest way to add a figure is to create a simple class that inherets the content object, and then overrides the GetCaption and GetLayout methods. ";
-      "The value in the constructor sets the Title, which is then passed into GetCaption and the design will be whatever content you want. ";
-      "The sample in "; design.FigureReference(TechDesignFigureContentFig); " would add a simple Box with text inside. ";
-      "Instantiate that class, as shown in "; design.FigureReference(TechDesignFigureContentInstFig); ", and you have the content object for the AddFigure method. ";
+      "The simplest way to add a figure is to create a class that inherits from Content and overrides GetCaption and GetLayout. ";
+      "In "; design.FigureReference(TechDesignFigureContentFig); ", the constructor sets Title, GetCaption returns Title as the caption, and GetLayout returns an HBox containing sample text. ";
+      "Instantiate the class as shown in "; design.FigureReference(TechDesignFigureContentInstFig); ", then pass that instance to AddFigure. ";
     };
 
     design.AddFigure(TechDesignFigureContentFig, Here);
@@ -417,19 +416,19 @@ class TechDesignQuickRefFeature: Content {
     };
 
     design.SpacedParagraph {
-      "The template uses "; design.SpanHighlight{"design.QuickRefItem"}; " that takes the display text and the unique anchor text as parameters. ";
-      "It will place an anchor link anywhere in the document. ";
+      "The "; design.SpanHighlight{"design.QuickRefItem"}; " method takes the link’s display text and the destination’s unique anchor name as parameters. ";
+      "It inserts a link to that destination. ";
     };
 
     design.SpacedParagraph {
-      "The style templat's quick reference table, the code for which is shown in "; design.FigureReference(TechDesignQuickRefFig); ", organizes the quick reference items into three columns under named headings. ";
+      "The style template's quick reference table, the code for which is shown in "; design.FigureReference(TechDesignQuickRefFig); ", organizes the quick reference items into three columns under named headings. ";
     };
 
     SampleQuickRef(design);
 
     design.TightParagraph {
       SpaceBefore: 20px;
-      "Text titles with anchor fields, could be anywhere in the document.";
+      "Text titles with anchor fields could be anywhere in the document.";
     };
 
     design.TightParagraph {
