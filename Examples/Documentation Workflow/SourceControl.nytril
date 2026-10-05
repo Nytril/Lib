@@ -182,7 +182,9 @@ class GitAuthenticationSection: Content {
   }
 
   override GetLayout(TechDesign design) = Block {
+    PageBreak;
     design.Heading2 {
+      SpaceBefore: 0;
       Title;
     };
 

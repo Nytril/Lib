@@ -186,6 +186,7 @@ class  PublishingRemoteSection: Content {
     Paragraph;
 
     design.SpacedParagraph {
+      KeepTogether: true;
       "When these conditions are satisfied, the Publish dialog displays the option to publish online, as shown in " onlineOptionsRef ".";
     };
 

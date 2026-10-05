@@ -13,6 +13,8 @@ class RepoAndSourceControl: AuthoredContent {
     AddContent(RepoAndSourceAbout);
     AddContent(RepoAndSourceOpen);
     AddContent(RepoAndSourceCreate);
+    AddContent(RepoAndSourceNewProj);
+    AddContent(RepoAndSourceOpenProj);
     AddContent(RepoAndSourceSelected);
     AddContent(RepoResources);
   }
@@ -116,8 +118,7 @@ class RepoAndSourceCreateSection: Content {
       "A repository cannot be created without a project. The First Project list determines whether Nytril creates a new project or opens an existing project.";
     };
 
-    design.AddFigure(RepoLangFig, Here, ExtentWidth, null, false);
-    design.FigureCaption(RepoLangFig);
+    design.AddFigure(RepoLangFig, Here);
 
     design.SpacedParagraph {
       "Repository creation can initialize ";
@@ -145,9 +146,21 @@ class RepoAndSourceCreateSection: Content {
 
     design.AddFigure(RepoFirstProjectFig, Here, ExtentWidth, null, false);
     design.FigureCaption(RepoFirstProjectFig);
+  };
+}
+//=========================================================================
 
+readonly RepoAndSourceNewProjSection RepoAndSourceNewProj = new;
+class RepoAndSourceNewProjSection: Content {
+  Constructor() {
+    super.Constructor("Create a New Project");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    PageBreak;
     design.Heading3 {
-      "Create a New Project";
+      SpaceBefore: 0;
+      Title;
     };
 
     design.SpacedParagraph {
@@ -157,9 +170,19 @@ class RepoAndSourceCreateSection: Content {
       "Nytril creates the repository and the project within it, then generates any required configuration files in the repository root. ";
       "Nytril adds the include statements needed to reference any generated configuration files.";
     };
+  };
+}
+//=========================================================================
 
+readonly RepoAndSourceOpenProjSection RepoAndSourceOpenProj = new;
+class RepoAndSourceOpenProjSection: Content {
+  Constructor() {
+    super.Constructor("Open an Existing Project");
+  }
+
+  override GetLayout(TechDesign design) = Block {
     design.Heading3 {
-      "Open an Existing Project";
+      Title;
     };
 
     design.SpacedParagraph {

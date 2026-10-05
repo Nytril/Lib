@@ -321,6 +321,7 @@ class TransReviewFileSection: Content {
     };
 
     design.SpacedParagraph {
+      KeepTogether: true;
       "The generated comment warns that translation rewrites this file. ";
       "Add new variables and source text to the primary language file, not the translated file. ";
       "Existing translations can and should be corrected during review. ";
@@ -388,7 +389,7 @@ class TransReviewDocSection: Content {
       "Once the language has been validated, the reviewer simply removes the revu keyword and the colors return to normal, identifying that string as complete. ";
     };
 
-    design.SpacedParagraph {
+    design.TightParagraph {
       "If the language reviewer is external and unable to review the file in place, the file can be sent to the reviewer and then replaced by the revised version. ";
       "In that case, using the revu keyword is still a good idea as a developer will need to confirm that the new strings format correctly in the document layout. ";
     };
@@ -405,6 +406,7 @@ class TransPublishSection: Content {
 
   override GetLayout(TechDesign design) = Block {
     design.Heading4 {
+      SpaceBefore: 15;
       Title;
     };
 

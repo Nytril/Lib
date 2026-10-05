@@ -1,4 +1,55 @@
-using Format;
+using Format, Net, Units, DB;
+
+// ============================================================================
+// Sample code for the figures below. These methods are intentionally not called.
+// If these samples move, update the SourceSelectionLines ranges in the figures.
+// ============================================================================
+
+importlib Extra "obj/Release/net9.0/ExtraLib";
+
+DataSourceExcelSample = {
+  var dataFile = res "Address List.xlsx";
+  var connection = new DB.ExcelDb(dataFile);
+  foreach (var person in connection.RunQuery("SELECT * FROM [Sheet1$];")) {
+    if (person.FindField("Name").Value is valid)
+      Paragraph { person.FindField("Name").Value; };
+  }
+};
+
+DataSourceApiSample = {
+  var request = new HttpGet("https://finnhub.io/api/v1/news");
+  if (request.AddCredential("Finnhub", "X-Finnhub-Token")) {
+    request.QueryParameter("category", "general");
+    request.CacheTimeSpan(5 minutes);
+    var reply = request.Send;
+    if (reply is valid && reply.IsSuccessStatusCode) {
+      foreach (var story in reply.ContentJSON)
+        Paragraph { story.headline; };
+    }
+  }
+};
+
+DataSourceImageSample(string imageUrl) = {
+  var request = new HttpGet(imageUrl);
+  var reply = request.Send;
+  if (reply is valid && reply.IsSuccessStatusCode) {
+    var picture = new Image(reply.ContentBlob);
+    FitBox(picture, 50%, 2");
+  }
+};
+
+DataSourceLibrarySample = {
+  var primes = Extra.UtilityClass.GetPrimeNumbers(100);
+  Paragraph {
+    Separator: CommaSpace;
+    primes;
+  };
+};
+
+// ============================================================================
+// End sample code
+// ============================================================================
+
 
 include "DbConfig";
 
@@ -14,6 +65,9 @@ class DataSourceConcept: AuthoredContent {
     AddContent(DataSourcePurpose);
     AddContent(DataSourceConnecting);
     AddContent(DataSourceQuery);
+    AddContent(DataSourceExcel);
+    AddContent(DataSourceApi);
+    AddContent(DataSourceLibrary);
   }
 }
 // ============================================================================
@@ -31,8 +85,8 @@ class  DataSourcePurposeSection: Content {
 
     design.SpacedParagraph {
       "This document describes the process of connecting data sources to the Nytril IDE for use in a project. ";
-      "Nytril can be connected to external data sources such as databases and can make external calls, such as calling an API method. ";
-      "Nytril also has the ability to receive output from externally written code, such as a C# program. ";
+      "Nytril can be connected to external data sources such as databases and Excel files and can make external calls, such as calling an API method. ";
+      "Nytril also has the ability to use results from an imported C# library. ";
       "This document describes the basic process of using these features. ";
     };
   };
@@ -156,7 +210,9 @@ class DataSourceQuerySection: Content {
   }
 
   override GetLayout(TechDesign design) = Block {
+    PageBreak;
     design.Heading4 {
+      SpaceBefore: 0;
       Title;
     };
 
@@ -171,3 +227,138 @@ class DataSourceQuerySection: Content {
   };
 }
 // ============================================================================
+
+readonly DataSourceExcelSection DataSourceExcel = new;
+class DataSourceExcelSection: Content {
+  Constructor() {
+    super.Constructor("Connecting to an Excel File");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading4 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "Use DB.ExcelDb to read an Excel workbook through the same DB library used for database connections. The example references Address List.xlsx as a project resource and queries the Sheet1 worksheet.";
+    };
+
+    design.AddFigure(DataSourceExcelFig, Here);
+
+    design.SpacedParagraph {
+      "The query uses [Sheet1$] as the worksheet name. RunQuery returns DbRows, and the example reads the Name field from each row. Replace the workbook, worksheet, and field names with those used by your data.";
+    };
+  };
+}
+// ============================================================================
+
+readonly DataSourceApiSection DataSourceApi = new;
+class DataSourceApiSection: Content {
+  Constructor() {
+    super.Constructor("Calling an API and Retrieving External Resources");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading4 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "The Net namespace provides HttpGet, HttpPost, HttpPut, and HttpDelete request classes. HttpRequest is the base request class, and HttpResponse represents a response. This example uses HttpGet to request JSON data from a news API.";
+    };
+
+    design.SpacedParagraph {
+      "For this example, store the API token as the password in a User Credentials entry named Finnhub. AddCredential uses that named credential for the X-Finnhub-Token request header. The credential name and header depend on the service being called.";
+    };
+
+    design.AddFigure(DataSourceApiFig, Here);
+
+    design.SpacedParagraph {
+      "QueryParameter adds the category parameter, and CacheTimeSpan sets a five-minute cache duration. Send sends the request. After checking that a response is available and IsSuccessStatusCode is true, the example reads ContentJSON and uses each story headline in a paragraph.";
+    };
+
+    design.SpacedParagraph {
+      "An HTTP request can also retrieve an external resource such as an image. In the following example, imageUrl is the URL of the image to retrieve. ContentBlob supplies the response data to Image.";
+    };
+
+    design.AddFigure(DataSourceImageFig, Here);
+  };
+}
+// ============================================================================
+
+readonly DataSourceLibrarySection DataSourceLibrary = new;
+class DataSourceLibrarySection: Content {
+  Constructor() {
+    super.Constructor("Using a C# Library");
+  }
+
+  override GetLayout(TechDesign design) = Block {
+    design.Heading4 {
+      Title;
+    };
+
+    design.SpacedParagraph {
+      "Developers can use a custom C# library for processing and bring the results into Nytril document content. The importlib declaration identifies the compiled library and gives it a name used to access its classes and methods.";
+    };
+
+    design.AddFigure(DataSourceLibraryFig, Here);
+
+    design.SpacedParagraph {
+      "In this example, Extra is the imported library name. The call to Extra.UtilityClass.GetPrimeNumbers returns values that Nytril displays in a paragraph. Replace the library path, class, and method with those of your compiled library. The library must be available at the specified path.";
+    };
+  };
+}
+// ============================================================================
+
+readonly DataSourceExcelFigFigure DataSourceExcelFig = new;
+class DataSourceExcelFigFigure: Content {
+  Constructor() {
+    super.Constructor("Reading an Excel Worksheet");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(null, 10, 17);
+  };
+}
+
+readonly DataSourceApiFigFigure DataSourceApiFig = new;
+class DataSourceApiFigFigure: Content {
+  Constructor() {
+    super.Constructor("Requesting JSON from an API");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(null, 19, 30);
+  };
+}
+
+readonly DataSourceImageFigFigure DataSourceImageFig = new;
+class DataSourceImageFigFigure: Content {
+  Constructor() {
+    super.Constructor("Retrieving an External Image");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(null, 32, 39);
+  };
+}
+
+readonly DataSourceLibraryFigFigure DataSourceLibraryFig = new;
+class DataSourceLibraryFigFigure: Content {
+  Constructor() {
+    super.Constructor("Importing and Using a C# Library");
+  }
+
+  override GetCaption(TechDesign design) = Title;
+
+  override GetLayout(TechDesign design) = design.CodeParagraph {
+    SourceSelectionLines(null, 7, 8);
+    SourceSelectionLines(null, 41, 47);
+  };
+}

@@ -220,6 +220,7 @@ class OutputStrategy: StepStyler {
     };
 
     design.TightParagraph {
+      KeepTogether: true;
       "Nytril's built-in output methods include publishing and exporting, two concepts explained in more detail in the Publishing concept. ";
       "Of course, you can write your own methods to output content. ";
     };
@@ -420,9 +421,12 @@ class Localization: StepStyler {
     };
   };
 
-  override GetDescription(TechDesign design) = design.CalloutFrame {
-    design.CalloutParagraph {
-      "If your project is missing the Lang file, refer to the Configurations concept to learn more about setting up configurations manually.";
+  override GetDescription(TechDesign design) = Block {
+    LineBreak;
+    design.CalloutFrame {
+      design.CalloutParagraph {
+        "If your project is missing the Lang file, refer to the Configurations concept to learn more about setting up configurations manually.";
+      };
     };
   };
 }
@@ -547,6 +551,7 @@ class Translations: StepStyler {
       "Refer to the Translations concept for more detailed information on translating text. ";
     };
 
+    LineBreak;
     design.TightParagraph {
       "In Summary, the process involves: ";
     };

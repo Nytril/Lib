@@ -1,6 +1,6 @@
 using Format;
 
-readonly PublishDesignDefault  = AllDesigns.FindElementIndex(TechDesignVar4);
+readonly PublishDesignDefault  = AllDesigns.FindElementIndex(TechDesignVar1);
 readonly PublishPaletteDefault = AllPalettes.FindElementIndex(DesignPalettes.Office_20072010);
 
 //=============================================================================
