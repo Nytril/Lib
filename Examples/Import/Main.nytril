@@ -1,6 +1,6 @@
 using Format;
 
-importlib Extra "obj/Release/net9.0/ExtraLib";
+importlib Extra "ExtraLib";
 
 readonly Main.Documents = new DocumentTest;
 

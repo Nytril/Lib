@@ -5,7 +5,7 @@ using Format, Net, Units, DB;
 // If these samples move, update the SourceSelectionLines ranges in the figures.
 // ============================================================================
 
-importlib Extra "obj/Release/net9.0/ExtraLib";
+importlib Extra "../Import/ExtraLib";
 
 DataSourceExcelSample = {
   var dataFile = res "Address List.xlsx";
