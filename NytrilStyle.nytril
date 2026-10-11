@@ -29,12 +29,12 @@ readonly namespace NytrilPalette {
                  SectionBack    = Logo1.Scale(70%),
                  TableTitleBack = Logo1,
                  TableTitleFore = Colors.White,
-                 SourceBack     = Color.GrayScale(97%),
+                 SourceBack     = Color.GrayScale(System.EditDarkMode ? 5% : 97%);
                  ListOdd        = Color.GrayScale(96%),
                  IconLine       = #DCC7AA#;
   RadialGradient IconBack       = SphericalFill(Logo1),
                  IconFore       = LightFill(Logo1);
-  
+
   RadialGradient TitlePageBack = new(0.5, 0.5, 0.5, 0.5, 1.2, 1.2, [
     new(0.2, Logo1),
     new(1, Logo1.Scale(2))
