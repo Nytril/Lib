@@ -163,7 +163,7 @@ class MeasuresImplementationSection: Content {
     design.SpacedParagraph {
       "To use this process, call Measure.Length and pass in the value as shown in Figure 2. ";
       "The result of Figure 2 depends on the current configuration. ";
-      "For the current build of this document, which is " System.Configuration.UnitSystem ", the result is: "; SampleUse { Italic } ".";
+      "For the current build of this document, which is " System.GetConfiguration.UnitSystem ", the result is: "; SampleUse { Italic } ".";
     };
 
     design.AddFigure(MeasuresUseFig, Here);

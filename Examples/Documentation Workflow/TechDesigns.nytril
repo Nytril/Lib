@@ -91,7 +91,7 @@ class TechDesign2: TechDesign {
   override Heading2 = Paragraph {
     TextHeight: 16pt;
     TextWeight: TextWeights.Medium;
-    TextColor: Palette.Darken(Palette.Accent1, 50);
+    TextColor: DesignPalette.Darken(Palette.Accent1, 50);
     Bold;
   };
 
@@ -146,7 +146,7 @@ class TechDesign3: TechDesign {
   override Heading1 = Paragraph {
     TextHeight: 18pt;
     SpaceBefore: 36;
-    TextColor: Palette.Darken(Palette.Accent1, 50);
+    TextColor: DesignPalette.Darken(Palette.Accent1, 50);
     TextCase: AllUpper;
     Bold;
     ParAlignment: Center;
@@ -173,7 +173,7 @@ class TechDesign3: TechDesign {
   override NumberedHeadingBadge = HBox(null, null, new Border(new Edge(1, 10, Palette.Dark2), new(0, 1), new(0, 10), new(1, 1, Palette.Dark2))) {
     HAlign:       Center;
     TextFamily:   TextFamilies.Calibri;
-    Background:   Palette.Darken(Palette.Accent1, 50);
+    Background:   DesignPalette.Darken(Palette.Accent1, 50);
     TextColor:    Palette.Light1;
     TextHeight:   13pt;
     BorderRadius: 4;
@@ -205,7 +205,7 @@ class TechDesign4: TechDesign {
   override Heading1 = Paragraph {
     TextHeight: 18pt;
     SpaceBefore: 36;
-    TextColor: Palette.Darken(Palette.Accent1, 50);
+    TextColor: DesignPalette.Darken(Palette.Accent1, 50);
     TextCase: AllUpper;
     Bold;
     ParAlignment: Left;
@@ -232,7 +232,7 @@ class TechDesign4: TechDesign {
   override NumberedHeadingBadge = HBox(null, null, new Border(new Edge(1, 10, Palette.Dark2), new(0, 1), new(0, 10), new(1, 1, Palette.Dark2))) {
     HAlign:       Center;
     TextFamily:   TextFamilies.Calibri;
-    Background:   Palette.Darken(Palette.Accent1, 50);
+    Background:   DesignPalette.Darken(Palette.Accent1, 50);
     TextColor:    Palette.Light1;
     TextHeight:   13pt;
     BorderRadius: 4;

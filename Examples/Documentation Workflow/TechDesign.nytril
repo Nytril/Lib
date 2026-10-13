@@ -175,7 +175,7 @@ class TechDesign {
 
   virtual CalloutFrame                = Frame(ExtentWidth - SectionIndentation, null, BorderAll(new(1, 4, Palette.Accent4))) {
     Margin: new Thickness(0, 12, 0, 5);
-    Background: Palette.Lighten(Palette.Light2, 80);
+    Background: DesignPalette.Lighten(Palette.Light2, 80);
     BorderRadius: 3;
   };
 
@@ -196,7 +196,7 @@ class TechDesign {
   };
 
   virtual FooterBlock                 = MarginBlock       (0.25");
-  virtual FooterParagraph             = Paragraph         { ParAlignment: Center; TextHeight: 12px; TextColor: Palette.Lighten(Palette.Dark1, 75); };
+  virtual FooterParagraph             = Paragraph         { ParAlignment: Center; TextHeight: 12px; TextColor: DesignPalette.Lighten(Palette.Dark1, 75); };
   virtual HeaderBlock                 = MarginBlock       (0.25");
   virtual Heading1                    = Paragraph         { Bold; TextHeight: 18pt; SpaceBefore: 36; };
   virtual Heading2                    = Paragraph         { Bold; TextHeight: 16pt;                  };
@@ -221,7 +221,7 @@ class TechDesign {
 
   virtual NumberedHeadingBadge = HBox(null, null, new Border(new Edge(1, 10, Palette.Dark2), new(0, 1), new(0, 10), new(1, 1, Palette.Dark2))) {
     HAlign:       Center;
-    Background:   Palette.Lighten(Palette.Light2, 80);
+    Background:   DesignPalette.Lighten(Palette.Light2, 80);
     TextColor:    Palette.Dark2;
     TextHeight:   13pt;
     BorderRadius: 4;
