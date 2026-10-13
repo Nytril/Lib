@@ -26,11 +26,15 @@ enum MatterStates {
   Unknown("Unknown", "u"),
 }
 
+//==================================================================================================
+
 enum ElementOrigins {
   Primordial("Primordial"),
   FromDecay("From decay"),
   Synthetic("Synthetic"),
 }
+
+//==================================================================================================
 
 enum ElementBlocks {
   override GetLayoutNode = HBox(null, null, new Edge(0.5, 2)) {
@@ -45,6 +49,8 @@ enum ElementBlocks {
   Pblock("P-block"),
   Fblock("F-block"),
 }
+
+//==================================================================================================
 
 enum MatterTypes {
   var Color BackColor;
@@ -200,10 +206,13 @@ class AtomicElement: Fact {
     }
   };
 
-  override GetLayoutSpan = Span {
+  Show(bool hint) = Span {
     Symbol;
-    Tip: this;
+    if (hint)
+      Tip: this;
   };
+
+  override GetLayoutSpan = Show(true);
 
   override GetLayoutNode = HBox(40, 40, new Edge(0.5, 2, 85%)) {
     Background: new RadialGradient(0.5, 0.5, 0.5, 0.5, 0.5, 0.5,
@@ -516,7 +525,7 @@ class ElementNumber {
   }
 
   Show(bool hint) = Span {
-    hint ? Element : Element.Symbol;
+    Element.Show(hint);
     if (Number > 1) {
       Span {
         TextAlignment: Subscript;
@@ -529,7 +538,7 @@ class ElementNumber {
 
   override GetLayoutSpan = Show(true);
 
-  override GetLayoutTip = Show(true);
+  override GetLayoutTip = Element.GetLayoutTip;
 }
 
 //==================================================================================================
@@ -569,11 +578,13 @@ class Compound: Fact {
 
   Formula = Span {
     TextEquation: true;
-    Components;
+    (each Components).Show(true);
   };
 
   Show(MatterStates state, bool hint) = Span {
-    (each Components).Show(hint);
+    if (hint)
+      Tip: this;
+    (each Components).Show(false);
     if (state == MatterStates.None)
       state = State;
     if (state != MatterStates.None) {
@@ -586,19 +597,29 @@ class Compound: Fact {
     }
   };
 
-  override GetLayoutSpan = Show(None, false);
-
   FullName = Span {
     Name;
     if (CommonName is valid)
       " - \"{0}\""(CommonName);
   };
 
+  override GetLayoutSpan = Span {
+    FullName;
+    Tip: this;
+  };
+
+  override GetLayoutFact = GetLayoutBlock;
+
   override GetLayoutTip = Block {
+    TextHeight: 20pt;
     Paragraph {
-      TextHeight: 110%;
       Bold;
       FullName;
+      if (State != None) Span {
+        TextColor: 60%;
+        " - ";
+        State;
+      };
     };
     Formula;
   };
@@ -607,25 +628,9 @@ class Compound: Fact {
     Background: #D0EED0#;
     BorderRadius: 5;
     HAlign: Center;
-    Span {
-      TextColor: 40%;
-      CommonName ?? Name;
-    };
     Formula;
     Tip: this;
   };
-
-  override GetLayoutBlock = Block {
-    Paragraph {
-      FullName;
-    };
-    Paragraph {
-      LeftIndent: 8pt;
-      Formula;
-    }
-  };
-
-  override GetLayoutFact = GetLayoutBlock;
 }
 
 //==================================================================================================
@@ -653,26 +658,34 @@ class CompoundNumber {
     return new(e.GetCompound(1), 1, e.State);
   }
 
-  override GetLayoutSpan = Span {
+  Show(bool hint) = Span {
+    if (hint)
+      Tip: this;
     if (Number > 1) {
       Number;
       Tex.hairspace;
     }
-    Span {
-      Compound.Show(State, false);
-      Tip: this;
-    };
+    Compound.Show(State, true);
   };
 
+  override GetLayoutSpan = Show(true);
+
   override GetLayoutTip = Block {
-    TextHeight: 16pt;
+    TextHeight: 24pt;
     Paragraph {
       TextHeight: 110%;
-      Bold;
-      Compound.FullName;
-      " ({0})"(State);
+      TextColor: Colors.Red;
+      Span {
+        Bold;
+        Compound.FullName;
+      };
+      if (State != None) Span {
+        TextColor: 60%;
+        " - ";
+        State;
+      };
     };
-    Compound.Formula;
+    Compound.Show(None, false);
   };
 }
 
@@ -745,7 +758,7 @@ class ChemicalReaction: Fact {
     TextEquation: true;
     Span {
       Separator: Tex.Plus;
-      Left;
+      (each Left).Show(true);
     };
     var icon = ReactionType == ReactionTypes.Bidirectional ? Tex.rightleftarrows : Tex.rightarrow;
     Span {
@@ -754,7 +767,7 @@ class ChemicalReaction: Fact {
     };
     Span {
       Separator: Tex.Plus;
-      Right;
+      (each Right).Show(true);
     };
   };
 
