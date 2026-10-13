@@ -94,7 +94,7 @@ class InternationalDocument: DocumentEntry {
       12345.01;
     };
 
-    var config = System.Configuration;
+    var config = System.GetConfiguration;
 
     AddConfig(Lang.Language, config.Language);
     AddConfig(Lang.Units, config.UnitSystem);

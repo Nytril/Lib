@@ -106,7 +106,7 @@ class Taxon: Fact {
       TextColor: Colors.White;
       ParAlignment: Center;
       TextHeight: 16pt;
-      if (Rank != Rank.Life) {
+      if (Rank != Life) {
         Rank;
         Space;
       }

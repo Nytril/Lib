@@ -279,13 +279,13 @@ class TimelineEvent {
 class TimelineClass: Content {
   var Person Person;
 
-  Constructor(ContentStyle style, Person person) {
-    super.Constructor("Life events of " + style.GetFullName(person), person.FactId);
+  Constructor(Person person) {
+    super.Constructor("Life events of " + ContentStyle.GetFullName(person), person.FactId);
     Person = person;
   }
 
   override GetCaption(ContentStyle style) = Span {
-    "Events in the life of " + style.GetFullName(Person);
+    "Events in the life of " + ContentStyle.GetFullName(Person);
     DotSpace;
   };
 
@@ -354,11 +354,11 @@ class PersonEvents: Content {
   }
 
   override GetBody(ContentStyle style) = Block {
-    var table = new TimelineClass(style, Person);
+    var table = new TimelineClass(Person);
     style.Par {
       style.TableReference(table);
       " shows a list of the major events in the life of ";
-      style.GetFullName(Person); DotSpace;
+      ContentStyle.GetFullName(Person); DotSpace;
     };
     style.AddTable(table, FigureOptions.Here);
 
