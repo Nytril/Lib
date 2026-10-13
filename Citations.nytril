@@ -491,11 +491,6 @@ class ContentStyle: ReferenceStyle {
   const string EtAl          = "et al.";
   const char[] ParenBrackets = ['(', ')'];
 
-  static readonly SQuote       = Span {Begin: "‘"; End: "’"};
-  static readonly SQuoteEnd    = Span {Begin: "‘"; End: ".’ "};
-  static readonly SQuoteComma  = Span {Begin: "‘"; End: ",’ "};
-  static readonly DQuote       = Span {Begin: "“"; End: "”"};
-  static readonly DQuoteEnd    = Span {Begin: "“"; End: ".” "};
   static readonly FigureFolder = IO.Folder("Figures");
 
   static readonly AuthorLinks = [
@@ -586,6 +581,12 @@ class ContentStyle: ReferenceStyle {
     TexOptions       = new(8);
     ReviewMode       = ReviewModes.Revised;
   }
+
+  readonly SQuote       = Span {Begin: "‘"; End: "’"};
+  readonly SQuoteEnd    = Span {Begin: "‘"; End: ".’ "};
+  readonly SQuoteComma  = Span {Begin: "‘"; End: ",’ "};
+  readonly DQuote       = Span {Begin: "“"; End: "”"};
+  readonly DQuoteEnd    = Span {Begin: "“"; End: ".” "};
 
   virtual SetTextStyle = {
     TextFamily: TextFamilies.LibertinusSerif;
