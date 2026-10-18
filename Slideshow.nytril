@@ -180,13 +180,13 @@ class TexDesign: ShowDesign {
 
 class FancyDesign: ShowDesign {
   var Fill HeaderLeftBar,
-                HeaderRightBar,
-                FooterLeftBar,
-                FooterRightBar,
-                FooterText,
-                FooterPage,
-                TitlePageFore,
-                HeaderText;
+           HeaderRightBar,
+           FooterLeftBar,
+           FooterRightBar,
+           FooterText,
+           FooterPage,
+           TitlePageFore,
+           HeaderText;
 
   Constructor {
     super.Constructor;
