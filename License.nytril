@@ -119,7 +119,7 @@ class DisclaimersDocument: LegalDocument {
     };
 
     Paragraph {
-      "The Material Icon Font is licensed under the Apache License, Version 2.0 (the \"Apache License\"); ";
+      "The Material Symbol Font is licensed under the Apache License, Version 2.0 (the \"Apache License\"); ";
       "you may not use this file except in compliance with the Apache License. ";
       "This license is available at: ";
     };

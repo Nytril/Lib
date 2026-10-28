@@ -377,7 +377,7 @@ class LessonExample: Fact {
 
     var margin = 10pt;
     var m2     = margin*2;
-    var w      = size.Width - m2;
+    var w      = (size.Width - m2) * 0.95;
     var h      = size.Height - m2;
     var lh     = size.Height * 10%;
     var th     = Math.Min(w, h) * 4%;
@@ -391,7 +391,7 @@ class LessonExample: Fact {
     var l2 = GetLayoutSize(CodeFrame(th), 10000);
 
     if (l1.Height > h or l2.Width > w)
-      th *= Math.Min(w * 0.95 / l2.Width, h * 0.9 / l1.Height);
+      th *= Math.Min(w / l2.Width, h * 0.9 / l1.Height);
     GetContent(size, options, margin, th);
   };
 }

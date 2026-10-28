@@ -58,9 +58,9 @@ readonly LessonExample Content.NytrilLanguageEx = new(#50ae4409-38b0-4177-9679-9
     SubHeader {"Portability"};
     BlockBody {
       "Nytril is portable across operating systems and CPU architectures. ";
-      "Currently Nytril runs on computers running Windows 10-11 and MacOS 13 and later (x64 and M-series). ";
-      "The compiler, runtime library and math functions are identical on all platforms. ";
-      "Typesetting layout may differ marginally on different platforms due to the use of different underlying graphics frameworks. ";
+      "Currently Nytril runs on computers running Windows 10-11, MacOS 13 and later (x64 and M-series), and Linux (amd64 and arm64). ";
+      "The compiler, runtime library, layout, and fonts are identical on all platforms. ";
+      "Typesetting may differ imperceptably on different platforms due to the use of different underlying graphics frameworks. ";
     };
 
     SubHeader {"The compiler"};

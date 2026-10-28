@@ -94,10 +94,11 @@ readonly namespace NytrilStyle {
   Function(Attribute prop, text) = Span {
     text;
     Space;
-    "using the ";
+    "with the ";
 
     Span {
       TipAction: new Action(Actions.ToDocument, prop);
+      TextColor: #74531F#;
       prop.Name;
     };
 

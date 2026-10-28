@@ -8,13 +8,13 @@ CheckMark(height, fill=Colors.Black, line=null, ratio=1.2) = Canvas(height * rat
   Baseline: 85%;
 
   Shape(fill, line) {
-    ClosedPath(1%, 50%) {
-      QuadTo(new(9%, 44%), new(20%, 43%));
-      QuadTo(new(31%, 52%), new(36%, 69%));
+    ClosedPath(1%, 55%) {
+      QuadTo(new(9%, 49%), new(20%, 48%));
+      QuadTo(new(31%, 55%), new(36%, 69%));
       QuadTo(new(60%, 28%), new(99%, 5%));
       QuadTo(new(55%, 39%), new(36%, 96%));
       QuadTo(new(34.5%, 100%), new(33%, 96%));
-      QuadTo(new(21%, 60%), new(1%, 50%));
+      QuadTo(new(21%, 62%), new(1%, 55%));
     };
   };
 };

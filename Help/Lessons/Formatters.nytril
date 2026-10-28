@@ -97,8 +97,7 @@ namespace Examples {
     Title = "Justified Paragraph";
     Value = Paragraph {
       ParAlignment: Justify;
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ";
-      "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ";
+      LoremIpsum(50);
     };
   }
 
@@ -170,7 +169,8 @@ namespace Examples {
   namespace FormattedTable {
     Title = "Table";
     Value = Table(0.5, PadLR(3), [1", 1.5"]){
-      Row {"Make"; "Model"; Background: Colors.Blue; TextColor: Colors.White};
+      Row {Cell(1, 2) {HAlign: Center; Background: Colors.Blue; TextColor: Colors.White; "Muscle Cars"}};
+      Row {"Make"; "Model"; Background: Colors.Gray; TextColor: Colors.White};
       Row {"Chevy"; "Camaro"};
       Row {"Ford"; "Mustang"};
       Row {"Dodge"; "Viper"};

@@ -3,218 +3,270 @@ using Format;
 
 namespace Chapters.Formatting.Sections.Fills;
 
-readonly TutorialLesson Lesson = new(#292ffb8f-5144-4624-9067-094b815327e9#, "Colors and Fills");
+readonly TutorialLesson Lesson = new(#292ffb8f-5144-4624-9067-094b815327e9#, "Colors and Fills", "Fills", "fil", "https://youtu.be/f8MxWW2yUjk") {
+  Description: Span {
+    "Nytril gives you full control over colors and fill patterns with lines, shapes and text. ";
+    "Use a color palette and different fill gradients to make colorful and informative documents. ";
+  };
+};
+
+BoxSize = LessonExample.FontHeight * 1.3;
 
 //======================================================================
 
-class ColorTipClass: Tip {
-  var Attribute  Prop;
+Headline = Paragraph {
+  TextHeight: 200%;
+  TextFamily: TextFamilies.TimesNewRoman;
+  TextColor: Colors.Green;
+  Icons.rocket;
+  Bold; " Aliens Finally Land!";
+};
 
-  Constructor(Attribute prop) {
-    super.Constructor(prop);
+readonly LessonExample Content.ColorNamespaceEx = new(#255700d1-3292-4644-b77f-7abad6ed238a#, "Colors namespace") {
+  Text: "The {0} contains a variety of commonly used solid colors for lines and text. "(NytrilStyle.NameSpace(attribute Colors));
+  Code: [attribute Headline];
+  Sel: new(3, 13, 10);
+};
+
+//======================================================================
+
+ShowColors = Paragraph {
+  foreach (var c in Colors) {
+    Canvas(BoxSize, BoxSize) {
+      Background: c;
+      Tip: c;
+    };
   }
-
-  override GetLayoutTip = Block {
-    Prop.Name;
-    Prop.Value;
-  };
-}
-
-
-ShowFill(Attribute prop) = Canvas(20, 20) {
-  Background: prop.Value;
-  Tip: new ColorTipClass(prop);
 };
 
-ColorsSpace = Span {
-  ShowFill(each attribute(Colors).Children);
-};
-
-readonly LessonExample Content.ShowColorsEx = new(#255700d1-3292-4644-b77f-7abad6ed238a#) {
-  Text: "The {0} contains a variety of commonly used colors."(NytrilStyle.NameSpace(attribute Colors));
-  Code: [attribute ShowFill, attribute ColorsSpace];
+readonly LessonExample Content.ShowColorsEx = new(#6ad42033-12e8-4125-b45b-b373c71c3151#, "Colors Palette") {
+  Text: "Use a loop to build a palette with each color in the {0}."(NytrilStyle.NameSpace(attribute Colors));
+  Code: [attribute ShowColors];
+  Sel: new(1, 2, 25);
 };
 
 //======================================================================
 
-ShowColor(r, g, b, a) = HBox {
-  var color = new Color(r, g, b, a);
+ChartColors = HBox {
+  Separation: 8;
+  for (int i = 1; i < 20; ++i) {
+    HBox(BoxSize, BoxSize) {
+      Background: Color.ChartColor(i);
+    }
+  }
+};
 
-  VAlign: Center;
-  Canvas(15, 15) {
-    Background: color;
+readonly LessonExample Content.ChartColorsEx = new(#991c48cf-c7ce-4efa-ba71-cace9ff3b506#, "Chart Colors") {
+  Text: NytrilStyle.Function(attribute Color.ChartColor, "For applications where contrasting colors are needed, get the bar colors used in charts");
+  Code: [attribute ChartColors];
+  Sel: new(4, 18, 16);
+  Options: NoShort;
+};
+
+//======================================================================
+
+ShowColor(Color color) = Span {
+  Canvas(BoxSize, BoxSize) {
+    Background: color; Baseline: 80%;
   };
-  Separation: 3;
-
-  Paragraph {
-    TextHeight: 14;
-    TextNumPadding: 2;
-    TextRadix: 16;
-    Separator: Space;
+  Space;
+  Span {
+    Separator: CommaSpace; TextRadix: 16; TextNumPadding: 2;
     color.R; color.G; color.B; color.A;
-    Space;
   };
 };
 
-ColorsConstructor = Span {
-  ShowColor(0, 0, 0, 20%);
-  ShowColor(0x3F, 50%, 255, 100%);
-  ShowColor(128, 128, 128, 100%);
+ColorConstructor = ShowColor(new Color(0x3F, 0x80, 0xFF, 0xFF));
+
+readonly LessonExample Content.ColorConstructorEx = new(#fa000424-82f4-46ba-8da0-a7d7aa086747#, "RGBA Values") {
+  Text: Span {"The "; NytrilStyle.Class(attribute Color); " constructor initializes a color with a specific RGBA value."};
+  Code: [attribute ShowColor, attribute ColorConstructor];
+  Sel: new(11, 29, 33);
+  Options: NoShort;
 };
 
-readonly LessonExample Content.ShowColorFunctionEx = new(#fa000424-82f4-46ba-8da0-a7d7aa086747#) {
-  Text: Span {"The "; NytrilStyle.Class(attribute Color); " represents a color with specific RGBA value."};
-  Code: [attribute ShowColor, attribute ColorsConstructor];
+//======================================================================
+
+ColorSource = Span {
+  ShowColor(#3F80FFFF#);
+};
+
+readonly LessonExample Content.ColorSourceEx = new(#89f536e2-f045-4518-9d66-d2414a70d204#, "Color Values in Source") {
+  Text: "The same color can be specified directly in source code using the #rrggbbaa# color notation. ";
+  Code: [attribute ColorSource];
+  Options: NoShort;
 };
 
 //======================================================================
 
 ShowHSLA = HBox {
   var color = Color.FromHSLA(170, 0.25, 0.5);
-  TextDigits: 2;
   Separation: 3;
   VAlign: Center;
-  Canvas(15, 15) {
+  Canvas(BoxSize, BoxSize) {
     Background: color;
   };
   Paragraph {
+    TextDigits: 2;
     Separator: Space * 3;
-    color.H; color.S; color.L;
+    color.H; color.S; color.L; color.A;
   };
 };
 
-readonly LessonExample Content.ShowHSLAColorEx = new(#93029ba0-323a-4446-8822-a0488fb9c210#) {
-  Text: NytrilStyle.Function(attribute Color.FromHSLA, "Colors can also be constructed from HSLA values");
+readonly LessonExample Content.ShowHSLAColorEx = new(#93029ba0-323a-4446-8822-a0488fb9c210#, "HSLA Values") {
+  Text: NytrilStyle.Function(attribute Color.FromHSLA, "Colors can also be constructed from hue-saturation-lightness-alpha values");
   Code: [attribute ShowHSLA];
+  Sel: new(1, 14, 14);
+  Options: NoShort;
 };
 
 //======================================================================
 
-readonly Heatmap = LinearGradient.FromColorArray([Colors.Blue, Colors.Cyan, Colors.Yellow, Colors.Red]);
+W = BoxSize * 2;
 
-ShowHeatmap = HBox(200, 20) {
-  Background: Heatmap;
-};
-
-readonly LessonExample Content.ShowHeatmapBoxEx = new(#2ece957b-204a-4811-91a5-9493ea2c863f#) {
-  Text: NytrilStyle.Function(attribute LinearGradient.FromColorArray, "An even color gradient can be formed");
-  Code: [attribute Heatmap, attribute ShowHeatmap];
-};
-
-//======================================================================
-
-ShowHeatmap2 = HBox {
-  for (double i = 0; i <= 1.0; i += 0.04) {
-    HBox(8, 20, BorderR(new(1, 0, 89%))) {
-      Background: Heatmap.InterpolateColor(i);
-    }
-  }
-};
-
-readonly LessonExample Content.Heatmap2Ex = new(#b6452b27-6f3c-444e-b7be-944eee672bbc#) {
-  Text: NytrilStyle.Function(attribute LinearGradient.InterpolateColor, "An interpolated color can be formed from a percentge");
-  Code: [attribute ShowHeatmap2];
-};
-
-//======================================================================
-
-Color HeatColor(int _, int _1, double value) {
-  return Heatmap.InterpolateColor(value);
-}
-
-GetMapImage {
-  int    size    = 200;
-  double xfactor = 2 * Math.PI2 / size;
-  double yfactor  = 0.5 / size;
-
-  var m = new Matrix<double>(size, size, 0);
-  for (int i = 0; i < size; ++i) {
-    for (int j = 0; j < size; ++j)
-      m[i, j] = 0.5 + yfactor * i * Math.Sin(j * xfactor);
-  }
-  return m.GetImage(@HeatColor, "Sinusoidal Heat Map")
-}
-
-readonly LessonExample Content.Heatmap3Ex = new(#b5aef55d-cac5-4ce5-b7cf-910904694f32#) {
-  Text: NytrilStyle.Function(attribute Matrix.GetImage, "A 2-dimensional color image can be created from values in a matrix");
-  Code: [attribute HeatColor, attribute GetMapImage];
-};
-
-//======================================================================
-
-ShowChartColors = HBox {
-  Separation: 8;
-  for (int i = 1; i < 20; ++i) {
-    HBox(8, 20) {
-      Background: Color.ChartColor(i);
-    }
-  }
-};
-
-readonly LessonExample Content.ChartColorsEx = new(#991c48cf-c7ce-4efa-ba71-cace9ff3b506#) {
-  Text: NytrilStyle.Function(attribute Color.ChartColor, "Get the bar colors used in charts");
-  Code: [attribute ShowChartColors];
-};
-
-//======================================================================
-
-ShowFigures(name, fill) = HBox {
-  VAlign: Center;
-  Separation: 10;
-
-  VBox(60) {
-    name;
+AlphaBlend = Canvas {
+  Span {"Text"; TextHeight: W*2; TextColor: #00004560#};
+  Canvas(W, W) {
+    X: W;
+    Y: W;
+    Background: #00640080#;
   };
+  Canvas(W, W) {
+    X: W * 0.5;
+    Y: W * 0.5;
+    Background: #64000060#;
+  };
+};
 
+readonly LessonExample Content.AlphaBlendEx = new(#0838b372-5f39-4f30-ae29-f3ee5c9d223f#, "Alpha Blends") {
+  Text: "Set the alpha value of a color to less than 1 to mix overlayed colors. ";
+  Code: [attribute AlphaBlend];
+  Tip: [LessonTip(4, 4, "Blended colors", 17 degrees, 8)];
+};
+
+//======================================================================
+
+sh = LessonExample.FontHeight;
+hm = sh * 2.5;
+
+ShowShapes(name, fill) = HBox {
+  VAlign: Center;  Separation: sh;  Margin: PadB(sh*0.5);
+  HBox(sh * 6) {TextHeight: sh; name};
+  Shape(fill) {EllipsePath(new(new(0), new(hm, hm)))};
+  Canvas(hm, hm) {Background: fill};
   Shape(fill) {
-    OpenPath(0) {
-      LineTo(25, 50);
-      LineTo(50, 20);
-      LineTo(75, 40);
-      LineTo(100, 0);
-    }
+    OpenPath(0) {LineTo(hm, hm); LineTo(hm*2, hm*0.5); LineTo(hm*3, hm); LineTo(hm*4, 0)};
   };
-
-  Canvas(50, 50) {
-    Background: fill;
-  };
-
-  Shape(fill) {
-    EllipsePath(new(new(0), new(70, 50)));
-  }
 };
 
-ColorStop[] ColorStops = [
-  new(10%, Colors.Orange),
-  new(25%, Colors.Blue),
-  new(50%, Colors.Red),
-  new(80%, Colors.Green),
+readonly ColorStop[] ColorStops = [
+  new(10%, Colors.Orange), new(25%, Colors.Blue), new(50%, Colors.Red), new(80%, Colors.Green)
 ];
 
 FillLinearGradient = Block {
-  ShowFigures("Vertical", new LinearGradient(0, 0, 0, 1, ColorStops));
-  ShowFigures("Horizontal", new LinearGradient(0, 0, 1, 0, ColorStops));
-  ShowFigures("Diagonal", new LinearGradient(0, 0, 1, 1, ColorStops));
+  ShowShapes("Linear", new LinearGradient(0, 0, 0, 1, ColorStops));
 };
 
-readonly LessonExample Content.ShowLinearGradientEx = new(#7bde1de2-c61f-40a9-8a19-c6be2f7c0406#) {
-  Text: Span {"Use "; NytrilStyle.Class(attribute LinearGradient); " to create a linear gradient brush."};
-  Code: [attribute ShowFigures, attribute FillLinearGradient];
+readonly LessonExample Content.ShowLinearGradientEx = new(#7bde1de2-c61f-40a9-8a19-c6be2f7c0406#, "Linear Gradient") {
+  Text: Span {"Use a "; NytrilStyle.Class(attribute LinearGradient); " to create a fill pattern that shifts smoothly from one color to the next."};
+  Code: [attribute ShowShapes, attribute FillLinearGradient];
+  Sel: new(15, 27, 14);
+};
+
+//======================================================================
+
+FillLinearGradients = Block {
+  ShowShapes("Vertical", new LinearGradient(0, 0, 0, 1, ColorStops));
+  ShowShapes("Horizontal", new LinearGradient(0, 0, 1, 0, ColorStops));
+  ShowShapes("Diagonal", new LinearGradient(0, 0, 1, 1, ColorStops));
+};
+
+readonly LessonExample Content.ShowLinearGradientsEx = new(#8fe2288b-36c0-42f6-918d-e1e5fe1f6413#, "Gradient Direction") {
+  Text: "Use the points in the constructor to define the direction of the gradient. ";
+  Code: [attribute FillLinearGradients];
+  Sel: new(1, 44, 10);
+  Options: NoShort;
 };
 
 //======================================================================
 
 FillRadialGradient = Block {
-  ShowFigures("Top Left", new RadialGradient(0, 0, 0, 0, 1, 1, ColorStops));
-  ShowFigures("Top Right", new RadialGradient(1, 0, 1, 0, 1, 1, ColorStops));
-  ShowFigures("Centered", new RadialGradient(0.5, 0.5, 0.5, 0.5, 1, 1, ColorStops));
-  ShowFigures("Bottom Left", new RadialGradient(0, 1, 0, 1, 1, 1, ColorStops));
-  ShowFigures("Bottom Right", new RadialGradient(1, 1, 1, 1, 1, 1, ColorStops));
+  ShowShapes("Radial", new RadialGradient(0, 0, 0, 0, 1, 1, ColorStops));
 };
 
-readonly LessonExample Content.ShowRadialGradientEx = new(#27edc2e0-9a98-4fcd-ba99-f0ebf26710f4#) {
-  Text: Span {"Use "; NytrilStyle.Class(attribute RadialGradient); " to create a radial gradient brush."};
+readonly LessonExample Content.ShowRadialGradientEx = new(#27edc2e0-9a98-4fcd-ba99-f0ebf26710f4#, "Radial Gradient") {
+  Text: Span {"Use "; NytrilStyle.Class(attribute RadialGradient); " to create a fill pattern that radiates from a central point. "};
   Code: [attribute FillRadialGradient];
+  Sel: new(1, 27, 14);
+};
+
+//======================================================================
+
+FillRadialGradients = Block {
+  ShowShapes("Top Left", new RadialGradient(0, 0, 0, 0, 1, 1, ColorStops));
+  ShowShapes("Top Right", new RadialGradient(1, 0, 1, 0, 1, 1, ColorStops));
+  ShowShapes("Centered", new RadialGradient(0.5, 0.5, 0.5, 0.5, 1, 1, ColorStops));
+  ShowShapes("Bottom Left", new RadialGradient(0, 1, 0, 1, 1, 1, ColorStops));
+  ShowShapes("Bottom Right", new RadialGradient(1, 1, 1, 1, 1, 1, ColorStops));
+};
+
+readonly LessonExample Content.ShowRadialGradientsEx = new(#dde2c6b4-5f51-4dea-859a-58451f9a97ca#, "Radial Gradient") {
+  Text: "Use the points in the constructor to define the center, focus and radius of the gradient. ";
+  Code: [attribute FillRadialGradients];
+  Sel: new(1, 44, 16);
+  Options: NoShort;
+};
+
+//======================================================================
+
+readonly Heat = LinearGradient.FromColorArray([Colors.Blue, Colors.Cyan, Colors.Yellow, Colors.Red]);
+
+ShowHeatmap = HBox(BoxSize*20, BoxSize) {
+  Background: Heat;
+};
+
+readonly LessonExample Content.ShowHeatmapBoxEx = new(#2ece957b-204a-4811-91a5-9493ea2c863f#, "Heat Gradient") {
+  Text: NytrilStyle.Function(attribute LinearGradient.FromColorArray, "An even color spectrum can be formed from an array of colors");
+  Code: [attribute Heat, attribute ShowHeatmap];
+  Sel: new(0, 16, 29);
+};
+
+//======================================================================
+
+Interpolation = HBox {
+  for (double i = 0; i <= 1.0; i += 0.04) {
+    HBox(BoxSize, BoxSize, BorderR(new(1, 0, 89%))) {
+      Background: Heat.InterpolateColor(i);
+    }
+  }
+};
+
+readonly LessonExample Content.InterpolationEx = new(#b6452b27-6f3c-444e-b7be-944eee672bbc#, "Interpolated Colors") {
+  Text: NytrilStyle.Function(attribute LinearGradient.InterpolateColor, "An interpolated color can be computed using a color gradient");
+  Code: [attribute Interpolation];
+  Sel: new(3, 23, 16);
+  Options: NoShort;
+};
+
+//======================================================================
+
+Color HeatColor(int _, int _1, double value) = Heat.InterpolateColor(value);
+
+GetMapImage = Span {
+  int size = 150;
+  var m = new Matrix<double>(size, size, 0);
+  for (int i = 0; i < size; ++i) {
+    for (int j = 0; j < size; ++j)
+      m[i, j] = 0.5 + 0.5 / size * i * Math.Sin(j * 2.0 * Math.PI2 / size);
+  }
+  var image = m.GetImage(@HeatColor, "Sinusoidal Heat Map");
+  FitBox(image, BoxSize*10);
+};
+
+readonly LessonExample Content.Heatmap3Ex = new(#b5aef55d-cac5-4ce5-b7cf-910904694f32#, "Heat Map") {
+  Text: NytrilStyle.Function(attribute Matrix.GetImage, "A 2-dimensional color image can be created from the values in a matrix");
+  Code: [attribute HeatColor, attribute GetMapImage];
+  Sel: new(9, 16, 8);
 };
 
 //======================================================================

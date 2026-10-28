@@ -6,13 +6,6 @@ readonly Main.Documents = new MapDocument;
 
 readonly MapLocation[] Locations = [
   new("Der Bundestag", "Bundestag, Berlin, Germany", "Bundestag, Berlin, Germany"),
-/*
-  new("The Hall Market", "10997 Berlin", "Markthalle Neun Market Pücklerstraße 34, 10997 Berlin"),
-  new("Göttingen", "37073 Göttingen, Germany", "Hotel FREIgeist Göttingen Innenstadt, Berliner Str. 30, 37073 Göttingen, Germany"),
-  new("Sanctuary for Isis", "55116 Mainz, Germany", "Taberna Archaeologica Römerpassage 1 55116 Mainz"),
-  new("Free Walking Tour", "80331 München, Germany", "Marienplatz 25, 80331 München, Germany"),
-  new("Neuschwanstein and Hohenschwangau Castles", "87645 Schwangau, Germany", "Neuschwansteinstraße 20, 87645 Schwangau, Germany"),
-*/
 ];
 
 //==================================================================================

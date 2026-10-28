@@ -226,7 +226,7 @@ class BornEvent: Event {
     " was born";
   };
 
-  override Icon GetIcon = Icons.child_friendly;
+  override Icon GetIcon = Icons.child_care;
 }
 
 //===============================================================================================================
@@ -241,7 +241,7 @@ class DiedEvent: BornEvent {
     " died";
   };
 
-  override Icon GetIcon = Icons.door_back;
+  override Icon GetIcon = Icons.deceased;
 }
 
 //===============================================================================================================

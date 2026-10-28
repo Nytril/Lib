@@ -181,7 +181,7 @@ class CustomAction: Action {
 }
 
 CustomLink = Span {
-  Icons.copy; Space; "Copy Text";
+  Icons.content_copy; Space; "Copy Text";
   TipAction: new CustomAction("Custom Text");
 };
 

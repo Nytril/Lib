@@ -135,7 +135,7 @@ class Equation: Fact {
     Name = name;
   }
 
-  override Icon GetIcon = Icons.functions;
+  override Icon GetIcon = Icons.function;
 
   override GetLayoutSpan = Span {
     TextEquation: true;
@@ -2472,7 +2472,7 @@ class CiteDocument: DocumentEntry {
       Space*2;
       Span {
         TextColor: Colors.Blue;
-        Icons.copy;
+        Icons.content_copy;
         Tip: "Copy this text to the clipboard";
         Action: new CopyAction(text);
       };

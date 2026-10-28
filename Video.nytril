@@ -379,7 +379,7 @@ class LessonBuilder: VideoBuilder {
         else
           AddAudio(f, pause);
 
-        if (e.Sel is valid) {
+        if (e.Sel is valid or e.Tip is valid) {
           var code = Math.Min(f.Duration * 60%, 2.0);
           if (full) {
             ShowLesson(e, Code, code);

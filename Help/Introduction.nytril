@@ -121,7 +121,7 @@ class IntroDocument: DocumentEntry {
     Table(null, PadLR(5), [Column.Fit(3")]) {
       MakeLink(Icons.person_add, Lang.CreateUserAccount, "Sign-Up", new URL(NytrilData.WebSite + "/DesktopSignUp"));
       MakeLink(Icons.chat_bubble, Lang.JoinDiscussion, Lang.VisitUsOn("Reddit"), NytrilData.RedditSite);
-      MakeLink(Icons.play_circle_filled, Lang.LearnFromExperts, Lang.NytrilYouTubeChannel, NytrilData.YouTubeSite);
+      MakeLink(Icons.play_circle, Lang.LearnFromExperts, Lang.NytrilYouTubeChannel, NytrilData.YouTubeSite);
       MakeLink(Icons.email, "Ask the developers", Lang.DropALine, NytrilData.SupportEMail);
     };
     ShowExample(Lang.TryOutThese);

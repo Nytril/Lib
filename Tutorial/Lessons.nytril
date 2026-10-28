@@ -7,6 +7,7 @@ include "Images";
 include "Hyperlinks";
 include "Boxes";
 include "Drawings";
+include "Fills";
 
 readonly Attribute[] VideoLessons = [
   attribute Chapters.Formatting.Sections.TextFormatting,
@@ -17,4 +18,5 @@ readonly Attribute[] VideoLessons = [
   attribute Chapters.Formatting.Sections.Hyperlinks,
   attribute Chapters.Formatting.Sections.Boxes,
   attribute Chapters.Formatting.Sections.Drawings,
+  attribute Chapters.Formatting.Sections.Fills,
 ];
