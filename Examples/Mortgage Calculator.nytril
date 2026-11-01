@@ -126,7 +126,18 @@ class MortgageResults {
   };
 
   ShowControls = Block {
-    if (!System.IsPublishing()) {
+    if (System.IsPublishing()) {
+      HBox(100%) {
+        Justify: Justifiers.SpaceBetween;
+
+        var format = Span {Bold; TextGroup: true; TextDigits: 0};
+
+        Amount("Years") {format {Options.Term}};
+        Amount("Principle") {format {Currency; Options.Principle}};
+        Amount("Rate") {Span {Bold; TextDigits: 2; Options.Rate; "%"}};
+      };
+    }  
+    else {
       Edit("Years") {
         IntControl(new(ref Options.Term), 1", null, Edge, 1, 50, 1) Corner;
       };
@@ -155,10 +166,10 @@ class MortgageResults {
 
       var format = Span {Currency; Bold; TextGroup: true; TextDigits: 0};
 
-      Amount("Loan Amount"){ format {Options.Principle}};
-      Amount("Monthly Payment") { format {Results.Payment}};
-      Amount("Interest Paid") { format {Results.TotalInterest}};
-      Amount("Total Cost") { format {Results.TotalInterest + Options.Principle}};
+      Amount("Loan Amount") {format {Options.Principle}};
+      Amount("Monthly Payment") {format {Results.Payment}};
+      Amount("Interest Paid") {format {Results.TotalInterest}};
+      Amount("Total Cost") {format {Results.TotalInterest + Options.Principle}};
     };
 
     Paragraph;
