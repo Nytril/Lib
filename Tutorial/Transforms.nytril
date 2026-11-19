@@ -31,7 +31,7 @@ readonly LessonExample Content.TransformFlatEx = new(#a91b114d-02db-48ac-b46c-f7
 
 //======================================================================
 
-Letter(transform, fill, Stroke stroke) = Canvas {
+Letter(Transform transform, fill, Stroke stroke) = Canvas {
   Shape(fill) {
     Transform: transform;
     RectanglePath(new(new(0), new(0.75", 0.25)));
@@ -55,7 +55,7 @@ Letter(transform, fill, Stroke stroke) = Canvas {
 //  };
 };
 
-ShowTransform(dx, dy, name, transform, show=true, margin=20pt) = VBox {
+ShowTransform(dx, dy, name, Transform transform, show=true, margin=20pt) = VBox {
   HAlign: Center;
   Margin: PadR(margin);
   Paragraph {

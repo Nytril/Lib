@@ -147,6 +147,13 @@ class InputDocument: DocumentEntry {
     Bold;
   };
 
+  BC(color) = {
+    Background: new RadialGradient(0%, 0%, 0%, 0%, 30%, 50%, [new(0, Colors.White), new(100%, color)]);
+    BackInside: new RadialGradient(5%, 5%, 5%, 5%, 40%, 60%, [new(0, Colors.White), new(100%, color)]);
+//    BackPressed: new RadialGradient(20%, 20%, 20%, 20%, 40%, 60%, [new(0, Colors.White), new(100%, color)]);
+    BackPressed: new RadialGradient(30%, 30%, 30%, 30%, 50%, 80%, [new(0, Colors.White), new(100%, color)]);
+  };
+
   ShowControls = Block {
     var edge = new Edge(1, 2);
 
@@ -181,6 +188,7 @@ class InputDocument: DocumentEntry {
       Action: Actions.Refresh;
     };
 
+
     Paragraph {
       SpaceBefore: 10pt;
       ButtonControl(null, null, new Edge(2, 3)) {
@@ -190,13 +198,14 @@ class InputDocument: DocumentEntry {
       };
       Space;
 
-      ButtonControl(null, null, new Edge(2, 3, Colors.Green)) {
-        BorderRadius: 5;
-        TextColor: Colors.Green;
-        "Message";
-        Action: new MessageActionClass(Options);
-      };
+    ButtonControl(null, null, new Edge(2, 3, Colors.Green)) {
+      BC(Colors.LightGreen);
+      BorderRadius: 5;
+      TextColor: Colors.Green;
+      "Message";
+      Action: new MessageActionClass(Options);
     };
+  };
 
     CheckControl(new(ref Options.DisableMessage)) {
       Placement: Placements.Right;

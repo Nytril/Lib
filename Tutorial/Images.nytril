@@ -222,9 +222,9 @@ YouTube(height, URL url) = Canvas(height * 1.4, height) {
   HAlign: Center; VAlign: Center;
   BorderRadius: height * 20%;  Background: #FF0033#;
   TextColor: Colors.White;
-  TextHeight: height*0.85; TextOffset: 4%;
+  TextHeight: height*0.85; 
   Baseline: 83%;
-  Icons.play_arrow;
+  Icons.play_arrow.Filled;
 };
 
 IconFigure = Paragraph {

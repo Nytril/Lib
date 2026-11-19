@@ -38,6 +38,7 @@ readonly Example[] Examples = [
   new("Finger Binary"),
   new("White Paper"),
   new("Split The Bill"),
+  new("Physics Animation"),
 ];
 
 //======================================================================
