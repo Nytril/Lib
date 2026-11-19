@@ -1,0 +1,320 @@
+using Format;
+
+readonly Main.Documents = new PhysicsDocument;
+
+//=====================================================================
+
+class AnimationOptions: Fact {
+  field int    Count;
+  field double Time,
+               Gravity,
+               Friction,
+               Elasticity;
+
+  Constructor {
+    super.Constructor(#648302bc-75de-494a-8fd7-d2c458e58afe#);
+    Time       = 20;
+    Count      = 20;
+    Gravity    = 80;
+    Friction   = 0.04;
+    Elasticity = 0.80;
+    ReadFromStorage;
+  }
+}
+
+readonly AnimationOptions Options = new;
+
+//=====================================================================
+
+class Ball {
+  var double Radius,
+             Mass,
+             Px,
+             Py,
+             Vx,
+             Vy;
+  var        Fill;
+
+  Constructor(x, y, vx, vy, radius, Color c) {
+    Radius     = radius;
+    Mass       = 0.001 * 1.3333 * Math.PI * radius^3;
+    Px         = x;
+    Py         = y;
+    Vx         = vx;
+    Vy         = vy;
+    Fill       = new RadialGradient(35%, 25%, 35%, 25%, 50%, 50%, [new(0, Colors.White), new(1, c)]);
+  }
+
+  Show(x, y) = Canvas(Radius*2, Radius*2) {
+    Background: Fill;
+    BorderRadius: Radius;
+    X: x - Radius;
+    Y: y - Radius;
+  };
+
+  override GetLayoutSpan = Canvas(Radius*2, Radius*2) {
+    Show(Radius, Radius);
+  };
+}
+
+//=====================================================================
+
+class PhysicsAnimation: Animation {
+  readonly static LinearGradient Back = new(0, 0, 0, 1, [new(0, Colors.SkyBlue), new(1, Colors.White)]);
+
+  var List<Ball> Items;
+  var double     Gravity,
+                 TimeSlice,
+                 Elasticity,
+                 Friction,
+                 Time;
+  var Sound      Audio;
+
+  Constructor(width, height, int count) {
+    super.Constructor(width, height, 30, "Cannon Ball");
+
+    TimeSlice  = 1.0 / FramesPerSecond;
+    Elasticity = Options.Elasticity;
+    Gravity    = Options.Gravity * TimeSlice;
+    Friction   = Options.Friction * TimeSlice;
+    Items      = new List<Ball>(count);
+
+    for (int i = 0; i < count; ++i) {
+      var b = new Ball(0, 0, Math.Random(-100..100), Math.Random(-100..100), Math.Random(7..20), Color.ChartColor(i));
+      InitPosition(b);
+      Items.Add(b);
+    }
+
+    Audio = new(Options.Time, 2, SampleRate);
+
+// Add a background track
+//    var music = Sound.Read(res "../DevFiles/Lesson Videos/Theme.wav");
+//    Audio.Mix(music, 0, 1.0, Options.Time);
+
+    var frames = Math.Round(Options.Time * FramesPerSecond);
+    var tic    = 1.0 / FramesPerSecond;
+    for (int f = 0; f < frames; ++f) {
+      Time = f / FramesPerSecond;
+
+      var fc = Canvas(width, height) {
+        Background: Back;
+        foreach (var i in Items)
+          i.Show(i.Px, height - i.Py);
+      };
+
+      AddScene(fc, Time, tic);
+      Physics;
+    }
+
+    SetSoundTrack(Audio);
+  }
+
+  void Physics {
+    foreach (var b in Items) {
+      b.Vx -= b.Vx * Friction;
+      b.Vy -= b.Vy * Friction + Gravity;
+      b.Px += b.Vx * TimeSlice;
+      b.Py += b.Vy * TimeSlice;
+    }
+
+    foreach (var b in Items)
+      CheckBounds(b);
+
+    var count = Items.Length;
+    for (int i = 0; i < count; ++i) {
+      for (int j = i+1; j < count; ++j)
+        TestCollision(Items[i], Items[j]);
+    }
+  }
+
+  void InitPosition(Ball b) {
+    // Find a random starting point that does not overlap existing items
+    for (;;) {
+      var r = b.Radius;
+      b.Px = Math.Random(r..(Width -r));
+      b.Py = Math.Random(r..(Height - r));
+      if (not CollideAny(b))
+        break;
+    }
+  }
+
+  bool CollideAny(Ball b1) {
+    foreach (var b2 in Items) {
+      var d1 = (b1.Px - b2.Px)^2 + (b1.Py - b2.Py)^2;
+      var d2 = (b1.Radius + b2.Radius)^2;
+      if (d1 <= d2)
+        return true;
+    }
+    return false;
+  }
+
+  void TestCollision(Ball b1, Ball b2) {
+    // Calculate vector between centers
+    var dx          = b2.Px - b1.Px;
+    var dy          = b2.Py - b1.Py;
+    var distance    = Math.Sqrt(dx^2 + dy^2);
+    var minDistance = b1.Radius + b2.Radius;
+
+    if (distance >= minDistance)
+      return;
+
+    distance = Math.Max(distance, 0.01);
+
+    // Normalize the collision vector (Normal unit vector)
+    var nx = dx / distance;
+    var ny = dy / distance;
+
+    // Distribute the overlap correction based on mass ratios
+    var overlap = minDistance - distance;
+    var m1      = b1.Mass;
+    var m2      = b2.Mass;
+    var mt      = m1 + m2;
+
+    b1.Px -= nx * overlap * (m2 / mt);
+    b1.Py -= ny * overlap * (m2 / mt);
+    b2.Px += nx * overlap * (m1 / mt);
+    b2.Py += ny * overlap * (m1 / mt);
+
+    // Calculate relative velocity along the normal vector (Dot Product)
+    var vnormal = (b1.Vx - b2.Vx) * nx + (b1.Vy - b2.Vy) * ny;
+
+    // Do not resolve if velocities are already separating
+    if (vnormal < 0)
+      return;
+
+    // Calculate restitution (1.0 = perfectly elastic, 0.0 = completely inelastic)
+    var impulse = (-(1 + Elasticity) * vnormal) / (1 / m1 + 1 / m2);
+
+    // Apply impulse vector to each ball
+    b1.Vx += (impulse / m1) * nx;
+    b1.Vy += (impulse / m1) * ny;
+    b2.Vx -= (impulse / m2) * nx;
+    b2.Vy -= (impulse / m2) * ny;
+
+    Audio.Mix(Clack, Time, vnormal * 0.005); // Volume proportional to impact speed
+  }
+
+  void Wall(v) {
+    v = Math.Abs(v);
+    if (v > 4)
+      Audio.Mix(Thud, Time, v * 0.04);
+  }
+
+  void CheckBounds(Ball b) {
+    var r = b.Radius;
+    if (b.Px + r >= Width) {
+      b.Px = Width - r;
+      b.Vx = -b.Vx * Elasticity;
+      Wall(b.Vx);
+    }
+    else if (b.Px - r <= 0) {
+      b.Px = r;
+      b.Vx = -b.Vx * Elasticity;
+      Wall(b.Vx);
+    }
+    if (b.Py + r >= Height) {
+      b.Py = Height - r;
+      b.Vy = -b.Vy * Elasticity;
+      Wall(b.Vy);
+    }
+    else if (b.Py - r <= 0) {
+      b.Py = r;
+      b.Vy = -b.Vy * Elasticity;
+      Wall(b.Vy);
+    }
+  }
+}
+
+
+//=====================================================================
+
+class PhysicsDocument: DocumentEntry {
+  static readonly Edge CEdge = new(1, 3, Colors.DarkGray);
+  static readonly      EOpt  = {BorderRadius: 5};
+
+  Constructor {
+    super.Constructor(#bf5c4b8d-8da5-47d4-9047-8f25456d12f7#, "Video Player");
+  }
+
+  Edit(name) = VBox {
+    TextHeight: 16pt;
+    Margin: PadAll(10);
+    name;
+  };
+
+  override GetDocument = Document {
+//    SoundChart(Thud);
+    HBox {
+      ButtonControl(null, null, CEdge) {
+        "Reset";
+        BorderRadius: 5;
+        Action: Actions.Refresh;
+      };
+      Edit("Time") {
+        DoubleControl(new(ref Options.Time), 0.75", null, CEdge, 1, 60, 1) EOpt {TextDigits: 0};
+      };
+      Edit("Particles") {
+        IntControl(new(ref Options.Count), 0.75", null, CEdge, 1, 50, 1) EOpt;
+      };
+      Edit("Gravity") {
+        DoubleControl(new(ref Options.Gravity), 1", null, CEdge, 0, 300, 1) EOpt {TextDigits: 1};
+      };
+      Edit("Friction") {
+        DoubleControl(new(ref Options.Friction), 1", null, CEdge, 0, 100, 0.1) EOpt {TextDigits: 1; TextPercent: true};
+      };
+      Edit("Elasticity") {
+        DoubleControl(new(ref Options.Elasticity), 1", null, CEdge, 0, 100, 1) EOpt {TextDigits: 1; TextPercent: true};
+      };
+    };
+
+    var border = 5;
+    var width  = ExtentWidth;
+    var height = 500;
+    var a      = new PhysicsAnimation(width - border*2, height - border*2, Options.Count);
+    AnimationControl(width, height, new Edge(border, 0, Colors.SkyBlue), a) {
+      BorderClip: true;
+      BorderRadius: 10;
+    };
+  };
+}
+
+//=====================================================================
+
+const SampleRate = 44100;
+
+readonly Sound Clack = MakeSound(400, 0.02);
+               Thud  = MakeSound(180, 0.04);
+
+Sound MakeSound(double frequency, double duration) {
+  // Make a sine wave inside a bell curve to make a sound 'pulse'
+  var sound  = new Sound(duration, 1, SampleRate);
+  var count  = (duration * SampleRate) as int;
+  var mid    = count / 2;
+  var sigma  = count * 5 * duration;
+  var b      = 2.0 * sigma^2;
+  var rate   = frequency * Math.PI2 / SampleRate;
+  var vector = new Vector<double>(count, 0.0);
+  for (int i = 0; i < count; i++)
+    vector[i] = Math.Sin(i * rate) * Math.Exp((i - mid)^2 / -b);
+  sound.SetSampleValues(vector);
+  return sound;
+}
+
+SoundChart(Sound sound) = Chart(100%, 2") {
+  var channel = sound.GetChannel(0);
+  ChartType: Line;
+  XLabel: "Seconds";
+  XAxis: ChartAxis {
+    {Start: 0; Stop: sound.Duration};
+  };
+  ChartSeries(null, new(0.25)) {
+    double t   = 0;
+    double tic = 1.0 / sound.SampleRate;
+    foreach (var d in channel) {
+      new DataPoint(t, d);
+      t += tic;
+    }
+  }
+};
+
+//=====================================================================
